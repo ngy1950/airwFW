@@ -1,0 +1,568 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/common/theme/samyang/css/reset.css">
+<style type="text/css">
+/*해상도 1024x765*/
+  div{margin-top:3px;}
+
+  .section{padding:0 40px;}
+  .section > div{display: inline-block;margin-top:20px;vertical-align: top;}
+  .left{border:1px solid #999;width:140px; border-radius:30px 0 0 0;background-color:#d1e2e1;}
+  .right{border:1px solid #999;width:140px; border-radius:0 30px 0 0;background-color:#d1e2e1;}
+  .mid{width:520px;margin: 0 auto;border-radius:30px 0 0 0;border:1px solid #777;background-color: #e2e2e2;}
+  .bspace{width:50px;}
+  
+/*화면 구성 크기*/
+
+   h2{display: inline-block;font-size:16px;font-weight: bold;line-height: 30px;}
+   h2 img{border-radius:5px;}
+   h3{line-height:30px;}
+   table{width: 100%;}
+   th, td{border: 1px solid gray;width:100px;}
+   cite{display:inline-block;text-align: center;font-size:14px;padding:10px 0;}
+   i{font-size:8px;}
+   p{display: inline-block;width:35px;text-align: center;line-height:30px;}      
+   strong{display: block;text-align: center;}
+		
+   .left cite,.right cite{width: 100%;}
+   .left li > div,.right li > div{height:45px;}
+   .bspace img{width:55px;}
+   .img>span{position: relative;right: 40px;top:32px;font-size:8px;color:#757279;font-weight: bold;}
+   .wrap{margin: 0;outline: 1px solid #666;display: inline-block;float: right;width:100px;height:40px;}
+   .percent{margin: 0;border-right:1px solid #757778;width:30px;background-color:#cacaca;height:40px;}
+   .percent span{font-size:4px;line-height:16px;}
+   .percent strong span{font-size:12px;}
+    /*%스크립트 붙이세용*/
+
+    .bspace .img span{right:0;left:6px;top:-25px;font-size:10px;color:#022;font-weight: bold;}
+
+    .mid h2{width: 150px;text-align: center;border: 2px solid #999;position: relative;top:-10px;left:20px;border-radius:7px;background-color: #fff;}
+    .mid cite{display: block;width:30px;padding:0 10px;color: #fafafa;text-align: center;border: 2px solid #555;border-radius:3px;background-color: #555;}
+    .mid > cite{width:100px;float: right;position: relative;top:-10px;left:-20px;font-weight: bold;font-size: 16px;}
+
+    .tri, .completion{width:115px;display: inline-block;margin-left:7px;}
+    .tri > div{background-color:#fafafa;border: 1px solid #222;display: inline-block;margin:0 -3px 0 0;width:35px;}
+    .tri span{font-size:4px;}
+    .completion{vertical-align: top;}
+    .completion div{height:45px; background-color:#f69885; border: 1px solid #777;}
+    .completion i{margin-left:20px;}
+    .completion strong{margin-top:5px;}
+    .stock{display: inline-block;height:50px;width:160px;}
+    .stock > div{height:25px;}
+    .stock div .percent{height:25px;width:70px;}
+    /*script하시면 with지우세용*/
+    .stock .wrap {background-color: #fafafa;width:150px;}
+    .stock .wrap > span{float: right;position:relative;top:-25px;left:5px;width: 30px;}
+    .stock.full .wrap{vertical-align: middle;height:50px;}
+    .stock.full .wrap >span{top:-35px;left:-10px;}
+    .stock.full .percent{height:50px;}
+    .stock.full i{line-height:20px;}
+    .delivery cite{width:60px;}
+    .delivery li{}
+	
+	.mid li{margin:20px 0;}
+	.mid li cite{margin:8px 0;line-height:26px;}
+    .mid li.delivery:last-child .completion div{background-color:#cedf6f;}
+    .delivery .completion div{background-color:#72c8e8;}
+
+    .next{position:absolute;width:10px; height:73px;top: 378px;left: 363px;}
+    .next-1{left:489px;}
+    .next-2{top:510px;}
+    .next-3{top:510px;left:489px;}
+</style>
+</head>
+<body>
+  <!-- 이미지 경로 맞춰서 사용해주세요~ -->
+ 
+  <div class="section">
+    <div class="left">
+      <cite>납입확정율 (%)</cite>
+      <ul>
+        <li>
+          <div class="img">
+            <img src="/common/theme/samyang/images/factory1.png" style="height:30px;width:52px;background-color: white;border: 1px solid gray;border-radius:5px;" alt="">
+            <span>공장</span>
+          </div>
+
+          <div class="">
+            <p>구매</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+        </li>
+
+
+        <li>
+          <div class="img">
+            <img src="/common/theme/samyang/images/factory1.png" style="height:30px;width:52px;background-color: white;border: 1px solid gray;border-radius:5px;" alt="">
+            <span>공장</span>
+          </div>
+
+          <div class="">
+            <p>구매</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+          <div class="">
+            <p>보충</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+          <div class="">
+            <p>센터</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="img">
+            <img src="/common/theme/samyang/images/factory.png" style="height:30px;width:52px;background-color: white;border: 1px solid gray;border-radius:5px;" alt="">
+            <span>센터</span>
+          </div>
+
+          <div class="">
+            <p>구매</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+          <div class="">
+            <p>구매</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="img">
+            <img src="/common/theme/samyang/images/shop.png" style="height:30px;width:52px;background-color: white;border: 1px solid gray;border-radius:5px;" alt="">
+            <span>배송처</span>
+          </div>
+
+          <div class="">
+            <p>구매</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="bspace">
+      <strong>입고 <br />운송중</strong>
+      <!-- 트럭위치 픽셀로 맞춰주세요 -->
+      <div class="img" style="margin-top: 100px">
+        <img src="/common/theme/samyang/images/truck1.png" style="height:35px;width:52px" alt="">
+        <span>200T</span>
+      </div>
+      <div class="img">
+        <img src="/common/theme/samyang/images/truck1.png" style="height:35px;width:52px" alt="">
+        <span>200T</span>
+      </div>
+    </div>
+
+    <div class="mid">
+      <h2><img src="/common/theme/samyang/images/samyang-logo-p.jpg" alt=""></h2>
+      <cite>2017.07.05</cite>
+      <ul>
+        <li>
+          <cite>입고</cite>
+          <div class="tri">
+            <strong>생산/구매/반품</strong>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong>
+            </div>
+          </div>
+
+          <div class="tri">
+            <strong>생산/구매/반품</strong>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong>
+            </div>
+          </div>
+
+          <div class="tri">
+            <strong>생산/구매/반품</strong>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong>
+            </div>
+
+          </div>
+          <div class="completion">
+            <strong>생산/구매/반품</strong>
+            <div class="">
+              <i>입고</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <cite>재고</cite>
+          <div class="stock">
+            <div class="wrap">
+              <div class="percent">
+                <i>실온</i>
+                <span>70</span>%
+              </div>
+                <span>30%</span>
+            </div>
+            <div class="wrap">
+                <div class="percent">
+                <i>실온</i>
+                <span>70</span>%
+              </div>
+                <span>30%</span>
+            </div>
+          </div>
+
+          <div class="stock">
+            <div class="wrap">
+              <div class="percent">
+                <i>실온</i>
+                <span>70%</span>
+              </div>
+                <span>30%</span>
+            </div>
+            <div class="wrap">
+              <div class="percent">
+                <i>실온</i>
+                <span>70%</span>
+              </div>
+                <span>30%</span>
+            </div>
+          </div>
+
+          <div class="stock full">
+            <div class="wrap">
+              <div class="percent">
+                <i>로케이션 <br /> 사용률</i>
+              </div>
+                <span>60%</span>
+            </div>
+          </div>
+
+        </li>
+
+        <li class="delivery">
+          <cite>배송출고</cite>
+          <div class="tri">
+            <strong>할당</strong>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong>
+            </div>
+          </div>
+
+          <div class="next">
+            <img src="/common/theme/samyang/images/arrow.png" style="height:37px;width:12px" alt="">
+          </div>
+
+          <div class="tri">
+            <strong>피킹/분류</strong>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong>
+            </div>
+          </div>
+
+          <div class="next next-1">
+            <img src="/common/theme/samyang/images/arrow.png" style="height:37px;width:12px" alt="">
+          </div>
+
+          <div class="tri">
+            <strong>상차</strong>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong>
+            </div>
+
+          </div>
+          <div class="completion">
+            <strong>출고진척률(%)</strong>
+            <div class="">
+              <i>배송</i>
+              <span>(<span>30</span>/<span>100</span>)</span>
+              <strong><span>30</span>%</strong>
+            </div>
+          </div>
+        </li>
+
+        <li class="delivery">
+          <cite>수송출고</cite>
+          <div class="tri">
+            <strong>할당</strong>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong>
+            </div>
+          </div>
+
+          <div class="next next-2">
+            <img src="/common/theme/samyang/images/arrow.png" style="height:37px;width:12px" alt="">
+          </div>
+
+          <div class="tri">
+            <strong>피킹/분류</strong>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong>
+            </div>
+          </div>
+
+          <div class="next next-3">
+            <img src="/common/theme/samyang/images/arrow.png" style="height:37px;width:12px" alt="">
+          </div>
+
+          <div class="tri">
+            <strong>상차</strong>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong></div>
+            <div class="">
+              <i>From</i>
+              <span><span>30</span>/<span>100</span></span>
+              <strong><span>30</span>%</strong>
+            </div>
+
+          </div>
+          <div class="completion">
+            <strong>수송</strong>
+            <div class="">
+              <i>입고</i>
+              <span>(<span>40</span>/<span>100</span>)</span>
+              <strong><span>40</span>%</strong>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="bspace">
+      <strong>출고<br />운송중</strong>
+      <!-- 트럭위치 픽셀로 맞춰주세요 -->
+      <div class="img" style="margin-top: 100px">
+        <img src="/common/theme/samyang/images/truck1.png" style="height:35px;width:52px" alt="">
+        <span>200T</span>
+      </div>
+      <div class="img">
+        <img src="/common/theme/samyang/images/truck1.png" style="height:35px;width:52px" alt="">
+        <span>200T</span>
+      </div>
+    </div>
+
+    <div class="right">
+      <cite>운송진행률 (%)</cite>
+      <ul>
+        <li>
+          <div class="img">
+            <img src="/common/theme/samyang/images/shop.png" style="height:30px;width:52px;background-color: white;border: 1px solid gray;border-radius:5px;" alt="">
+            <span>배송처</span>
+          </div>
+
+          <div class="">
+            <p>구매</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+        </li>
+
+
+        <li>
+          <div class="img">
+            <img src="/common/theme/samyang/images/factory.png" style="height:30px;width:52px;background-color: white;border: 1px solid gray;border-radius:5px;" alt="">
+            <span>센터</span>
+          </div>
+
+          <div class="">
+            <p>구매</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+          <div class="">
+            <p>보충</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+          <div class="">
+            <p>센터</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="img">
+            <img src="/common/theme/samyang/images/factory1.png" style="height:30px;width:52px;background-color: white;border: 1px solid gray;border-radius:5px;" alt="">
+            <span>공장</span>
+          </div>
+
+          <div class="">
+            <p>구매</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+          <div class="">
+            <p>구매</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="img">
+            <img src="/common/theme/samyang/images/factory1.png" style="height:30px;width:52px;background-color: white;border: 1px solid gray;border-radius:5px;" alt="">
+            <span>공급처</span>
+          </div>
+
+          <div class="">
+            <p>구매</p>
+            <div class="wrap">
+              <div class="percent">
+                <span>30</span>/<span>100</span>
+                <strong><span>30</span>%</strong>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</body>
+</html>

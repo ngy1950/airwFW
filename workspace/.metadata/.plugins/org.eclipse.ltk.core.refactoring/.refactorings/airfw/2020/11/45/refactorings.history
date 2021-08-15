@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;MV01.jsp&apos; to &apos;MV01.jsp&apos;&#x0D;&#x0A;- Original project: &apos;airfw&apos;&#x0D;&#x0A;- Destination element: &apos;MV01.jsp&apos;&#x0D;&#x0A;- Original element: &apos;MV01.jsp&apos;" description="Copy file" element1="WebContent/WEB-INF/jsp/tms/mst/MV01.jsp" files="1" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1604282098967" target="/airfw/WebContent/WEB-INF/jsp/tms/mst/MV01.jsp" units="0" version="1.0"/>
+</session>

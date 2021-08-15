@@ -1,0 +1,6 @@
+computeSourcePath=true
+contextsDir=C\:\\airFW\\server\\apache-tomcat-7.0.69\\conf\\Catalina\\localhost
+eclipse.preferences.version=1
+tomcatConfigFile=C\:\\airFW\\server\\apache-tomcat-7.0.69\\conf\\server.xml
+tomcatDir=C\:\\airFW\\server\\apache-tomcat-7.0.69
+tomcatVersion=tomcatV7

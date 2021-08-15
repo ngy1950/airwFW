@@ -1,0 +1,30 @@
+package com.common.carton;
+
+/**
+ * 박스 최대 무계를 초과했을때 발생되는 예외
+ * @author Administrator
+ *
+ */
+public class PackedBoxOverweightException extends Exception {
+
+	private static final long serialVersionUID = -7554391039984881833L;
+	
+	private PBox pb;
+
+	/**
+	 * 생성자
+	 * @param pb 포장된 박스
+	 */
+	public PackedBoxOverweightException(PBox pb) {
+		super("Package weight exceeds the maximum weight of the box");
+		this.pb = pb;
+	}
+	
+	/**
+	 * 포장된 박스 조회
+	 * @return 포장된 박스
+	 */
+	public PBox getPBox() {
+		return pb;
+	}
+}

@@ -1,0 +1,95 @@
+package com.common.carton;
+
+import java.util.List;
+
+/**
+ * <pre>
+ * 박스 데이터와 아이템 데이터를 기반으로 충진율, 최대 포장 무계를 고려한 박스를 선정하고
+ * 분리 포장을 수행하여 포장된 박스 데이터를 얻는다.
+ * 박스 데이터는 List Box, 아이템 데이터는 List Item으로 전달하며
+ * 포장 데이터는 List PBox로 리턴된다.
+ * Box, Item의 dim1, dim2, dim3값은 width, height, length가 매칭되며
+ * 각각의 타입은 int이므로 소수점이 포함된 width, height, length를 입력시 정수로 표현되도록 배수를 해줘야한다. 
+ * 	   BoxPackingManager bpm = new BoxPackingManager(boxes, 95f);
+ *     List pboxes = bpm.packing(items);
+ * </pre>
+ * 
+ * @author heedong.kang
+ *
+ */
+public final class BoxPackingManager {
+
+	private final float bestPackingFactor;
+	
+	private final PickingStrategy pickingStrategy;
+	
+	private final List<Box> boxes;
+	
+	/**
+	 * 생성자
+	 * @param boxes 박스정보
+	 * @param bestPackingFactor 충진율
+	 */
+	public BoxPackingManager(List<Box> boxes, float bestPackingFactor) {
+		if (boxes == null || boxes.isEmpty())
+			throw new IllegalArgumentException("Invalid boxes");
+		if (bestPackingFactor < 50)
+			throw new IllegalArgumentException("Invalid bestPackingFactor");
+		
+		for(Box box : boxes) {
+			if (box.getId() == null || 
+				box.getDim1() == 0 || 
+				box.getDim2() == 0 || 
+				box.getDim3() == 0 || 
+				box.getMaxWeight() == 0) {
+				throw new IllegalArgumentException("Invalid box info:" + box.toString());
+			}
+		}
+		
+		this.boxes = boxes;
+		this.bestPackingFactor = bestPackingFactor;
+		this.pickingStrategy = new HeaviestPickingStrategy();
+		BoxUtils.sortBoxesByVolAsc(this.boxes);
+	}
+	
+	/**
+	 * 아이템 리스트를 포장하여 포장된 박스 리스트를 구한다
+	 * @param items 포장아이템들
+	 * @return 포장된 박스정보 리스트
+	 */
+	public List<PBox> packing(List<Item> items) {
+		if (items == null || items.isEmpty())
+			throw new IllegalArgumentException("Invalid items");
+		for(Item item : items) {
+			if (item.getCartonNumber() == null || 
+				item.getSku() == null || 
+				item.getDim1() == 0 || 
+				item.getDim2() == 0 || 
+				item.getDim3() == 0 || 
+				item.getWeight() == 0) {
+				throw new IllegalArgumentException("Invalid box info:" + item.toString());
+			}
+		}
+		
+		final SmartBoxPacker packer = new SmartBoxPacker(boxes, bestPackingFactor, pickingStrategy, true);
+		packer.splitPack(items);
+		
+		return packer.getPackedBoxes();
+	}
+	
+	/**
+	 * 박스정보 리스트를 조회
+	 * @return 포장박스 리스트
+	 */
+	public List<Box> getBoxes() {
+		return boxes;
+	}
+	
+	/**
+	 * 박스선정 전략을 조회
+	 * @return pickingStrategy
+	 */
+	public PickingStrategy getPickingStrategy() {
+		return pickingStrategy;
+	}
+}

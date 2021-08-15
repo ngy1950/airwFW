@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL MAP 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Wms">
+	<typeAlias alias="DataMap" type="com.common.bean.DataMap" />
+	<typeAlias alias="StringMap" type="com.common.util.StringMap" />
+	
+	<insert id="DOCUSEQ_INSERT" parameterClass="Map">
+		<selectKey keyProperty="DOCSEQ" resultClass="String">
+	    	SELECT
+    			LPAD(NVL(MAX(TO_NUMBER(NUMBST)),1)+1,10,'0') AS DOCSEQ
+			FROM NMOBJ
+			WHERE NUMOBJ = (SELECT NUMOBJ FROM DOCTM WHERE DOCUTY = #DOCUTY#)
+	    </selectKey>
+		UPDATE NMOBJ SET 
+			NUMBST = #DOCSEQ#
+		WHERE NUMOBJ = (SELECT NUMOBJ FROM DOCTM WHERE DOCUTY = #DOCUTY#)	
+	</insert>
+	
+	<select id="RSNCD_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT
+		    RSNCOD AS VALUE_COL,
+		    SHORTX AS TEXT_COL
+		FROM RSNCD 
+		WHERE DOCUTY = #DOCUTY# 
+			AND OWNRKY = (SELECT ADDR05 FROM WAHMA WHERE WAREKY = 'WSH1')
+	</select>
+	
+	<select id="WAHMACOMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT
+		    WAREKY AS VALUE_COL,
+		    NAME02 AS TEXT_COL
+		FROM WAHMA 
+	</select>
+	
+	<select id="LANGKYCOMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT
+		    WAREKY AS VALUE_COL,
+		    NAME02 AS TEXT_COL
+		FROM CMCDV 
+		WHERE CMCDKY = 'LANGKY' 
+		ORDER BY CMCDVL DESC 
+	</select>
+	
+	<select id="OWNER_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT
+			TOP 1 ADDR05 AS OWNER
+		FROM WAHMA 
+		WHERE WAREKY = #WAREKY# 
+	</select>
+	
+	<select id="USERINFO_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT DEPART , --부서 
+            USERG1 AS AREA , -- AREA
+            USERG2 AS ZONE , -- ZONE
+            USERG3 AS LOCA , -- 메인 기본입하지번, 부속 부품창고지번
+            USERG4 AS LOCA1 , -- 메인 X , 부속 수리창고지번
+            USERG5 AS ETC   -- 미사용
+		FROM USRMA
+		WHERE USERID = #SES_USER_ID#
+	</select>	
+		
+</sqlMap>

@@ -1,0 +1,131 @@
+package com.common.carton;
+
+/**
+ * Box 정보를 저장하는 클래스
+ * @author Administrator
+ *
+ */
+public class Box {
+
+	/**
+	 * 박스id
+	 */
+	protected String id;
+	
+	/**
+	 * 박스의 길이1
+	 */
+	protected int dim1;
+	
+	/**
+	 * 박스의 길이2
+	 */
+	protected int dim2;
+	
+	/**
+	 * 박스의 길이3
+	 */
+	protected int dim3;
+	
+	/**
+	 * 박스의 가장 긴 길이
+	 */
+	protected int longestDim;
+	
+	/**
+	 * 박스의 부피
+	 */
+	protected long vol;
+	
+	/**
+	 * 포장 가능한 최대 중량
+	 */
+	protected int maxWeight;
+	
+	/**
+	 * 생성자
+	 */
+	public Box() {
+	}
+	
+	/**
+	 * 생성자
+	 * @param id id
+	 * @param dim1 dim1
+	 * @param dim2 dim2
+	 * @param dim3 dim3
+	 * @param maxWeight maxWeight
+	 */
+	public Box(String id, int dim1, int dim2, int dim3, int maxWeight) {
+		this.id = id;
+		this.dim1 = dim1;
+		this.dim2 = dim2;
+		this.dim3 = dim3;
+		this.maxWeight = maxWeight;
+		this.vol = dim1 * dim2 * dim3;
+		this.longestDim = BoxUtils.max(new int[] {this.dim1, this.dim2, this.dim3});
+	}
+
+	/**
+	 * id 조회
+	 * @return id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * dim1 조회
+	 * @return dim1
+	 */
+	public int getDim1() {
+		return dim1;
+	}
+
+	/**
+	 * dim2 조회
+	 * @return dim2
+	 */
+	public int getDim2() {
+		return dim2;
+	}
+
+	/**
+	 * dim3 조회
+	 * @return dim3
+	 */
+	public int getDim3() {
+		return dim3;
+	}
+
+	/**
+	 * 가장 긴 길이 조회
+	 * @return longest dim
+	 */
+	public int getLongestDim() {
+		return longestDim;
+	}
+
+	/**
+	 * 부피 조회
+	 * @return vol
+	 */
+	public long getVol() {
+		return vol;
+	}
+
+	/**
+	 * 최대 중량 조회
+	 * @return maxWeight
+	 */
+	public int getMaxWeight() {
+		return maxWeight;
+	}
+
+	@Override
+	public String toString() {
+		return "\nBox [id=" + id + ", dim1=" + dim1 + ", dim2=" + dim2 + ", dim3=" + dim3 + ", longestDim=" + longestDim
+				+ ", vol=" + vol + ", maxWeight=" + maxWeight + "]";
+	}
+	
+}

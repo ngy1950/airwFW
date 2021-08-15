@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="OyangSales">
+
+		<!-- **[DL13] 사판첨부파일조회 조회쿼리 -->
+	<select id="DL13_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SVBELN  SVBELN, 
+		       SENDNM  SENDNM,
+		       SENDAD  SENDAD,
+		       SENDTL1 SENDTL1,
+		       SENDTL2 SENDTL2,
+		       SKUKEY  SKUKEY,
+		       DESC01  DESC01,
+		       QTDUOM  QTDUOM,
+		       QTYREQ  QTYREQ,
+		       BOXQTY  BOXQTY,
+		       QTYPRE  QTYPRE, 
+		       DESC02  DESC02,
+		       CUADDR  CUADDR,
+		       CTNAME  CTNAME,
+		       CTTEL1  CTTEL1,
+		       CTTEL2  CTTEL2,
+		       OTRQDT  OTRQDT,
+		       PTNRTO  PTNRTO,
+		       PTNRTONM PTNRTONM,
+		       TEXT01  TEXT01,
+		       SALENM  SALENM,
+		       CUNATN  CUNATN,
+		       C00102  C00102,
+		       SIFFLG  SIFFLG,
+		       IFFLG   IFFLG,
+		       XDATS   XDATS,
+		       XTIMS   XTIMS
+		  FROM (
+				<if test="CHKMAK == null or CHKMAK != 'on'">
+				SELECT I.SVBELN  SVBELN,
+					   I.CUNAME  SENDNM, 
+					   I.CUMAIL  SENDAD, 
+					   ' '       SENDTL1,
+					   ' '       SENDTL2,
+					   SM.SKUKEY SKUKEY,
+					   SM.DESC01 DESC01,
+					   SM.QTDUOM QTDUOM,
+					   I.QTYREQ  QTYREQ,
+					   TO_CHAR(TRUNC(I.QTYREQ/SM.QTDUOM))||'.'|| TO_CHAR(MOD(I.QTYREQ,SM.QTDUOM)) BOXQTY,
+					   CEIL(I.QTYREQ/SM.QTDUOM) QTYPRE,
+					   (SM.DESC01||NVL( TRUNC(I.QTYREQ / DECODE(SM.QTDUOM, NULL, 0, SM.QTDUOM))  , 0)||'박'||MOD(I.QTSHPD, SM.QTDUOM)||'셋') AS DESC02,
+					   CUADDR   CUADDR,
+					   CTNAME   CTNAME,
+					   CTTEL1   CTTEL1,
+					   ' '      CTTEL2,
+					   I.OTRQDT OTRQDT,
+					   I.PTNRTO PTNRTO,
+					   B2.NAME01 PTNRTONM,
+					   I.TEXT01 TEXT01,
+					   I.SALENM SALENM,
+					   I.CUNATN CUNATN,
+					   I.C00102 C00102,
+					   'IFWMS113' SIFFLG,
+					   '첨부파일미포함' IFFLG,
+					   I.XDATS   XDATS,
+					   I.XTIMS   XTIMS
+				  FROM IFWMS113 I  
+				 INNER JOIN SKUMA SM
+				 		 ON I.OWNRKY = SM.OWNRKY 
+				 		AND I.SKUKEY = SM.SKUKEY 
+				 		AND SM.DELMAK != 'V'
+				 INNER JOIN BZPTN B2
+				 		 ON I.OWNRKY = B2.OWNRKY 
+				 		AND I.PTNRTO = B2.PTNRKY 
+				 		AND B2.PTNRTY = '0007'
+				 WHERE I.DOCUTY IN ('211','212','213','214','215','216') 
+				   AND I.XSTAT IN ('D','R')
+				   AND I.C00102 = 'Y'
+				   AND I.OWNRKY = #{OWNRKY}
+				   AND I.WAREKY = #{WAREKY}
+				   AND SM.ASKU02 = '2'
+				   AND SM.ASKU04 = 'ZSET'
+				   AND I.SVBELN NOT IN ( SELECT DISTINCT ORD_NO 
+				   						   FROM IF_DELI_LIST@WMSTOTOS
+				   						  WHERE COMP_CD = I.USRID3 )
+					<if test="RANGE_SQL != null and RANGE_SQL != ''">
+		     		 ${RANGE_SQL}
+		    		</if>
+				 UNION ALL
+			    </if> 
+		
+				SELECT TOSS.ORD_NO       SVBELN,
+				       TOSS.SEND_NM      SENDNM, 
+				       TOSS.SEND_ADDR    SENDAD, 
+				       TOSS.SEND_TEL1    SENDTL1,
+				       TOSS.SEND_TEL2    SENDTL2,
+				       TOSS.ITEM_CD      SKUKEY,
+				       SM.DESC01         DESC01,
+				       TO_NUMBER(SM.QTDUOM) QTDUOM,
+				       TO_NUMBER(TOSS.INVOICE_QTY)  QTYREQ,
+				       TO_CHAR(TRUNC(TO_NUMBER(TOSS.INVOICE_QTY)/SM.QTDUOM))||'.'|| TO_CHAR(MOD(TOSS.INVOICE_QTY,SM.QTDUOM)) BOXQTY,
+				       CEIL(TO_NUMBER(TOSS.INVOICE_QTY)/SM.QTDUOM) QTYPRE,
+				       (SM.DESC01||NVL( TRUNC(TO_NUMBER(TOSS.INVOICE_QTY) / DECODE(SM.QTDUOM, NULL, 0, SM.QTDUOM))  , 0)||'박'||MOD(I.QTSHPD, SM.QTDUOM)||'셋') AS DESC02,
+				       TOSS.RECV_ADDR    CUADDR,
+				       TOSS.RECV_NM      CTNAME,
+				       TOSS.RECV_TEL1    CTTEL1,
+				       TOSS.RECV_TEL2    CTTEL2,
+				       I.OTRQDT          OTRQDT,
+				       I.PTNRTO          PTNRTO,
+				       B2.NAME01         PTNRTONM,
+				       TOSS.REMARKS      TEXT01,
+				       I.SALENM          SALENM,
+				       I.CUNATN          CUNATN,
+				       I.C00102          C00102,
+				       'EXCEL'           SIFFLG,
+				       '첨부파일포함'         IFFLG,
+				       I.XDATS           XDATS,
+				       I.XTIMS           XTIMS
+				  FROM IF_DELI_LIST@WMSTOTOS TOSS
+				 INNER JOIN IFWMS113 I
+				         ON I.USRID3 = TOSS.COMP_CD
+				        AND I.SVBELN = TOSS.ORD_NO
+				        AND I.SKUKEY = TOSS.ITEM_CD
+				        AND I.XSTAT IN ('D','R')
+				        AND I.C00102 = 'Y'
+				        AND I.DOCUTY = '216'
+				        AND I.WAREKY = #{WAREKY}
+				 INNER JOIN SKUMA SM
+				         ON I.OWNRKY = SM.OWNRKY 
+				        AND I.SKUKEY = SM.SKUKEY 
+				        AND SM.DELMAK != 'V'
+				 INNER JOIN BZPTN B2
+				         ON I.OWNRKY = B2.OWNRKY 
+				        AND I.PTNRTO = B2.PTNRKY 
+				        AND B2.PTNRTY = '0007'
+				 WHERE TOSS.COMP_CD = I.USRID3 
+				<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			    	${RANGE_SQL}
+		    	</if>
+				)
+		 ORDER BY SVBELN
+	</select>
+	
+
+	
+</mapper>

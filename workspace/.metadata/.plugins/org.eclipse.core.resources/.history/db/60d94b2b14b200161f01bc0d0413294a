@@ -1,0 +1,52 @@
+package com.common.carton;
+
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+/**
+ * 박스의 한 방향만 고려하여 선정하는 전략
+ * @author Administrator
+ *
+ */
+class OneVariantBoxSelector extends AbstractBoxSelector {
+
+	/**
+	 * 생성자
+	 * @param boxes
+	 * @param refItem
+	 */
+	public OneVariantBoxSelector(List<Box> boxes, Item refItem) {
+		super(boxes, refItem);
+	}
+
+	private static final Logger log = LogManager.getLogger(OneVariantBoxSelector.class);
+	
+	@Override
+	public int select() {
+		if (log.isTraceEnabled())
+			log.trace("refItem={}", refItem);
+
+		for (int i = 0; i < boxes.size(); i++) {
+			if (log.isTraceEnabled())
+				log.trace("i={}", i);
+			
+			Box box = boxes.get(i);
+			if (log.isTraceEnabled()) {
+				log.trace("continue: longestDim={}, width={}, height={}, length={}"
+						, refItem.getLongestDim(), box.getDim1(),
+					box.getDim2(), box.getDim3());
+			}
+			
+			int refDim = refItem.getLongestDim();
+			if (refDim > box.getDim1() && refDim > box.getDim2() && refDim > box.getDim3())
+				continue;
+			else
+				return i;
+		}
+
+		return -1;
+	}
+
+}

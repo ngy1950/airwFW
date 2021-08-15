@@ -1,0 +1,83 @@
+html,body,h1{
+  height: 100%;
+  width: 100%;
+  background: #781b1b; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(-30deg, #720808, #781b1b); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(-30deg, #720808, #781b1b); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(-30deg, #720808, #781b1b); /* For Firefox 3.6 to 15 */
+  background: linear-gradient( -30deg, #720808, #781b1b); /* Standard syntax */
+}
+
+.signin {
+	width: 300px;
+    height: 350px;
+    margin: 0 auto;
+    display: block;    
+}
+h1{
+  font-size: 0;
+  text-indent:-9999px;
+  display: inline-block;
+  height: 0;
+  float: left;
+  position: relative;
+}
+h1 img{
+  width: 400px;
+  height: 160px;
+  display: block;
+}
+h2{
+  color: #fff;
+  display:inline-block;
+  width: 75px;
+  height: 40px;
+  font-size: 18px;
+  margin-bottom: 65px;
+  border-bottom: 2px solid #400000;
+  line-height: 40px;
+  text-align: center;
+}
+.radio{
+  padding:10px 0 35px 0;
+}
+.radio input{
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+.radio label{
+  color: #fff;
+  font-size: 16px;
+  margin:0 12px 0 3px;
+}
+input{
+  display: block;
+  height: 48px;
+  width: 330px;
+  margin: 5px 0;
+  font-size:16px;
+  color:#333;
+  border-radius: 4px;
+  border:1px solid #fff;
+  background-repeat: no-repeat;
+  background-position: 15px 13px;
+}
+
+input[ name="USERID"]{
+  background-image: url('/common/theme/red/images/ico-id.png');
+}
+input[ name="PASSWD"]{
+  background-image: url('/common/theme/red/images/ico-pw.png');
+}
+input[type="text"],[type="password"]{
+  width: 274px;
+  padding-left: 56px;
+}
+input[type="button"]{
+  color: #fff;
+  font-size: 18px;
+  background-color: #000;
+  border:1px solid #000;
+}

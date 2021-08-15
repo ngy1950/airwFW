@@ -1,0 +1,98 @@
+package com.common.carton;
+
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+/**
+ * 아이템을 포장할 수 있는 최적의 박스를 찾아낸다
+ * @author Administrator
+ *
+ */
+public class BoxPacker {
+
+	private List<Box> boxes;
+
+	private float bestPackingFactor;
+	
+	private BoxSelector boxSelector;
+	
+	private static final Logger log = LogManager.getLogger(BoxPacker.class);
+
+	/**
+	 * 생성자
+	 * @param boxes 포장 박스리스트
+	 * @param bestPackingFactor 충진율
+	 * @param isSorted 정렬여부
+	 */
+	public BoxPacker(List<Box> boxes, float bestPackingFactor, boolean isSorted) {
+		this.boxes = boxes;
+		this.bestPackingFactor = bestPackingFactor;
+		if (!isSorted)
+			BoxUtils.sortBoxesByVolAsc(boxes);
+	}
+
+	/**
+	 * 박스리스트를 조회
+	 * @return 박스리스트
+	 */
+	public List<Box> getBoxes() {
+		return boxes;
+	}
+	
+	/**
+	 * 가장 큰 박스를 조회
+	 * @return 박스
+	 */
+	public Box getBiggestBox() {
+		return boxes.get(boxes.size() - 1);
+	}
+
+	/**
+	 * 박스 포장
+	 * @param items 아이템 리스트
+	 * @return 포장된 박스 정보
+	 * @throws BoxNotFoundException 포장 박스를 못 찾았을때 발생되는 예외
+	 * @throws PackedBoxOverweightException 포장 최대 무계를 넘었을때 발생되는 예외
+	 */
+	public synchronized PBox pack(List<Item> items) throws BoxNotFoundException, PackedBoxOverweightException {
+		if (items == null || items.isEmpty())
+			throw new IllegalArgumentException("Invalid items");
+			
+		if (items.size() > 1)
+			BoxUtils.sortItemsByLonguestDimDesc(items);
+		
+		boxSelector = new AllVariantBoxSelector(this.boxes,  items.get(0));
+		
+		int boxIndex = boxSelector.select();
+		if (log.isTraceEnabled())
+			log.trace("selectBoxOrder={}", boxIndex);
+		
+		if (boxIndex < 0)
+			throw new BoxNotFoundException();
+		
+		return analyze(boxIndex, items);
+	}
+
+	private PBox analyze(int boxIndex, List<Item> items) throws BoxNotFoundException, PackedBoxOverweightException {
+		final Box box = this.boxes.get(boxIndex);
+		final Boxologic logic = new Boxologic(box, items);
+		final PBox pb = logic.getPackedBox();
+		if (log.isTraceEnabled()) {
+			log.trace("boxIndex={}, boxesSize={}, boxId={}, packedItems={}, unpackedItems={}"
+					, boxIndex, boxes.size(), pb.getId(), pb.getPackedItems().size(), pb.getUnpackedItems().size() );
+//			BoxUtils.printBoxoLogicInput(packedBox, items);
+		}
+		
+		if (pb.isOverweight()) {
+			throw new PackedBoxOverweightException(pb);
+		} else if (boxIndex + 1 == boxes.size()) {
+			return pb;
+		} else if (pb.getBestPackingFactor() <= bestPackingFactor && pb.getUnpackedNumberOfBoxes() == 0) {
+			return pb;
+		} 
+
+		return analyze(boxIndex + 1, items);
+	}
+}

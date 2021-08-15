@@ -1,0 +1,1278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL MAP 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Mobile">
+	<typeAlias alias="DataMap" type="com.common.bean.DataMap" />
+	
+<!-- 메뉴화면 개발자 명 START-->	 
+	 <select id="FINDUSRNAME_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT USERID
+			 , NMLAST
+			 , #SES_WAREKY#
+			 , NVL((SELECT NAME01 FROM WAHMA WHERE WAHMA.WAREKY = #SES_WAREKY#),' ') AS WARENM 
+			 , #SES_OWNER#
+			 , NVL((SELECT NAME01 FROM OWNER WHERE OWNRKY = #SES_OWNER#),' ') AS OWNERNM 
+		  FROM USRMA
+		 WHERE USERID = #SES_USER_ID#
+		   AND ROWNUM = 1
+	 </select>
+<!-- 메뉴화면 개발자 명 END -->	 
+	 
+<!-- 메뉴화면 START -->
+	<select id="MENUTREE_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT AMNUID,
+			   MENUID,
+			   LBLTXL,
+			   NVL(PGPATH, ' ') AS PGPATH,
+			   IMGPTH,
+			   PROGID AS PROGID
+		  FROM ( 
+				SELECT MNT.AMNUID AS AMNUID,
+					   MNT.MENUID AS MENUID,
+					   MNT.MENULV AS MENULV,
+					   MNT.SORTSQ AS SORTSQ,
+					   (SELECT JLBLM.LBLTXL FROM JLBLM WHERE JLBLM.LABLGR = MNT.LABLGR AND JLBLM.LABLKY = MNT.LABLKY AND JLBLM.LANGKY = #LANGKY#) AS LBLTXL,
+					   (SELECT PROGM.PGPATH FROM PROGM WHERE MNT.PROGID = PROGM.PROGID AND PROGM.WAREKY = #WAREKY#) AS PGPATH,
+					   NVL(MNT.IMGPTH,'/common/theme/gsfresh/images/login_img/icon01-2.png') AS IMGPTH,
+					   NVL(MNT.PROGID, ' ') AS PROGID
+				  FROM MNUDT MNT
+				 WHERE MNT.MENUKY = (SELECT USRMA.PDAMKY FROM USRMA WHERE USRMA.USERID = #USERID#)
+				   AND EXISTS ( 
+						  SELECT T.MENUID
+							FROM MNUDT T
+						   WHERE 1=1
+							 AND (MNT.MENUID = T.MENUID OR MNT.MENUID = T.AMNUID)
+							 AND T.MENUKY = (SELECT USRMA.PDAMKY FROM USRMA WHERE USRMA.USERID = #USERID#)
+							 AND T.MENUID IN (
+								 SELECT AMNUID 
+								   FROM MNUDT M INNER JOIN PROGM P 
+									 ON M.PROGID = P.PROGID
+								   WHERE 1=1
+									 AND M.MENUKY = (SELECT USRMA.PDAMKY FROM USRMA WHERE USRMA.USERID = #USERID#)
+									 AND M.INDMUK = 'PRG'
+									 AND P.WAREKY = #WAREKY#
+								   GROUP BY AMNUID
+						 )
+				)
+				UNION ALL		 
+				SELECT MNT.AMNUID AS AMNUID,
+					   MNT.MENUID AS MENUID,
+					   MNT.MENULV AS MENULV,
+					   MNT.SORTSQ AS SORTSQ,
+					   (SELECT JLBLM.LBLTXL FROM JLBLM WHERE JLBLM.LABLGR = MNT.LABLGR AND JLBLM.LABLKY = MNT.LABLKY AND JLBLM.LANGKY = #LANGKY#) AS LBLTXL,
+					   P.PGPATH AS PGPATH,
+					   ' '      AS IMGPTH,
+					   NVL(MNT.PROGID, ' ') AS PROGID
+				  FROM MNUDT MNT INNER JOIN PROGM P 
+										 ON MNT.PROGID = P.PROGID
+										AND P.WAREKY = #WAREKY#
+				 WHERE MNT.MENUKY = (SELECT USRMA.PDAMKY FROM USRMA WHERE USRMA.USERID = #USERID#)
+				   AND MNT.INDMUK = 'PRG'
+				 ORDER BY SORTSQ	
+				)   
+	</select>
+<!-- 메뉴화면 END -->
+  	
+	<!-- 로케이션 개수 조회 -->
+	<select id="LOCAKYval_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT COUNT(1) CNT
+		  FROM LOCMA 
+		 WHERE 1 = 1
+		   AND WAREKY = #WAREKY#
+		   AND (LOCAKY = #LOCAKY# OR SHORTX = #LOCAKY#)
+		   AND STATUS IN ('00')
+	</select>
+	
+	<select id="LOCINF_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT COUNT(1) CNT
+		  FROM LOCMA 
+		 WHERE WAREKY = #WAREKY#
+		   AND LOCAKY = #LOCAKY#
+		   AND LOCATY = '90'
+	</select>
+	
+	<select id="LOCINF_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT COUNT(1) CNT
+		  FROM LOCMA 
+		 WHERE WAREKY = #WAREKY#
+		   AND LOCAKY = #LOCAKY#
+		UNION ALL
+		SELECT COUNT(1) CNT
+		  FROM LOCMA 
+		 WHERE WAREKY = #WAREKY#
+		   AND LOCAKY = #LOCAKY#
+		   AND LOCATY = '90'
+	</select>
+	
+	<!-- SKUMA 조회 -->
+	<select id="SKUINF_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT SKUKEY, DESC01
+		FROM   SKUMA 
+		WHERE  SKUKEY = #SKUKEY#
+		AND	ROWNUM = 1
+	</select>
+	
+	<select id="SKUINF_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT SKUKEY, 
+			   DESC01,
+			   LOTL10, 
+			   FN_GET_CMCDV('LOTL04', LOTL04) AS LT04NM 
+		FROM   SKUMA 
+		WHERE  SKUKEY = #SKUKEY# OR EANCOD = #SKUKEY#
+		AND    DELMAK = ' '
+		<isEqual property="PROGID" compareValue="MGR02">
+		AND    LOTL04 IN ('00', '11', '12') /*본품,밴딩상품,특판*/
+		</isEqual>
+		ORDER BY LOTL04
+	</select>
+	
+	<select id="SKU_TO_PICK_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT LC.LOCAKY
+			 , LC.SKUKEY
+			 , SM.DESC01
+			 , LC.LOTA06
+		FROM LOCMA LC
+			 INNER JOIN SKUMA SM ON LC.OWNRKY = SM.OWNRKY
+								AND LC.SKUKEY = SM.SKUKEY 
+		WHERE LC.WAREKY = #WAREKY#
+		  AND LC.SKUKEY = #SKUKEY#
+		  AND LC.LOTA06 = '00'
+		  AND ROWNUM = 1
+	</select>
+	
+	<select id="SKU_TO_AREA_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT  LC.LOCAKY 
+			  , LC.SHORTX AS LOCANM
+			  , LC.LOTA06
+			  , LC.AREAKY
+			  , AR.SHORTX AS AREANM
+		 FROM   LOCMA LC 
+				LEFT OUTER JOIN SKUMA SM ON LC.SKUKEY = SM.SKUKEY 
+										AND LC.OWNRKY = SM.OWNRKY
+				LEFT OUTER JOIN AREMA AR ON LC.WAREKY = AR.WAREKY
+										AND LC.AREAKY = AR.AREAKY
+		 WHERE LC.WAREKY = #WAREKY#
+		   AND LC.SKUKEY = #SKUKEY#
+		   AND LC.LOCATY IN('01','02')
+		 GROUP BY LC.LOCAKY, LC.SHORTX, LC.LOTA06, LC.AREAKY, AR.SHORTX
+	</select>
+	
+	<select id="SKU_TO_STKKY_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT 
+			NVL(SUM(SK.QTSIWH),0) AS QTSIWH,
+			NVL(SUM(SK.QTSPMO),0) AS QTSPMO,
+			NVL(SUM(CASE WHEN SK.LOTA06 = '00' AND LC.AVLSTK ='V' THEN SK.QTSIWH ELSE 0 END),0) AS AVLSTK, --정상
+			NVL(SUM(CASE WHEN SK.LOTA06 = '10' AND LC.AVLSTK ='V' THEN SK.QTSIWH ELSE 0 END),0) AS IMMSTK, --임박
+			NVL(SUM(CASE WHEN SK.LOTA06 = '30'					THEN SK.QTSIWH ELSE 0 END),0) AS BADSTK, --폐기
+			NVL(SUM(CASE WHEN SK.LOTA06 = '40'					THEN SK.QTSIWH ELSE 0 END),0) AS RTNSTK, --반품
+			NVL(SUM(CASE WHEN SK.LOTA06 = '20'					THEN SK.QTSIWH ELSE 0 END),0) AS HLDSTK, --보류
+			NVL(SUM(CASE WHEN SK.LOTA06 = '50' OR (SK.LOTA06 IN('00','10') AND LC.AVLSTK !='V') THEN SK.QTSIWH ELSE 0 END),0) AS UNUSTK --불용
+		FROM STKKY SK
+			 INNER JOIN LOCMA LC ON SK.WAREKY = LC.WAREKY
+								AND SK.LOCAKY = LC.LOCAKY
+			 INNER JOIN AREMA AR ON LC.WAREKY = AR.WAREKY
+								AND LC.AREAKY = AR.AREAKY
+		WHERE SK.WAREKY = #WAREKY#
+		  AND SK.SKUKEY = #SKUKEY#
+		  AND AR.AREATY != 'SHIP'
+		  AND (SK.QTSIWH > 0 OR SK.QTSPMO > 0)
+	</select>
+	
+	<!-- 상품키로 재고가 존재하는 로케이션 조회 -->
+	<select id="SKU_TO_LOCMA_COUNT_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT COUNT(1) AS CNT
+		FROM(
+			SELECT DISTINCT SK.LOCAKY
+			FROM  STKKY SK
+				  INNER JOIN LOCMA LC ON SK.WAREKY = LC.WAREKY
+									 AND SK.LOCAKY = LC.LOCAKY
+				  INNER JOIN AREMA AR ON LC.WAREKY = AR.WAREKY
+									 AND LC.AREAKY = AR.AREAKY
+			WHERE SK.WAREKY = #WAREKY#
+			AND   SK.SKUKEY = #SKUKEY#
+			AND   AR.AREATY NOT IN('SHIP')
+			AND  (SK.QTSIWH > 0 AND SK.QTSALO = 0 AND SK.QTSPMO = 0 AND SK.QTSPMI = 0 AND SK.QTSBLK = 0)
+			<isEqual property="MENUID" compareValue="MMV01">
+			AND   LC.LOCAKY != 'BAD'
+			</isEqual>
+			<isEqual property="MENUID" compareValue="MMV04">
+			AND   LC.LOCATY IN('01','02')
+			</isEqual>
+		)
+	</select>
+	
+	<select id="SKU_TO_LOCMA_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT DISTINCT SK.LOCAKY
+					  , LC.SHORTX
+					  , LC.LOCATY
+					  , FN_GET_CMCDW(SK.WAREKY,'LOTA06',LC.LOTA06) AS LT06NM
+					  , AR.AREAKY
+					  , AR.SHORTX AS AREANM
+					  , AR.AREATY
+					  , LC.ZONEKY
+					  , DECODE(LC.INDUPK,' ','N','Y') AS INDUPK
+		FROM  STKKY SK
+			  INNER JOIN LOCMA LC ON SK.WAREKY = LC.WAREKY
+								 AND SK.LOCAKY = LC.LOCAKY
+			  INNER JOIN AREMA AR ON LC.WAREKY = AR.WAREKY
+								 AND LC.AREAKY = AR.AREAKY
+		WHERE SK.WAREKY = #WAREKY#
+		AND   SK.SKUKEY = #SKUKEY#
+		AND   AR.AREATY NOT IN('SHIP')
+		AND  (SK.QTSIWH > 0 AND SK.QTSALO = 0 AND SK.QTSPMO = 0 AND SK.QTSPMI = 0 AND SK.QTSBLK = 0)
+		<isEqual property="MENUID" compareValue="MMV01">
+		AND   LC.LOCAKY != 'BAD'
+		</isEqual>
+		<isEqual property="MENUID" compareValue="MMV04">
+		AND   LC.LOCATY IN('01','02')
+		</isEqual>
+		ORDER BY 
+			  LC.LOCATY,SK.LOCAKY
+	</select>
+	
+	<select id="MGR02_ASN102_VALIDATION_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT CASE WHEN T3 > 0 THEN 'S'
+		            WHEN T2 > 0 THEN 'E1'
+		            WHEN T1 > 0 THEN 'E2'
+		            ELSE 'F'
+		       END  RESULT
+		FROM(
+		    SELECT SUM(CASE WHEN AO.QTYORG = 0 AND AO.RVIT04 = 'Y' THEN 1 ELSE 0 END) AS T1
+		        ,  SUM(CASE WHEN AO.QTYORG = 0 AND AO.RVIT04 = 'N' THEN 1 ELSE 0 END) AS T2
+		        ,  SUM(CASE WHEN AO.QTYORG > 0 AND AO.RVIT04 = 'Y' THEN 1 ELSE 0 END) AS T3
+		    FROM   ASNOD AO
+		    WHERE  AO.WAREKY = #WAREKY#
+		    AND    AO.RCPTTY = #RCPTTY#
+		    AND    AO.ENDMAK = 'N'
+		    AND    AO.RVIT05 IN ('N', ' ')
+		    AND    AO.ASNSKU IN ( 
+		                            SELECT  SKUKEY
+		                            FROM    SKUMA 
+		                            WHERE   SKUKEY = #ASNSKU# OR EANCOD = #ASNSKU#
+		                            UNION ALL
+		                            SELECT  EANCOD
+		                            FROM    SKUMA 
+		                            WHERE   SKUKEY = #ASNSKU# OR EANCOD = #ASNSKU#
+		                        )
+		    AND    TO_CHAR(SYSDATE, 'YYYYMMDD') <![CDATA[<=]]> AO.DOCDAT
+		)
+	</select>
+	
+	<select id="MGR02_ASN_POP_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT AO.WAREKY
+		     , AO.ASNDKY
+		     , AO.RCPTTY
+		     , FN_GET_DOCTM(AO.RCPTTY) AS RCTYNM
+		     , AO.ASNTYP
+		     , FN_GET_CMCDV('ASNTYP', AO.ASNTYP) AS ASNTNM
+		     , AO.ASNSKU
+		     , AO.DOCDAT
+		     , AO.PGRC01
+		     , AO.LOTA06
+		     , (CASE WHEN AO.RCPTTY IN('101','102','103') THEN (CASE WHEN AO.QTYRCV = 0 THEN #ASNSKU# ELSE AO.SKUKEY END)
+		             ELSE AO.SKUKEY
+		        END) AS SKUKEY
+		     , DECODE(QTYRCV, 0, 'Y', 'N') AS CHG_SKU_YN
+		  FROM ASNOD AO
+		       INNER JOIN CMCDV CM ON CM.CMCDKY = 'ASNTYP'
+		                          AND CM.CMCDVL = AO.ASNTYP
+		 WHERE AO.WAREKY = #WAREKY#
+		   AND AO.RCPTTY = #RCPTTY#
+		   AND AO.ASNSKU IN ( 
+		                        SELECT  SKUKEY
+		                        FROM    SKUMA 
+		                        WHERE   SKUKEY = #ASNSKU# OR EANCOD = #ASNSKU#
+		                        UNION ALL
+		                        SELECT  EANCOD
+		                        FROM    SKUMA 
+		                        WHERE   SKUKEY = #ASNSKU# OR EANCOD = #ASNSKU#
+		                     )
+		   AND AO.ENDMAK = 'N'
+		   AND AO.RVIT05 IN ('N', ' ')
+		   AND (AO.QTYORG - AO.QTYRCV) > 0
+		   <isEqual property="RCPTTY" compareValue="101">
+		   AND     TO_CHAR(SYSDATE, 'YYYYMMDD') = AO.DOCDAT
+		   </isEqual>
+		   <isEqual property="RCPTTY" compareValue="102">
+		   AND     TO_CHAR(SYSDATE, 'YYYYMMDD') <![CDATA[<=]]> AO.DOCDAT
+		   </isEqual>
+		   <isEqual property="RCPTTY" compareValue="103">
+		   AND     TO_CHAR(SYSDATE, 'YYYYMMDD') = AO.DOCDAT
+		   </isEqual>
+		 ORDER BY
+		       CM.USARG5
+		     , TO_NUMBER(NVL(TRIM(AO.PGRC01),0))
+	</select>
+	
+	<select id="MGR02_HEAD_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT AO.ASNDKY
+		     , AO.RCPTTY 
+		     , FN_GET_DOCTM(AO.RCPTTY) AS RCTYNM
+		     , AO.ASNTYP
+		     , FN_GET_CMCDV('ASNTYP', AO.ASNTYP) AS ASNTNM
+		     , AO.ASNSKU
+		     , AO.WAREKY
+		     , AO.DOCDAT
+		     , AO.DPTNTY
+		     , AO.DPTNKY
+		     , AO.DPTNNM
+		     , AO.PGRC01
+		     , (CASE WHEN AO.RCPTTY IN('101','102','103') THEN (CASE WHEN AO.QTYRCV = 0 THEN #SKUKEY# ELSE AO.SKUKEY END)
+		             ELSE AO.SKUKEY 
+		        END) AS SKUKEY
+		  FROM ASNOD AO
+		 WHERE AO.WAREKY = #WAREKY#
+		   AND AO.ASNDKY = #ASNDKY#
+		   AND AO.ASNSKU = #ASNSKU#
+		   AND AO.ENDMAK = 'N'
+		   AND AO.RVIT05 IN ('N', ' ')
+		   AND (AO.QTYORG - AO.QTYRCV) > 0
+		   AND ROWNUM = 1
+	</select>
+	
+	<select id="MGR02_ITEM_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT A.*
+		    , LC.MNGMOV
+		    , LC.AREAKY
+		    , LC.MNGLT9
+		    , LC.SHORTX AS LOCANM
+		    , (CASE WHEN A.RCPTTY IN ('103') THEN A.RCVUOM ELSE 0 END) AS PRCQTY  /*입고수량(화면)*/
+		    , (CASE WHEN A.RCPTTY IN ('103') THEN A.RCVQTY ELSE 0 END) AS QTVIWE  /*입고낱개수량(화면)*/
+		FROM(
+		    SELECT /*공통*/
+		            AO.WAREKY
+		          , AO.OWNRKY
+		          , AO.RCPTTY
+		          , AO.QTYASN
+		          , AO.QTYORG
+		          , AO.QTYRCV
+		          , AO.QTYORD
+		          , AO.UOMORD
+		          , AO.LOTA01
+		          , AO.LOTA06
+		          , FN_GET_CMCDW(AO.WAREKY, 'LOTA06', AO.LOTA06) AS LO06NM
+		          , AO.LOTA08
+		          , AO.LOTA09
+		          , AO.ASNTYP
+		          , AO.ASNDKY
+		          , AO.ASNDIT
+		          , AO.SEBELN   --발주번호
+		          , AO.SEBELP   --발주순번
+		          , AO.SVBELN   --반품번호
+		          , AO.STRAID   --주문상세
+		          , AO.SPOSNR   --주문순번
+		          , AO.ENDMAK
+		          , AO.PODATE
+		          , AO.QTYDIF
+		          , AO.RVIT04
+		          /*발주상품*/
+		          , AO.ASNSKU
+		          /*입고상품*/
+		          , AO.SKUKEY AS ORG_SKUKEY
+		          , SR.SKUKEY
+		          , SR.DESC01 AS DESC01
+		          , SR.DESC02 AS DESC02
+		          , WR.SKUCLS
+		          , WR.ABCANV
+		          , SR.BOXQTY
+		          , SR.INPQTY
+		          , SR.PALQTY
+		          , SR.LOTL01
+		          , SR.LOTL02
+		          , SR.DUOMKY
+		          , SR.DUEMON
+		          , SR.DUEDAY
+		          , (CASE WHEN SR.LOTL01 = 'Y' THEN SR.DUEMON || '개월 ' || SR.DUEDAY || '일 이내' ELSE ' ' END) AS LTL1NM
+		          , CR.USARG3
+		          , SR.PACKYN AS SKUPACK
+		          , FN_GET_PUTWAY_LOC(NULL, AO.WAREKY, AO.OWNRKY, '100', NULL, SR.SKUKEY, AO.LOTA06) AS LOCAKY
+		          , AO.QTYRCV - AO.QTYDIF AS REALQTY  /*실입고수량*/
+		          , AO.QTYORG - AO.QTYRCV AS RCVQTY   /*입고가능(낱개)*/
+		          , TRUNC((AO.QTYORG - AO.QTYRCV) / SR.BOXQTY)  AS BOXORG
+		          , (AO.QTYORG - AO.QTYRCV) - (TRUNC((AO.QTYORG - AO.QTYRCV) / SR.BOXQTY) * SR.BOXQTY) AS EAORG
+		          , CASE WHEN AO.RCPTTY IN ('101', '102', '103') AND 
+		                     INSTR(TO_CHAR(FN_GET_UOMQTY(AO.QTYORG - AO.QTYRCV
+		                        , SR.BOXQTY
+		                        , SR.INPQTY
+		                        , SR.PALQTY
+		                        , 3
+		                        , 'T'
+		                        , AO.UOMORD
+		                     )), '.') > 0 THEN
+		                    /*안나눠떨어질 때*/
+		                    AO.QTYORG - AO.QTYRCV
+		                 ELSE
+		                    FN_GET_UOMQTY(
+		                          AO.QTYORG - AO.QTYRCV
+		                        , SR.BOXQTY
+		                        , SR.INPQTY
+		                        , SR.PALQTY
+		                        , 0
+		                        , 'T'
+		                        , AO.UOMORD
+		                    ) 
+		            END AS RCVUOM    /*입고가능(발주단위)*/
+		          , CASE WHEN AO.RCPTTY IN ('101', '102', '103') AND 
+		                     INSTR(TO_CHAR(FN_GET_UOMQTY(
+		                          AO.QTYORG - AO.QTYRCV
+		                        , SR.BOXQTY
+		                        , SR.INPQTY
+		                        , SR.PALQTY
+		                        , 3
+		                        , 'T'
+		                        , AO.UOMORD
+		                     )), '.') > 0 THEN
+		                    /*안나눠떨어질 때*/
+		                    SR.DUOMKY
+		                 ELSE
+		                    AO.UOMORD
+		            END AS PRCUOM
+		    FROM    ASNOD AO
+		            INNER JOIN SKUMA SR ON SR.OWNRKY = AO.OWNRKY
+		                               AND SR.SKUKEY = (CASE WHEN AO.RCPTTY IN('101','102','103') THEN (CASE WHEN AO.QTYRCV > 0 THEN AO.SKUKEY ELSE #SKUKEY# END)
+		                                                       ELSE AO.SKUKEY
+		                                                END)
+		            INNER JOIN SKUWC WR ON WR.OWNRKY = AO.OWNRKY
+		                               AND WR.SKUKEY = SR.SKUKEY
+		                               AND WR.WAREKY = AO.WAREKY
+		            LEFT OUTER JOIN CMCDW CR ON CR.CMCDKY = 'SKUCLS'
+		                                    AND CR.WAREKY = AO.WAREKY
+		                                    AND CR.CMCDVL = WR.SKUCLS
+		    WHERE   AO.ASNDKY = #ASNDKY#
+		    AND     AO.RCPTTY = #RCPTTY#
+		    AND     AO.ASNSKU = #ASNSKU#
+		    AND     AO.ENDMAK = 'N'
+		    AND    (AO.QTYORG - AO.QTYRCV) > 0
+		    AND     AO.RVIT05 IN ('N', ' ')
+		    <isEqual property="RCPTTY" compareValue="101">
+		    AND     TO_CHAR(SYSDATE, 'YYYYMMDD') = AO.DOCDAT
+		    </isEqual>
+		    <isEqual property="RCPTTY" compareValue="102">
+		    AND     TO_CHAR(SYSDATE, 'YYYYMMDD') <![CDATA[<=]]> AO.DOCDAT
+		    </isEqual>
+		    <isEqual property="RCPTTY" compareValue="103">
+		    AND     TO_CHAR(SYSDATE, 'YYYYMMDD') = AO.DOCDAT
+		    </isEqual>
+		) A LEFT OUTER JOIN  LOCMA LC ON LC.WAREKY = A.WAREKY
+		                             AND LC.LOCAKY = A.LOCAKY
+	</select>
+	
+	<select id="MIP02_PHY_POP_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT PHD.PHYIKY
+			 , PHD.DOCTXT
+			 , PHD.DOCDAT
+		FROM   PHYDH PHD
+		WHERE  PHD.WAREKY = #WAREKY#
+		AND	PHD.INDDCL != 'V'
+		AND	NOT EXISTS(
+					SELECT 1
+					FROM   APMNG APM
+					WHERE  APM.APRSTS = PHD.PHYIKY
+			   )
+		ORDER BY
+			   PHD.PHYIKY DESC
+	</select>
+	
+	<select id="MIP02_SKU_TO_LOC_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT SKUKEY,LOCAKY
+		FROM   LOCMA 
+		WHERE  WAREKY = #WAREKY#
+		  AND  SKUKEY = #SKUKEY#
+	</select>
+	
+	<select id="MIP02_MINUS_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT COUNT(1) AS RST
+		FROM  PHYDI 
+		WHERE PHYIKY = #PHYIKY#
+		AND   PHYIIT = #PHYIIT#
+		AND   HHTTID = 'PDA'
+		AND   CREUSR = #SES_USER_ID#
+		UNION ALL
+		SELECT NVL(SUM(QTSPHY),0) AS RST 
+		FROM  PHYDI 
+		WHERE PHYIKY = #PHYIKY# 
+		AND   PHYIIT = #PHYIIT#
+		AND   HHTTID = 'PDA'
+		AND   DELMAK != 'V' 
+		AND   CREUSR = #SES_USER_ID#
+	</select>
+	
+	<select id="MIP02_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT PHI.PHYIKY
+			 , PHI.DELMAK
+			 , PHI.PHYIIT
+			 , PHI.SKUKEY
+			 , PHI.DESC01
+			 , PHI.QTSPHY
+			 , (CASE WHEN PHI.QTSPHY = 0 OR SKM.BOXQTY = 0 THEN 0 ELSE TRUNC(PHI.QTSPHY/SKM.BOXQTY) END) AS BOXQTY
+			 , PHI.QTSPHY - ((CASE WHEN PHI.QTSPHY = 0 OR SKM.BOXQTY = 0 THEN 0 ELSE TRUNC(PHI.QTSPHY/SKM.BOXQTY) END)*SKM.BOXQTY) AS EAQTY
+			 , FN_GET_USERNM(PHI.CREUSR) AS CREUNM
+		FROM   PHYDI PHI
+			   INNER JOIN SKUMA SKM ON PHI.OWNRKY = SKM.OWNRKY
+								   AND PHI.SKUKEY = SKM.SKUKEY
+		WHERE  PHI.PHYIKY = #PHYIKY#
+		AND	PHI.LOCAKY = #LOCAKY#
+		AND	PHI.SKUKEY = #SKUKEY#
+	</select>
+	
+	<select id="MIP02_USER_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT PHYIKY
+			 , DELMAK
+			 , PHYIIT
+			 , SKUKEY
+			 , DESC01
+			 , QTSPHY
+			 , BOXQTY
+			 , EAQTY
+			 , CREUNM
+		FROM(
+			SELECT PHI.PHYIKY
+				 , PHI.DELMAK
+				 , PHI.PHYIIT
+				 , PHI.SKUKEY
+				 , PHI.DESC01
+				 , PHI.QTSPHY
+				 , (CASE WHEN PHI.QTSPHY = 0 OR SKM.BOXQTY = 0 THEN 0 ELSE TRUNC(PHI.QTSPHY/SKM.BOXQTY) END) AS BOXQTY
+				 , PHI.QTSPHY - ((CASE WHEN PHI.QTSPHY = 0 OR SKM.BOXQTY = 0 THEN 0 ELSE TRUNC(PHI.QTSPHY/SKM.BOXQTY) END)*SKM.BOXQTY) AS EAQTY
+				 , FN_GET_USERNM(PHI.CREUSR) AS CREUNM
+				 , CASE WHEN PHI.CREUSR = 'DEV' THEN 0 ELSE 1 END SORT01
+				 , PHI.CREDAT||PHI.CRETIM AS SORT02
+			FROM   PHYDI PHI
+				   INNER JOIN SKUMA SKM ON PHI.OWNRKY = SKM.OWNRKY
+									   AND PHI.SKUKEY = SKM.SKUKEY
+			WHERE  PHI.PHYIKY = #PHYIKY#
+			AND	PHI.LOCAKY = #LOCAKY#
+			AND	PHI.SKUKEY = #SKUKEY#
+		)
+		ORDER BY SORT01 ASC, SORT02 DESC
+	</select>
+	
+	<select id="MIP02_LOCMA_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT 'U' AS CRETYP
+			 , LOC.LOCAKY
+			 , LOC.AREAKY
+			 , LOC.ZONEKY
+			 , LOC.SKUKEY
+			 , WEM.LOTA01
+			 , LOC.LOTA06
+		FROM   LOCMA LOC
+			   INNER JOIN WEMAP WEM ON WEM.WAREKY = LOC.WAREKY
+		WHERE  LOC.WAREKY = #WAREKY#
+		AND	LOC.LOCAKY = #LOCAKY#
+	</select>
+	
+	<select id="MIP02_SKUMA_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT 'U' AS CRETYP,
+			   SKM.DUOMKY,
+			   SKM.OWNRKY,
+			   SKM.SKUKEY,
+			   SKM.DESC01,
+			   SKM.DESC02,
+			   WEM.LOTA01,
+			   SKM.BOXQTY,
+			   SKW.SKUCLS,
+			   SKW.ABCANV AS SKUGRD
+		FROM SKUMA SKM
+			 INNER JOIN SKUWC SKW ON SKM.OWNRKY = SKW.OWNRKY
+								 AND SKM.SKUKEY = SKW.SKUKEY
+								 AND SKW.WAREKY = #WAREKY#
+			 INNER JOIN WEMAP WEM ON WEM.WAREKY = SKW.WAREKY
+		WHERE 1=1 
+		AND   SKM.SKUKEY = #SKUKEY#
+	</select>
+	
+	<select id="MIP02_PHYDO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT PHO.PHYIKY,
+			   PHO.PHYIIT,
+			   PHO.CRETYP,
+			   PHO.AREAKY,
+			   PHO.ZONEKY,
+			   PHO.LOCAKY,
+			   PHO.QTSPHY,
+			   PHO.DUOMKY,
+			   PHO.OWNRKY,
+			   PHO.SKUKEY,
+			   PHO.DESC01,
+			   PHO.DESC02,
+			   PHO.LOTA01,
+			   PHO.LOTA06,
+			   SKM.BOXQTY,
+			   PHO.SKUCLS,
+			   PHO.SKUGRD,
+			   #HHTTID# AS HHTTID
+		FROM   PHYDO PHO
+			   INNER JOIN SKUMA SKM
+					   ON PHO.OWNRKY = SKM.OWNRKY
+					  AND PHO.SKUKEY = SKM.SKUKEY  
+		WHERE  PHO.PHYIKY = #PHYIKY#
+		AND	PHO.LOCAKY = #LOCAKY#
+		<isNotEmpty property="SKUKEY">
+		AND	PHO.SKUKEY = #SKUKEY#
+		</isNotEmpty>
+	</select>
+	
+	<select id="MMV07_LOCAKY_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT FN_GET_PUTWAY_LOC(NULL, #WAREKY#, #OWNRKY#, '100', ' ', #SKUKEY#, #LOTA06#) AS LOCAKY FROM DUAL
+	</select>
+	
+	<select id="MRS03_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT  DT.SHORTX   --출하유형
+				, FN_GET_CMCDW(SH.WAREKY, 'BOXTYP', SB.BOXTYP) AS BOXTYP	--박스유형
+				, DECODE(SH.CNLMAK, 'V', 'Y', 'N') AS CNLMAK	--취소여부
+				, DECODE(SB.CNLBOX, 'V', 'Y', 'N') AS CNLBOX	--취소확인
+				, CASE WHEN SH.INDDCL = 'V' THEN '출하완료'
+					   WHEN SB.CNLBOX = 'V' THEN '취소확인'
+					   WHEN SH.CNLMAK = 'V' THEN '취소대기'
+					   WHEN SUM(SI.QTSHPO) = SUM(SI.QTJCMP) + SUM(SI.QTSHPC) THEN '작업완료'
+					   WHEN SUM(SI.QTJCMP) + SUM(SI.QTSHPC) > 0 THEN '작업중'
+					   ELSE '미작업'
+				  END AS SHPSTATUS
+				, SI.LOCAKY
+				, SI.SKUKEY
+				, SM.DESC01
+				, SUM(SI.QTSHPO/SI.PACQTY) AS QTSHPO
+				, SUM(SI.QTJCMP/SI.PACQTY) AS QTJCMP
+				, SUM(SI.QTSHPC/SI.PACQTY) AS QTSHPC
+		FROM	GRPDH GH
+						INNER JOIN SHPDH SH ON  SH.GRPOKY = GH.GRPOKY
+						INNER JOIN DOCTM DT ON  DT.DOCUTY = SH.SHPMTY
+						INNER JOIN SHPDB SB ON  SB.SHPOKY = SH.SHPOKY
+						INNER JOIN SHPDI SI ON  SI.SHPOKY = SH.SHPOKY
+											AND SI.SBOXSQ = SB.SBOXSQ
+						INNER JOIN SKUMA SM ON  SM.OWNRKY = SH.OWNRKY
+											AND SM.SKUKEY = SI.SKUKEY
+		WHERE   GH.WAREKY = #WAREKY#
+		AND	 GH.RQSHPD = #RQSHPD#
+		AND	 GH.SHPDGR = #SHPDGR#
+		AND	 (
+					SB.SBOXID = #SCANKY# OR SB.BOXLAB = #SCANKY#
+				)
+		GROUP BY
+				DT.SHORTX
+				, SH.WAREKY
+				, SH.INDDCL
+				, SB.BOXTYP
+				, SH.CNLMAK
+				, SB.CNLBOX
+				, SI.LOCAKY
+				, SI.SKUKEY
+				, SM.DESC01
+		ORDER BY
+				SI.LOCAKY
+	</select>
+	
+	<select id="MDL31_VEHINO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT  SH.VEHINO
+			,   SH.GRPOKY
+			,   SH.DOCKNO
+			,   SH.CARCNT
+			,   NVL(#WAREKY#,' ') AS WAREKY
+			,   NVL(#RQSHPD#,' ') AS RQSHPD
+			,   NVL(#SHPDGR#,' ') AS SHPDGR
+			,   NVL(#SCANKY#,' ') AS SCANKY
+		FROM	GRPDH GH
+						INNER JOIN SHPDH SH ON  SH.GRPOKY = GH.GRPOKY
+						INNER JOIN SHPDB SB ON  SB.SHPOKY = SH.SHPOKY
+		WHERE   GH.WAREKY = #WAREKY#
+		AND	    GH.RQSHPD = #RQSHPD#
+		AND	    GH.SHPDGR = #SHPDGR#
+		AND	    SH.SHPMTY = '220'
+		AND	    (
+					SB.SBOXID = #SCANKY# OR SB.BOXLAB = #SCANKY#
+			    )
+		AND	 ROWNUM = 1
+	</select>
+	
+	<select id="MDL31_VALID_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT *
+		FROM(
+			SELECT  'CNL_COFM' AS BIZTYP
+				   , DECODE(COUNT(1), 0, 'N', 'Y') AS NOT_PROC
+			FROM	GRPDH GH
+							INNER JOIN SHPDH SH ON  SH.GRPOKY = GH.GRPOKY
+							INNER JOIN SHPDB SB ON  SB.SHPOKY = SH.SHPOKY
+							INNER JOIN SHPDI SI ON  SI.SHPOKY = SH.SHPOKY
+											   AND  SI.SBOXSQ = SB.SBOXSQ
+			WHERE   1=1
+			AND		EXISTS (
+						SELECT  1
+						FROM	GRPDH I_GH
+										INNER JOIN SHPDH I_SH ON  I_SH.GRPOKY = I_GH.GRPOKY
+										INNER JOIN SHPDB I_SB ON  I_SB.SHPOKY = I_SH.SHPOKY
+						WHERE   1=1
+						AND		I_GH.WAREKY = #WAREKY#
+						AND		I_GH.RQSHPD = #RQSHPD#
+						AND		I_GH.SHPDGR = #SHPDGR#
+						AND		I_SH.VEHINO = #VEHINO#
+						AND		I_SH.SHPMTY = '220'
+						AND		I_GH.GRPOKY = GH.GRPOKY
+						AND		I_SH.SHPMTY = SH.SHPMTY
+						AND		I_SH.VEHINO = SH.VEHINO
+					)
+			AND		SH.INDDCL = ' '
+			AND		(SH.CNLMAK = 'V' AND SB.CNLBOX = ' ')   --1. 주문취소라면 취소완료를 해야함
+			UNION ALL
+			SELECT  'PK_COFM' AS BIZTYP
+				   , DECODE(COUNT(1), 0, 'N', 'Y') AS NOT_PROC
+			FROM	GRPDH GH
+							INNER JOIN SHPDH SH ON  SH.GRPOKY = GH.GRPOKY
+							INNER JOIN SHPDB SB ON  SB.SHPOKY = SH.SHPOKY
+							INNER JOIN SHPDI SI ON  SI.SHPOKY = SH.SHPOKY
+											   AND  SI.SBOXSQ = SB.SBOXSQ
+			WHERE   1=1
+			AND		EXISTS (
+						SELECT  1
+						FROM	GRPDH I_GH
+										INNER JOIN SHPDH I_SH ON  I_SH.GRPOKY = I_GH.GRPOKY
+										INNER JOIN SHPDB I_SB ON  I_SB.SHPOKY = I_SH.SHPOKY
+						WHERE   1=1
+						AND		I_GH.WAREKY = #WAREKY#
+						AND		I_GH.RQSHPD = #RQSHPD#
+						AND		I_GH.SHPDGR = #SHPDGR#
+						AND		I_SH.VEHINO = #VEHINO#
+						AND		I_SH.SHPMTY = '220'
+						AND		I_GH.GRPOKY = GH.GRPOKY
+						AND		I_SH.SHPMTY = SH.SHPMTY
+						AND		I_SH.VEHINO = SH.VEHINO
+					)
+			AND		SH.INDDCL = ' '
+			AND		(SH.CNLMAK = ' ' AND SI.QTSHPO != SI.QTJCMP + SI.QTSHPC)
+			UNION ALL
+			SELECT   'SIM_COFM' AS BIZTYP
+					, DECODE(  NVL(SUM(
+										 CASE WHEN SI.QTSHPC = 0 THEN 0
+										 WHEN SI.QTSHPC > 0 AND (SD.NPTQTY + SD.MCLQTY + SD.NCGQTY) > 0 THEN 0
+										 WHEN SI.QTSHPC > 0 AND (SD.NPTQTY + SD.MCLQTY + SD.NCGQTY) = 0 THEN 1
+										 ELSE 0
+										 END
+									),0) , 0, 'N', 'Y') AS NOT_PROC
+			FROM    GRPDH GH
+							INNER JOIN SHPDH SH ON SH.GRPOKY = GH.GRPOKY
+							INNER JOIN SHPDI SI ON SI.SHPOKY = SH.SHPOKY
+							INNER JOIN SHPOD SD ON SH.WAREKY = SD.WAREKY
+											   AND SH.RQSHPD = SD.RQSHPD
+											   AND SH.SHPDGR = SD.SHPDGR
+											   AND SH.SVBELN = SD.SVBELN
+											   AND SI.SHCARN = SD.SHCARN
+											   AND SI.SHDTLN = SD.SHDTLN
+											   AND SI.SPOSNR = SD.SPOSNR
+			WHERE   1=1
+			AND		EXISTS (
+						SELECT  1
+						FROM	GRPDH I_GH
+										INNER JOIN SHPDH I_SH ON  I_SH.GRPOKY = I_GH.GRPOKY
+										INNER JOIN SHPDB I_SB ON  I_SB.SHPOKY = I_SH.SHPOKY
+						WHERE   1=1
+						AND		I_GH.WAREKY = #WAREKY#
+						AND		I_GH.RQSHPD = #RQSHPD#
+						AND		I_GH.SHPDGR = #SHPDGR#
+						AND		I_SH.VEHINO = #VEHINO#
+						AND		I_SH.SHPMTY = '220'
+						AND		I_GH.GRPOKY = GH.GRPOKY
+						AND		I_SH.SHPMTY = SH.SHPMTY
+						AND		I_SH.VEHINO = SH.VEHINO
+					)
+			AND		SH.INDDCL = ' '
+			AND		SH.CNLMAK = ' '
+			UNION ALL
+			SELECT   'REPORD_NOT' AS BIZTYP
+					, DECODE(COUNT(1), '0', 'N', 'Y') AS NOT_PROC 
+			FROM    GRPDH GH
+							INNER JOIN SHPOD SD ON SD.WAREKY = GH.WAREKY
+											   AND SD.RQSHPD = GH.RQSHPD
+											   AND SD.SHPDGR = GH.SHPDGR
+					   LEFT OUTER JOIN SHPDH SH ON SH.WAREKY = GH.WAREKY
+											   AND SH.RQSHPD = GH.RQSHPD
+											   AND SH.SHPDGR = GH.SHPDGR
+											   AND SH.SVBELN = SD.SVBELN
+											   AND SH.SHCARN = SD.SHCARN
+					   LEFT OUTER JOIN SHPDI SI ON SI.SHPOKY = SH.SHPOKY
+											   AND SH.SVBELN = SD.SVBELN
+											   AND SI.SHCARN = SD.SHCARN
+											   AND SI.SHDTLN = SD.SHDTLN
+											   AND SI.SPOSNR = SD.SPOSNR  
+			WHERE   1=1
+			AND		EXISTS (
+						SELECT  1
+						FROM    GRPDH I_GH
+										INNER JOIN SHPDH I_SH ON  I_SH.GRPOKY = I_GH.GRPOKY
+										INNER JOIN SHPDB I_SB ON  I_SB.SHPOKY = I_SH.SHPOKY
+						WHERE   1=1
+						AND		I_GH.WAREKY = #WAREKY#
+						AND		I_GH.RQSHPD = #RQSHPD#
+						AND		I_GH.SHPDGR = #SHPDGR#
+						AND		I_SH.VEHINO = #VEHINO#
+						AND		I_SH.SHPMTY = '220'
+						AND		I_GH.GRPOKY = GH.GRPOKY
+						AND		I_SH.SHPMTY = SH.SHPMTY
+						AND		I_SH.VEHINO = SH.VEHINO
+					)
+			AND		SI.SHPOKY IS NULL
+			UNION ALL
+			SELECT   'LABEL_NOT' AS BIZTYP
+					, DECODE( NVL(SUM(CASE WHEN SB.BXTL02 = 'Y' AND SB.BOXLAB = ' ' THEN 1 ELSE 0 END), 0)
+							, 0, 'N', 'Y') AS NOT_PROC
+			FROM    GRPDH GH
+							INNER JOIN SHPDH SH ON SH.GRPOKY = GH.GRPOKY
+							INNER JOIN SHPDB SB ON SB.SHPOKY = SH.SHPOKY
+			WHERE   1=1
+			AND		EXISTS (
+						SELECT  1
+						FROM    GRPDH I_GH
+										INNER JOIN SHPDH I_SH ON  I_SH.GRPOKY = I_GH.GRPOKY
+										INNER JOIN SHPDB I_SB ON  I_SB.SHPOKY = I_SH.SHPOKY
+						WHERE   1=1
+						AND		I_GH.WAREKY = #WAREKY#
+						AND		I_GH.RQSHPD = #RQSHPD#
+						AND		I_GH.SHPDGR = #SHPDGR#
+						AND		I_SH.VEHINO = #VEHINO#
+						AND		I_SH.SHPMTY = '220'
+						AND		I_GH.GRPOKY = GH.GRPOKY
+						AND		I_SH.SHPMTY = SH.SHPMTY
+						AND		I_SH.VEHINO = SH.VEHINO
+					)
+			AND		SB.BOXDTL = '20'
+			AND		SH.INDDCL = ' '
+			AND		SH.CNLMAK = ' '
+		)
+		PIVOT(
+				MAX(NOT_PROC) FOR BIZTYP IN('CNL_COFM' AS CNL_COFM,'PK_COFM' AS PK_COFM,'SIM_COFM' AS SIM_COFM,'REPORD_NOT' AS REPORD_NOT,'LABEL_NOT' AS LABEL_NOT)
+		) 
+	</select>
+	
+	<select id="MDL31_INFO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	NVL(SUM(DECODE(Z.BOXTYP, '01', Z.BOXCNT, 0)), 0) AS DRYBOX
+				, NVL(SUM(DECODE(Z.BOXTYP, '02', Z.BOXCNT, 0)), 0) AS WETBOX
+				, NVL(SUM(DECODE(Z.BOXTYP, '03', Z.BOXCNT, 0)), 0) AS BYPASSBOX
+				, DECODE(SUM(Z.REPMAK), 0, 'N', 'Y') AS REPMAK
+		FROM	(
+					SELECT  SB.BOXTYP
+							, COUNT( DISTINCT SB.SBOXSQ ) AS BOXCNT
+							, SUM((
+								  SELECT  SUM(DECODE(T.REPMAK, 'V', 1, 0))
+								  FROM	SHPDI T
+								  WHERE   1=1
+								  AND	 T.SHPOKY = SH.SHPOKY
+								  AND	 T.SBOXSQ = SB.SBOXSQ
+								  AND	 T.QTSHPO - T.QTSHPC > 0
+								  AND	 T.SKUCLS NOT IN ('13', '33')	 
+							  )) AS REPMAK
+					FROM	GRPDH GH
+									INNER JOIN SHPDH SH ON  SH.GRPOKY = GH.GRPOKY
+									INNER JOIN SHPDB SB ON  SB.SHPOKY = SH.SHPOKY
+					WHERE   1=1
+					AND	 EXISTS (
+								SELECT  1
+								FROM	GRPDH I_GH
+												INNER JOIN SHPDH I_SH ON  I_SH.GRPOKY = I_GH.GRPOKY
+												INNER JOIN SHPDB I_SB ON  I_SB.SHPOKY = I_SH.SHPOKY
+								WHERE   1=1
+								AND	 I_GH.WAREKY = #WAREKY#
+								AND	 I_GH.RQSHPD = #RQSHPD#
+								AND	 I_GH.SHPDGR = #SHPDGR#
+								AND	 I_SH.VEHINO = #VEHINO#
+								AND	 I_SH.SHPMTY = '220'
+								AND	 I_GH.GRPOKY = GH.GRPOKY
+								AND	 I_SH.SHPMTY = SH.SHPMTY
+								AND	 I_SH.VEHINO = SH.VEHINO
+							)
+					AND	 (
+								(SB.BOXDTL = '00') OR (BOXDTL = '20' AND SB.BOXTYP != '03')
+							)
+					AND	 NVL((
+								SELECT  COUNT(1)
+								FROM	SHPDI T
+								WHERE   T.SHPOKY = SB.SHPOKY
+								AND	 T.SBOXSQ = SB.SBOXSQ
+								GROUP BY
+										T.SHPOKY
+									  , T.SBOXSQ
+								HAVING
+										SUM(T.QTSHPO) = SUM(T.QTSHPC)
+							), 0) = 0   --박스가 모두 결품이라면 조회할 필요 없음
+					GROUP BY
+							SB.BOXTYP
+				) Z
+		WHERE   1=1
+	</select>
+	
+	<select id="MDL31_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	  SH.CNLMAK
+				, SB.BXTL01
+				, SH.SHPDSQ
+				, FN_GET_MASK('NAME', FN_CRYPTO(#SES_ENV#,'2',SH.SUSRNM) ) AS SUSRNM
+				, FN_GET_CMCDW(GH.WAREKY, 'BOXTYP', SB.BOXTYP) AS BOXTYP
+				, SB.SBOXID
+				, SB.BOXLAB
+				, GH.GRPOKY
+				, SH.SHPOKY
+				, SB.SBOXSQ
+				, SH.VEHINO
+				, SH.CARCNT
+				, SH.DOCKNO
+				, SB.BOXTYP
+				, WP.LOTA01
+				, SH.SHCARN
+				, SH.SVBELN
+		FROM	GRPDH GH INNER JOIN SHPDH SH ON  SH.GRPOKY = GH.GRPOKY
+						 INNER JOIN SHPDB SB ON  SB.SHPOKY = SH.SHPOKY
+						 INNER JOIN WEMAP WP ON  SH.WAREKY = WP.WAREKY
+											AND  WP.DELMAK = ' '
+		WHERE   EXISTS (
+					SELECT  1
+					FROM	GRPDH I_GH
+									INNER JOIN SHPDH I_SH ON  I_SH.GRPOKY = I_GH.GRPOKY
+									INNER JOIN SHPDB I_SB ON  I_SB.SHPOKY = I_SH.SHPOKY
+					WHERE   1=1
+					AND	 I_GH.WAREKY = #WAREKY#
+					AND	 I_GH.RQSHPD = #RQSHPD#
+					AND	 I_GH.SHPDGR = #SHPDGR#
+					AND	 I_SH.VEHINO = #VEHINO#
+					AND	 I_SH.SHPMTY = '220'
+					AND	 I_GH.GRPOKY = GH.GRPOKY
+					AND	 I_SH.SHPMTY = SH.SHPMTY
+					AND	 I_SH.VEHINO = SH.VEHINO
+				)
+		AND	    (
+					(SB.BOXDTL = '00') OR (SB.BOXDTL = '20' AND SB.BOXTYP = '03')
+			    )
+		AND	    SH.INDDCL = ' '
+		ORDER BY
+				( CASE WHEN SH.CNLMAK = 'V' THEN 3
+					   WHEN SB.BXTL01 = 'V' THEN 2
+					   ELSE 1
+				  END )
+				, SH.SHPDSQ
+				, SH.SHPOKY
+				, SB.BOXTYP
+				, SB.BOXLAB
+				, SB.SBOXID
+	</select>
+	
+	<select id="MDL31_SUB_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	SH.SHPDSQ
+				, FN_GET_MASK('NAME', FN_CRYPTO(#SES_ENV#,'2',SH.SUSRNM) ) AS SUSRNM
+				, FN_GET_CMCDW(GH.WAREKY, 'BOXTYP', SB.BOXTYP) AS BOXTYP
+				, SI.SKUKEY
+				, SM.DESC01
+				, SUM(SI.QTSHPO - SI.QTSHPC) AS QTSHPO
+		FROM	GRPDH GH
+						INNER JOIN SHPDH SH ON  SH.GRPOKY = GH.GRPOKY
+						INNER JOIN SHPDB SB ON  SB.SHPOKY = SH.SHPOKY
+						INNER JOIN SHPDI SI ON  SI.SHPOKY = SH.SHPOKY
+											AND SI.SBOXSQ = SB.SBOXSQ
+						INNER JOIN SKUMA SM ON  SM.OWNRKY = SH.OWNRKY
+											AND SM.SKUKEY = SI.SKUKEY
+		WHERE   1=1
+		AND	 GH.WAREKY = #WAREKY#
+		AND	 GH.RQSHPD = #RQSHPD#
+		AND	 GH.SHPDGR = #SHPDGR#
+		AND	 SH.VEHINO = #VEHINO#
+		AND	 SH.SHPMTY = '220'
+		AND	 SI.REPMAK = 'V'
+		AND	 SI.SKUCLS NOT IN ('13', '33')
+		GROUP BY
+				  GH.WAREKY
+				, SH.SHPDSQ
+				, SH.SUSRNM
+				, SB.BOXTYP
+				, SI.SKUKEY
+				, SM.DESC01
+		HAVING
+				SUM(SI.QTSHPO - SI.QTSHPC) > 0
+		ORDER BY
+				  SH.SHPDSQ
+				, SB.BOXTYP
+				, SI.SKUKEY
+	</select>
+	
+	<update id="MDL31_TEMP_UPDATE" parameterClass="Map">
+		UPDATE SHPDB
+		SET	BXTL01 = NVL(#BXTL01#,' ')
+		WHERE  SHPOKY = #SHPOKY#
+		AND	SBOXSQ = #SBOXSQ#
+	</update>
+	
+	<select id="APP_INF_COUNT" parameterClass="Map" resultClass="Integer">
+		SELECT COUNT(1) FROM FWAPK
+	</select>
+	
+	<select id="APP_INF_YN_COUNT" parameterClass="Map" resultClass="Integer">
+		SELECT COUNT(1) FROM CMCDV WHERE CMCDKY = 'APPINFYN' AND CMCDVL = 'Y' AND DELMAK != 'V'
+	</select>
+	
+	<select id="MENU_INFO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT MNT.MENUID AS MENUID,
+		       (SELECT JLBLM.LBLTXL FROM JLBLM WHERE JLBLM.LABLGR = MNT.LABLGR AND JLBLM.LABLKY = MNT.LABLKY AND JLBLM.LANGKY = #SES_LANGUAGE#) AS LBLTXL,
+		       NVL(MNT.IMGPTH,'/common/theme/gsfresh/images/login_img/icon01-2.png') AS IMGPTH,
+		       MNT.SORTSQ AS SORTSQ
+		FROM   MNUDT MNT 
+		WHERE  MNT.MENUKY = (SELECT USRMA.PDAMKY FROM USRMA WHERE USRMA.USERID = #SES_USER_ID#)
+		       AND EXISTS ( 
+		              SELECT T.MENUID
+		                FROM MNUDT T
+		               WHERE 1=1
+		                 AND (MNT.MENUID = T.MENUID OR MNT.MENUID = T.AMNUID)
+		                 AND T.MENUKY = (SELECT USRMA.PDAMKY FROM USRMA WHERE USRMA.USERID = #SES_USER_ID#)
+		                 AND T.MENUID IN (
+		                     SELECT AMNUID 
+		                       FROM MNUDT M INNER JOIN PROGM P 
+		                         ON M.PROGID = P.PROGID
+		                       WHERE 1=1
+		                         AND M.MENUKY = (SELECT USRMA.PDAMKY FROM USRMA WHERE USRMA.USERID = #SES_USER_ID#)
+		                         AND M.INDMUK = 'PRG'
+		                         AND P.WAREKY = #SES_WAREKY#
+		                       GROUP BY AMNUID
+		                )
+		        )
+		ORDER BY SORTSQ DESC
+	</select>
+	
+	<select id="MBL_SKUMA_COUNT_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT COUNT(1) AS CNT FROM SKUMA WHERE (SKUKEY = #SKUKEY# OR EANCOD = #SKUKEY#)
+	</select>
+	
+	<select id="BAG_SKU_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT EANSKU AS SKUKEY
+		     , PACQTY AS PACQTY
+		FROM   SKUMA 
+		WHERE  SKUKEY = #SKUKEY#
+		AND    PACKYN = 'Y'
+	</select>
+	
+	<select id="DEMO_ZONMA_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT AREAKY
+		     , ZONEKY
+		     , SHORTX AS ZONENM
+		FROM   ZONMA
+		WHERE  WAREKY = #WAREKY#
+		AND    AREAKY = #AREAKY#
+		<isNotEmpty property="ZONEKY">
+		AND    ZONEKY LIKE '%'|| #ZONEKY# ||'%'	
+		</isNotEmpty>	
+	</select>
+	
+	<select id="DEMO_LOCMA_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT AREAKY
+		     , ZONEKY
+		     , LOCAKY
+		     , SHORTX AS LOCANM
+		FROM   LOCMA
+		WHERE  WAREKY = #WAREKY#
+		AND    AREAKY = #AREAKY#
+		<isNotEmpty property="ZONEKY">
+		AND    ZONEKY LIKE '%'|| #ZONEKY# ||'%'	
+		</isNotEmpty>
+		ORDER BY 
+		       LOCAKY
+	</select>
+	
+	<select id="DEMO_PICLOC_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT LC.AREAKY
+		     , AM.SHORTX AS AREANM
+		     , LC.ZONEKY
+		     , LC.LOCAKY 
+		     , LC.SHORTX AS LOCANM
+		     , LC.SKUKEY
+		     , SM.DESC01
+		     , LC.LOTA06
+		     , CM.CDESC1 AS LT06NM
+		FROM LOCMA LC
+		     INNER JOIN AREMA AM
+		             ON LC.WAREKY = AM.WAREKY
+		            AND LC.AREAKY = AM.AREAKY
+		     LEFT OUTER JOIN CMCDV CM ON CM.CMCDKY = 'LOTA06'
+									 AND LC.LOTA06 = CM.CMCDVL       
+		     LEFT OUTER JOIN SKUWC SW ON LC.WAREKY = SW.WAREKY
+		                             AND LC.OWNRKY = SW.OWNRKY
+		                             AND LC.SKUKEY = SW.SKUKEY
+		     LEFT OUTER JOIN SKUMA SM ON SW.OWNRKY = SM.OWNRKY
+		                             AND SW.SKUKEY = SM.SKUKEY
+		WHERE LC.WAREKY = #WAREKY#
+		AND   LC.AREAKY = #AREAKY#
+		AND   LC.ZONEKY = #ZONEKY#
+		<isNotEmpty property="LOCAKY">
+		AND   LC.LOCAKY = #LOCAKY#
+		</isNotEmpty>
+		<isNotEmpty property="SKUKEY">
+		AND   LC.SKUKEY = #SKUKEY#
+		</isNotEmpty>
+		ORDER BY AM.SORTSQ
+	</select>
+	
+	<select id="DEMO_STKKY_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT SUM(QTSIWH) AS QTSIWH
+		     , LOTA08
+		     , LOTA09
+		FROM   STKKY 
+		WHERE  AREAKY = #AREAKY#
+		AND    ZONEKY = #ZONEKY#
+		AND    LOCAKY = #LOCAKY#
+		AND    SKUKEY = #SKUKEY#
+		AND    LOTA06 = #LOTA06#
+		AND    (QTSIWH > 0 AND QTSALO = 0 AND QTSPMO = 0 AND QTSPMI = 0)
+		GROUP BY 
+		       LOTA08, LOTA09
+	</select>
+	
+	<select id="DEMO_POP_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT COL1,COL2,COL3
+		FROM(
+		    SELECT '1' AS COL1, 'COLUMN2_DATA1' AS COL2, 'TYPE1' AS COL3 FROM DUAL UNION ALL
+		    SELECT '2' AS COL1, 'COLUMN2_DATA2' AS COL2, 'TYPE1' AS COL3 FROM DUAL UNION ALL
+		    SELECT '3' AS COL1, 'COLUMN2_DATA3' AS COL2, 'TYPE1' AS COL3 FROM DUAL UNION ALL
+		    SELECT '4' AS COL1, 'COLUMN2_DATA4' AS COL2, 'TYPE2' AS COL3 FROM DUAL UNION ALL
+		    SELECT '5' AS COL1, 'COLUMN2_DATA5' AS COL2, 'TYPE2' AS COL3 FROM DUAL UNION ALL
+		    SELECT '6' AS COL1, 'COLUMN2_DATA6' AS COL2, 'TYPE2' AS COL3 FROM DUAL UNION ALL
+		    SELECT '7' AS COL1, 'COLUMN2_DATA7' AS COL2, 'TYPE3' AS COL3 FROM DUAL UNION ALL
+		    SELECT '8' AS COL1, 'COLUMN2_DATA8' AS COL2, 'TYPE3' AS COL3 FROM DUAL
+		)
+		WHERE 1=1
+		<isNotEmpty property="TYPE">
+		AND   COL3 != #TYPE#
+		</isNotEmpty>
+		<isNotEmpty property="COMBO1">
+		AND   COL3 = #COMBO1#
+		</isNotEmpty>
+		<isNotEmpty property="COMBO2">
+		AND   COL3 = #COMBO2#
+		</isNotEmpty>
+		<isNotEmpty property="COL1">
+		AND   COL1 LIKE '%'|| #COL1# ||'%'
+		</isNotEmpty>
+		<isNotEmpty property="COL2">
+		AND   COL2 LIKE '%'|| #COL2# ||'%'
+		</isNotEmpty>
+	</select>
+	
+	<select id="DEMO_COMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT COL1 AS VALUE_COL
+		     , COL2 AS TEXT_COL
+		FROM(
+		    SELECT 'key1' AS COL1, 'Option1' AS COL2, 'type1' AS TYPE FROM DUAL UNION ALL
+		    SELECT 'key2' AS COL1, 'Option2' AS COL2, 'type1' AS TYPE FROM DUAL UNION ALL
+		    SELECT 'key3' AS COL1, 'Option3' AS COL2, 'type1' AS TYPE FROM DUAL UNION ALl
+		    SELECT 'key4' AS COL1, 'Option4' AS COL2, 'type2' AS TYPE FROM DUAL
+		)
+		WHERE 1=1
+		<isNotEmpty property="TYPE">
+		AND   TYPE = #TYPE#	
+		</isNotEmpty>
+	</select>
+	
+	<select id="DEMO_POP_COMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT COL1 AS VALUE_COL
+		     , COL2 AS TEXT_COL
+		FROM(
+		    SELECT ''      AS COL1, 'ALL'   AS COL2 FROM DUAL UNION ALL
+		    SELECT 'TYPE1' AS COL1, 'TYPE1' AS COL2 FROM DUAL UNION ALL
+		    SELECT 'TYPE2' AS COL1, 'TYPE2' AS COL2 FROM DUAL UNION ALL 
+		    SELECT 'TYPE3' AS COL1, 'TYPE3' AS COL2 FROM DUAL
+		)
+		WHERE 1=1
+		<isNotEmpty property="TYPE">
+		AND   COL2 != #TYPE#	
+		</isNotEmpty>
+	</select>
+	
+	<select id="MDL13_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT    GH.GRPOKY
+		        , GH.WAREKY
+		        , GH.RQSHPD
+		        , GH.SHPDGR
+		        , SI.SHOD04
+		        , LM.LOCAKY
+		        , SUM(SI.QTSHPO / SI.PACQTY) AS QTSHPO
+		        , SI.SKUKEY
+		        , SM.DESC01
+		        , NVL(SUM((
+		              SELECT  SK.QTSIWH
+		              FROM    STKKY SK
+		              WHERE   SK.WAREKY = GH.WAREKY
+		              AND     SK.OWNRKY = GH.OWNRKY
+		              AND     SK.LOCAKY = SI.LOCAKY
+		              AND     SK.SKUKEY = SI.SKUKEY
+		              AND     SK.QTSIWH > 0
+		              AND     SK.QTSALO = 0
+		              AND     SK.QTSPMO = 0
+		              AND     SK.QTSPMI = 0
+		          )), 0) AS QTSIWH
+		        , SI.PACKYN
+		FROM    GRPDH GH
+		            INNER JOIN SHPDH SH ON  SH.GRPOKY = GH.GRPOKY
+		            INNER JOIN SHPDI SI ON  SI.SHPOKY = SH.SHPOKY
+		            INNER JOIN SKUMA SM ON  SM.OWNRKY = GH.OWNRKY
+		                                AND SM.SKUKEY = SI.SKUKEY
+		            INNER JOIN LOCMA LM ON  LM.WAREKY = GH.WAREKY
+		                                AND LM.LOCAKY = SI.LOCAKY
+		            INNER JOIN AREMA AM ON  AM.WAREKY = GH.WAREKY
+		                                AND AM.AREAKY = LM.AREAKY
+		WHERE   SI.REPMAK = 'V'
+		AND     SH.CNLMAK = ' '
+		AND     SI.QTSHPO > 0
+		AND     GH.WAREKY = #WAREKY#
+		AND     GH.RQSHPD = #RQSHPD#
+		AND     GH.SHPDGR = #SHPDGR#
+		<isNotEmpty property="SHIT04">
+		AND     SI.SHIT04 = #SHIT04#
+		</isNotEmpty>
+		<isNotEmpty property="AREAKY">
+		AND     LM.AREAKY = #AREAKY#
+		</isNotEmpty>
+		<isNotEmpty property="ZONEKY">
+		AND     LM.ZONEKY = #ZONEKY#
+		</isNotEmpty>
+		GROUP BY
+		          GH.GRPOKY
+		        , GH.WAREKY
+		        , GH.RQSHPD
+		        , GH.SHPDGR
+		        , SI.SHOD04
+		        , LM.LOCAKY
+		        , SI.SKUKEY
+		        , SM.DESC01
+		        , SI.PACKYN
+		        , AM.SORTSQ
+		        , LM.OBROUT
+		ORDER BY
+		        DECODE(SI.SHOD04, 'V', 2, 1)
+		        , AM.SORTSQ
+		        , LM.OBROUT
+		        , LM.LOCAKY
+		        , SI.SKUKEY
+	</select>
+	
+	<select id="MDL13_VALID_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT  #WAREKY#                                                     AS WAREKY,
+		        #GRPOKY#                                                     AS GRPOKY,
+		        #LOCAKY#                                                     AS LOCAKY,
+		        #RQSHPD#                                                     AS RQSHPD,
+		        #SHPDGR#                                                     AS SHPDGR,
+		        #SKUKEY#                                                     AS SKUKEY,
+		        #DESC01#                                                     AS DESC01,
+		        NVL(SUM(SI.QTSHPO/SI.PACQTY),0)                              AS QTSHPO,
+		        TO_NUMBER(NVL(#QTSHPO#,0))                                   AS QTYINP,
+		        NVL(SUM(SI.QTSHPO/SI.PACQTY),0) - TO_NUMBER(NVL(#QTSHPO#,0)) AS QTYRST
+		FROM    GRPDH GH
+		            INNER JOIN SHPDH SH ON  SH.GRPOKY = GH.GRPOKY
+		            INNER JOIN SHPDI SI ON  SI.SHPOKY = SH.SHPOKY
+		WHERE   SI.REPMAK = 'V'
+		AND     SH.CNLMAK = ' '
+		AND     SI.QTSHPO > 0
+		AND     SI.SHOD04 != 'V'
+		AND     GH.WAREKY = #WAREKY#
+		AND     GH.RQSHPD = #RQSHPD#
+		AND     GH.SHPDGR = #SHPDGR#
+		AND     SI.LOCAKY = #LOCAKY#
+	</select>
+	
+	<update id="MDL13_UPDATE" parameterClass="Map">
+		UPDATE SHPDI
+		SET    SHOD04 = 'V'
+		WHERE  GRPOKY = #GRPOKY#
+		AND    LOCAKY = #LOCAKY#
+		AND    REPMAK = 'V'
+		AND    QTSHPO > 0
+		AND    SHOD04 != 'V'
+	</update>
+</sqlMap>

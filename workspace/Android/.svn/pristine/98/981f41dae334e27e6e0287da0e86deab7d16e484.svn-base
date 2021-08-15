@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/addressbook_replyp_btn_popup_delete_push" android:state_pressed="true"></item>
+    <item android:drawable="@drawable/addressbook_replyp_btn_popup_delete_push" android:state_checked="true"></item>
+    <item android:drawable="@drawable/addressbook_replyp_btn_popup_delete_push" android:state_focused="true"></item>
+    <item android:drawable="@drawable/addressbook_replyp_btn_popup_delete"></item>
+
+</selector>

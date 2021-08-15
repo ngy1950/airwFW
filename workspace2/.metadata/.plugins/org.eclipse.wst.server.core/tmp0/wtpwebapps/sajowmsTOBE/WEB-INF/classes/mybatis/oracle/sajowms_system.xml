@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SajoSystem">
+
+	<select id="JLBLM_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT   LABELGID  --대분류   
+			, LABELID	 --소분류
+			, LANGCODE	 -- 랭귀지코드
+			, LABEL		--라벨명
+			, LABELTYPE	-- 라벨타입 일단 WMS고정 PDA는PDA
+			, CREATEUSER  -- ' '당장은 공백
+			, TO_CHAR(CREATEDATE,'YYYYMMDD') AS CREDAT  -- ' '당장은 공백
+			, TO_CHAR(CREATEDATE,'HH24MISS') AS CRETIM  -- ' '당장은 공백
+			, UPDATEUSER   -- ' '당장은 공백
+			, TO_CHAR(UPDATEDATE,'YYYYMMDD') AS LMODAT  -- ' '당장은 공백
+			, TO_CHAR(UPDATEDATE,'HH24MISS') AS LMOTIM  -- ' '당장은 공백
+			, DELETEYN	-- 'N'고정
+		FROM SYSLABEL
+		WHERE
+				LANGCODE = #{LANGKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+			AND LABELTYPE = #{LABELTYPE}
+	</select>
+	
+	<insert id="JLBLM_INSERT" parameterType="hashmap">
+		INSERT INTO SYSLABEL
+		(
+			  LABELGID
+			, LABELID
+			, LANGCODE
+			, LABEL
+			, LABELTYPE
+			, CREATEUSER
+			, CREATEDATE
+			, UPDATEUSER
+			, UPDATEDATE
+		)VALUES(
+			  #{LABELGID}
+			, #{LABELID}
+			, #{LANGCODE}
+			, #{LABEL}
+			, 'WMS'
+			, #{SES_USER_ID}
+			, SYSDATE
+			, #{SES_USER_ID}
+			, SYSDATE
+		)
+	</insert>
+	
+	<update id="JLBLM_UPDATE"  parameterType="hashmap">
+		UPDATE SYSLABEL
+		SET
+			LABEL = #{LABEL},
+			UPDATEUSER = #{SES_USER_ID},
+			UPDATEDATE = SYSDATE
+		WHERE
+				LABELGID = #{LABELGID}
+			AND LABELID = #{LABELID}
+			AND LANGCODE = #{LANGCODE}
+	</update>
+	
+	<delete id="JLBLM_DELETE"  parameterType="hashmap">
+		DELETE SYSLABEL
+		WHERE
+				LABELGID = #{LABELGID}
+			AND LABELID = #{LABELID}
+			AND LANGCODE = #{LANGCODE}
+			
+	</delete>
+	
+	<select id="JLBLM_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(*) AS CHK
+		FROM SYSLABEL
+		WHERE
+				LABELGID = #{LABELGID}
+			AND LABELID = #{LABELID}
+			AND LANGCODE = #{LANGCODE}
+	</select>
+	
+	<!-- 	loadMessageObj 에서 사용 -->
+	<select id="JMSGM_LANG_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT
+			CMCDVL AS LANGKY
+		FROM CMCDV
+		WHERE CMCDKY = 'LANGKY' 
+		ORDER BY CMCDVL,USARG1
+	</select>
+	
+	<sql id="JMSGM_TABLE">
+		SELECT 
+			 MESSAGEGID||'_'||MESSAGEID AS MESGKY,
+			 MESSAGE
+		 FROM SYSMESSAGE
+	</sql>
+	
+	<select id="JMSGM_LIST" parameterType="hashmap" resultType="StringMap">
+		SELECT
+			  LANGCODE
+			, MESSAGEGID
+			, MESSAGEID
+			, MESSAGE
+			, MESSAGETYPE
+		FROM SYSMESSAGE
+		WHERE   1 = 1
+		<if test="LANGCODE != null and LANGCODE != ''">
+		AND     LANGCODE = #{LANGCODE}
+		</if>
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+		${RANGE_SQL}
+		</if>
+		AND DELETEYN = 'N'
+		AND MESSAGETYPE = #{MESSAGETYPE}
+		ORDER BY MESSAGEGID, MESSAGEID, MESSAGE
+	</select>
+
+	<!-- [JMSGM] 메세지등록 -->
+	<insert id="JMSGM_INSERT" parameterType="hashmap">
+		INSERT INTO SYSMESSAGE(
+			  LANGCODE
+			, MESSAGEGID
+			, MESSAGEID
+			, MESSAGE
+			, MESSAGETYPE
+			, CREATEUSER
+			, CREATEDATE
+			, UPDATEUSER
+			, UPDATEDATE
+			, DELETEYN
+		)VALUES(
+			  #{LANGCODE}
+			, #{MESSAGEGID}
+			, #{MESSAGEID}
+			, NVL(#{MESSAGE}, ' ')
+			, #{MESSAGETYPE}
+			, #{SES_USER_ID}
+			, SYSDATE
+			, #{SES_USER_ID}
+			, SYSDATE
+			, 'N'
+		)
+	</insert>
+	
+	<!-- [JMSGM] 메세지수정 -->
+	<update id="JMSGM_UPDATE" parameterType="hashmap">
+		UPDATE SYSMESSAGE
+		SET    
+		<if test="MESSAGE != null and MESSAGE != ''">
+			   MESSAGE = #{MESSAGE},
+		</if>
+		       UPDATEDATE = SYSDATE ,
+		       UPDATEUSER = #{SES_USER_ID}
+		WHERE  LANGCODE = #{LANGCODE}
+		AND    MESSAGEGID = #{MESSAGEGID}
+		AND    MESSAGEID = #{MESSAGEID}     
+		AND    MESSAGETYPE = #{MESSAGETYPE} 
+	</update>
+	
+	<!-- [JMSGM] 메세지삭제 -->
+	<delete id="JMSGM_DELETE" parameterType="hashmap">
+		UPDATE SYSMESSAGE
+		SET    
+			   DELETEYN = 'Y' ,
+		       UPDATEDATE = SYSDATE ,
+		       UPDATEUSER = #{SES_USER_ID}
+		WHERE  LANGCODE = #{LANGCODE}
+		AND    MESSAGEGID = #{MESSAGEGID}
+		AND    MESSAGEID = #{MESSAGEID}
+		AND    MESSAGETYPE = #{MESSAGETYPE}
+	</delete>
+	
+	<select id="SYSMESSAGE_JS_LIST" parameterType="hashmap" resultType="StringMap">
+		SELECT 
+			 MESSAGEGID||'_'||MESSAGEID AS MESSAGEKEY,
+			 MESSAGE
+		FROM SYSMESSAGE
+		WHERE
+				LANGCODE = #{LANGCODE}
+			AND MESSAGETYPE = #{MESSAGETYPE}
+	</select>
+	
+	<select id="JMSGM_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(*) AS CHK
+		FROM SYSMESSAGE
+		WHERE
+				MESSAGEGID = #{MESSAGEGID}
+			AND MESSAGEID = #{MESSAGEID}
+			AND LANGCODE = #{LANGCODE}
+	</select>
+	
+	
+	
+	<!--** UM01 메뉴-->
+	 <select id="UM01_LIST" parameterType="hashmap" resultType="DataMap">
+        SELECT COMPID     AS "COMPID"
+             , MENUID     AS "MENUID"
+             , MENULABEL  AS "MENULABEL"
+             , MENUNAME   AS "MENUNAME"
+             , MENUTYPE   AS "MENUTYPE"
+             , MAUTHTYPE  AS "MAUTHTYPE"
+             , PROGID     AS "PROGID"
+             , URI        AS "URI"
+             , PARAM      AS "PARAM"
+             , SORTORDER  AS "SORTORDER"
+             , CREATEUSER AS "CREATEUSER"
+             , CREATEDATE AS "CREATEDATE"
+             , UPDATEUSER AS "UPDATEUSER"
+             , UPDATEDATE AS "UPDATEDATE"
+             , DELETEYN   AS "DELETEYN"
+          FROM MSTMENU
+         WHERE 1=1
+           AND COMPID = #{SES_USER_COMPANY}
+        <if test="MENUID != null and MENUID != ''">
+           AND MENUID LIKE #{MENUID}||'%'
+        </if>
+        <if test="MENUNAME != null and MENUNAME != ''">
+           AND MENUNAME LIKE #{MENUNAME}||'%'
+        </if>
+         ORDER BY MENUID
+    </select>
+    
+	
+	<insert id="UM01_INSERT"  parameterType="hashmap">
+		  INSERT INTO MSTMENU (
+                          COMPID
+                        , MENUID
+                        , MENULABEL
+                        , MENUNAME
+                        , MENUTYPE
+                        , MAUTHTYPE
+                        , PROGID
+                        , URI
+                        , PARAM
+                        , SORTORDER
+                        , CREATEUSER
+                        , CREATEDATE
+                        , UPDATEUSER
+                        , UPDATEDATE
+                        , DELETEYN
+                        , IMGPTH
+                          )
+                          
+				VALUES (
+				       #{SES_USER_COMPANY}
+				     , #{MENUID}
+				     , #{MENUID}
+				     , #{MENUNAME}
+				     , ''
+				     , ''
+				     , #{MENUID}
+				     , #{URI}
+				     , ''
+				     , null
+				     , #{SES_USER_ID}
+				     , TO_CHAR(SYSDATE,'YYYYMMDD')
+				     , #{SES_USER_ID}
+				     , TO_CHAR(SYSDATE,'YYYYMMDD')
+				     , ''
+				     , COALESCE(#{IMGPTH},' ')
+				     )
+	
+	</insert>
+	<!--  COALESCE(#{IMGPTH},' ') -> NVL(#{IMGPTH},' ')로 넣어도 오류남 -->
+    
+    <update id="UM01_UPDATE" parameterType="hashmap">
+        UPDATE MSTMENU
+           SET UPDATEDATE = sysdate
+             , UPDATEUSER = #{SES_USER_ID}
+             , MENUNAME = #{MENUNAME}
+             , URI = #{URI}
+        WHERE 1 = 1
+          AND MENUID = #{MENUID}
+          AND COMPID = #{SES_USER_COMPANY}
+    </update>
+    
+    <delete id="UM01_DELETE" parameterType="hashmap">
+        DELETE 
+          FROM MSTMENU
+         WHERE 1=1
+           AND MENUID = #{MENUID}
+           AND COMPID = #{SES_USER_COMPANY}
+         
+    </delete>
+	
+	<!--UM01 메뉴 **-->
+	
+	
+	<!-- **RC01 메뉴  -->
+	<insert id="RSNCD_INSERT" parameterType="hashmap">
+		INSERT INTO RSNCD(
+			  OWNRKY
+		    , DOCCAT
+		    , DOCUTY
+		    , RSNCOD
+		    , SHORTX
+		    , DIFLOC
+		    , PDAUSE
+		    , CREDAT
+		    , CRETIM
+		    , CREUSR
+		    , LMODAT
+		    , LMOTIM
+		    , LMOUSR
+		    , INDBZL
+		    , INDARC
+		    , UPDCHK
+		    , SHPOTX
+		)VALUES(
+			  NVL(#{OWNRKY},' ')
+			, NVL(#{DOCCAT},' ')
+			, NVL(#{DOCUTY},' ')
+			, NVL(#{RSNCOD},' ')
+			, NVL(#{SHORTX},' ')
+			, NVL(#{DIFLOC},' ')
+			, NVL(#{PDAUSE},' ')
+			, NVL(#{CREDAT},' ')
+			, NVL(#{CRETIM},' ')
+			, NVL(#{CREUSR},' ')
+			, NVL(#{LMODAT},' ')
+			, NVL(#{LMOTIM},' ')
+			, NVL(#{LMOUSR},' ')	
+			, NVL(#{INDBZL},' ')
+			, NVL(#{INDARC},' ')
+			, NVL(#{UPDCHK}, 0)
+			, NVL(#{SHPOTX},' ')
+		)
+	</insert>
+	
+	<delete id="RSNCD_DELETE" parameterType="hashmap">
+		DELETE RSNCD
+		 WHERE OWNRKY = #{OWNRKY}
+		   AND DOCCAT = #{DOCCAT}
+		   AND DOCUTY = #{DOCUTY}
+		   AND RSNCOD = #{RSNCOD}
+	</delete>	
+	
+	<update id="RSNCD_UPDATE" parameterType="hashmap">
+		UPDATE RSNCD
+		   SET DOCCAT = #{DOCCAT}
+			  ,DOCUTY = #{DOCUTY}
+			  ,RSNCOD = #{RSNCOD}
+			  ,SHORTX = #{SHORTX}
+			  ,DIFLOC = #{DIFLOC}
+		 WHERE OWNRKY = #{OWNRKY}
+		   AND DOCCAT = #{DOCCAT}
+		   AND DOCUTY = #{DOCUTY}
+		   AND RSNCOD = #{RSNCOD} 
+		  
+	</update>
+	
+	
+	<select id="RSNCD_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(*) AS CHK
+		  FROM RSNCD
+		 WHERE OWNRKY = #{OWNRKY}
+		   AND DOCCAT = #{DOCCAT}
+		   AND DOCUTY = #{DOCUTY}
+		   AND RSNCOD = #{RSNCOD}
+	
+	</select>
+</mapper>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="GCIM">
+
+	<select id="MENUROOT_LIST" parameterType="hashmap"  resultType="DataMap">
+		SELECT 
+			MGL.COMPID,
+            MGL.MENUGID,
+            MGL.MENUID,
+            MGL.SORTORDER,
+            MGL.PMENUID,
+            (CASE WHEN (CL.LABEL IS NULL OR CL.LABEL = '') THEN MM.MENUNAME ELSE CL.LABEL END) AS LBLTXL
+        FROM MSTMENUGL MGL
+        LEFT OUTER JOIN MSTMENU MM ON MM.MENUID = MGL.MENUID AND MM.COMPID = MGL.COMPID
+        LEFT OUTER JOIN SYSLABEL CL ON CL.LABELGID = 'MENU' AND CL.LANGCODE = #{LANGKY} AND MM.MENULABEL = CL.LABELID
+        WHERE MGL.COMPID = #{COMPID} AND MGL.MENUGID = #{MENUGID} AND MGL.PMENUID = 'root'
+          AND MGL.DELETEYN = 'N'
+		ORDER BY MGL.SORTORDER
+	</select>
+	
+	<select id="MENUTREE_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT
+		    LEVEL, MGL.MENUID, MGL.PMENUID AS AMNUID, CL.LABEL AS CLLABEL,
+		    (CASE WHEN (CL.LABEL IS NULL OR CL.LABEL = '') THEN MM.MENUNAME ELSE CL.LABEL END) AS LBLTXL,
+		    MM.MENUNAME, MM.URI, MM.PARAM, CASE WHEN URI IS NOT NULL THEN 'PRG' ELSE 'FLD' END AS PRGFLG
+		FROM
+		(SELECT 
+			COMPID,
+             MENUGID,
+             MENUID,
+             SORTORDER,
+             PMENUID
+         FROM MSTMENUGL
+         WHERE COMPID = #{COMPID} AND MENUGID = #{MENUGID} AND DELETEYN = 'N') MGL
+		LEFT OUTER JOIN MSTMENU MM ON MM.MENUID = MGL.MENUID AND MM.COMPID = MGL.COMPID
+		LEFT OUTER JOIN SYSLABEL CL ON CL.LABELGID = 'MENU' AND CL.LANGCODE = #{LANGKY} AND MM.MENULABEL = CL.LABELID
+		START WITH MGL.PMENUID = #{PMENUID}
+		CONNECT BY PRIOR MGL.MENUID = MGL.PMENUID
+		ORDER BY MGL.SORTORDER
+	</select>
+	
+	<resultMap type="project.common.bean.User" id="UserMap">
+		<result property="userid" column="USERID"></result>
+		<result property="password" column="PASSWORD"></result>
+		<result property="username" column="USERNAME"></result>
+		<result property="compid" column="COMPID"></result>
+		<result property="deptid" column="DEPTID"></result>
+		<result property="menugid" column="MENUGID"></result>
+		<result property="usercode" column="USERCODE"></result>
+		<result property="logindate" column="LOGINDATE"></result>
+		<result property="logoutdate" column="LOGOUTDATE"></result>
+	</resultMap>
+	
+	<select id="LOGIN_OBJECT" parameterType="hashmap" resultMap="UserMap">
+		SELECT	
+			USERID,
+            CASE WHEN #{PASSWD} = PASSWORD 
+                 THEN 'Y' 
+                 ELSE 'N' 
+            END PASSWORD,
+			USERNAME,
+			COMPID,
+			MENUGID,
+			DEPTID AS DEPTID,
+			USERCODE,
+			USERTYPE,
+			TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') AS LOGINDATE,
+			TO_CHAR(LOGOUTDATE, 'YYYYMMDDHH24MISS') AS LOGOUTDATE,
+            LOCKCHECK,
+            USECHECK,
+            PWDCHDATE,
+            NVL((SYSDATE - PWDCHDATE),0) AS PWDCHDATECHK,
+            NVL(TRIM(FAILCNT),0) AS FAILCNT
+		FROM MSTUSER U
+		WHERE U.USERID = #{USERID}
+		<if test="COMPID != null and COMPID != ''">
+			AND U.COMPID = #{COMPID}
+		</if>
+			AND U.DELETECHECK != 'Y'
+	</select>
+	
+	<insert id="MSTUSER_INSERT"  parameterType="hashmap">
+		MERGE INTO MSTUSER
+			USING DUAL
+			ON (USERID = #{USERID})
+		WHEN MATCHED THEN
+        	UPDATE SET 
+        		USERNAME = #{NAME},
+        		GRADEID = #{TITLENM},
+        		DEPTID = #{DPTNM},
+                MENUGID = (CASE WHEN DEPTID = #{DPTNM} THEN MENUGID
+                ELSE '' END),
+        		COMPID = #{COMPID},
+<!--         		MENUGID = #{MENUGID}, -->
+        		USERG2 = #{OFFICE_TEL},
+        		USERG3 = #{MAILADDRESS},
+        		TELNUM = #{MOBILE_TEL},
+        		INWRK_YN = #{USAGE_STATE},
+        		UPDATEUSER = 'SYSTEM',
+				UPDATEDATE = SYSDATE
+            <if test="USAGE_STATE != null and USAGE_STATE != ''">
+                ,USECHECK = 'Y'
+            </if>
+		WHEN NOT MATCHED THEN
+        	INSERT 
+        		(USERID, PASSWORD, USERNAME, COMPID, USERTYPE, 
+        		MENUGID, DEPTID, GRADEID, USECHECK, USERCODE, 
+        		USERG2, USERG3, TELNUM, INWRK_YN,
+        		CREATEUSER, CREATEDATE, UPDATEUSER, UPDATEDATE)
+        	VALUES 
+        		(#{USERID}, #{EMPNUM}, #{NAME}, #{COMPID}, 'NEW', 
+        		#{MENUGID}, #{DPTNM}, #{TITLENM}, 'Y', #{EMPNUM}, 
+        		#{OFFICE_TEL}, #{MAILADDRESS}, #{MOBILE_TEL}, #{USAGE_STATE},
+        		'SYSTEM', SYSDATE, 'SYSTEM', SYSDATE)
+	</insert>
+	
+	<insert id="MSTUSER_GW_INSERT"  parameterType="hashmap">
+        INSERT INTO MSTUSER_GW
+            (USERID, PASSWORD, USERNAME, COMPID, USERTYPE, 
+            MENUGID, DEPTID, GRADEID, USERCODE, 
+            USERG2, USERG3, TELNUM, INWRK_YN,
+            CREATEUSER, CREATEDATE)
+        VALUES 
+            (#{USERID}, #{EMPNUM}, #{NAME}, #{COMPID}, 'NEW', 
+            #{MENUGID}, #{DPTNM}, #{TITLENM}, #{EMPNUM}, 
+            #{OFFICE_TEL}, #{MAILADDRESS}, #{MOBILE_TEL}, #{USAGE_STATE},
+            'SYSTEM', SYSDATE)
+    </insert>
+</mapper>

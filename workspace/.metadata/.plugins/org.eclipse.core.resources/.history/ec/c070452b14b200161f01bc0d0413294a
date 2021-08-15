@@ -1,0 +1,16 @@
+package com.common.carton;
+
+/**
+ * 포장할 박스를 선택하는 컴포넌트 
+ * @author Administrator
+ *
+ */
+public interface BoxSelector {
+
+	/**
+	 * 박스를 선택한다.
+	 * @return 박스 순번
+	 */
+	public int select();
+	
+}

@@ -1,0 +1,19 @@
+package com.common.carton;
+
+/**
+ * 포장할 박스를 찾지 못 했을때 발생하는 예외
+ * @author Administrator
+ *
+ */
+public class BoxNotFoundException extends Exception {
+
+	private static final long serialVersionUID = 1704614913293139237L;
+
+	/**
+	 * 생성자
+	 */
+	public BoxNotFoundException() {
+		super("Could not find the packing box as possible");
+	}
+	
+}

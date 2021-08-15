@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SJ10">
+
+	<!-- IP03 헤더 조회-->
+	<select id="SJ10_HEAD_LIST" parameterType="hashmap" resultType="DataMap">
+			SELECT DH.SADJKY AS SADJKY,
+			       DH.WAREKY AS WAREKY,
+			       DI.OWNRKY AS OWNRKY,
+			       DH.ADJUTY AS LOTA20,
+			       CV.SHORTX AS ADJUTY,
+			       DH.DOCDAT AS DOCDAT,
+			       DI.LOCAKY AS LOCAKY,
+			       DI.PACKID AS PACKID,
+			       SUM(DECODE(DH.ADJUTY, '402', (DI.QTADJU * -1), '403', (DI.QTADJU * -1), DI.QTADJU)) AS QTADJU,
+			       SUM(DECODE(DH.ADJUTY, '402', (DI.QTADJU * -1) * PM.UOMQTY, '403', (DI.QTADJU * -1) * PM.UOMQTY, DI.QTADJU * PM.UOMQTY)) AS QTYDJU,
+			       DI.DUOMKY AS DUOMKY,
+			       DI.SKUKEY AS SKUKEY,
+			       DI.LOTA06 AS LOTA06,
+			       DI.LOTA11 AS LOTA11,
+			       DI.LOTA12 AS LOTA12,
+			       DI.LOTA13 AS LOTA13,
+			       SM.DESC01 AS DESC01,
+			       PM.SKUKEY AS BOMSKU,
+			       SA.DESC01 AS DESC02,
+			       PM.UOMQTY AS UOMQTY,
+			       DI.CREDAT AS CREDAT,
+			       DI.CRETIM AS CRETIM,
+			       UR.NMLAST AS NMLAST
+			  FROM ADJDH DH INNER JOIN ADJDI DI ON DH.SADJKY = DI.SADJKY 
+			                INNER JOIN SKUMA SM ON DI.OWNRKY = SM.OWNRKY AND DI.SKUKEY = SM.SKUKEY 
+			                INNER JOIN (SELECT OWNRKY, PACKID, SKUKEY, UOMQTY, PAKQTY, CREDAT, CRETIM, CREUSR, LMODAT, LMOTIM, LMOUSR, INDBZL, INDARC, UPDCHK  
+			                              FROM PAKMA_BAK
+			                           UNION ALL 
+			                            SELECT OWNRKY, PACKID, SKUKEY, UOMQTY, PAKQTY, CREDAT, CRETIM, CREUSR, LMODAT, LMOTIM, LMOUSR, INDBZL, INDARC, UPDCHK 
+			                              FROM PAKMA ) PM ON DI.OWNRKY = PM.OWNRKY AND DI.PACKID = PM.PACKID 
+			                INNER JOIN SKUMA SA ON PM.OWNRKY = SA.OWNRKY AND PM.SKUKEY = SA.SKUKEY 
+			                INNER JOIN USRMA UR ON UR.USERID = DI.CREUSR 
+			                INNER JOIN DOCTM CV ON DH.ADJUTY = CV.DOCUTY AND CV.DOCCAT = '400'
+			 WHERE 1=1
+			 <if test="OWNRKY != NULL and OWNRKY != ''">  
+		        AND DI.OWNRKY = #{OWNRKY}  
+		     </if>
+		     <if test="WAREKY != NULL and WAREKY != ''">  
+		        AND DH.WAREKY = #{WAREKY}  
+		     </if>
+		     <if test="SADJKY != NULL and SADJKY != ''">  
+		        AND DH.SADJKY = #{SADJKY}  
+		     </if>    
+		     <if test="RANGE_SQL != null and RANGE_SQL != ''">  
+		        ${RANGE_SQL}  
+		     </if> 
+			    AND (DI.QTADJU > CASE WHEN DH.ADJUTY = '401' THEN 0 END OR 0 > CASE WHEN DH.ADJUTY IN ('402','403') THEN DI.QTADJU END)
+			GROUP BY DH.SADJKY, DH.WAREKY, DI.OWNRKY, DH.ADJUTY, CV.SHORTX, DH.DOCDAT, DI.LOCAKY, DI.PACKID, DI.DUOMKY, DI.SKUKEY, DI.LOTA06, DI.LOTA11, DI.LOTA12, DI.LOTA13, SM.DESC01, PM.SKUKEY, SA.DESC01, PM.UOMQTY, DI.CREDAT, DI.CRETIM, UR.NMLAST
+			ORDER BY DH.DOCDAT DESC, DH.SADJKY, DI.SKUKEY
+	</select>
+</mapper>

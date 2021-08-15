@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TASK">
+
+
+	<!-- TASDH 생성 VALDATION 체크 -->
+	<select id="TASDH_VALDATION_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT CASE WHEN (SELECT COUNT(1) FROM DOCTM WHERE DOCCAT = #{DOCCAT} AND DOCUTY = #{DOCUTY}) &lt; 1 THEN 'VALID_M0562'   
+		            WHEN (SELECT COUNT(1) FROM WAHMA WHERE WAREKY = #{WAREKY}) &lt; 1 THEN 'VALID_M0561'
+		            ELSE ''
+		        END AS MSGKEY
+		     , 1 as dummy
+		     , (SELECT DOCCAT FROM DOCTM WHERE DOCUTY = #{DOCUTY}) AS DOCCAT
+		  FROM DUAL
+	</select>
+
+	
+	<!-- TASDH 인서트 -->
+	<insert id="TASDH_INSERT"  parameterType="hashmap">
+		INSERT INTO TASDH(
+						 TASKKY 
+						,WAREKY 
+						,TASOTY 
+						,DOCDAT 
+						,DOCCAT 
+						,DRELIN 
+						,STATDO 
+						,QTTAOR 
+						,QTCOMP 
+						,TSPKEY 
+						,DOORKY 
+						,WARETG 
+						,PTNRKY 
+						,PTNRTY 
+						,PTNRNM 
+						,USRID1 
+						,UNAME1 
+						,DEPTID1
+						,DNAME1 
+						,USRID2 
+						,UNAME2 
+						,DEPTID2
+						,DNAME2 
+						,USRID3 
+						,UNAME3 
+						,DEPTID3
+						,DNAME3 
+						,USRID4 
+						,UNAME4 
+						,DEPTID4
+						,DNAME4 
+						,DOCTXT 
+						,CREDAT 
+						,CRETIM 
+						,CREUSR 
+						,LMODAT 
+						,LMOTIM 
+						,LMOUSR 
+						,INDBZL 
+						,INDARC 
+						,UPDCHK 
+						,KEEPTS 
+			         ) 
+			  VALUES(
+						 NVL(#{TASKKY} , ' ')    
+						,NVL(#{WAREKY} , ' ')    
+						,NVL(#{TASOTY} , ' ')    
+						,NVL(#{DOCDAT} , ' ')    
+						,NVL(#{DOCCAT} , ' ')    
+						,NVL(#{DRELIN} , ' ')    
+						,NVL(#{STATDO} , ' ')    
+						,NVL(#{QTTAOR} , 0)   
+						,NVL(#{QTCOMP} , 0)   
+						,NVL(#{TSPKEY} , ' ')    
+						,NVL(#{DOORKY} , ' ')    
+						,NVL(#{WARETG} , ' ')    
+						,NVL(#{PTNRKY} , ' ')    
+						,NVL(#{PTNRTY} , ' ')    
+						,NVL(#{PTNRNM} , ' ')    
+						,NVL(#{USRID1} , ' ')    
+						,NVL(#{UNAME1} , ' ')    
+						,NVL(#{DEPTID1}, ' ')    
+						,NVL(#{DNAME1} , ' ')    
+						,NVL(#{USRID2} , ' ')    
+						,NVL(#{UNAME2} , ' ')    
+						,NVL(#{DEPTID2}, ' ')    
+						,NVL(#{DNAME2} , ' ')    
+						,NVL(#{USRID3} , ' ')    
+						,NVL(#{UNAME3} , ' ')    
+						,NVL(#{DEPTID3}, ' ')    
+						,NVL(#{DNAME3} , ' ')    
+						,NVL(#{USRID4} , ' ')    
+						,NVL(#{UNAME4} , ' ')    
+						,NVL(#{DEPTID4}, ' ')    
+						,NVL(#{DNAME4} , ' ')    
+						,NVL(#{DOCTXT} , ' ')    
+						,TO_CHAR(SYSDATE, 'YYYYMMDD')    
+						,TO_CHAR(SYSDATE, 'HH24MISS') 
+						,NVL(#{SES_USER_ID} , ' ')    
+						,TO_CHAR(SYSDATE, 'YYYYMMDD')
+						,TO_CHAR(SYSDATE, 'HH24MISS')    
+						,NVL(#{SES_USER_ID} , ' ')    
+						,NVL(#{INDBZL} , ' ')    
+						,NVL(#{INDARC} , ' ')    
+						,NVL(#{UPDCHK} , 0)    
+						,NVL(#{KEEPTS} , ' ')    
+					 )
+								
+	</insert>
+	
+	
+
+	<!-- TASDI 생성 VALDATION 체크 -->
+	<select id="TASDI_VALDATION_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT CASE WHEN (SELECT COUNT(1) FROM LOCMA WHERE WAREKY = #{WAREKY} AND LOCAKY = #{LOCASR}) &lt; 1 THEN 'OUT_M0070'
+		            WHEN (SELECT COUNT(1) FROM LOCMA WHERE WAREKY = #{WAREKY} AND LOCAKY = #{LOCATG}) &lt; 1 THEN 'OUT_M0070'
+		            WHEN (SELECT COUNT(1) FROM LOCMA WHERE WAREKY = #{WAREKY} AND LOCAKY = #{LOCAAC}) &lt; 1 THEN 'OUT_M0070'
+		            WHEN (SELECT COUNT(1) FROM SKUMA SM INNER JOIN SKUWC SW ON SW.OWNRKY = SM.OWNRKY AND SW.SKUKEY = SM.SKUKEY INNER JOIN MEASI MI ON MI.OWNRKY = SW.OWNRKY AND MI.WAREKY = SW.WAREKY AND MI.MEASKY = SW.MEASKY WHERE SM.OWNRKY = #{OWNRKY} AND SM.SKUKEY = #{SKUKEY}) &lt; 1 THEN 'VALID_M0587'
+		            ELSE ''
+		        END AS MSGKEY
+		     , 1 as dummy
+		  FROM DUAL
+	</select>
+
+	
+	<!-- TASDI 인서트 -->
+	<insert id="TASDI_INSERT"  parameterType="hashmap">
+		INSERT INTO TASDI( 
+							 TASKKY              
+						    ,TASKIT              
+						    ,TASKTY              
+						    ,RSNCOD              
+						    ,STATIT              
+						    ,QTTAOR              
+						    ,QTCOMP              
+						    ,QTYFCN              
+						    ,OWNRKY              
+						    ,SKUKEY              
+						    ,LOTNUM              
+						    ,ACTCDT              
+						    ,ACTCTI              
+						    ,QTYUOM              
+						    ,TKFLKY              
+						    ,STEPNO              
+						    ,LSTTFL              
+						    ,LOCASR              
+						    ,SECTSR              
+						    ,PAIDSR              
+						    ,TRNUSR              
+						    ,STRUTY              
+						    ,SMEAKY              
+						    ,SUOMKY              
+						    ,QTSPUM              
+						    ,SDUOKY              
+						    ,QTSDUM              
+						    ,LOCATG              
+						    ,SECTTG              
+						    ,PAIDTG              
+						    ,TRNUTG              
+						    ,TTRUTY              
+						    ,TMEAKY              
+						    ,TUOMKY              
+						    ,QTTPUM              
+						    ,TDUOKY              
+						    ,QTTDUM              
+						    ,LOCAAC              
+						    ,SECTAC              
+						    ,PAIDAC              
+						    ,TRNUAC              
+						    ,ATRUTY              
+						    ,AMEAKY              
+						    ,AUOMKY              
+						    ,QTAPUM              
+						    ,ADUOKY              
+						    ,QTADUM              
+						    ,REFDKY              
+						    ,REFDIT              
+						    ,REFCAT              
+						    ,REFDAT              
+						    ,PURCKY              
+						    ,PURCIT              
+						    ,ASNDKY              
+						    ,ASNDIT              
+						    ,RECVKY              
+						    ,RECVIT              
+						    ,SHPOKY              
+						    ,SHPOIT              
+						    ,GRPOKY              
+						    ,GRPOIT              
+						    ,SADJKY              
+						    ,SADJIT              
+						    ,SDIFKY              
+						    ,SDIFIT              
+						    ,PHYIKY              
+						    ,PHYIIT              
+						    ,DROPID              
+						    ,DESC01              
+						    ,DESC02              
+						    ,ASKU01              
+						    ,ASKU02              
+						    ,ASKU03              
+						    ,ASKU04              
+						    ,ASKU05              
+						    ,EANCOD              
+						    ,GTINCD              
+						    ,SKUG01              
+						    ,SKUG02              
+						    ,SKUG03              
+						    ,SKUG04              
+						    ,SKUG05              
+						    ,GRSWGT              
+						    ,NETWGT              
+						    ,WGTUNT              
+						    ,LENGTH              
+						    ,WIDTHW              
+						    ,HEIGHT              
+						    ,CUBICM              
+						    ,CAPACT              
+						    ,WORKID              
+						    ,WORKNM              
+						    ,HHTTID              
+						    ,AREAKY              
+						    ,LOTA01              
+						    ,LOTA02              
+						    ,LOTA03              
+						    ,LOTA04              
+						    ,LOTA05              
+						    ,LOTA06              
+						    ,LOTA07              
+						    ,LOTA08              
+						    ,LOTA09              
+						    ,LOTA10              
+						    ,LOTA11              
+						    ,LOTA12              
+						    ,LOTA13              
+						    ,LOTA14              
+						    ,LOTA15              
+						    ,LOTA16              
+						    ,LOTA17              
+						    ,LOTA18              
+						    ,LOTA19              
+						    ,LOTA20              
+						    ,AWMSNO              
+						    ,AWMSTS              
+						    ,SMANDT              
+						    ,SEBELN              
+						    ,SEBELP              
+						    ,SZMBLNO             
+						    ,SZMIPNO             
+						    ,STRAID              
+						    ,SVBELN              
+						    ,SPOSNR              
+						    ,STKNUM              
+						    ,STPNUM              
+						    ,SWERKS              
+						    ,SLGORT              
+						    ,SDATBG              
+						    ,STDLNR              
+						    ,SSORNU              
+						    ,SSORIT              
+						    ,SMBLNR              
+						    ,SZEILE              
+						    ,SMJAHR              
+						    ,SXBLNR              
+						    ,SAPSTS              
+						    ,DOORKY              
+						    ,PTLT01              
+						    ,PTLT02              
+						    ,PTLT03              
+						    ,PTLT04              
+						    ,PTLT05              
+						    ,PTLT06              
+						    ,PTLT07              
+						    ,PTLT08              
+						    ,PTLT09              
+						    ,PTLT10              
+						    ,PTLT11              
+						    ,PTLT12              
+						    ,PTLT13              
+						    ,PTLT14              
+						    ,PTLT15              
+						    ,PTLT16              
+						    ,PTLT17              
+						    ,PTLT18              
+						    ,PTLT19              
+						    ,PTLT20              
+						    ,PASTKY              
+						    ,ALSTKY              
+						    ,SBKTXT              
+						    ,TASRSN              
+						    ,CREDAT              
+						    ,CRETIM              
+						    ,CREUSR              
+						    ,LMODAT              
+						    ,LMOTIM              
+						    ,LMOUSR              
+						    ,INDBZL              
+						    ,INDARC              
+						    ,UPDCHK              
+						)                    
+				 VALUES(                
+						 NVL(#{TASKKY} , ' ')		
+						,LPAD(#{TASKIT}, 6, '0')       
+						,NVL(#{TASKTY} , ' ')       
+						,NVL(#{RSNCOD} , ' ')       
+						,NVL(#{STATIT} , ' ')       
+						,NVL(#{QTTAOR} , 0)         
+						,NVL(#{QTCOMP} , 0)         
+						,NVL(#{QTYFCN} , 0)         
+						,NVL(#{OWNRKY} , ' ')       
+						,NVL(#{SKUKEY} , ' ')       
+						,NVL(#{LOTNUM} , ' ')       
+						
+				  		<if test='ACTCDT !=null  and ACTCDT.equalsIgnoreCase("Y")'>
+						,' '       
+						,' '       
+						</if>
+				  		<if test='ACTCDT !=null  and ACTCDT.equalsIgnoreCase("00000000")'>
+						,#{ACTCDT}       
+						,#{ACTCTI}       
+						</if>
+				  		<if test='ACTCDT !=null  and !ACTCDT.equalsIgnoreCase("Y") and !ACTCDT.equalsIgnoreCase("00000000")'>
+						,TO_CHAR(SYSDATE, 'YYYYMMDD')       
+						,TO_CHAR(SYSDATE, 'HH24MISS')  
+						</if>
+						
+						,NVL(#{QTYUOM} , 0)         
+						,NVL(#{TKFLKY} , ' ')       
+						,NVL(#{STEPNO} , ' ')       
+						,NVL(#{LSTTFL} , ' ')       
+						,NVL(#{LOCASR} , ' ')       
+						,NVL(#{SECTSR} , ' ')       
+						,NVL(#{PAIDSR} , ' ')       
+						,NVL(#{TRNUSR} , ' ')       
+						,NVL(#{STRUTY} , ' ')       
+						,NVL(#{SMEAKY} , ' ')       
+						,NVL(#{SUOMKY} , ' ')       
+						,NVL(#{QTSPUM} , 0)         
+						,NVL(#{SDUOKY} , ' ')       
+						,NVL(#{QTSDUM} , 0)         
+						,NVL(#{LOCATG} , ' ')       
+						,NVL(#{SECTTG} , ' ')       
+						,NVL(#{PAIDTG} , ' ')       
+						,NVL(#{TRNUTG} , ' ')       
+						,NVL(#{TTRUTY} , ' ')       
+						,NVL(#{TMEAKY} , ' ')       
+						,NVL(#{TUOMKY} , ' ')       
+						,NVL(#{QTTPUM} , 0)         
+						,NVL(#{TDUOKY} , ' ')       
+						,NVL(#{QTTDUM} , 0)         
+						,NVL(#{LOCAAC} , ' ')       
+						,NVL(#{SECTAC} , ' ')       
+						,NVL(#{PAIDAC} , ' ')       
+						,NVL(#{TRNUAC} , ' ')       
+						,NVL(#{ATRUTY} , ' ')       
+						,NVL(#{AMEAKY} , ' ')       
+						,NVL(#{AUOMKY} , ' ')       
+						,NVL(#{QTAPUM} , 0)         
+						,NVL(#{ADUOKY} , ' ')       
+						,NVL(#{QTADUM} , 0)         
+						,NVL(#{REFDKY} , ' ')       
+						,NVL(#{REFDIT} , ' ')       
+						,NVL(#{REFCAT} , ' ')       
+						,NVL(#{REFDAT} , ' ')       
+						,NVL(#{PURCKY} , ' ')       
+						,NVL(#{PURCIT} , ' ')       
+						,NVL(#{ASNDKY} , ' ')       
+						,NVL(#{ASNDIT} , ' ')       
+						,NVL(#{RECVKY} , ' ')       
+						,NVL(#{RECVIT} , ' ')       
+						,NVL(#{SHPOKY} , ' ')       
+						,NVL(#{SHPOIT} , ' ')       
+						,NVL(#{GRPOKY} , ' ')       
+						,NVL(#{GRPOIT} , ' ')       
+						,NVL(#{SADJKY} , ' ')       
+						,NVL(#{SADJIT} , ' ')       
+						,NVL(#{SDIFKY} , ' ')       
+						,NVL(#{SDIFIT} , ' ')       
+						,NVL(#{PHYIKY} , ' ')       
+						,NVL(#{PHYIIT} , ' ')       
+						,NVL(#{DROPID} , ' ')       
+						,NVL(#{DESC01} , ' ')       
+						,NVL(#{DESC02} , ' ')       
+						,NVL(#{ASKU01} , ' ')       
+						,NVL(#{ASKU02} , ' ')       
+						,NVL(#{ASKU03} , ' ')       
+						,NVL(#{ASKU04} , ' ')       
+						,NVL(#{ASKU05} , ' ')       
+						,NVL(#{EANCOD} , ' ')       
+						,NVL(#{GTINCD} , ' ')       
+						,NVL(#{SKUG01} , ' ')       
+						,NVL(#{SKUG02} , ' ')       
+						,NVL(#{SKUG03} , ' ')       
+						,NVL(#{SKUG04} , ' ')       
+						,NVL(#{SKUG05} , ' ')       
+						,NVL(#{GRSWGT} , 0)         
+						,NVL(#{NETWGT} , 0)         
+						,NVL(#{WGTUNT} , 0)         
+						,NVL(#{LENGTH} , 0)         
+						,NVL(#{WIDTHW} , 0)         
+						,NVL(#{HEIGHT} , 0)         
+						,NVL(#{CUBICM} , 0)         
+						,NVL(#{CAPACT} , 0)         
+						,NVL(#{WORKID} , ' ')       
+						,NVL(#{WORKNM} , ' ')       
+						,NVL(#{HHTTID} , ' ')       
+						,NVL(#{AREAKY} , ' ')       
+						,NVL(#{LOTA01} , ' ')       
+						,NVL(#{LOTA02} , ' ')       
+						,NVL(#{LOTA03} , ' ')       
+						,NVL(#{LOTA04} , ' ')       
+						,NVL(#{LOTA05} , ' ')       
+						,NVL(#{LOTA06} , ' ')       
+						,NVL(#{LOTA07} , ' ')       
+						,NVL(#{LOTA08} , ' ')       
+						,NVL(#{LOTA09} , ' ')       
+						,NVL(#{LOTA10} , ' ')       
+						,NVL(#{LOTA11} , ' ')       
+						,NVL(#{LOTA12} , ' ')       
+						,NVL(#{LOTA13} , ' ')       
+						,NVL(#{LOTA14} , ' ')       
+						,NVL(#{LOTA15} , ' ')       
+						,NVL(#{LOTA16} , 0)         
+						,NVL(#{LOTA17} , 0)         
+						,NVL(#{LOTA18} , 0)         
+						,NVL(#{LOTA19} , 0)         
+						,NVL(#{LOTA20} , 0)         
+						,NVL(#{AWMSNO} , ' ')       
+						,NVL(#{AWMSTS} , ' ')       
+						,NVL(#{SMANDT} , ' ')       
+						,NVL(#{SEBELN} , ' ')       
+						,NVL(#{SEBELP} , ' ')       
+						,NVL(#{SZMBLNO}, ' ')       
+						,NVL(#{SZMIPNO}, ' ')       
+						,NVL(#{STRAID} , ' ')       
+						,NVL(#{SVBELN} , ' ')       
+						,NVL(#{SPOSNR} , ' ')       
+						,NVL(#{STKNUM} , ' ')       
+						,NVL(#{STPNUM} , ' ')       
+						,NVL(#{SWERKS} , ' ')       
+						,NVL(#{SLGORT} , ' ')       
+						,NVL(#{SDATBG} , ' ')       
+						,NVL(#{STDLNR} , ' ')       
+						,NVL(#{SSORNU} , ' ')       
+						,NVL(#{SSORIT} , ' ')       
+						,NVL(#{SMBLNR} , ' ')       
+						,NVL(#{SZEILE} , ' ')       
+						,NVL(#{SMJAHR} , ' ')       
+						,NVL(#{SXBLNR} , ' ')       
+						,NVL(#{SAPSTS} , ' ')       
+						,NVL(#{DOORKY} , ' ')       
+						,NVL(#{PTLT01} , ' ')       
+						,NVL(#{PTLT02} , ' ')       
+						,NVL(#{PTLT03} , ' ')       
+						,NVL(#{PTLT04} , ' ')       
+						,NVL(#{PTLT05} , ' ')       
+						,NVL(#{PTLT06} , ' ')       
+						,NVL(#{PTLT07} , ' ')       
+						,NVL(#{PTLT08} , ' ')       
+						,NVL(#{PTLT09} , ' ')       
+						,NVL(#{PTLT10} , ' ')       
+						,NVL(#{PTLT11} , ' ')       
+						,NVL(#{PTLT12} , ' ')       
+						,NVL(#{PTLT13} , ' ')       
+						,NVL(#{PTLT14} , ' ')       
+						,NVL(#{PTLT15} , ' ')       
+						,NVL(#{PTLT16} , 0)         
+						,NVL(#{PTLT17} , 0)         
+						,NVL(#{PTLT18} , 0)         
+						,NVL(#{PTLT19} , 0)         
+						,NVL(#{PTLT20} , 0)         
+						,NVL(#{PASTKY} , ' ')       
+						,NVL(#{ALSTKY} , ' ')       
+						,NVL(#{SBKTXT} , ' ')       
+						,NVL(#{TASRSN} , ' ')       
+						,TO_CHAR(SYSDATE, 'YYYYMMDD')       
+						,TO_CHAR(SYSDATE, 'HH24MISS')   
+						,NVL(#{SES_USER_ID} , ' ')       
+						,TO_CHAR(SYSDATE, 'YYYYMMDD') 
+						,TO_CHAR(SYSDATE, 'HH24MISS')       
+						,NVL(#{SES_USER_ID} , ' ')       
+						,NVL(#{INDBZL} , ' ')       
+						,NVL(#{INDARC} , ' ')       
+						,NVL(#{UPDCHK} , 0)         
+				      )
+	</insert>
+	
+	<insert id="TASDR_INSERT"  parameterType="hashmap">
+		INSERT INTO TASDR(
+					     TASKKY 
+					    ,TASKIT 
+					    ,TASKIR 
+					    ,STOKKY 
+					    ,QTSTKM 
+					    ,QTSTKC 
+					    ,CREDAT 
+					    ,CRETIM 
+					    ,CREUSR 
+					    ,LMODAT 
+					    ,LMOTIM 
+					    ,LMOUSR 
+					    ,INDBZL 
+					    ,INDARC 
+					    ,UPDCHK 
+						)
+			     VALUES(
+					     NVL(#{TASKKY}, ' ')
+					    ,LPAD(NVL(#{TASKIT}, ' '), 6, '0')  
+					    ,NVL(#{TASKIR}, ' ')
+					    ,NVL(#{STOKKY}, ' ')
+					    ,NVL(#{QTSTKM}, 0)  
+					    ,NVL(#{QTSTKC}, 0)  
+					    ,TO_CHAR(SYSDATE,'YYYYMMDD')
+					    ,TO_CHAR(SYSDATE,'HH24MISS')
+					    ,NVL(#{SES_USER_ID}, ' ')
+					    ,TO_CHAR(SYSDATE,'YYYYMMDD')
+					    ,TO_CHAR(SYSDATE,'HH24MISS')
+					    ,NVL(#{SES_USER_ID}, ' ')
+					    ,NVL(#{INDBZL}, ' ')
+					    ,NVL(#{INDARC}, ' ')
+					    ,NVL(#{UPDCHK}, 0)  
+		         )
+	</insert>
+	
+</mapper>

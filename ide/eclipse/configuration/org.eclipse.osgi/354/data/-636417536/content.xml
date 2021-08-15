@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?metadataRepository version='1.1.0'?>
+<repository name='update site: http://www.apache.org/dist/geronimo/eclipse/updates/' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1.0.0'>
+  <properties size='3'>
+    <property name='p2.timestamp' value='1606195005333'/>
+    <property name='site.checksum' value='3198277949'/>
+    <property name='p2.mirrorsURL' value='http://geronimo.apache.org/devtools/geronimo-eclipse-update--xml.cgi'/>
+  </properties>
+  <references size='4'>
+    <repository uri='http://www.apache.org/dist/geronimo/eclipse/updates/' url='http://www.apache.org/dist/geronimo/eclipse/updates/' type='0' options='0'/>
+    <repository uri='http://www.apache.org/dist/geronimo/eclipse/updates/' url='http://www.apache.org/dist/geronimo/eclipse/updates/' type='1' options='0'/>
+    <repository uri='http://geronimo.apache.org/devtools/' url='http://geronimo.apache.org/devtools/' type='0' options='0'/>
+    <repository uri='http://geronimo.apache.org/devtools/' url='http://geronimo.apache.org/devtools/' type='1' options='0'/>
+  </references>
+</repository>

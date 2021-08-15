@@ -1,0 +1,209 @@
+@charset 'utf-8';
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, audio, canvas, details, figcaption, figure, footer, header, hgroup, mark, menu, meter, nav, output, progress, section, summary, time, video {font-family: Verdana, Tahoma, Arial, 고딕체, Sans-serif !important;} /* 2016.10.27 Arial 폰트로 동일하게 보이도록 */
+input, select, textarea, button {font-family: Verdana, Tahoma, Arial, 고딕체, Sans-serif !important;} 
+button {font-family: Verdana, Tahoma, Arial, 고딕체, Sans-serif !important;} 
+body {overflow: hidden;}
+select {outline:none;}
+input {outline:none;}
+.bg { position:absolute; top:0;left:0; width:100%; height:100%; /* filter: progid:DXImageTransform.Microsoft.AlphaImageLoader( src='arrow-big-right.jpg', sizingMethod='scale');
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/common/theme/gsfresh/images/login_img/loginbg.png', sizingMethod='scale')"; */}
+.bg img {position:absolute;top:0; left:0;width:100%;height:100%;}
+.foot_logo {position:absolute; bottom: 7%; left:50%; transform: translateX(-50%);text-align: center;}
+.foot_logo img{width: 60%;}
+.loginWrap {
+	width: 420px; height: 425px;
+	position:absolute;
+	left:50%; top:50%;
+	transform:translate(-50%,-50%);
+	background-color: rgba(0,0,0,0.65);
+	color: #fff;
+}
+.innerWrap .input {
+	margin-bottom: 20px;
+}
+.loginWrap > .innerWrap {width: 80%;
+	margin: 0 auto;
+	border-radius:5px;
+}
+.GSRetail {position: fixed; top:15px; left:15px;}
+/* .loginWrap .logo { margin:0;padding:50px 0; text-align:center;} */
+.loginWrap .logo { 
+	margin:0;
+	padding:45px 0; 
+	text-align: center;
+	font-family: sans-serif !important;
+	letter-spacing: 4px;
+	-webkit-text-stroke: 2px;
+}
+.loginWrap .logo span{
+	font-style: italic;
+	font-family: serif !important;
+	-webkit-text-stroke: 1px;
+	letter-spacing: 2px;
+}
+.loginWrap #USERID,
+.loginWrap #PASSWD { box-sizing: border-box;width:100%;padding:0 0 0 10px; height:47px; line-height:47px; color:#fff; font-size:14px; border: 0 none; border-bottom: 1px solid #fff; background-color: rgba(0,0,0,0);}
+.loginWrap .changePassword { position:absolute; right:31px; top:88px;}
+.loginWrap .changePassword a {
+	display:block; width:108px; height:47px; text-align:center; border-radius:5px; height:47px; line-height:47px;
+	font-size:12px; color:#fff;
+	/*background: #214e8f; /* Old browsers */
+	background: -moz-linear-gradient(top,  #214e8f 0%, #193a6b 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#214e8f), color-stop(100%,#193a6b)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #214e8f 0%,#193a6b 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #214e8f 0%,#193a6b 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #214e8f 0%,#193a6b 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #214e8f 0%,#193a6b 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#214e8f', endColorstr='#193a6b',GradientType=0 ); /* IE6-9 */
+}
+
+.selectoption {
+	width:100%; height:47px; line-height: 46px;font-size:14px;
+	position:relative;  border-bottom:1px solid #fff;padding-left: 10px;
+	box-sizing:border-box;
+	background: url("/common/theme/gsfresh/images/login_img/top.png") no-repeat 95% center;
+	cursor:pointer;
+}
+.selectoption p {margin:0;padding:0;}
+.selectoption ul {
+	list-style:none; padding:0;
+	margin:0;
+	position:absolute;  
+	left:0;
+	top:100%;
+	width:100%;
+}
+.selectoption ul {z-index:9999;}
+ .selectoption ul li {
+	 font-size:14px;
+	 height: 46px;
+	 line-height: 46px;
+	 width:100%;
+	 padding-left: 10px;
+	 box-sizing:border-box;
+	 background-color: rgba(0,0,0,0.8);
+}
+.selectoption ul li:hover {
+  background-color:#000;
+ }
+.loginWrap .selectWrap {margin-top: 7px; height:55px;}
+.loginWrap .selectWrap button {
+	float:right;color: #fff; 
+	background-color: rgba(0,0,0,0);
+ 	border: 0 none; height: 25px; 
+ 	cursor:pointer; 
+ }
+.loginWrap .selectWrap button:nth-child(1) {float:left;}
+.loginWrap input[type="submit"] {
+	margin-top:15px;width:100%; height:47px; 
+	line-height:47px; border:0 none;color:#fff;
+	font-size:18px; font-weight:bold; cursor:pointer;
+	background-color: #7fc241;  
+/* Old browsers */
+/* 	background: -moz-linear-gradient(top,  #203557 0%, #182741 100%); FF3.6+
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#203557), color-stop(100%,#182741)); Chrome,Safari4+
+	background: -webkit-linear-gradient(top,  #203557 0%,#182741 100%); Chrome10+,Safari5.1+
+	background: -o-linear-gradient(top,  #203557 0%,#182741 100%); Opera 11.10+
+	background: -ms-linear-gradient(top,  #203557 0%,#182741 100%); IE10+
+	background: linear-gradient(to bottom,  #203557 0%,#182741 100%); W3C
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#203557', endColorstr='#182741',GradientType=0 ); IE6-9 */
+}
+.contact { position:fixed; bottom:0; left:0; width:100%; background-color:#000;}
+.contact p.copywrite { padding:0 0 0 10px; color:#fff; font-size:11px; opacity:0.5; filter:alpha(opacity=50);}
+.contact p.copywrite span {color:#0fed03;}
+.contentLoading { position:fixed; left:0; top:0; bottom:0; right:0; z-index:999999; background:#fff url("/common/theme/darkness/images/loading.jpg") no-repeat center center; opacity:0.85;display: none;}
+
+
+
+/* password change : indexPOP.jsp*/
+.changePwBg {
+	position: fixed;
+	left: 0; top: 0;
+	width: 100%; height: 100%;
+	background: url(/common/theme/gsfresh/images/login_img/loginbg.jpg) no-repeat center center;
+}
+
+.outerwrap {
+	width: 100%; height: 100%;
+	background: rgb(0, 0, 0, .5);
+	padding-top: 15px;
+}
+.change {
+	margin: 0 auto;
+	text-align: center;
+	width: 100%;
+}
+.change h1,
+.change .check p {
+	margin: 0;
+}
+.change .logo {
+	margin: 15px 0;
+}
+.change .check,
+.change .id,
+.change .pw,
+.change .btn {
+	width: 60%;
+	margin: 0 auto 10px;
+	line-height: 40px;
+}
+.change .check input,
+.change .id input,
+.change .pw input,
+.change .btn input {
+	width: 100%;
+	height: 40px;
+	border: none;
+	box-sizing: border-box;
+	font-size: 14px;
+	padding-left: 13px;
+}
+.change .check > input {
+	margin-bottom: 10px;
+}
+.change .checkNum {
+	position: relative;
+	height: 40px;
+}
+.change .checkNum input,
+.change .checkNum button {
+	position: absolute;
+	top: 0;
+}
+.change .checkNum input {
+	left: 0;
+	width: 75%;
+}
+.change .checkNum button {
+	right: 0;
+	width: 23%; height: 40px;
+	display: block;
+	border: none;
+	background: #7fc241;
+	color: #fff;
+	font-weight: bold;
+	cursor:pointer;
+}
+.change .btn input {
+	background: #7fc241;
+	color: #fff;
+	font-size: 16px;
+	font-weight: bold;
+	cursor: pointer;
+}
+.change .bottomText {
+	color: #fff;
+	font-size: 12px;
+	margin-top: 44px;
+	margin-left: 20px;
+	text-align: left;
+}
+
+
+.radioDiv {color: #fff; padding: 0 0 15px;}
+
+
+
+
+

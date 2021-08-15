@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DaerimDAS">
+
+	<!-- **[DR11] 고정셀관리 조회 -->
+	<select id="DR11_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT DASTYP AS DASTYP
+		     , CELLNO AS CELLNO
+		     , CELTYP AS CELTYP
+		     , CLPATH AS CLPATH
+		     , TEXT01 AS TEXT01
+		     , CREDAT AS CREDAT
+		     , CRETIM AS CRETIM
+		     , CREUSR AS CREUSR
+		     , LMODAT AS LMODAT
+		     , LMOTIM AS LMOTIM
+		     , LMOUSR AS LMOUSR
+		  FROM DASCL
+		 WHERE DASTYP = #{DASTYP}
+		 ORDER BY CELLNO
+    </select>
+	
+	<!-- **[DR11] 고정셀관리 생성,수정 Merge -->
+	<update id="DR11_UPDATE"  parameterType="hashmap">
+		MERGE INTO DASCL  
+		USING DUAL
+		   ON ( DASTYP = #{DASTYP} AND CELLNO = #{CELLNO})
+		 WHEN MATCHED THEN
+		      UPDATE SET CELTYP = #{CELTYP},
+		                 CLPATH = #{CLPATH},
+		                 TEXT01 = NVL(#{TEXT01}, ' '),
+		                 LMODAT = TO_CHAR(SYSDATE, 'YYYYMMDD'),
+		                 LMOTIM = TO_CHAR(SYSDATE, 'HH24MISS'),
+		                 LMOUSR = #{SES_USER_ID}
+		 WHEN NOT MATCHED THEN
+		      INSERT (DASTYP, CELLNO, CELTYP, CLPATH, TEXT01, CREDAT, CRETIM, CREUSR )
+		      VALUES (#{DASTYP}, LPAD(#{CELLNO}, 3, '0'), #{CELTYP}, #{CLPATH}, NVL(#{TEXT01}, ' '), TO_CHAR(SYSDATE, 'YYYYMMDD'), TO_CHAR(SYSDATE, 'HH24MISS'), #{SES_USER_ID} )
+	</update>
+    
+	
+	<!-- **[DR11] 고정셀관리 삭제 -->
+	<delete id="DR11_DELETE"  parameterType="hashmap">
+		DELETE FROM DASCL
+		 WHERE DASTYP = #{DASTYP}
+		   AND CELLNO = #{CELLNO}
+	</delete>
+	
+	<!-- **[DR12] 고정셀매핑 조회 -->
+	<select id="DR12_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT DM.DASTYP AS DASTYP,
+		       DM.CELLNO AS CELLNO,
+		       DM.PTNRKY AS PTNRKY,
+		       BZ.NAME01 AS PTNRNM,
+		       DM.TEXT01 AS TEXT01,
+		       DM.CREDAT AS CREDAT,
+		       DM.CRETIM AS CRETIM,
+		       DM.CREUSR AS CREUSR,
+		       DM.LMODAT AS LMODAT,
+		       DM.LMOTIM AS LMOTIM,
+		       DM.LMOUSR AS LMOUSR
+		  FROM DASMP DM INNER JOIN BZPTN BZ ON BZ.OWNRKY = '2200' AND BZ.PTNRTY = '0001' AND BZ.PTNRKY = DM.PTNRKY
+		 WHERE DM.DASTYP = #{DASTYP}
+		 ORDER BY DM.CELLNO
+ 	</select>
+	
+	<!-- **[DR12] 고정셀매핑 Insert -->
+	<insert id="DR12_INSERT"  parameterType="hashmap">
+		INSERT INTO DASMP
+		(
+		   DASTYP,
+		   CELLNO,
+		   PTNRKY,
+		   TEXT01,
+		   CREDAT,
+		   CRETIM,
+		   CREUSR,
+		   LMODAT,
+		   LMOTIM,
+		   LMOUSR
+		)
+		VALUES(
+		   trim(#{DASTYP}),
+		   LPAD(#{CELLNO}, 3, '0'),
+		   #{PTNRKY},
+		   <if test="TEXT01 != null and TEXT01 != ''">trim(#{TEXT01}),</if><if test="TEXT01 == ''">' ',</if>
+		   TO_CHAR(SYSDATE,'YYYYMMDD'),
+		   TO_CHAR(SYSDATE, 'HH24MISS'),
+		   #{SES_USER_ID},
+		   ' ',
+		   ' ',
+		   ' '
+		)
+	</insert>
+	
+	<!-- **[DR12] 고정셀매핑 Update -->
+	<update id="DR12_UPDATE"  parameterType="hashmap">
+		UPDATE DASMP
+		   SET TEXT01 = NVL(#{TEXT01}, ' '),
+		       LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD'),
+		       LMOTIM = TO_CHAR(SYSDATE,'HH24MISS'),
+		       LMOUSR = #{LMOUSR}
+		 WHERE 1 = 1
+		   AND DASTYP = #{DASTYP}
+		   AND CELLNO = #{CELLNO}
+		   AND PTNRKY = #{PTNRKY}
+	</update>
+	
+	<!-- **[DR12] 고정셀매핑 Delete -->
+	<delete id="DR12_DELETE"  parameterType="hashmap">
+		DELETE FROM DASMP
+		 WHERE DASTYP = #{DASTYP}
+		   AND CELLNO = #{CELLNO}
+		   AND PTNRKY = #{PTNRKY}
+	</delete>
+	
+	
+	<!-- **[DR12] 고정셀매핑  중복체크 -->
+	<select id="DR12_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(*) AS CHK
+		  FROM DASMP
+		 WHERE DASTYP = #{DASTYP}
+		   AND CELLNO = #{CELLNO}
+		   AND PTNRKY = #{PTNRKY}
+	</select>
+	
+	
+
+	<!-- **[DR13] DAS파일 생성(안산) 조회 (기존 01,02 쿼리를 합치고 if로 알맞는 쿼리를 적용한다.)-->
+	<select id="DR13_LIST" parameterType="hashmap" resultType="DataMap">
+	<!-- 기존 OUTBOUND.DAS.FIND01 쿼리 -->
+	<if test='OPTYPE == "01"'>
+		SELECT /*+ ORDERED INDEX(I IDX_IFWMS113K10)*/  I.ORDDAT AS ORDDAT,
+		       I.PTNROD AS PTNROD,
+		       B.NAME01 AS PTNRODNM,
+		       I.PTNRTO AS PTNRTO,
+		       B2.NAME01 AS PTNRTONM,
+		       C.CARNUM AS CARNUM,
+		       C.DESC01 AS CARNM
+		  FROM IFWMS113 I INNER JOIN BZPTN B ON B.OWNRKY = I.OWNRKY AND B.PTNRKY = I.PTNROD AND B.PTNRTY = '0001'
+		                  INNER JOIN BZPTN B2 ON B2.OWNRKY = I.OWNRKY AND B2.PTNRKY = I.PTNRTO AND B2.PTNRTY = '0007'
+		                  INNER JOIN SKUMA S ON S.OWNRKY = I.OWNRKY AND S.SKUKEY = I.SKUKEY
+		                  INNER JOIN (SELECT F.OWNRKY, F.WAREKY, F.PTNRKY, C.CARNUM, C.DESC01
+		                                FROM CARFX F INNER JOIN CARMA C ON F.OWNRKY = C.OWNRKY AND F.WAREKY = C.WAREKY AND F.CARNUM = C.CARNUM
+		                               WHERE F.OWNRKY = #{OWNRKY}
+		                                 AND F.WAREKY = #{WAREKY}
+		                              ) C ON C.OWNRKY = I.OWNRKY AND C.PTNRKY = I.PTNROD
+		 WHERE I.MANDT = 'SAP'
+		   AND I.XSTAT IN ('R', 'D')
+		   AND I.C00102 = 'Y'
+		   AND I.DOCUTY = '211'
+		   AND I.DIRDVY = '01'
+		   AND I.DIRSUP IN ('000', '004')
+		   AND I.OWNRKY = #{OWNRKY}
+		   AND I.WAREKY = #{WAREKY}
+		   AND I.ORDDAT = #{ORDDAT}  
+		   AND B2.PTNG08 = #{PTNG08}
+		
+		 GROUP BY I.ORDDAT, I.PTNROD, B.NAME01, I.PTNRTO, B2.NAME01, C.CARNUM, C.DESC01
+		 ORDER BY I.ORDDAT, I.PTNROD, B.NAME01, I.PTNRTO, B2.NAME01, C.CARNUM, C.DESC01	
+	</if>
+	<!-- 기존 OUTBOUND.DAS.FIND02 쿼리 -->
+	<if test='OPTYPE == "02"'>
+		SELECT /*+ ORDERED INDEX(I IDX_IFWMS113K10)*/I.ORDDAT AS ORDDAT,
+		       I.PTNROD AS PTNROD,
+		       B.NAME01 AS PTNRODNM,
+		       I.PTNRTO AS PTNRTO,
+		       B2.NAME01 AS PTNRTONM,
+		       C.CARNUM AS CARNUM,
+		       C.DESC01 AS CARNM
+		  FROM IFWMS113 I INNER JOIN BZPTN B ON B.OWNRKY = I.OWNRKY AND B.PTNRKY = I.PTNROD AND B.PTNRTY = '0001'
+		                  INNER JOIN BZPTN B2 ON B2.OWNRKY = I.OWNRKY AND B2.PTNRKY = I.PTNRTO AND B2.PTNRTY = '0007'
+		                  INNER JOIN SKUMA S ON S.OWNRKY = I.OWNRKY AND S.SKUKEY = I.SKUKEY
+		                  INNER JOIN (SELECT F.OWNRKY, F.WAREKY, F.PTNRKY, C.CARNUM, C.DESC01
+		                                FROM CARFX F INNER JOIN CARMA C ON F.OWNRKY = C.OWNRKY AND F.WAREKY = C.WAREKY AND F.CARNUM = C.CARNUM
+		                               WHERE F.OWNRKY = #{OWNRKY}
+		                                 AND F.WAREKY = #{WAREKY}
+		                              ) C ON C.OWNRKY = I.OWNRKY AND C.PTNRKY = I.PTNROD
+		 WHERE I.MANDT = 'SAP'
+		   AND I.XSTAT IN ('R', 'D')
+		   AND I.C00102 = 'Y'
+		   AND I.DOCUTY = '211'
+		   AND I.DIRDVY = '01'
+		   AND I.DIRSUP IN ('000', '004')
+		   AND I.OWNRKY = #{OWNRKY}
+		   AND I.WAREKY = #{WAREKY}
+		   AND I.ORDDAT = #{ORDDAT}
+		   <if test='PTNG08 != null and PTNG08 == "17"'>
+		   AND B2.PTNG08 IN ('17', '18')
+		   </if>
+		   <if test='PTNG08 != null and PTNG08 == "18"'>
+		   AND B2.PTNG08 IN ('17', '18')
+		   </if>
+		   <if test='PTNG08 != null and PTNG08 != "17"'>
+		   AND B2.PTNG08 = #{PTNG08}
+		   </if>
+		 GROUP BY I.ORDDAT, I.PTNROD, B.NAME01, I.PTNRTO, B2.NAME01, C.CARNUM, C.DESC01
+		 ORDER BY I.ORDDAT, I.PTNROD, B.NAME01, I.PTNRTO, B2.NAME01, C.CARNUM, C.DESC01	
+	</if>
+    </select>
+    
+    
+	<!-- DR13 콤보 -->
+	<select id="DR13_CMCDV_COMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT CMCDVL AS VALUE_COL
+		     , CDESC1 AS TEXT_COL
+		  FROM CMCDV 
+		 WHERE CMCDKY = 'PTNG08'
+ 		   AND CMCDVL != '00' 
+	</select>
+	
+
+	<!-- [DR13] DAS FILE 기반데이터 생성  안산 -->
+	<update id="P_DAS_PICKINGLIST_01_UPDATE" parameterType="hashmap">
+   		{ call P_DAS_PICKINGLIST_01(#{ORDDAT}, #{PTNG08}, #{SES_USER_ID}) }
+ 	</update>
+
+
+	<!-- [DR13] DAS FILE 기반데이터 생성  안산(이마트)-->
+	<update id="P_DAS_PICKINGLIST_02_UPDATE" parameterType="hashmap">
+   		{ call P_DAS_PICKINGLIST_02(#{ORDDAT}, #{PTNG08}, #{SES_USER_ID}) }
+ 	</update>
+    
+    
+	<!-- [DR13] DAS파일 생성 1-1 -->
+	<select id="CREATE_DASFILE01_1_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT CASE DP.CELLNO WHEN '141' THEN 'F7911'
+		                      WHEN '175' THEN 'F6195'
+		                      WHEN '269' THEN 'F6268'
+		                      ELSE CASE B.PTNL10 WHEN ' ' THEN SUBSTR(DP.PTNROD, 3, 7)
+		                                         ELSE B.PTNL10 END END AS PTNROD,
+		       CASE DP.CELLNO WHEN '141' THEN '명일물류 대구센터'
+		                      WHEN '175' THEN '안성오양센터'
+		                      WHEN '269' THEN '광주SCM'
+		                      ELSE regexp_replace(Regexp_replace(trim(lower(B.NAME01)),'[^a-z,A-Z,0-9,ㄱ-ㅎ,가-힐,),(]',''),'[[:space:]]{1,}',' ') END AS PTNRODNM
+		  FROM DASPK DP INNER JOIN BZPTN B ON B.OWNRKY = #{OWNRKY} AND B.PTNRKY = DP.PTNROD AND B.PTNRTY = '0001'
+		                INNER JOIN BZPTN B2 ON B2.OWNRKY = #{OWNRKY} AND B2.PTNRKY = DP.PTNRTO AND B2.PTNRTY = '0007'
+		 WHERE DP.DASTYP = #{DASTYP}
+		   AND DP.ORDDAT = #{ORDDAT}
+		   AND B2.PTNG08 = #{PTNG08}
+		 GROUP BY CASE DP.CELLNO WHEN '141' THEN 'F7911'
+		                      WHEN '175' THEN 'F6195'
+		                      WHEN '269' THEN 'F6268'
+		                      ELSE CASE B.PTNL10 WHEN ' ' THEN SUBSTR(DP.PTNROD, 3, 7)
+		                                         ELSE B.PTNL10 END END,
+		       CASE DP.CELLNO WHEN '141' THEN '명일물류 대구센터'
+		                      WHEN '175' THEN '안성오양센터'
+		                      WHEN '269' THEN '광주SCM'
+		                      ELSE regexp_replace(Regexp_replace(trim(lower(B.NAME01)),'[^a-z,A-Z,0-9,ㄱ-ㅎ,가-힐,),(]',''),'[[:space:]]{1,}',' ') END
+		                                         
+		 ORDER BY 1, 2
+	</select>
+    
+    
+	<!-- [DR13] DAS파일 생성 1-2 -->
+	<select id="CREATE_DASFILE01_2_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT DISTINCT DECODE(S.DESC03, ' ', DP.SKUKEY, S.DESC03) AS SKUKEY,
+		       regexp_replace(Regexp_replace(trim(lower(S.DESC01)),'[^a-z,A-Z,0-9,ㄱ-ㅎ,가-힐,0-9,),(]',''),'[[:space:]]{1,}',' ') AS DESC01,
+		       DECODE(SUBSTR(S.LOTL01, 8, 6), '', SUBSTR(DECODE(S.DESC03, ' ', DP.SKUKEY, S.DESC03), 0, 6), SUBSTR(S.LOTL01, 8, 6)) AS EANCOD,
+		       NVL(regexp_replace(Regexp_replace(trim(lower(S.ASKL04)),'[^a-z,A-Z,0-9,ㄱ-ㅎ,가-힐,),(]',''),'[[:space:]]{1,}',' '), ' ') AS ASKL04,
+		       REPLACE(S.NETWGT * 1000, '.', '') AS NETWGT,
+		       S.QTDUOM AS QTDUOM
+		  FROM DASPK DP INNER JOIN BZPTN B2 ON B2.OWNRKY = #{OWNRKY} AND B2.PTNRKY = DP.PTNRTO AND B2.PTNRTY = '0007'
+		                INNER JOIN SKUMA S ON S.OWNRKY = #{OWNRKY} AND S.SKUKEY = DP.SKUKEY
+		 WHERE DP.DASTYP = #{DASTYP}
+		   AND DP.ORDDAT = #{ORDDAT}
+		   AND B2.PTNG08 = #{PTNG08}
+		 ORDER BY NVL(regexp_replace(Regexp_replace(trim(lower(S.ASKL04)),'[^a-z,A-Z,0-9,ㄱ-ㅎ,가-힐,),(]',''),'[[:space:]]{1,}',' '), ' ')
+	</select>
+    
+    
+	<!-- [DR13] DAS파일 생성 1-3 -->
+	<select id="CREATE_DASFILE01_3_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT DISTINCT DP.CARNUM AS CARNUM,
+		       C.DESC01 AS CARNM
+		  FROM DASPK DP INNER JOIN BZPTN B2 ON B2.OWNRKY = '2200' AND B2.PTNRKY = DP.PTNRTO AND B2.PTNRTY = '0007'
+		                INNER JOIN CARMA C ON C.OWNRKY = '2200' AND C.WAREKY = #{WAREKY} AND C.CARNUM = DP.CARNUM
+		 WHERE DP.DASTYP = #{DASTYP}
+		   AND DP.ORDDAT = #{ORDDAT}
+		   AND B2.PTNG08 = #{PTNG08}
+		 ORDER BY DP.CARNUM, C.DESC01
+	</select>
+    
+    
+	<!-- [DR13] DAS파일 생성 1-4 -->
+	<select id="CREATE_DASFILE01_4_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT TO_CHAR(SYSDATE, 'YYYYMMDD') AS ORDDAT, 
+		       CASE DP.CELLNO WHEN '141' THEN 'F7911'
+		                      WHEN '175' THEN 'F6195'
+		                      WHEN '269' THEN 'F6268'
+		                      ELSE CASE B.PTNL10 WHEN ' ' THEN SUBSTR(DP.PTNROD, 3, 7)
+		                                         ELSE B.PTNL10 END END AS PTNROD,
+		       DECODE(S.DESC03, ' ', DP.SKUKEY, S.DESC03) AS SKUKEY,
+		       SUM(DP.QTYREQ) AS QTYREQ,
+		       DP.CELLNO AS LOCADK,
+		       DP.SHPSEQ AS SHIPSQ,
+		       DP.CARNUM AS CARNUM,
+		       DP.CELLNO AS SORTSQ
+		  FROM DASPK DP INNER JOIN BZPTN B ON B.OWNRKY = #{OWNRKY} AND B.PTNRKY = DP.PTNROD AND B.PTNRTY = '0001'
+		                INNER JOIN BZPTN B2 ON B2.OWNRKY = #{OWNRKY} AND B2.PTNRKY = DP.PTNRTO AND B2.PTNRTY = '0007'
+		                INNER JOIN SKUMA S ON S.OWNRKY = #{OWNRKY} AND S.SKUKEY = DP.SKUKEY
+		 WHERE DP.DASTYP = #{DASTYP}
+		   AND DP.ORDDAT = #{ORDDAT}
+		   AND B2.PTNG08 = #{PTNG08}
+		 GROUP BY CASE DP.CELLNO WHEN '141' THEN 'F7911'
+		                         WHEN '175' THEN 'F6195'
+		                         WHEN '269' THEN 'F6268'
+		                         ELSE CASE B.PTNL10 WHEN ' ' THEN SUBSTR(DP.PTNROD, 3, 7)
+		                                            ELSE B.PTNL10 END END,
+		          DECODE(S.DESC03, ' ', DP.SKUKEY, S.DESC03), DP.CELLNO, DP.SHPSEQ, DP.CARNUM, DP.CELLNO
+		 ORDER BY DP.CELLNO, DECODE(S.DESC03, ' ', DP.SKUKEY, S.DESC03)
+	</select>
+	
+    
+	<!-- [DR13] DAS파일 생성 2-1 -->
+	<select id="CREATE_DASFILE02_1_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT DISTINCT CASE B.PTNL10 WHEN ' ' THEN SUBSTR(DP.PTNROD, 3, 7)
+		                              ELSE B.PTNL10 END AS PTNROD,
+		       regexp_replace(Regexp_replace(trim(lower(B.NAME01)),'[^a-z,A-Z,0-9,ㄱ-ㅎ,가-힐,),(]',''),'[[:space:]]{1,}',' ') AS PTNRODNM
+		  FROM DASPK DP INNER JOIN BZPTN B ON B.OWNRKY = #{OWNRKY} AND B.PTNRKY = DP.PTNROD AND B.PTNRTY = '0001'
+		                INNER JOIN BZPTN B2 ON B2.OWNRKY = #{OWNRKY} AND B2.PTNRKY = DP.PTNRTO AND B2.PTNRTY = '0007'
+		 WHERE DP.DASTYP = #{DASTYP}
+		   AND DP.ORDDAT = #{ORDDAT}
+		   <if test='PTNG08 != null and PTNG08 == "17"'>
+		   AND B2.PTNG08 IN ('17', '18')
+		   </if>
+		   <if test='PTNG08 != null and PTNG08 == "18"'>
+		   AND B2.PTNG08 IN ('17', '18')
+			</if>
+		   <if test='PTNG08 != null and PTNG08 != "17"'>
+		   AND B2.PTNG08 = #{PTNG08}
+		   </if>
+		 ORDER BY CASE B.PTNL10 WHEN ' ' THEN SUBSTR(DP.PTNROD, 3, 7) ELSE B.PTNL10 END
+	</select>
+	
+    
+	<!-- [DR13] DAS파일 생성 2-2 -->
+	<select id="CREATE_DASFILE02_2_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT DISTINCT DECODE(S.DESC03, ' ', DP.SKUKEY, S.DESC03) AS SKUKEY,
+		       regexp_replace(Regexp_replace(trim(lower(S.DESC01)),'[^a-z,A-Z,0-9,ㄱ-ㅎ,가-힐,0-9,),(]',''),'[[:space:]]{1,}',' ') AS DESC01,
+		       DECODE(SUBSTR(S.LOTL01, 8, 6), '', SUBSTR(DECODE(S.DESC03, ' ', DP.SKUKEY, S.DESC03), 0, 6), SUBSTR(S.LOTL01, 8, 6)) AS EANCOD,
+		       NVL(regexp_replace(Regexp_replace(trim(lower(S.ASKL04)),'[^a-z,A-Z,0-9,ㄱ-ㅎ,가-힐,0-9,),(]',''),'[[:space:]]{1,}',' '), ' ') AS ASKL04,
+		       REPLACE(S.NETWGT * 1000, '.', '') AS NETWGT,
+		       S.QTDUOM AS QTDUOM
+		  FROM DASPK DP INNER JOIN BZPTN B2 ON B2.OWNRKY = #{OWNRKY} AND B2.PTNRKY = DP.PTNRTO AND B2.PTNRTY = '0007'
+		                INNER JOIN SKUMA S ON S.OWNRKY = #{OWNRKY} AND S.SKUKEY = DP.SKUKEY
+		 WHERE DP.DASTYP = #{DASTYP}
+		   AND DP.ORDDAT = #{ORDDAT}
+		   <if test='PTNG08 != null and PTNG08 == "17"'>
+		   AND B2.PTNG08 IN ('17', '18')
+		   </if>
+		   <if test='PTNG08 != null and PTNG08 == "18"'>
+		   AND B2.PTNG08 IN ('17', '18')
+			</if>
+		   <if test='PTNG08 != null and PTNG08 != "17"'>
+		   AND B2.PTNG08 = #{PTNG08}
+		   </if>
+		 ORDER BY NVL(regexp_replace(Regexp_replace(trim(lower(S.ASKL04)),'[^a-z,A-Z,0-9,ㄱ-ㅎ,가-힐,0-9,),(]',''),'[[:space:]]{1,}',' '), ' ')
+ 	</select>
+	
+    
+	<!-- [DR13] DAS파일 생성 2-3 -->
+	<select id="CREATE_DASFILE02_3_LIST" parameterType="hashmap" resultType="DataMap">
+	 	SELECT DISTINCT DP.CARNUM AS CARNUM,
+		       C.DESC01 AS CARNM
+		  FROM DASPK DP INNER JOIN BZPTN B2 ON B2.OWNRKY = '2200' AND B2.PTNRKY = DP.PTNRTO AND B2.PTNRTY = '0007'
+		                INNER JOIN CARMA C ON C.OWNRKY = '2200' AND C.WAREKY = #{WAREKY} AND C.CARNUM = DP.CARNUM
+		 WHERE DP.DASTYP = #{DASTYP}
+		   AND DP.ORDDAT = #{ORDDAT}
+		   <if test='PTNG08 != null and PTNG08 == "17"'>
+		   AND B2.PTNG08 IN ('17', '18')
+		   </if>
+		   <if test='PTNG08 != null and PTNG08 == "18"'>
+		   AND B2.PTNG08 IN ('17', '18')
+			</if>
+		   <if test='PTNG08 != null and PTNG08 != "17"'>
+		   AND B2.PTNG08 = #{PTNG08}
+		   </if>
+		 ORDER BY DP.CARNUM, C.DESC01
+ 	</select>
+	
+    
+	<!-- [DR13] DAS파일 생성 2-4 -->
+	<select id="CREATE_DASFILE02_4_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT TO_CHAR(SYSDATE, 'YYYYMMDD') AS ORDDAT, 
+		       CASE B.PTNL10 WHEN ' ' THEN SUBSTR(DP.PTNROD, 3, 7)
+		                     ELSE B.PTNL10 END AS PTNROD,
+		       DECODE(S.DESC03, ' ', DP.SKUKEY, S.DESC03) AS SKUKEY,
+		       DP.QTYREQ AS QTYREQ,
+		       DP.CELLNO AS LOCADK,
+		       DP.SHPSEQ AS SHIPSQ,
+		       DP.CARNUM AS CARNUM,
+		       DP.CELLNO AS SORTSQ
+		  FROM DASPK DP INNER JOIN BZPTN B ON B.OWNRKY = #{OWNRKY} AND B.PTNRKY = DP.PTNROD AND B.PTNRTY = '0001'
+		                INNER JOIN BZPTN B2 ON B2.OWNRKY = #{OWNRKY} AND B2.PTNRKY = DP.PTNRTO AND B2.PTNRTY = '0007'
+		                INNER JOIN SKUMA S ON S.OWNRKY = #{OWNRKY} AND S.SKUKEY = DP.SKUKEY
+		 WHERE DP.DASTYP = #{DASTYP} 
+		   AND DP.ORDDAT = #{ORDDAT}
+		   <if test='PTNG08 != null and PTNG08 == "17"'>
+		   AND B2.PTNG08 IN ('17', '18')
+		   </if>
+		   <if test='PTNG08 != null and PTNG08 == "18"'>
+		   AND B2.PTNG08 IN ('17', '18')
+			</if>
+		   <if test='PTNG08 != null and PTNG08 != "17"'>
+		   AND B2.PTNG08 = #{PTNG08}
+		   </if>
+		 ORDER BY DP.CELLNO, DP.SKUKEY
+ 	</select>
+
+	<!-- **[DR17] 고정셀관리 조회 -->
+	<select id="DR17_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT DK.DASTYP DASTYP,
+		       DK.CELLNO CELLNO,
+		       DK.ORDDAT ORDDAT,
+		       DK.SKUKEY SKUKEY,
+		       SM.DESC01 DESC01,
+		       DK.PTNROD PTNROD,
+		       B.NAME01 PTNRODNM,
+		       DK.PTNRTO PTNRTO,
+		       B2.NAME01 PTNRTONM,
+		       DK.QTYREQ QTYREQ,
+		       DK.CARNUM CARNUM,
+		       C.DESC01 CARNM,
+		       DK.CLPATH CLPATH,
+		       DK.CREDAT CREDAT,
+		       DK.CRETIM CRETIM,
+		       DK.CREUSR CREUSR
+		  FROM DASPK DK
+		       INNER JOIN BZPTN B  ON B.PTNRKY = DK.PTNROD AND B.OWNRKY = '2200' AND B.PTNRTY = '0001'
+		       INNER JOIN BZPTN B2 ON B2.PTNRKY = DK.PTNRTO AND B2.OWNRKY = '2200' AND B2.PTNRTY = '0007'
+		       INNER JOIN SKUMA SM ON SM.OWNRKY = '2200' AND SM.SKUKEY = DK.SKUKEY  
+		       LEFT OUTER JOIN (SELECT F.OWNRKY, F.WAREKY, F.PTNRKY, C.CARNUM, C.DESC01
+		                                                FROM CARFX F INNER JOIN CARMA C ON F.OWNRKY = C.OWNRKY AND F.WAREKY = C.WAREKY AND F.CARNUM = C.CARNUM
+		                                               WHERE 1 = 1
+		                                                 AND F.OWNRKY = '2200'
+		                                                 AND F.WAREKY = '2213'
+		                                         ) C ON C.OWNRKY = '2200' AND C.PTNRKY = DK.PTNRTO
+		  WHERE 1=1
+		    AND DK.ORDDAT = #{ORDDAT}
+		    AND DK.DASTYP = #{DASTYP}
+			<if test="RANGE_SQL != null and RANGE_SQL != ''">
+				${RANGE_SQL}
+			</if>
+    </select>
+    
+    
+	<!-- [DR18] DAS품목관리 조회 -->
+	<select id="DR18_LIST" parameterType="hashmap" resultType="DataMap">
+	    SELECT DS.DASTYP AS DASTYP,
+		       DS.SKUKEY AS SKUKEY,
+		       SM.DESC01 AS DESC01,
+		       DS.TEXT01 AS TEXT01,
+		       DS.CREDAT AS CREDAT,
+		       DS.CRETIM AS CRETIM,
+		       DS.CREUSR AS CREUSR,
+		       DS.LMODAT AS LMODAT,
+		       DS.LMOTIM AS LMOTIM,
+		       DS.LMOUSR AS LMOUSR
+		  FROM DASSK DS INNER JOIN SKUMA SM ON SM.OWNRKY = '2200' AND SM.SKUKEY = DS.SKUKEY AND SM.DELMAK = ' '
+		 WHERE DS.DASTYP = #{DASTYP}
+		 ORDER BY DS.SKUKEY
+ 	</select>
+ 	
+	
+	<!-- **[DR18] DAS품목관리 생성,수정 Merge -->
+	<update id="DR18_UPDATE"  parameterType="hashmap">
+	 	MERGE INTO DASSK  
+		USING DUAL
+		   ON ( DASTYP = #{DASTYP} AND SKUKEY = #{SKUKEY})
+		 WHEN MATCHED THEN
+		      UPDATE SET TEXT01 = NVL(#{TEXT01}, ' '),
+		                 LMODAT = TO_CHAR(SYSDATE, 'YYYYMMDD'),
+		                 LMOTIM = TO_CHAR(SYSDATE, 'HH24MISS'),
+		                 LMOUSR = #{SES_USER_ID}
+		 WHEN NOT MATCHED THEN
+		      INSERT (DASTYP, SKUKEY, TEXT01, CREDAT, CRETIM, CREUSR )
+		      VALUES (#{DASTYP}, #{SKUKEY}, NVL(#{TEXT01}, ' '), TO_CHAR(SYSDATE, 'YYYYMMDD'), TO_CHAR(SYSDATE, 'HH24MISS'), #{SES_USER_ID} )
+	</update>
+    
+	
+	<!-- **[DR18] DAS품목관리 삭제 -->
+	<delete id="DR18_DELETE"  parameterType="hashmap">
+		DELETE FROM DASSK
+		 WHERE DASTYP = #{DASTYP}
+		   AND SKUKEY = #{SKUKEY}
+	</delete>
+</mapper>

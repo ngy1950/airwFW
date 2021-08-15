@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL MAP 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="WmsLabel">
+	<typeAlias alias="DataMap" type="com.common.bean.DataMap" />
+
+<!-- 팔레트바코드라벨 -->
+<!-- LB01 SQL START -->
+
+<!-- LB01 SQL START -->
+<!-- //팔레트바코드라벨 -->
+
+
+<!-- 지번바코드라벨 -->
+<!-- LB02 SQL START -->
+
+	<!-- LB02 GRID SELECT START -->
+	<select id="LB02_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- ADMIN.LOCATION.FINDLOCATIONS -->
+		SELECT	 A.WAREKY	AS WAREKY
+				,A.LOCAKY	AS LOCAKY
+				,(SELECT TOP 1 CDESC1 FROM CMCDV WHERE CMCDKY = 'LOCATY' AND CMCDVL = A.LOCATY) AS LOCATYT
+				,A.SHORTX AS SHORTX
+				,A.TASKTY AS TASKTY
+				,A.ZONEKY AS ZONEKY
+				,A.ZONEKY AS ZONEKY2
+				,A.AREAKY AS AREAKY
+				,A.TKZONE AS TKZONE
+				,A.FACLTY AS FACLTY
+				,A.ARLVLL AS ARLVLL
+				,A.INDCPC AS INDCPC
+				,A.INDTUT AS INDTUT
+				,A.IBROUT AS IBROUT
+				,A.OBROUT AS OBROUT
+				,A.RPROUT AS RPROUT
+				,A.STATUS AS STATUS
+				,(SELECT TOP 1 CDESC1 FROM CMCDV WHERE CMCDKY = 'STATUS' AND CMCDVL = A.STATUS) AS STATUST
+				,A.ABCANV AS ABCANV
+				,dbo.F_DATEFORM(dbo.F_NUMBERFORMAT(A.LENGTH), 'N') AS LENGTH 
+				,dbo.F_DATEFORM(dbo.F_NUMBERFORMAT(A.WIDTHW), 'N') AS WIDTHW
+				,dbo.F_DATEFORM(dbo.F_NUMBERFORMAT(A.HEIGHT), 'N') AS HEIGHT
+				,dbo.F_DATEFORM(dbo.F_NUMBERFORMAT(A.CUBICM), 'N') AS CUBICM
+				,dbo.F_DATEFORM(dbo.F_NUMBERFORMAT(A.MAXCPC), 'N') AS MAXCPC
+				,dbo.F_DATEFORM(dbo.F_NUMBERFORMAT(A.MAXQTY), 'N') AS MAXQTY
+				,dbo.F_DATEFORM(dbo.F_NUMBERFORMAT(A.MAXWGT), 'N') AS MAXWGT
+				,dbo.F_DATEFORM(dbo.F_NUMBERFORMAT(A.MAXLDR), 'N') AS MAXLDR
+				,A.MAXSEC AS MAXSEC
+				,A.MIXSKU AS MIXSKU
+				,A.MIXLOT AS MIXLOT
+				,A.RPNCAT AS RPNCAT
+				,A.INDQTC AS INDQTC
+				,A.QTYCHK AS QTYCHK
+				,A.NEDSID AS NEDSID
+				,A.INDUPA AS INDUPA
+				,A.INDUPK AS INDUPK
+				,A.AUTLOC AS AUTLOC
+				,dbo.F_DATEFORM(A.CREDAT,'Y') AS CREDAT
+				,dbo.F_DATEFORM(A.CRETIM,'H') AS CRETIM
+				,A.CREUSR AS CREUSR
+				,(SELECT TOP 1 NMLAST FROM USRMA WHERE USERID = A.CREUSR ) AS CUSRNM
+				,dbo.F_DATEFORM(A.LMODAT,'Y') AS LMODAT
+				,dbo.F_DATEFORM(A.LMOTIM,'H') AS LMOTIM
+				,A.LMOUSR AS LMOUSR
+				,(SELECT TOP 1 NMLAST FROM USRMA WHERE USERID = A.LMOUSR ) AS LUSRNM
+		FROM	LOCMA A (nolock)
+		WHERE	1 = 1
+		AND		A.WAREKY = #WAREKY#
+		<isNotEmpty property="RANGE_SQL">
+			$RANGE_SQL$
+		</isNotEmpty>
+		<!-- 로케이션유형 -->
+		<isNotEmpty property="LOCATY">
+		AND   A.LOCATY= #LOCATY#
+		</isNotEmpty>
+		<!-- 상태 -->
+		<isNotEmpty property="STATUS">
+		AND   A.STATUS = #STATUS#
+		</isNotEmpty>
+		<!-- 입고가능 -->
+		<isEqual property="INDUPA" compareValue="V">
+		   AND A.INDUPA = #INDUPA#
+		</isEqual>
+
+		<!-- 파킹가능 -->
+		<isEqual property="INDUPK" compareValue="V">
+		   AND A.INDUPK = #INDUPK#
+		</isEqual>
+		
+	</select>
+	<!-- LB02 GRID SELECT END -->
+<!-- //지번바코드라벨 -->
+
+<!-- 팔렛바코드 출력 이력 -->
+<!-- LB09 SQL START -->
+	<!-- LB09 GRID SELECT START -->
+	<select id="LB09_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT B.REFDKY AS REFDKY,
+		       B.BARCOD AS BARCOD,
+		       B.WAREKY AS WAREKY,
+		       B.SKUKEY AS SKUKEY,
+		       B.DESC01 AS DESC01,
+		       B.DESC02 AS DESC02,
+		       B.PRTDAT AS PRTDAT,
+		       B.QTDUOM AS QTDUOM,
+		       B.QTDBOX AS QTDBOX,
+		       B.QTDREM AS QTDREM,
+		       B.QTDPRT AS QTDPRT,
+		       B.LOTA05 AS LOTA05,
+		       B.CREDAT AS CREDAT,
+		       B.CRETIM AS CRETIM,
+		       B.CREUSR AS CREUSR,
+		       CU.NMLAST AS CUSRNM,
+		       B.LMODAT AS LMODAT,
+		       B.LMOTIM AS LMOTIM,
+		       B.LMOUSR AS LMOUSR,
+		       LU.NMLAST AS LUSRNM
+		  FROM BARCD B (nolock)
+		       LEFT OUTER JOIN USRMA CU
+		               ON CU.USERID = B.CREUSR
+		       LEFT OUTER JOIN USRMA LU
+		               ON LU.USERID = B.CREUSR
+		 WHERE B.WAREKY = #WAREKY#
+		<isNotEmpty property="RANGE_SQL">
+			$RANGE_SQL$
+		</isNotEmpty>				
+	</select>
+	<!-- LB09 GRID SELECT END -->
+<!-- //팔렛바코드 출력 이력 -->
+
+	<insert id="LB01_INSERT" parameterClass="Map">
+		<selectKey keyProperty="BARSEQ" resultClass="String">
+	    	SELECT NEXT VALUE FOR SEQ_WMS_BARCD
+	    </selectKey>
+	    SET IDENTITY_INSERT BARCD ON
+		INSERT INTO BARCD
+           (
+	    	REFDKY
+           ,BARCOD
+           ,WAREKY
+           ,SKUKEY
+           ,DESC01
+           ,DESC02
+           ,PRTDAT
+           ,QTDUOM
+           ,QTDBOX
+           ,QTDREM
+           ,QTDPRT
+           ,CREDAT
+           ,CRETIM
+           ,CREUSR
+           ,LMODAT
+           ,LMOTIM
+           ,LMOUSR
+           ,LOTA05
+           ,LOTA02
+	   )
+     	VALUES
+           (
+            (SELECT CAST(MAX(CONVERT(NUMERIC, #BARSEQ#))+1 AS VARCHAR))
+           ,(SELECT REPLICATE('0',10-LEN(MAX(CONVERT(NUMERIC, #BARSEQ#))+1)) + CAST(MAX(CONVERT(NUMERIC, #BARSEQ#))+1 AS VARCHAR))
+           ,#WAREKY#
+           ,#SKUKEY# 
+           ,#DESC01#
+           ,ISNULL(#DESC02#, ' ')
+           ,CONVERT(VARCHAR,GETDATE(),112)
+           <!-- ,#QTDUOM# -->
+           ,CONVERT(NUMERIC(15,0),	(
+									CASE	WHEN	#QTDUOM# = ''	THEN	'0'
+											WHEN	#QTDUOM# = ' '	THEN	'0'
+											WHEN	#QTDUOM# IS NULL THEN	'0'
+									ELSE	#QTDUOM#
+									END
+									)
+					)
+           <!-- ,#QTDBOX# -->
+           ,CONVERT(NUMERIC(15,0),	(
+									CASE	WHEN	#QTDBOX# = ''	THEN	'0'
+											WHEN	#QTDBOX# = ' '	THEN	'0'
+											WHEN	#QTDBOX# IS NULL THEN	'0'
+									ELSE	#QTDBOX#
+									END
+									)
+					)
+           <!-- ,#QTDREM# -->
+           ,CONVERT(NUMERIC(15,0),	(
+									CASE	WHEN	#QTDREM# = ''	THEN	'0'
+											WHEN	#QTDREM# = ' '	THEN	'0'
+											WHEN	#QTDREM# IS NULL THEN	'0'
+									ELSE	#QTDREM#
+									END
+									)
+					)
+           <!-- ,#QTDPRT# -->
+           ,CONVERT(NUMERIC(15,0),	(
+									CASE	WHEN	#QTDPRT# = ''	THEN	'0'
+											WHEN	#QTDPRT# = ' '	THEN	'0'
+											WHEN	#QTDPRT# IS NULL THEN	'0'
+									ELSE	#QTDPRT#
+									END
+									)
+					)
+           ,CONVERT(VARCHAR,GETDATE(),112)
+           ,REPLACE(CONVERT(VARCHAR,GETDATE(),108),':','')
+           ,#SES_USER_ID#
+           ,CONVERT(VARCHAR,GETDATE(),112)
+           ,REPLACE(CONVERT(VARCHAR,GETDATE(),108),':','')
+           ,#SES_USER_ID#
+           ,#LOTA05#
+           ,#LOTA02#
+	   )
+	   SET IDENTITY_INSERT BARCD OFF
+	</insert>
+
+	<select id="LB01PRINT_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	TOP 1 
+				REFDKY
+		FROM	BARCD (nolock)
+		ORDER BY REFDKY DESC
+	</select>
+	
+	<select id="SKUKEYval_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT COUNT(*)CNT
+		  FROM SKUMA (nolock)
+		 WHERE 1 = 1 
+           AND SKUKEY = #SKUKEY#
+	</select>
+	
+</sqlMap>

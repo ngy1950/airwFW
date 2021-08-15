@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Pda">
+	<select id="DEMO_AREACOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT AREAKY AS "VALUE_COL"
+		   ,   SHORTX AS "TEXT_COL"
+		FROM   AREMA
+		WHERE  COMPKY = #{SES_USER_COMPANY}
+		AND    WAREKY = #{SES_WAREKY}
+	</select>
+	
+	<select id="DEMO_ZONMA_LIST" parameterType="hashmap" resultType="DataMap">
+	SELECT AREAKY AS "AREAKY"
+	   ,   ZONEKY AS "ZONEKY"
+	   ,   SHORTX AS "ZONENM"
+	FROM   ZONMA
+	WHERE  COMPKY = #{SES_USER_COMPANY}
+    AND    WAREKY = #{SES_WAREKY}
+	</select>
+	
+	<select id="DEMO_LOCMA_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT A.AREAKY AS "AREAKY"
+		   ,   C.SHORTX AS "AREANM"
+		   ,   A.ZONEKY AS "ZONEKY"
+		   ,   B.SHORTX AS "ZONENM"
+		   ,   A.LOCAKY AS "LOCAKY"
+		   ,   A.SHORTX AS "LOCANM"
+		FROM   LOCMA A
+		       INNER JOIN ZONMA B ON  A.COMPKY = B.COMPKY
+		                          AND A.WAREKY = B.WAREKY
+		                          AND A.ZONEKY = B.ZONEKY
+		                          AND A.AREAKY = B.AREAKY
+		       INNER JOIN AREMA C ON  B.COMPKY = C.COMPKY
+		                          AND B.WAREKY = C.WAREKY
+		                          AND B.AREAKY = C.AREAKY
+		WHERE  A.COMPKY = #{SES_USER_COMPANY}
+		AND    A.WAREKY = #{SES_WAREKY}
+		<if test="ZONEKY != null and ZONEKY != ''">
+		AND    A.ZONEKY LIKE '%'|| #{ZONEKY} ||'%'
+		</if>
+		<if test="LOCAKY != null and LOCAKY != ''">
+		AND    A.LOCAKY = #{LOCAKY}
+		</if>
+		ORDER BY A.COMPKY, A.WAREKY, A.AREAKY
+	</select>
+
+	<select id="DEMO_POP_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT A.COL1 AS "COL1"
+		    ,  A.COL2 AS "COL2"
+		    ,  A.COL3 AS "COL3"
+		FROM(
+			SELECT '1' AS COL1, 'COLUMN_DATA1' AS COL2, 'TYPE1' AS COL3 UNION ALL
+			SELECT '2' AS COL1, 'COLUMN_DATA2' AS COL2, 'TYPE1' AS COL3 UNION ALL
+			SELECT '3' AS COL1, 'COLUMN_DATA3' AS COL2, 'TYPE1' AS COL3 UNION ALL
+			SELECT '4' AS COL1, 'COLUMN_DATA4' AS COL2, 'TYPE2' AS COL3 UNION ALL
+			SELECT '5' AS COL1, 'COLUMN_DATA5' AS COL2, 'TYPE2' AS COL3 UNION ALL
+			SELECT '6' AS COL1, 'COLUMN_DATA6' AS COL2, 'TYPE2' AS COL3 UNION ALL
+			SELECT '7' AS COL1, 'COLUMN_DATA7' AS COL2, 'TYPE3' AS COL3 UNION ALL
+			SELECT '8' AS COL1, 'COLUMN_DATA8' AS COL2, 'TYPE3' AS COL3 
+		) A
+		WHERE 1=1
+		<if test="TYPE != null and TYPE != ''">
+		AND   A.COL3 != #{TYPE}
+		</if>
+		<if test="COMBO1 != null and COMBO1 != ''">
+		AND   A.COL3 != #{COMBO1}
+		</if>
+		<if test="COMBO2 != null and COMBO2 != ''">
+		AND   A.COL3 != #{COMBO2}
+		</if>
+		<if test="COL1 != null and COL1 != ''">
+		AND   A.COL1 LIKE '%'|| #{COL1} ||'%' 
+		</if>
+		<if test="COL2 != null and COL2 != ''">
+		AND   A.COL2 LIKE '%'|| #{COL2} ||'%' 
+		</if>
+	</select>
+	
+	<select id="DEMO_COMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT A.COL1 AS "VALUE_COL"
+		    ,  A.COL2 AS "TEXT_COL"
+		FROM(
+			SELECT 'key1' AS COL1, 'Option1' AS COL2, 'type1' AS TYPE UNION ALL
+			SELECT 'key2' AS COL1, 'Option2' AS COL2, 'type2' AS TYPE UNION ALL
+			SELECT 'key3' AS COL1, 'Option3' AS COL2, 'type3' AS TYPE UNION ALL
+			SELECT 'key4' AS COL1, 'Option4' AS COL2, 'type4' AS TYPE
+		) A
+		WHERE 1=1
+		<if test="TYPE != null and TYPE != ''">
+		AND   A.COL2 != #{TYPE}
+		</if>
+	</select>
+	
+	<select id="DEMO_POP_COMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT A.COL1 AS "VALUE_COL"
+		    ,  A.COL2 AS "TEXT_COL"
+		FROM(
+			SELECT '' AS COL1, 'ALL' AS COL2 UNION ALL
+			SELECT 'TYPE1' AS COL1, 'TYPE1' AS COL2 UNION ALL
+			SELECT 'TYPE2' AS COL1, 'TYPE2' AS COL2 UNION ALL
+			SELECT 'TYPE3' AS COL1, 'TYPE3' AS COL2
+		) A
+		WHERE 1=1
+		<if test="TYPE != null and TYPE != ''">
+		AND   A.COL2 != #{TYPE}
+		</if>
+	</select>
+
+	<select id="MENUTREE_LIST" parameterType="hashmap" resultType="DataMap">
+		WITH RECURSIVE MENU AS(
+			SELECT COMPID
+			     , MENUGID 
+			     , MENUID
+			     , PMENUID
+			     , SORTORDER
+			     , 1 AS LV                     
+			     , TO_CHAR(SORTORDER,'0') AS SORTTXT
+			FROM   MSTMENUGL
+			WHERE  COMPID  = #{COMPID} 
+			AND    MENUGID = 'PDA'
+			AND    PMENUID = 'root'
+			UNION ALL
+			SELECT A.COMPID
+			   ,   A.MENUGID 
+			   ,   A.MENUID
+			   ,   A.PMENUID
+			   ,   A.SORTORDER
+			   ,   MENU.LV + 1 AS LV
+		       ,   MENU.SORTTXT || '_' ||A.SORTORDER AS SORTTXT
+			FROM   MENU   
+			       INNER JOIN MSTMENUGL A ON MENU.MENUID = A.PMENUID
+			WHERE  A.COMPID  = #{COMPID}
+			AND    A.MENUGID = 'PDA'
+		)
+		SELECT M.MENUGID   AS "MENUGID"
+		   ,   M.MENUID    AS "MENUID"
+		   ,   M.PMENUID   AS "AMNUID"
+		   ,   P.MENUNAME  AS "LBLTXL"
+		   ,   P.URI       AS "PGPATH"
+		   ,   P.IMGPTH    AS "IMGPTH"
+		   ,   P.MENUTYPE  AS "MNUTYP"
+		FROM   MENU M
+		       LEFT OUTER JOIN MSTMENU P  ON  P.MENUID    = M.MENUID 
+		                                  AND P.COMPID    = 'WDSCM'
+			   LEFT OUTER JOIN SYSLABEL L ON  L.LABELGID  = 'MENU' 
+			                              AND L.LANGCODE  = 'KO' 
+			                              AND P.MENULABEL = L.LABELID
+		ORDER BY M.SORTTXT
+	</select>
+	
+	<select id="MENU_INFO_LIST" parameterType="hashmap" resultType="DataMap">
+		WITH RECURSIVE MENU AS(
+			SELECT COMPID
+			     , MENUGID 
+			     , MENUID
+			     , PMENUID
+			     , SORTORDER
+			     , 1 AS LV                     
+			     , TO_CHAR(SORTORDER,'0') AS SORTTXT
+			FROM   MSTMENUGL
+			WHERE  COMPID  = #{SES_USER_COMPANY} 
+			AND    MENUGID = 'PDA'
+			AND    PMENUID = 'root'
+			UNION ALL
+			SELECT A.COMPID
+			   ,   A.MENUGID 
+			   ,   A.MENUID
+			   ,   A.PMENUID
+			   ,   A.SORTORDER
+			   ,   MENU.LV + 1 AS LV
+		       ,   MENU.SORTTXT || '_' ||A.SORTORDER AS SORTTXT
+			FROM   MENU   
+			       INNER JOIN MSTMENUGL A ON MENU.MENUID = A.PMENUID
+			WHERE  A.COMPID  = #{COMPID}
+			AND    A.MENUGID = 'PDA'
+		)
+		SELECT M.MENUGID   AS "MENUGID"
+		   ,   M.MENUID    AS "MENUID"
+		   ,   M.PMENUID   AS "AMNUID"
+		   ,   P.MENUNAME  AS "LBLTXL"
+		   ,   ''          AS "PGPATH"
+		   ,   P.IMGPTH    AS "IMGPTH"
+		   ,   M.MENUID    AS "PROGID"
+		FROM   MENU M
+		       LEFT OUTER JOIN MSTMENU P  ON  P.MENUID    = M.MENUID 
+		                                  AND P.COMPID    = 'WDSCM'
+			   LEFT OUTER JOIN SYSLABEL L ON  L.LABELGID  = 'MENU' 
+			                              AND L.LANGCODE  = 'KO' 
+			                              AND P.MENULABEL = L.LABELID
+		WHERE P.MENUTYPE = 'F'	                              
+		ORDER BY M.SORTTXT
+	</select>	
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.polarion.eclipse.team.svn.connector.javahl18.win32"
+      label="%featureName"
+      version="5.0.1.I20151028-1700"
+      provider-name="%providerName"
+      os="win32"
+      arch="x86"
+      colocation-affinity="org.polarion.eclipse.team.svn.connector.javahl18">
+   <install-handler/>
+
+   <description>
+      Win32 binaries for the JavaHL SVN connector. Select only if you use Win32 platform and plan to install JavaHL SVN connector.
+   </description>
+
+   <license url="license.html">
+      %license
+   </license>
+
+   <url>
+      <update label="%updateSiteName" url="http://community.polarion.com/projects/subversive/download/eclipse/5.0/update-site/"/>
+      <discovery label="%discoverySiteName" url="http://community.polarion.com/projects/subversive/download/eclipse/5.0/update-site/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.polarion.eclipse.team.svn.connector.javahl18" version="5.0.0.I20150529-1700" match="compatible"/>
+      <import feature="org.polarion.eclipse.team.svn.connector"/>
+   </requires>
+
+   <plugin
+         id="org.polarion.eclipse.team.svn.connector.javahl18.win32"
+         os="win32"
+         arch="x86"
+         download-size="3160"
+         install-size="7220"
+         version="5.0.1.I20151028-1700"
+         fragment="true"/>
+
+</feature>

@@ -1,0 +1,186 @@
+package com.common.carton;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import org.apache.commons.lang3.SerializationUtils;
+
+/**
+ * 박스포장에 사용하는 유틸리티
+ * @author Administrator
+ *
+ */
+public class BoxUtils {
+
+	/**
+	 * 부피가 작은 박스를 순차 정렬
+	 * @param boxes 정렬된 박스 리스트
+	 */
+	public static void sortBoxesByVolAsc(List<Box> boxes) {
+		Collections.sort(boxes, new Comparator<Box>() {
+
+			@Override
+			public int compare(Box o1, Box o2) {
+				return (o1.getVol() < o2.getVol() ? -1 : o1.getVol() > o2.getVol() ? 1 : 0);
+			}
+		});
+	}
+	
+	/**
+	 * 아이템의 가장 긴 길이를 기준으로 역순 정렬
+	 * @param items 아이템 리스트
+	 */
+	public static void sortItemsByLonguestDimDesc(List<Item> items) {
+		Collections.sort(items, new Comparator<Item>() {
+
+			@Override
+			public int compare(Item o1, Item o2) {
+				return (o1.getLongestDim() > o2.getLongestDim() ? -1 : o1.getLongestDim() < o2.getLongestDim() ? 1 : 0);
+			}
+		});
+	}
+	
+	/**
+	 * 아이템의 부피 기준으로 순차 정렬
+	 * @param items 아이템 리스트
+	 */
+	public static void sortItemsByVolumeAsc(List<Item> items) {
+		Collections.sort(items, new Comparator<Item>() {
+
+			@Override
+			public int compare(Item o1, Item o2) {
+				return (o1.getVol() < o2.getVol() ? -1 : o1.getVol() > o2.getVol() ? 1 : 0);
+			}
+		});
+	}
+	
+	/**
+	 * 아이템의 무계 기준으로 순차 정렬
+	 * @param items 아이템 리스트
+	 */
+	public static void sortItemsByWeightAsc(List<Item> items) {
+		Collections.sort(items, new Comparator<Item>() {
+
+			@Override
+			public int compare(Item o1, Item o2) {
+				return (o1.getWeight() < o2.getWeight() ? -1 : o1.getWeight() > o2.getWeight() ? 1 : 0);
+			}
+		});
+	}
+	
+	/**
+	 * 아이템의 무계와 부피 기준으로 순차 정렬
+	 * @param items 아이템 리스트
+	 */
+	public static void sortItemsByWeightDescAndVolumeAsc(List<Item> items) {
+		Collections.sort(items, new Comparator<Item>() {
+
+			@Override
+			public int compare(Item o1, Item o2) {
+				if (o1.getWeight() > o2.getWeight())
+					return -1;
+				else if (o1.getWeight() == o2.getWeight())
+					return (o1.getVol() < o2.getVol() ? -1 : o1.getVol() > o2.getVol() ? 1 : 0);
+				else
+					return 1;
+			}
+		});
+	}
+	
+	/**
+	 * 아이템의 cartonNumber 기준으로 순차 정렬
+	 * @param items 아이템 리스트
+	 */
+	public static void sortItemsByCartonNumberAsc(List<Item> items) {
+		Collections.sort(items, new Comparator<Item>() {
+
+			@Override
+			public int compare(Item o1, Item o2) {
+//				return (o1.getCartonNumber() < o2.getCartonNumber() ? -1 : o1.getCartonNumber() > o2.getCartonNumber() ? 1 : 0);
+				return o1.getCartonNumber().compareTo(o2.getCartonNumber());
+			}
+		});
+	}
+	
+	/**
+	 * 배령의 최대 값을 구함
+	 * @param arr 배열
+	 * @return 최대 값
+	 */
+	public static int max(int[] arr) {
+
+		if (arr == null) {
+			throw new IllegalArgumentException("Invalid input data");
+		} else if (arr.length == 0) {
+			throw new IllegalArgumentException("Invalid input data");
+		} else {
+			int max = 0;
+			for (int i = 0; i < arr.length; i++) {
+				if (max < arr[i]) {
+					max = arr[i];
+				}
+			}
+			return max;
+		}
+	}
+	
+	/**
+	 * sku가 같은 아이템을 검색
+	 * @param items 아이템 리스트
+	 * @param sku sku
+	 * @return 아이템
+	 */
+	public static Item findItem(List<Item> items, String sku) {
+		for(Item item : items) {
+//			if (item.getSku() == sku) {
+			if (item.getSku().equalsIgnoreCase(sku)) {
+				return item;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * 아이템과 박스 정보를 출력
+	 * @param box box
+	 * @param items items
+	 */
+	public static void printBoxoLogicInput(PBox box, List<Item> items) {
+		
+		StringBuilder buf = new StringBuilder();
+		buf.append(box.getDim1()).append(", ")
+		   .append(box.getDim2()).append(", ")
+		   .append(box.getDim3()).append("\n");
+		
+		int n = 1;
+		for (Item item : items) {
+			buf.append(n++).append(". ")
+			   .append(item.getDim1()).append(", ")
+			   .append(item.getDim2()).append(", ")
+			   .append(item.getDim3()).append(", ")
+			   .append(item.getQty()).append("\n");
+		}
+	}
+
+	/**
+	 * 수량이 포함된 아이템을 복사하여 낱개로 분리
+	 * @param items items
+	 * @return 분리된 items
+	 */
+	public static List<Item> extractItems(List<Item> items) {
+		
+		final List<Item> extractItems = new ArrayList<>();
+		for (Item item : items) {
+			for (int i = 0; i < item.getQty(); i++) {
+				final Item copy = SerializationUtils.clone(item);
+				copy.setupQty();
+				extractItems.add(copy);
+			}
+		}
+		
+		return extractItems;
+	}
+}

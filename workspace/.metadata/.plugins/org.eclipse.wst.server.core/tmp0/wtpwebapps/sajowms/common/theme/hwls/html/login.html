@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="/common/theme/hwls/css/login.css">
+<link rel="stylesheet" type="text/css" href="/common/theme/hwls/css/theme.css">
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR|Open+Sans" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+</head>
+<body>
+	<div class="bg">
+	
+	<h1 class="logo"><img src="/common/theme/hwls/images/login/logo.png" alt="air-WMS" /></h1>
+	<!--원래 .logo는 .loginWrap 안에 바로 있었음-->
+	
+		<div class="loginWrap">
+			
+			<h2>Direct the harmony of supply chain</h2>
+			<h3>Maestro</h3>
+			<div class="innerWrap" id="searchArea">
+				<div class="input id">
+					<input type="text" id="USERID" name="USERID" validate="required" placeholder="Insert ID" />
+				</div>
+				<div class="input pw">
+					<input type="password" id="PASSWD" name="PASSWD" validate="required" placeholder="Password" />
+				</div>
+				<div class="selectWrap">
+					<select id="WAREKY" name="WAREKY" validate="required">
+						<option>[KWH2] 경인물류센터</option>	
+					</select>
+				</div>
+				<div class="selectWrap">
+					<div class="btn login">
+					<input type="submit" value="LOGIN" onclick="login()" /><br/>
+					</div>
+					<button class="changePassword" onclick="changePassword()"><a href="#">비밀번호 재발급</a></button>
+				</div>
+			</div>
+			<div class="contact">
+			</div>
+		</div>
+	</div>
+	<div class="contentLoading" id="contentLoading"></div>
+</body>
+</html>

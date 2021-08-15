@@ -1,0 +1,289 @@
+package com.common.carton;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 포장된 박스 정보를 저장
+ * @author Administrator
+ *
+ */
+public final class PBox extends Box {
+
+	private String cartonNumber;
+	
+	private long elapsedTime;
+	
+	private int packingNumber;
+	
+	private int x;
+	
+	private int y;
+	
+	private int z;
+	
+	private float bestPackingFactor;
+	
+	private int totalNumberOfIterationsDone;
+	
+	private int totalNumberOfBoxes;
+	
+	private int packedNumberOfBoxes;
+	
+	private int numberOfIterations;
+	
+	private int bestVariant;
+	
+	private int packedWeight;
+	
+	private List<PItem> packedItems = new ArrayList<>();
+	
+	private List<Item> unpackedItems = new ArrayList<>();
+	
+	/**
+	 * 생성자
+	 * @param box 포장박스
+	 * @param unpakcedItems 미포장 아이템 리스트
+	 */
+	public PBox(Box box, List<Item> unpakcedItems) {
+		this(box.getId(), box.getDim1(), box.getDim2(), box.getDim3(), box.getMaxWeight()
+				, unpakcedItems.get(0).getCartonNumber());
+		this.unpackedItems.addAll(unpakcedItems);
+	}
+	
+	/**
+	 * 생성자
+	 * @param id id
+	 * @param dim1 dim1
+	 * @param dim2 dim2
+	 * @param dim3 dim3
+	 * @param maxWeight maxWeight
+	 * @param cartonNumber cartonNumber
+	 */
+	public PBox(String id, int dim1, int dim2, int dim3, int maxWeight, String cartonNumber) {
+		this.id = id;
+		this.dim1 = dim1;
+		this.dim2 = dim2;
+		this.dim3 = dim3;
+		this.maxWeight = maxWeight;
+		this.vol = dim1 * dim2 * dim3;
+		this.cartonNumber = cartonNumber;
+	}
+
+	void setPackingNumber(int packingNumber) {
+		this.packingNumber = packingNumber;
+	}
+	
+	public int getPackingNumber() {
+		return packingNumber;
+	}
+	
+	public String getCartonNumber() {
+		return cartonNumber;
+	}
+
+	void setCartonNumber(String cartonNumber) {
+		this.cartonNumber = cartonNumber;
+	}
+
+	public long getElapsedTime() {
+		return elapsedTime;
+	}
+
+	void setElapsedTime(long elapsedTime) {
+		this.elapsedTime = elapsedTime;
+	}
+
+	/**
+	 * x좌표
+	 * @return x
+	 */
+	public int getX() {
+		return x;
+	}
+
+	void setX(int x) {
+		this.x = x;
+	}
+
+	/**
+	 * y좌표
+	 * @return y
+	 */
+	public int getY() {
+		return y;
+	}
+
+	void setY(int y) {
+		this.y = y;
+	}
+
+	/**
+	 * z좌표
+	 * @return z
+	 */
+	public int getZ() {
+		return z;
+	}
+
+	void setZ(int z) {
+		this.z = z;
+	}
+
+	/**
+	 * 최적 충진율
+	 * @return bestPackingFactor
+	 */
+	public float getBestPackingFactor() {
+		return bestPackingFactor;
+	}
+
+	void setBestPackingFactor(float bestPackingFactor) {
+		this.bestPackingFactor = bestPackingFactor;
+	}
+
+	/**
+	 * 포장을 수행하기 위해 수행한 iterations
+	 * @return totalNumberOfIterationsDone
+	 */
+	public int getTotalNumberOfIterationsDone() {
+		return totalNumberOfIterationsDone;
+	}
+
+	void setTotalNumberOfIterationsDone(int totalNumberOfIterationsDone) {
+		this.totalNumberOfIterationsDone = totalNumberOfIterationsDone;
+	}
+
+	/**
+	 * 모든 아이템 갯수
+	 * @return totalNumberOfBoxes
+	 */
+	public int getTotalNumberOfBoxes() {
+		return totalNumberOfBoxes;
+	}
+
+	void setTotalNumberOfBoxes(int totalNumberOfBoxes) {
+		this.totalNumberOfBoxes = totalNumberOfBoxes;
+	}
+
+	/**
+	 * 포장된 아이템 갯수
+	 * @return packedNumberOfBoxes
+	 */
+	public int getPackedNumberOfBoxes() {
+		return packedNumberOfBoxes;
+	}
+	
+	/**
+	 * 미포장된 아이템 갯수
+	 * @return unpackedItems size
+	 */
+	public int getUnpackedNumberOfBoxes() {
+		return unpackedItems.size();
+	}
+
+	void setPackedNumberOfBoxes(int packedNumberOfBoxes) {
+		this.packedNumberOfBoxes = packedNumberOfBoxes;
+	}
+
+	/**
+	 * numberOfIterations
+	 * @return numberOfIterations
+	 */
+	public int getNumberOfIterations() {
+		return numberOfIterations;
+	}
+
+	void setNumberOfIterations(int numberOfIterations) {
+		this.numberOfIterations = numberOfIterations;
+	}
+
+	public int getBestVariant() {
+		return bestVariant;
+	}
+
+	void setBestVariant(int bestVariant) {
+		this.bestVariant = bestVariant;
+	}
+
+	/**
+	 * 포장된 아이템 리스트
+	 * @return packedItems
+	 */
+	public List<PItem> getPackedItems() {
+		return packedItems;
+	}
+
+	void addPackedItems(PItem packedItem) {
+		this.packedItems.add(packedItem);
+		this.packedWeight += packedItem.getWeight();
+	}
+
+	/**
+	 * 미포장된 아이템 리스트
+	 * @return unpackedItems
+	 */
+	public List<Item> getUnpackedItems() {
+		return unpackedItems;
+	}
+
+	void addUnpackedItems(Item unpackedItem) {
+		this.unpackedItems.add(unpackedItem);
+	}
+	
+	void setDim1(int dim1) {
+		this.dim1 = dim1;
+	}
+	
+	void setDim2(int dim2) {
+		this.dim2 = dim2;
+	}
+	
+	void setDim3(int dim3) {
+		this.dim3 = dim3;
+	}
+	
+	/**
+	 * 포장된 중량
+	 * @return packedWeight
+	 */
+	public int getPackedWeight() {
+		return packedWeight;
+	}
+	
+	/**
+	 * 중량 초과 여부
+	 * @return isOverweight
+	 */
+	public boolean isOverweight() {
+		return packedWeight > maxWeight;
+	}
+	
+	@Override
+	public String toString() {
+		return "\nPdBox [id=" + id 
+				+ ", cartonNumber=" + cartonNumber 
+				+ ", packingNumber=" + packingNumber
+				+ ", maxWeight=" + maxWeight 
+				+ ", packedWeight=" + packedWeight
+				+ ", bestPackingFactor=" + bestPackingFactor 
+				+ ", totalNumberOfIterationsDone=" + totalNumberOfIterationsDone 
+				+ ", totalNumberOfBoxes=" + totalNumberOfBoxes 
+				+ ", packedNumberOfBoxes=" + packedNumberOfBoxes 
+				+ ", numberOfIterations=" + numberOfIterations 
+				+ ", bestVariant=" + bestVariant
+				+ ", dim1=" + dim1
+				+ ", dim2=" + dim2 
+				+ ", dim3=" + dim3 
+				+ ", x=" + x 
+				+ ", y=" + y
+				+ ", z=" + z 
+				+ ", longestDim=" + longestDim 
+				+ ", vol=" + vol 
+				+ ", packedItems=" + packedItems 
+				+ ", unpackedItems=" + unpackedItems 
+				+ ", elapsedTime=" + elapsedTime 
+				+ "]";
+	}
+
+}

@@ -1,0 +1,24 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/w15"
+                android:orientation="vertical"
+    >
+
+
+    <RelativeLayout
+        android:layout_width="@dimen/w250"
+        android:layout_height="@dimen/h150"
+        android:layout_marginTop="@dimen/h1"
+        >
+
+        <ImageView
+            android:id="@+id/image_thumb"
+            android:layout_width="@dimen/w250"
+            android:layout_height="@dimen/h150"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>

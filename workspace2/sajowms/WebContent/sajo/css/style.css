@@ -1,0 +1,10 @@
+@charset "utf-8";
+
+/* 사조 로그인  */
+.logos_sago {left:17%;}
+.logos_sago img:nth-child(1) {left: -21px; top: 113px;}
+.logos_sago img:nth-child(2) { top: 15px;}
+.logos_sago img:nth-child(3) {left: 282px; top:84px;}
+
+/* 사조 탑 로고 */
+.sajo_logos a span {background-image: url("/sajo/images/sajo_wms02.png");background-size: 140px !important; }

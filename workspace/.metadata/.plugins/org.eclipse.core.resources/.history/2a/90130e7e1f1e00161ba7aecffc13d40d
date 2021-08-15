@@ -1,0 +1,374 @@
+package com.common.service;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.common.bean.CommonAction;
+import com.common.bean.CommonConfig;
+import com.common.bean.CommonLabel;
+import com.common.bean.CommonMenu;
+import com.common.bean.CommonSearch;
+import com.common.bean.DataMap;
+import com.common.bean.FileRepository;
+import com.common.dao.CommonDAO;
+import com.common.util.FileUtil;
+import com.common.bean.DataMap;
+import com.common.util.Util;
+
+@Service
+public class CommonService extends BaseService {
+	
+	@Autowired
+	public CommonDAO commonDao;
+	
+	@Autowired
+	private CommonLabel commonLabel;
+	
+	@Autowired
+	private CommonSearch commonSearch;
+	
+	@Autowired
+	private CommonMenu commonMenu;
+	
+	@Autowired
+	private CommonAction commonAction;
+	
+	@Autowired
+	private FileRepository respository;
+	
+	@Autowired
+	private Util util;
+
+	private FileUtil fileUtil = new FileUtil();
+
+	public int getCount(DataMap map) throws SQLException {
+		return commonDao.getCount(map);
+	}	
+	public List getPagingList(DataMap map) throws SQLException {
+		return commonDao.getPagingList(map);
+	}
+	public List getList(DataMap map) throws SQLException {
+		return commonDao.getList(map);
+	}
+	public List getList(String module, String command) throws SQLException {
+		DataMap map = new DataMap(module, command);
+		return commonDao.getList(map);
+	}
+	public DataMap getMap(DataMap map) throws SQLException {
+		return commonDao.getMap(map);
+	}
+	public Object getObj(DataMap map) throws SQLException {
+		return commonDao.getObj(map);
+	}
+	public Object insert(DataMap map) throws SQLException {
+		return commonDao.insert(map);
+	}
+	public int update(DataMap map) throws SQLException {
+		return commonDao.update(map);
+	}
+	public int delete(DataMap map) throws SQLException {
+		return commonDao.delete(map);
+	}
+	
+	public List getExcel(DataMap map) throws FileNotFoundException, IOException {
+		return commonDao.getExcel(map);
+	}
+	
+	@Transactional
+	public DataMap gridSave(DataMap map) throws SQLException {
+		
+		DataMap rsMap = new DataMap();
+		
+		List<DataMap> list = map.getList("list");
+		
+		int count = 0;
+		DataMap row;
+		
+		if(map.containsKey(CommonConfig.GRID_REQUEST_VALIDATION_KEY)){
+			String validationSql = util.createValidationSql(map);
+			if(validationSql.length() > 0){
+				map.put(CommonConfig.VALIDATION_SQL_KEY, validationSql);
+				
+				List<DataMap> vList = commonDao.getValidation(map);
+				if(vList.size() > 0){
+					rsMap = vList.get(0);
+					if(!rsMap.getString("MSG").equals("OK")){
+						return rsMap;
+					}					
+				}
+			}			
+		}
+		
+		for(int i=0;i<list.size();i++){			
+			if(map.containsKey("param")){
+				row = new DataMap(map.getMap("param").getMap("map"));
+			}else{
+				row = new DataMap();
+			}				
+			
+			map.clonModule(row);
+			row.append(list.get(i).getMap("map"));			
+			//row.put(CommonConfig.SES_USER_ID_KEY, map.get(CommonConfig.SES_USER_ID_KEY));
+			//row.put(CommonConfig.MODULE_ATT_KEY, map.get(CommonConfig.MODULE_ATT_KEY));
+			//row.put(CommonConfig.COMMAND_ATT_KEY, map.get(CommonConfig.COMMAND_ATT_KEY));
+			String rowState = row.getString(CommonConfig.GRID_ROW_STATE_ATT);
+			switch(rowState.charAt(0)){
+				case 'C':
+					commonDao.insert(row);
+					break;
+				case 'U':
+					commonDao.update(row);
+					break;
+				case 'D':
+					commonDao.delete(row);
+					break;
+			}
+			count++;
+		}
+		
+		rsMap.put("data", count);
+		
+		return rsMap;
+	}
+	
+	@Transactional
+	public int insertExcel(DataMap map, List<DataMap> list) throws SQLException {
+		int count = 0;
+		
+		for(int i=0;i<list.size();i++){
+			commonDao.insertExcel(map, list.get(i));
+			count++;
+		}
+		
+		return count;
+	}
+		
+	public List getColumnList(String table) throws SQLException {
+		return commonDao.getTableColumn(table);
+	}
+	
+	public List getSqlColumnList(String sql) throws SQLException {
+		return commonDao.getSqlColumn(sql);
+	}
+	
+	public List getSqlColObjList(String sql) throws SQLException {
+		List collist = commonDao.getSqlColumn(sql);
+		List list = new ArrayList();
+		
+		return list;
+	}
+	
+	public String getListString(DataMap map) throws SQLException{
+		return commonDao.getListString(map);
+	}
+	
+	public String getAsyncList(DataMap map) throws SQLException, InterruptedException{
+		return commonDao.getAsyncList(map);
+	}
+	
+	public String getTextList(DataMap map) throws SQLException, InterruptedException{
+		return commonDao.getTextList(map);
+	}
+	public String getTextListObj(DataMap map) throws SQLException {
+		return commonDao.getTextListObj(map);
+	}
+	
+	public String getJdbcData(DataMap map) throws SQLException {
+		return commonDao.getJdbcData(map);
+	}
+	
+	public File getFile(DataMap map) throws IOException{
+		return fileUtil.getFile(map.getString("PATH"), map.getString("FNAME"));
+	}
+	
+	public void loadLabel() throws SQLException, IOException{
+		List list = this.getList("Common", "JLBLM_LANG");
+		DataMap requestMap = null;
+		DataMap map;
+		commonLabel.resetLabel();
+		for(int i=0;i<list.size();i++){
+			map = (DataMap)list.get(i);		
+			requestMap = new DataMap(map);
+			requestMap.setModuleCommand("Common", "JLBLM");
+			List dataList = commonDao.getList(requestMap);
+			commonLabel.setLabel(map.getString("LANGKY"), dataList);
+		}
+		
+		FileUtil fileUtil = new FileUtil();
+		List labelLangList = commonLabel.getLabelLang();
+		DataMap label;
+		for(int i=0;i<labelLangList.size();i++){
+			StringBuilder sb = new StringBuilder();
+			String langKey = labelLangList.get(i).toString();
+			label = commonLabel.getLabel(langKey);
+			if(label.size() >0){
+				Iterator it = label.keySet().iterator();
+				while(it.hasNext()){
+					Object key = it.next();
+					String value = label.getString(key);
+					while(value.indexOf("\n") != -1){
+						value = value.replace('\n', ' ');
+					}		
+					sb.append("commonLabel.label.put(\"").append(key).append("\",\"").append(value).append("\");\r\n");
+				}
+				fileUtil.writeStringFile(respository.getLang(), "label-"+langKey+".js", sb.toString());
+			}
+		}		
+	}
+	
+	public void loadMessage() throws SQLException, IOException{
+		List list = this.getList("Common", "JMSGM_LANG");
+		DataMap requestMap = null;
+		DataMap map;
+		commonLabel.resetMessage();
+		for(int i=0;i<list.size();i++){
+			map = (DataMap)list.get(i);
+			requestMap = new DataMap(map);
+			requestMap.setModuleCommand("Common", "JMSGM");
+			List dataList = commonDao.getList(requestMap);
+			commonLabel.setMessage(map.getString("LANGKY"), dataList);
+		}
+		
+		FileUtil fileUtil = new FileUtil();
+		List messageLangList = commonLabel.getMessageLang();
+		DataMap message;
+		for(int i=0;i<messageLangList.size();i++){
+			StringBuilder sb = new StringBuilder();
+			String langKey = messageLangList.get(i).toString();
+			message = commonLabel.getMessage(langKey);
+			if(message.size() > 0){
+				Iterator it = message.keySet().iterator();
+				while(it.hasNext()){
+					Object key = it.next();
+					String value = message.getString(key);
+					while(value.indexOf("\n") != -1){
+						value = value.replace('\n', ' ');
+					}		
+					sb.append("commonMessage.message.put(\"").append(key).append("\",\"").append(value).append("\");\r\n");
+				}
+				fileUtil.writeStringFile(respository.getLang(), "message-"+langKey+".js", sb.toString());
+			}			
+		}		
+	}
+	
+	public void loadSearch() throws SQLException, IOException{
+		List list = this.getList("Common", "SEARCHHEAD");
+		DataMap map;
+		commonSearch.resetSearch();
+		for(int i=0;i<list.size();i++){
+			map = (DataMap)list.get(i);
+			commonSearch.setHead(map);
+			map.setModuleCommand("Common", "SEARCHITEM");
+			List dataList = commonDao.getList(map);
+			commonSearch.setItem(map.getString("SHLPKY"), dataList);
+		}
+	}
+	
+	public void loadMenu() throws SQLException, IOException{
+		List list = this.getList("Common", "MENUGROUP");
+		DataMap map;
+		commonMenu.resetMenu();
+		for(int i=0;i<list.size();i++){
+			map = (DataMap)list.get(i);
+			commonMenu.setGroup(map);
+			map.setModuleCommand("Common", "MENUITEM");
+			List dataList = commonDao.getList(map);
+			commonMenu.setItem(map.getString("MENUGID"), dataList);
+		}
+	}
+	
+	public void loadAction() throws SQLException, IOException{
+		List list = this.getList("Common", "ACTIONGROUP");
+		DataMap map;
+		commonAction.resetAction();
+		for(int i=0;i<list.size();i++){
+			map = (DataMap)list.get(i);
+			commonAction.setGroup(map);
+			map.setModuleCommand("Common", "ACTIONITEM");
+			List dataList = commonDao.getList(map);
+			commonAction.setItem(map.getString("ACTIONGID"), dataList);
+		}
+	}
+	
+	public void loadSql() throws Exception{
+		commonDao.reloadSql();
+		commonDao.loadSql(null);
+	}
+	
+	public void testSql(DataMap map) throws SQLException, IOException{
+		commonDao.loadSql(map);
+	}
+	
+	public void viewSqlXml(DataMap map) throws SQLException, IOException{
+		commonDao.viewSqlXml(map);
+	}
+	
+	@Transactional
+	public List variantInsert(DataMap map) throws SQLException {
+		
+		List rsList = new ArrayList();
+		
+		DataMap saveVariant = map.getMap("saveVariant").getMap("map");
+		
+		if(map.getString("DEFCHK").equals("V")){
+			map.setModuleCommand("Common", "USRPHDEF");
+			commonDao.update(map);
+		}
+		
+		map.setModuleCommand("Common", "USRPH");
+		if(map.containsKey("UCOUNT")){
+			commonDao.update(map);
+			map.setModuleCommand("Common", "USRPI");
+			commonDao.delete(map);
+		}else{
+			commonDao.insert(map);
+		}
+		
+		map.setModuleCommand("Common", "USRPI");
+		Iterator it = saveVariant.keySet().iterator();
+		int count = 0;
+		while(it.hasNext()){
+			count++;
+			
+			String key = it.next().toString();
+			String value = saveVariant.getString(key);
+			
+			DataMap newMap = new DataMap(map);
+			
+			String snum = String.valueOf(count);
+			String inum = String.valueOf("000000").substring(0,(6-snum.length()))+snum;
+			newMap.put("ITEMNO", inum);
+			
+			newMap.put("CTRLID", key);
+			newMap.put("CTRVAL", value);
+			
+			commonDao.insert(newMap);
+			
+			rsList.add(newMap);
+		}
+		
+		return rsList;
+	}
+	
+	@Transactional
+	public DataMap variantDelete(DataMap map) throws SQLException {
+		map.setModuleCommand("Common", "USRPH");
+		DataMap data = commonDao.getMap(map);
+		
+		commonDao.delete(map);
+		
+		map.setModuleCommand("Common", "USRPI");
+		commonDao.delete(map);
+		
+		return data;
+	}
+}

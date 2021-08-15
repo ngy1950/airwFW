@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/h100"
+        android:background="#18263f"
+        >
+
+        <!-- 백 버튼 -->
+        <ImageButton
+            android:layout_width="@dimen/w100"
+            android:layout_height="@dimen/h100"
+            android:layout_centerVertical="true"
+            android:src="@drawable/omg_talk_btn_back"
+            android:background="@null"
+            android:id="@+id/chooser_btn_back"
+            />
+
+        <!-- 타이틀명 -->
+        <com.samyang.and.logistics.mobile.util.view.TextViewYJH
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="@dimen/textSize_36pt"
+            android:textColor="#ffffff"
+            android:text="@string/file_select_title"
+            android:id="@+id/chooser_text_title"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/chooser_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </RelativeLayout>
+
+</LinearLayout>

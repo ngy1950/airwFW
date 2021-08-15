@@ -1,0 +1,65 @@
+@charset 'utf-8';
+/* #c40452 -> #5DC560*/
+.tab.type1 {height:25px; border-top: 1px solid #eee;border-bottom: 1px solid #eee; padding-left:60px;     overflow: hidden;}
+.tab.type1 a { float:left; min-width:111px; height:25px; line-height:25px; text-indent:10px; border-right:1px solid #c2c8d7; color:#555;}
+.tab.type1 a span { display:block; height:25px; margin-right:10px; background:url("/common/theme/darkness/images/ico_tab_off_close.png") no-repeat right center;}
+.tab.type1 a.active { background:#fff;}
+.tab.type1 a.active span { background-image:url("/common/theme/darkness/images/ico_tab_on_close.png");}
+
+.lnbCloser { position:absolute; left:0; top:0; width:37px; height:25px;}
+.btn_menu  {position:absolute; right:20px; top:0;}
+
+.all_close button.left {background:#f2f2f2 url("/common/theme/gsfresh/images/login_img/list_left.png") no-repeat 40% center; margin-right:10px;}
+.all_close button.right {background:#f2f2f2 url("/common/theme/gsfresh/images/login_img/list_right.png") no-repeat 60% center;}
+
+.tab_list{
+	line-height:25px;
+	height:25px;
+	margin-right : 13px;
+  float:right;
+}
+ .menu-info{
+	float: right;
+	cursor: pointer;
+}
+.tab.type1 li{
+	float:left;
+	line-height:25px; 
+	color:#000;
+	cursor: pointer;
+	background: #fff;
+	padding:0 10px;
+	border-right: 1px solid #eee;
+}
+.tab_right {
+	background: url("/common/theme/gsfresh/images/login_img/ico_tab_off_close.png") no-repeat right center;
+}
+.tab.type1 .active .tab_right {
+	background: url("/common/theme/gsfresh/images/login_img/ico_tab_top1_on_close.png") no-repeat right center;
+}
+.tab.type1 li span{
+	padding:0 22px 0 10px;
+}
+.tab.type1 .active{
+	position:relative;
+	z-index:20 !important;
+	line-height:25px; 
+	background-color: #eee;
+	color:#70c422;
+}
+.menu {
+	width:60px; 
+	background:url("/common/theme/gsfresh/images/login_img/ico01.png") no-repeat 50% center;
+	border-right: 1px solid #eee; outline:none;
+}
+.menu.active {background:url("/common/theme/gsfresh/images/login_img/ico_tab_on_close.png") no-repeat 50% center;}
+
+.all_close {float:right;margin: 4px 15px 0 0;}
+
+.tab_list img{ 
+	margin:0 0 3px 3px;
+	border-radius:50%;
+	padding:3px 7px;
+	background:#f2f2f2;
+}
+#winTabRight {margin-right: 15px;}

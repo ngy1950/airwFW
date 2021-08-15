@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Shipment">
+  
+
+
+	<!-- IFWMS113 생성 VALDATION 체크 -->
+	<select id="IFWMS113_VALDATION_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT CASE WHEN (SELECT COUNT(1) FROM OWNER WHERE OWNRKY = #{OWNRKY}) &lt; 1 THEN 'MASTER_B0016'
+		            WHEN (SELECT COUNT(1) FROM WAHMA WHERE WAREKY = #{WAREKY}) &lt; 1 THEN 'VALID_M0561'
+		            WHEN (SELECT COUNT(1) FROM DOCTM WHERE DOCUTY = #{DOCUTY}) &lt; 1 THEN 'VALID_M0562'
+		            WHEN (SELECT COUNT(1) FROM SKUMA WHERE OWNRKY = #{OWNRKY} AND SKUKEY = #{SKUKEY}) &lt; 1 THEN 'MASTER_M0669'
+		            WHEN (SELECT COUNT(1) FROM SKUWC WHERE OWNRKY = #{OWNRKY} AND WAREKY = #{WAREKY} AND SKUKEY = #{SKUKEY}) &lt; 1 THEN 'VALID_M0587'
+		            WHEN (SELECT COUNT(1) FROM BZPTN WHERE OWNRKY = #{OWNRKY} AND PTNRKY = #{PTNRTO}) &lt; 1 THEN 'VALID_M0942'
+                    WHEN (SELECT COUNT(1) FROM BZPTN WHERE OWNRKY = #{OWNRKY} AND PTNRKY = #{PTNROD}) &lt; 1 THEN 'VALID_M0930'
+                    WHEN TRIM(#{SVBELN}) IS NULL THEN 'VALID_M0943'
+                    WHEN TRIM(#{ORDDAT}) IS NULL THEN 'VALID_M0944'
+          			WHEN TRIM(#{OTRQDT}) IS NULL THEN 'VALID_M0945'
+		            ELSE ''
+		        END MSGKEY
+		     , (SELECT DOCCAT FROM DOCTM WHERE DOCUTY = #{ADJUTY}) AS DOCCAT
+		     , 1 as dummy
+		  FROM DUAL
+	</select>
+	
+	
+	
+	<!-- IFWMS113 INSERT -->
+	<insert id="IFWMS113_INSERT"  parameterType="hashmap">
+		INSERT INTO IFWMS113
+		(                
+		       MANDT,
+		       SEQNO,
+		       ORDTYP,
+		       ORDDAT,
+		       CHKSEQ,
+		       ORDSEQ,
+		       SVBELN,
+		       SPOSNR,
+		       DOCUTY,
+		       ERPCDT,
+		       ERPCTM,
+		       ERPMDT,
+		       OTRQDT,
+		       PTNRTO,
+		       PTNROD,
+		       OWNRKY,
+		       WAREKY,
+		       WARESR,
+		       WARETG,
+		       SKUKEY,
+		       QTYORG,
+		       QTYREQ,
+		       WMSMGT,
+		       QTSHPD,
+		       DUOMKY,
+		       NETPR,
+		       SALDPT,
+		       REFDKY,
+		       REDKIT,
+		       REDDAT,
+		       STKNUM,
+		       SDATBG,
+		       DIRDVY,
+		       DIRSUP,
+		       SALEPR,
+		       DISRAT,
+		       SELLPR,
+		       SELAMT,
+		       VATAMT,
+		       CUSRID,
+		       CUNAME,
+		       CUPOST,
+		       CUNATN,
+		       CUTEL1,
+		       CUTEL2,
+		       CUMAIL,
+		       CUADDR,
+		       CTNAME,
+		       CTTEL1,
+		       SALENM,
+		       SALTEL,
+		       TEXT01,
+		       TEXT02,
+		       TEXT03,
+		       C00101,
+		       C00102,
+		       C00103,
+		       C00104,
+		       C00105,
+		       C00106,
+		       C00107,
+		       C00108,
+		       C00109,
+		       C00110,
+		       N00101,
+		       N00102,
+		       N00103,
+		       N00104,
+		       N00105,
+		       N00106,
+		       N00107,
+		       N00108,
+		       N00109,
+		       N00110,
+		       USRID1,
+		       DEPTID1,
+		       USRID2,
+		       DEPTID2,
+		       USRID3,
+		       DEPTID3,
+		       USRID4,
+		       DEPTID4,
+		       CREDAT,
+		       CRETIM,
+		       LMODAT,
+		       LMOTIM,
+		       STATUS,
+		       TDATE,
+		       XDATS,
+		       XTIMS,
+		       XSTAT,
+		       ERTXT )
+		VALUES (
+		       #{MANDT},
+		       SEQ_IFWMS113.nextval,
+		       #{ORDTYP},
+		       #{ORDDAT},
+		       #{CHKSEQ},
+		       LPAD(#{ORDSEQ}, 6, '0'),
+		       #{SVBELN},
+		       LPAD(#{SPOSNR}, 6, '0'),
+		       #{DOCUTY},
+		       TO_CHAR(SYSDATE,'YYYYMMDD'), 
+		       TO_CHAR(SYSDATE,'HH24MISS'),
+		       TO_CHAR(SYSDATE,'YYYYMMDD'), 
+		       #{OTRQDT},
+		       #{WARETG},
+		       #{WARETG},
+		       #{OWNRKY},
+		       #{WAREKY},
+		       #{WARESR},
+		       #{WARETG},
+		       #{SKUKEY},
+		       #{QTYORG},
+		       #{QTYREQ},
+		       NVL(#{WMSMGT}, 0),
+		       NVL(#{QTSHPD}, 0),
+		       #{DUOMKY},
+		       NVL(#{NETPR}, 0),
+		       NVL(#{SALDPT}, ' '),
+		       NVL(#{REFDKY}, ' '),
+		       NVL(#{REDKIT}, ' '),
+		       NVL(#{REDDAT}, ' '),
+		       NVL(#{STKNUM}, ' '),
+		       NVL(#{SDATBG}, ' '),
+		       NVL(#{DIRDVY}, ' '),
+		       NVL(#{DIRSUP}, ' '),
+		       NVL(#{SALEPR}, 0),
+		       NVL(#{DISRAT}, 0),
+		       NVL(#{SELLPR}, 0),
+		       NVL(#{SELAMT}, 0),
+		       NVL(#{VATAMT}, 0),
+		       NVL(#{CUSRID}, ' '),
+		       NVL(#{CUNAME}, ' '),
+		       NVL(#{CUPOST}, ' '),
+		       NVL(#{CUNATN}, ' '),
+		       NVL(#{CUTEL1}, ' '),
+		       NVL(#{CUTEL2}, ' '),
+		       NVL(#{CUMAIL}, ' '),
+		       NVL(#{CUADDR}, ' '),
+		       NVL(#{CTNAME}, ' '),
+		       NVL(#{CTTEL1}, ' '),
+		       NVL(#{SALENM}, ' '),
+		       NVL(#{SALTEL}, ' '),
+		       NVL(#{TEXT01}, ' '),
+		       NVL(#{TEXT02}, ' '),
+		       NVL(#{TEXT03}, ' '),
+		       NVL(#{C00101}, ' '),
+		       NVL(#{C00102}, ' '),
+		       NVL(#{C00103}, ' '),
+		       NVL(#{C00104}, ' '),
+		       NVL(#{C00105}, ' '),
+		       NVL(#{C00106}, ' '),
+		       NVL(#{C00107}, ' '),
+		       NVL(#{C00108}, ' '),
+		       NVL(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MISS')), ' '),
+		       NVL(#{C00110}, ' '),
+		       NVL(#{N00101}, 0),
+		       NVL(#{N00102}, 0),
+		       NVL(#{N00103}, 0),
+		       NVL(#{N00104}, 0),
+		       NVL(#{N00105}, 0),
+		       NVL(#{N00106}, 0),
+		       NVL(#{N00107}, 0),
+		       NVL(#{N00108}, 0),
+		       NVL(#{N00109}, 0),
+		       NVL(#{N00110}, 0),
+		       NVL(#{USRID1}, ' '),
+		       NVL(#{DEPTID1}, ' '),
+		       NVL(#{USRID2}, ' '),
+		       NVL(#{DEPTID2}, ' '),
+		       NVL(#{USRID3}, ' '),
+		       NVL(#{DEPTID3}, ' '),
+		       NVL(#{USRID4}, ' '),
+		       NVL(#{DEPTID4}, ' '),
+		       TO_CHAR(SYSDATE,'YYYYMMDD'), 
+		       TO_CHAR(SYSDATE,'HH24MISS'),
+		       ' ', 
+		       ' ',
+		       #{STATUS},
+		       NVL(CONCAT(TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MISS')), ' '),
+		       NVL(TRIM(#{XDATS}), ' '),
+		       NVL(TRIM(#{XTIMS}), ' '),
+		       NVL(TRIM(#{XSTAT}), 'R'),
+		       NVL(TRIM(#{ERTXT}), ' ')
+				)
+  
+	</insert>	
+	
+	
+
+	<!-- STO SVBELN 체번 -->
+	<select id="SEQ_MOVEWAREHOUSE_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT SEQMOVEWAREHOUSE_NEW.NEXTVAL AS SVBELN FROM DUAL
+	</select>
+</mapper>

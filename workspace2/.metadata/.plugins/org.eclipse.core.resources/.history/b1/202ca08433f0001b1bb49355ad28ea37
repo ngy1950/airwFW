@@ -1,0 +1,197 @@
+@charset "utf-8";
+
+/*tr select row*/
+.table_list01 tr.active td{border-right:1px solid #eaeaea;background-color:#effaff}
+.table_list01 tr.active td select.input {background-color:#effaff}
+.grid_list tr.active td{background-color:#f7dfdf}
+.input_list tr.active td{background-color:#f7dfdf}
+.table_list01 tr.active td:last-of-type{border-right:1px solid #eaeaea}
+
+/*tr focus row*/
+.table_list01 tr.focusRow td{border-right:1px solid #ccc;background-color:#D7D7FF !important}
+.table_list01 tr.focusRow td:last-of-type{border-right:1px solid #eaeaea !important}
+.table_list01 tr.focusRow td.gridColDisable select{border-right:1px solid #eaeaea;background-color:#D7D7FF !important}
+
+/* 2021.06.15 row 선택시 input,select 타입 배경색 변경*/
+.table_list01 tr.focusRow td select.input {background-color:#fff !important}
+.table_list01 tr.focusRow td[Gcol^="input"].gridColDisable{background-color:#D7D7FF !important;}
+.table_list01 tr.focusRow td[Gcol^="input"].editable{background-color:#fff !important;} 
+.table_list01 tr.focusRow td[Gcol^="input"] {background-color:#fff !important;}
+
+/* .table_list01 tr.focusRow td[Gcol^="input"] {background-color:#fff !important;} */
+
+/* .table_list01 tr.focusRow td[Gcol^="check"] {background-color:#fff !important;} */
+/*                                          */
+
+.grid_list tr.focusRow td{background-color:#f7dfdf !important}
+.input_list tr.focusRow td{background-color:#f7dfdf !important}
+
+.active select{background-color:#f7dfdf}
+.focusRow select{background-color:#D7D7FF}
+/*td editable col*/
+/*
+.table_list01 tr.active td.editable,
+.table_list01 tr.focusRow td.editable,
+.table_list01 tr td.editable
+
+.grid_list tr.active td.editable,
+.grid_list tr.focusRow td.editable,
+.grid_list tr td.editable
+
+.input_list tr.active td.editable,
+.input_list tr.focusRow td.editable,
+.input_list tr td.editable{text-align:left !important}
+*/
+
+.input_list tr.active td.editabled,
+.input_list tr.focusRow td.editabled,
+.input_list tr td.editabled
+
+.grid_list tr.active td.editabled,
+.grid_list tr.focusRow td.editabled,
+.grid_list tr td.editabled
+
+/*td edited col*/
+.table_list01 tr.active td.editabled,
+.table_list01 tr.focusRow td.editabled,
+.table_list01 tr td.editabled{color: #9c1f1f;font-weight: bolder;}
+
+/*td desable col*/
+.table_list01 tr.active td.gridColDisable,
+.table_list01 tr.focusRow td.gridColDisable,
+.table_list01 tr td.gridColDisable{border-right:1px solid #dbdbdb;background-color:#E6E6FE;background-image: none;}
+
+.table_list01 tr.active td.gridColDisable select.input,
+.table_list01 tr.focusRow td.gridColDisable select.input,
+.table_list01 tr td.gridColDisable select.input {background-color:#dbdbdb;background-image: none;}
+
+.grid_list tr.active td.gridColDisable,
+.grid_list tr.focusRow td.gridColDisable,
+.grid_list tr td.gridColDisable{background-color:#f7aaaa;background-image: none;}
+
+.input_list tr.active td.gridColDisable,
+.input_list tr.focusRow td.gridColDisable,
+.input_list tr td.gridColDisable{background-color:#f7aaaa;background-image: none;}
+
+/*td col data type*/
+.table_list01 tr td.gridColText{color:black;}/*black*/
+/* .table_list01 tr td.gridColText{color:gray}gray */
+.grid_list tr td.gridColText{color:black}/*black*/
+.input_list tr td.gridColText{color:black}/*black*/
+/* 그리드 글자 굵기 변경 2021.07.06 남기윤 */
+.table_list01 tr td.gridColInputText{font-weight: normal;cursor: pointer;font-weight: bold;}/*white*/
+.grid_list tr td.gridColInputText{font-weight: bold;}/*white*/
+.input_list tr td.gridColInputText{font-weight: bold;}/*white*/
+.table_list01 tr td.gridColInputNumber{text-align: right;}/*right*/
+.grid_list tr td.gridColInputNumber{text-align: right;}/*right*/
+.input_list tr td.gridColInputNumber{text-align: right;}/*right*/
+
+/*td col text align (default left)*/
+.table_list01 tr td.gridColTextCenter{text-align:center}
+.grid_list tr td.gridColTextCenter{text-align:center}
+.input_list tr td.gridColTextCenter{text-align:center}
+.table_list01 tr td.gridColTextRight{text-align:right}
+.grid_list tr td.gridColTextRight{text-align:right}
+.input_list tr td.gridColTextRight{text-align:right}
+
+/*th td rownum, rowcheck ...*/
+.table_list01 tr td.gridColObject{text-align: center;}
+.grid_list tr td.gridColObject{text-align: center;}
+.input_list tr td.gridColObject{text-align: center;}
+
+/*input upper lower*/
+.textUpperFormat{text-transform:uppercase}
+.textLowerFormat{text-transform:lowercase}
+
+/*tr or td color*/
+.table_list01 tr.gridColorTextRed td,
+.table_list01 tr td.gridColorTextRed{color:red}
+.table_list01 tr.gridColorTextBlue td,
+.table_list01 tr td.gridColorTextBlue{color:blue}
+.table_list01 tr.gridColorTextYellow td,
+.table_list01 tr td.gridColorTextYellow{color:#B3B369}
+.table_list01 tr.gridColorTextGray td,
+.table_list01 tr td.gridColorTextGray{color:#ddd}
+.table_list01 tr.gridColorTextGreen td,
+.table_list01 tr td.gridColorTextGreen{color:#324D96}
+.table_list01 tr.gridColorBgRed td,
+.table_list01 tr td.gridColorBgRed{background-color:#FFCBCB}
+.table_list01 tr.gridColorBgBlue td,
+.table_list01 tr td.gridColorBgBlue{background-color:#6799FF}
+.table_list01 tr.gridColorBgYellow td,
+.table_list01 tr td.gridColorBgYellow{background-color:#B3B369}
+.table_list01 tr.gridColorBgGray td,
+.table_list01 tr td.gridColorBgGray{background-color:#ddd}
+.table_list01 tr.gridColorBgGreen td,
+.table_list01 tr td.gridColorBgGreen{background-color:#1AE85E}
+.table_list01 tr.gridColorBgYellow2 td,
+.table_list01 tr td.gridColorBgYellow2{background-color:#F6F645}
+/* 추가 */
+.table_list01 tr.gridColorbrightRed td,
+.table_list01 tr td.gridColorbrightRed{background-color:#FFD8D8}
+.table_list01 tr.gridColorbrightYellow td,
+.table_list01 tr td.gridColorbrightYellow{background-color:#FAF4C0}
+.table_list01 tr.gridColorNavy2 td,
+.table_list01 tr td.gridColorNavy2{background-color:#D9E5FF}
+
+.grid_list tr.gridColorTextRed td,
+.grid_list tr td.gridColorTextRed{color:red}
+.grid_list tr.gridColorTextBlue td,
+.grid_list tr td.gridColorTextBlue{color:blue}
+.grid_list tr.gridColorTextYellow td,
+.grid_list tr td.gridColorTextYellow{color:#B3B369}
+.grid_list tr.gridColorTextGray td,
+.grid_list tr td.gridColorTextGray{color:#ddd}
+.grid_list tr.gridColorTextGreen td,
+.grid_list tr td.gridColorTextGreen{color:#324D96}
+.grid_list tr.gridColorBgRed td,
+.grid_list tr td.gridColorBgRed{background-color:#FFCBCB}
+.grid_list tr.gridColorBgBlue td,
+.grid_list tr td.gridColorBgBlue{background-color:#6799FF}
+.grid_list tr.gridColorBgYellow td,
+.grid_list tr td.gridColorBgYellow{background-color:#B3B369}
+.grid_list tr.gridColorBgGray td,
+.grid_list tr td.gridColorBgGray{background-color:#ddd}
+.grid_list tr.gridColorBgGreen td,
+.grid_list tr td.gridColorBgGreen{background-color:#1AE85E}
+.grid_list tr.gridColorBgYellow2 td,
+.grid_list tr td.gridColorBgYellow2{background-color:#F6F645}
+/* 추가 */
+.grid_list tr.gridColorbrightRed td,
+.grid_list tr td.gridColorbrightRed{background-color:#FFD8D8}
+.grid_list tr.gridColorbrightYellow td,
+.grid_list tr td.gridColorBgbrightYellow{background-color:#FAF4C0}
+.grid_list tr.gridColorNavy2 td,
+.grid_list tr td.gridColorBgNavy2{background-color:#D9E5FF}
+
+
+.input_list tr.gridColorTextRed td,
+.input_list tr td.gridColorTextRed{color:red}
+.input_list tr.gridColorTextBlue td,
+.input_list tr td.gridColorTextBlue{color:blue}
+.input_list tr.gridColorTextYellow td,
+.input_list tr td.gridColorTextYellow{color:#B3B369}
+.input_list tr.gridColorTextGray td,
+.input_list tr td.gridColorTextGray{color:#ddd}
+.input_list tr.gridColorTextGreen td,
+.input_list tr td.gridColorTextGreen{color:#324D96}
+.input_list tr.gridColorBgRed td,
+.input_list tr td.gridColorBgRed{background-color:#FFCBCB}
+.input_list tr.gridColorBgBlue td,
+.input_list tr td.gridColorBgBlue{background-color:#6799FF}
+.input_list tr.gridColorBgYellow td,
+.input_list tr td.gridColorBgYellow{background-color:#B3B369}
+.input_list tr.gridColorBgGray td,
+.input_list tr td.gridColorBgGray{background-color:#ddd}
+.input_list tr.gridColorBgGreen td,
+.input_list tr td.gridColorBgGreen{background-color:#1AE85E}
+.input_list tr.gridColorBgYellow2 td,
+.input_list tr td.gridColorBgYellow2{background-color:#F6F645}
+/* 추가 */
+.input_list tr.gridColorbrightRed td,
+.input_list tr td.gridColorbrightRed{background-color:#FFD8D8}
+.input_list tr.gridColorbrightYellow td,
+.input_list tr td.gridColorBgbrightYellow{background-color:#FAF4C0}
+.input_list tr.gridColorNavy2 td,
+.input_list tr td.gridColorBgNavy2{background-color:#D9E5FF}
+

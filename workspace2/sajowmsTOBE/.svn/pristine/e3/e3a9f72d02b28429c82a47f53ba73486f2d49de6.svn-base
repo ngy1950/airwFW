@@ -1,0 +1,1794 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="InventoryReport">
+
+	<!-- SD01 로케이션 조회-->
+	<select id="SD01_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT S.WAREKY AS WAREKY,
+		       S.AREAKY AS AREAKY,
+		       S.LOCAKY AS LOCAKY,
+		       S.LOTNUM AS LOTNUM,
+		       CMD1.CDESC1 AS SKUG01,
+		       S.SKUKEY AS SKUKEY,
+		       M.DESC03 AS DESC03,
+		       CMD2.CDESC1 AS ASKU01,
+		       M.DESC01 AS DESC01,
+		       S.QTSIWH AS QTSIWH,
+		       DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-S.QTSBLK-GREATEST(S.QTSALO,S.QTSPMO) AS USEQTY,
+		       S.QTSBLK AS QTSBLK,
+		       DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO) AS QTSALO,
+		       S.QTSPMO AS QTSPMO,
+		       S.QTSPMI AS QTSPMI,
+		       S.ZONEKY AS ZONEKY,
+		       M.DESC02 AS DESC02,
+		       S.UOMKEY AS UOMKEY,
+		       S.TRNUID AS TRNUID,
+		       S.LOTA01 AS LOTA01,
+		       S.LOTA02 AS LOTA02,
+		       BZ.NAME01 AS LOTA03,
+		       CMB.CDESC1 AS LOTA05,
+		       CMA.CDESC1 AS LOTA06,
+		       CASE WHEN S.LOTA07 = '21SV' AND S.LOTA08  = 'OD' THEN '오양위탁'
+		           WHEN S.LOTA07 = '21SV' THEN '삼아재고'
+		            ELSE ' '
+		       END AS LOTA07,
+		       S.LOTA11 AS LOTA11,
+		       S.LOTA12 AS LOTA12,
+		       S.LOTA13 AS LOTA13,
+		       S.QTDUOM AS QTDUOM,
+		      NVL(TRUNC(S.QTSIWH/DECODE(M.QTDUOM,0,NULL,M.QTDUOM)),0) AS BOXQTY,
+		       MOD(S.QTSIWH, S.QTDUOM) AS REMQTY,
+		       ( CASE WHEN TO_CHAR(SYSDATE,'YYYYMMDD') &gt;= S.LOTA13 THEN  'FFD8D8'
+		              WHEN S.LOTA13 &lt;= TO_CHAR(ADD_MONTHS(SYSDATE,3),'YYYYMMDD') THEN 'FAF4C0'              
+		              WHEN TO_CHAR(SYSDATE,'YYYYMMDD') &gt;= TO_CHAR(TO_DATE(S.LOTA13) - (TO_NUMBER(M.OUTDMT)/2),'YYYYMMDD') THEN 'D9E5FF'
+		              ELSE 'FFFFFF'
+		             END )   FLAGYN,
+			/* L.TEXT01 AS TEXT01, */
+		        S.SBKTXT AS TEXT01,
+		        CM4.CDESC1 AS SKUG05,
+		        CM3.CDESC1 AS ASKU04,
+		       NVL(TRUNC(S.QTSIWH /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY1,
+		       NVL(TRUNC((DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-QTSBLK-GREATEST(QTSALO,QTSPMO))/DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY2,
+		       NVL(TRUNC(S.QTSBLK /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY3,
+		       NVL(TRUNC(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO) /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY4,
+		       NVL(TRUNC(S.QTSPMI /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY5,
+		       NVL(  TRUNC(S.QTSIWH / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY1,
+		       NVL(  TRUNC((DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-QTSBLK-GREATEST(QTSALO,QTSPMO)) / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY2,
+		       NVL(  TRUNC(S.QTSBLK / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY3,
+		       NVL(  TRUNC(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO) / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY4,
+		       NVL(  TRUNC(S.QTSPMO / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY5,
+		       NVL(  TRUNC(S.QTSPMI / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY6,
+		       NVL(M.QTYSTD,0) / DECODE(M.QTDUOM, 0, NULL, M.QTDUOM) AS PLBQTY,
+		       NVL(M.QTDUOM,0) AS BXIQTY,
+		       NVL(M.QTYSTD,0) AS PLIQTY,
+		       NVL(TO_DATE(TRIM(S.LOTA13),'YYYYMMDD') - TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD')), 0) AS DTREMDAT,
+		       NVL(TRUNC(TO_NUMBER((TO_DATE(TRIM(S.LOTA13),'YYYYMMDD') - TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD')))/M.OUTDMT) * 100), 0) AS DTREMRAT
+		 FROM STKKY S INNER JOIN SKUMA M ON S.SKUKEY = M.SKUKEY AND S.OWNRKY = M.OWNRKY
+		              INNER JOIN SKUWC W ON S.SKUKEY = W.SKUKEY AND S.WAREKY = W.WAREKY AND S.OWNRKY = W.OWNRKY
+		              LEFT OUTER JOIN CMCDV CMA ON  S.LOTA06 = CMA.CMCDVL AND CMA.CMCDKY = 'LOTA06'
+		              LEFT OUTER JOIN CMCDV CMB ON S.LOTA05 = CMB.CMCDVL AND CMB.CMCDKY = 'LOTA05'
+		              LEFT OUTER JOIN BZPTN BZ ON S.OWNRKY = BZ.OWNRKY AND S.LOTA03 = BZ.PTNRKY AND BZ.PTNRTY = '0002'
+		              LEFT OUTER JOIN CMCDV CMD1 ON CMD1.CMCDKY = 'SKUG01' AND CMD1.CMCDVL = M.SKUG01
+		              LEFT OUTER JOIN CMCDV CMD2 ON CMD2.CMCDKY = 'ASKU01' AND CMD2.CMCDVL = M.ASKU01
+		              LEFT OUTER JOIN CMCDV CM3 ON CM3.CMCDVL = M.ASKU04 AND CM3.CMCDKY = 'ASKU04'  
+		              LEFT OUTER JOIN CMCDV CM4 ON CM4.CMCDVL = M.SKUG05 AND CM4.CMCDKY = 'SKUG05'
+		 WHERE (S.QTSIWH &gt; 0)
+		   AND S.OWNRKY = #{OWNRKY}
+		   AND S.WAREKY = #{WAREKY}
+			<if test="CHKMAK != null and CHKMAK != ''">
+		   AND S.AREAKY NOT IN ('SHP','SYS') 
+			</if>
+			<if test="RANGE_SQL != null and RANGE_SQL != ''">
+				${RANGE_SQL}
+			</if>
+			<if test="GSKUKEY != null and GSKUKEY != ''">
+		   AND S.SKUKEY = #{GSKUKEY}
+		   AND S.LOTA06 = #{GLOTA06}
+			</if>
+			<if test="LOTA07 != null and LOTA07 != ''">
+				  <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("N")'>
+		            AND S.LOTA07 != '21SV'
+				  </if>
+				  <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("Y")'>
+		            AND S.LOTA07 = '21SV'
+				  </if>
+			</if>
+		 ORDER BY S.LOCAKY 
+ 	</select>
+	
+	<!-- SD01 제품별 조회-->
+	<select id="SD01_1_LIST" parameterType="hashmap" resultType="DataMap">
+		    SELECT * 
+			FROM
+			(
+			SELECT  ROWNUM AS RN, A.*
+			FROM (
+			SELECT S.WAREKY AS WAREKY,
+			       S.SKUKEY AS SKUKEY,
+			       M.DESC03 AS DESC03,
+			       MAX(L.LOCAKY) AS LOCSKU,
+			       MAX(CM1.CDESC1) AS ASKU01,
+			       MAX(CM2.CDESC1) AS SKUG01,
+			       M.DESC01 AS DESC01,
+			       M.DESC04 AS DESC04,
+			       S.LOTA06 AS GLOTA06,
+			       (SELECT CDESC1 FROM CMCDV WHERE CMCDKY = 'LOTA06' AND CMCDVL = S.LOTA06) AS LOTA06,
+			       M.HEIGHT AS UNTCST,
+			       M.HEIGHT * NVL(SUM(QTSIWH),0) AS STKCST,
+			       MAX(M.QTDUOM) BXIQTY,
+			       SUM(QTSIWH) AS QTSIWH, 
+			       SUM(DECODE(S.LOCAKY, 'SHPLOC', QTSIWH, 0)) AS SHPLOC, 
+			       SUM(NVL(TRUNC(S.QTSIWH/DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY1,
+			       SUM(DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-QTSBLK-GREATEST(QTSALO,QTSPMO)) AS USEQTY, 
+			       SUM(NVL(TRUNC((DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-QTSBLK-GREATEST(QTSALO,QTSPMO))/DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY2,
+			       SUM(QTSBLK) AS QTSBLK, 
+			       SUM(NVL(TRUNC(S.QTSBLK/DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY3,
+			       SUM(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO)) AS QTSALO, 
+			       SUM(NVL(TRUNC(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO)/DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY4,
+			       SUM(QTSPMO) AS QTSPMO, 
+			       SUM(NVL(TRUNC(S.QTSPMO/DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY5,
+			       SUM(QTSPMI) AS QTSPMI,
+			       SUM(NVL(TRUNC(S.QTSPMI/DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY6,
+			       MAX(CM4.CDESC1) AS SKUG05,
+			       MAX(CM3.CDESC1) AS ASKU04,
+			       NVL(  TRUNC(SUM(S.QTSIWH) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY1,
+			       NVL(  TRUNC(SUM((DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-QTSBLK-GREATEST(QTSALO,QTSPMO))) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY2,
+			       NVL(  TRUNC(SUM(S.QTSBLK) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY3,
+			       NVL(  TRUNC(SUM(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO)) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY4,
+			       NVL(  TRUNC(SUM(S.QTSPMO) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY5,
+			       NVL(  TRUNC(SUM(S.QTSPMI) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY6,
+			       NVL(MAX(M.QTYSTD),0) / DECODE(MAX(M.QTDUOM), 0, NULL, MAX(M.QTDUOM)) AS PLBQTY,
+			       NVL(MAX(M.QTYSTD),0) AS PLIQTY,
+			       MAX(NVL(STK1.QTY, 0)) AS SALEQTY,
+			       MAX(NVL(TRUNC(STK1.QTY/M.QTDUOM, 1), 0)) AS SALEBOX,
+			       NVL(TRUNC(MAX(NVL(STK1.QTY, 0)) / MAX(M.QTYSTD), 2) ,0) AS SALEPLT,
+			       NVL(ROUND(MAX(AI.ASNQTY)/MAX(M.QTDUOM), 2),0) AS ASNQTY,
+			       NVL(W.SLCPDI,0) AS SLCPDI
+			
+			 FROM STKKY S
+			      INNER JOIN SKUMA M
+			              ON M.OWNRKY = S.OWNRKY
+			             AND M.SKUKEY = S.SKUKEY
+			      INNER JOIN SKUWC W    
+			              ON W.OWNRKY = S.OWNRKY
+			             AND W.SKUKEY = S.SKUKEY
+			             AND W.WAREKY = S.WAREKY
+			      LEFT OUTER JOIN LOCMA L
+			              ON S.WAREKY = L.WAREKY
+			             AND S.SKUKEY = L.LOCSKU
+			      LEFT OUTER JOIN CMCDV CM1
+			              ON CM1.CMCDVL = S.ASKU01
+			             AND CM1.CMCDKY = 'ASKU01'
+			      LEFT OUTER JOIN CMCDV CM2
+			              ON CM2.CMCDVL = M.SKUG01
+			             AND CM2.CMCDKY = 'SKUG01'  
+			      LEFT OUTER JOIN CMCDV CM3
+			              ON CM3.CMCDVL = M.ASKU04
+			             AND CM3.CMCDKY = 'ASKU04'  
+			      LEFT OUTER JOIN CMCDV CM4
+			              ON CM4.CMCDVL = M.SKUG05
+			             AND CM4.CMCDKY = 'SKUG05'
+			      LEFT OUTER JOIN (
+			                        SELECT OWNRKY, WAREKY, SKUKEY,
+			                               NVL(STKQTY + INNQTY + TRFQTY - ORDQTY, 0) AS QTY
+			                          FROM WMS_STOCK_NEW
+			                      ) STK1
+			              ON S.OWNRKY = STK1.OWNRKY
+			             AND S.WAREKY = STK1.WAREKY
+			             AND S.SKUKEY = STK1.SKUKEY
+			   LEFT OUTER JOIN (
+			                          SELECT H.WAREKY, I.SKUKEY, I.LOTA06, SUM(I.QTYASN) AS ASNQTY
+			                                                 FROM ASNDH H, ASNDI I
+			                                                WHERE 1 = 1
+			                                                  AND H.ASNDKY = I.ASNDKY
+			                                                  AND H.STATDO != 'RCN'
+			                                                  AND I.STATIT = 'NEW'
+			                                                  GROUP BY H.OWNRKY, H.WAREKY, I.SKUKEY, I.LOTA06
+			                                             )AI
+			                                                ON S.WAREKY = AI.WAREKY
+			                                               AND S.SKUKEY = AI.SKUKEY
+			                                               AND S.LOTA06 = AI.LOTA06
+			WHERE  (S.QTSIWH &gt; 0)
+			  AND S.OWNRKY = #{OWNRKY}
+			  AND S.WAREKY = #{WAREKY}
+			<if test="RANGE_SQL != null and RANGE_SQL != ''">
+				${RANGE_SQL}
+			</if>
+			<if test="CHKMAK == 'true'">
+				AND S.AREAKY NOT IN ('SHP','SYS')
+			</if>
+			<if test="LOTA07 == 'N'">
+				AND S.LOTA07 != '21SV'
+			</if>
+			<if test="LOTA07 == 'Y'">
+				AND S.LOTA07 = '21SV'
+			</if>
+			GROUP BY S.WAREKY, S.SKUKEY, M.DESC01, M.HEIGHT, S.LOTA06, M.DESC04, M.DESC03, W.SLCPDI
+			ORDER BY S.SKUKEY) A )
+			WHERE 1=1
+	</select>
+	
+	<!-- SD01 창고별 조회-->
+	<select id="SD01_2_LIST" parameterType="hashmap" resultType="DataMap">
+			SELECT *
+			FROM
+			(
+			SELECT  ROWNUM AS RN, A.*
+			FROM (
+						SELECT S.WAREKY AS WAREKY,
+						       S.AREAKY AS AREAKY,
+						       S.SKUKEY AS SKUKEY,
+			                              M.DESC03 AS DESC03,
+			                   MAX(CM1.CDESC1) AS ASKU01,
+			                   MAX(CM2.CDESC1) AS SKUG01,
+						       S.DESC01 AS DESC01,
+			                   (SELECT CDESC1 FROM CMCDV WHERE CMCDKY = 'LOTA06' AND CMCDVL = S.LOTA06) AS LOTA06,
+						       SUM(S.QTSIWH) AS QTSIWH,
+			                   SUM(DECODE(S.LOCAKY, 'SHPLOC', QTSIWH, 0)) AS SHPLOC, 
+						       SUM(DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-S.QTSBLK-GREATEST(S.QTSALO,S.QTSPMO)) AS USEQTY,
+						       SUM(S.QTSBLK) AS QTSBLK,
+						       SUM(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO)) AS QTSALO,
+						       SUM(S.QTSPMO) AS QTSPMO,
+						       SUM(S.QTSPMI) AS QTSPMI,       
+			                   MAX(CM4.CDESC1) AS SKUG05,
+			                   MAX(CM3.CDESC1) AS ASKU04,
+			                   SUM(NVL(TRUNC(S.QTSIWH /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY1,
+			                   SUM(NVL(TRUNC((DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-QTSBLK-GREATEST(QTSALO,QTSPMO))/DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY2,
+			                   SUM(NVL(TRUNC(S.QTSBLK /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY3,
+			                   SUM(NVL(TRUNC(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO) /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY4,
+			                   SUM(NVL(TRUNC(S.QTSPMI /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY5,
+			                   NVL(  TRUNC(SUM(S.QTSIWH) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY1,
+			                   NVL(  TRUNC(SUM((DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-QTSBLK-GREATEST(QTSALO,QTSPMO))) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY2,
+			                   NVL(  TRUNC(SUM(S.QTSBLK) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY3,
+			                   NVL(  TRUNC(SUM(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO)) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY4,
+			                   NVL(  TRUNC(SUM(S.QTSPMO) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY5,
+			                   NVL(  TRUNC(SUM(S.QTSPMI) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY6,
+			                   NVL(MAX(M.QTYSTD),0) / DECODE(MAX(M.QTDUOM), 0, NULL, MAX(M.QTDUOM)) AS PLBQTY,
+			                   NVL(MAX(M.QTYSTD),0) AS PLIQTY,
+			                   NVL(MAX(M.QTDUOM),0) AS BXIQTY
+			
+			 FROM STKKY S
+			                        INNER JOIN SKUMA M ON S.SKUKEY = M.SKUKEY
+			                                          AND S.OWNRKY = M.OWNRKY
+			                        INNER JOIN SKUWC W ON S.WAREKY = W.WAREKY
+			                                          AND S.OWNRKY = W.OWNRKY
+			                                          AND S.SKUKEY = W.SKUKEY
+			                        LEFT OUTER JOIN CMCDV CM1
+			                                           ON CM1.CMCDVL = S.ASKU01
+			                                          AND CM1.CMCDKY = 'ASKU01'
+			                        LEFT OUTER JOIN CMCDV CM2
+			                                           ON CM2.CMCDVL = M.SKUG01
+			                                          AND CM2.CMCDKY = 'SKUG01'  
+			                        LEFT OUTER JOIN CMCDV CM3
+			                                           ON CM3.CMCDVL = M.ASKU04
+			                                          AND CM3.CMCDKY = 'ASKU04'  
+			                        LEFT OUTER JOIN CMCDV CM4
+			                                           ON CM4.CMCDVL = M.SKUG05
+			                                          AND CM4.CMCDKY = 'SKUG05'                                          
+			   WHERE (S.QTSIWH > 0)
+			     AND S.OWNRKY = #{OWNRKY}
+		         AND S.WAREKY = #{WAREKY}
+			<if test="CHKMAK == 'true'">
+			 AND S.AREAKY NOT IN ('SHP','SYS') 
+			</if>  
+			<if test="SKUKEY != null and SKUKEY != ''">
+			 AND S.SKUKEY = #{SKUKEY}
+			 AND S.LOTA06 = #{GLOTA06}
+			</if>
+			
+			<if test="LOTA07 != 'ALL'">
+			   <if test="LOTA07 == 'N'">
+			      AND S.LOTA07 != '21SV'
+			   </if>
+			   <if test="LOTA07 == 'Y'">
+			      AND S.LOTA07 = '21SV'
+			   </if>
+			</if>
+			<if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+			<if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>
+						GROUP BY S.WAREKY, S.AREAKY, S.SKUKEY, S.DESC01, S.LOTA06, M.DESC03
+						ORDER BY S.WAREKY, S.AREAKY, S.SKUKEY, S.DESC01, S.LOTA06
+			) A )
+			WHERE 1=1
+	</select>
+	
+	<!-- SD01 로케이션별 조회-->
+	<select id="SD01_3_LIST" parameterType="hashmap" resultType="DataMap">
+			SELECT *
+			FROM
+			(
+			SELECT  ROWNUM AS RN, A.*
+			FROM (
+			SELECT S.WAREKY AS WAREKY,
+			       S.AREAKY AS AREAKY,
+			       S.LOCAKY AS LOCAKY,
+			       CMD1.CDESC1 AS SKUG01,
+			       S.SKUKEY AS SKUKEY,
+			       M.DESC03 AS DESC03,
+			       CMD2.CDESC1 AS ASKU01,
+			       M.DESC01 AS DESC01,
+			       S.QTSIWH AS QTSIWH,
+			       DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-S.QTSBLK-GREATEST(S.QTSALO,S.QTSPMO) AS USEQTY,
+			       S.QTSBLK AS QTSBLK,
+			       DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO) AS QTSALO,
+			       S.QTSPMO AS QTSPMO,
+			       S.QTSPMI AS QTSPMI,
+			       S.ZONEKY AS ZONEKY,
+			       M.DESC02 AS DESC02,
+			       S.UOMKEY AS UOMKEY,
+			       S.TRNUID AS TRNUID,
+			       S.LOTA01 AS LOTA01,
+			       S.LOTA02 AS LOTA02,
+			       BZ.NAME01 AS LOTA03,
+			       CMB.CDESC1 AS LOTA05,
+			       CMA.CDESC1 AS LOTA06,
+			       CASE WHEN S.LOTA07 = '21SV' AND S.LOTA08  = 'OD' THEN '오양위탁'
+			           WHEN S.LOTA07 = '21SV' THEN '삼아재고'
+			            ELSE ' '
+			       END AS LOTA07,
+			       S.LOTA11 AS LOTA11,
+			       S.LOTA12 AS LOTA12,
+			       S.LOTA13 AS LOTA13,
+			       S.QTDUOM AS QTDUOM,
+			      NVL(TRUNC(S.QTSIWH/DECODE(M.QTDUOM,0,NULL,M.QTDUOM)),0) AS BOXQTY,
+			       MOD(S.QTSIWH, S.QTDUOM) AS REMQTY,
+			       ( CASE WHEN TO_CHAR(SYSDATE,'YYYYMMDD') &gt;= S.LOTA13 THEN  'FFD8D8'
+			              WHEN S.LOTA13 &lt;= TO_CHAR(ADD_MONTHS(SYSDATE,3),'YYYYMMDD') THEN 'FAF4C0'              
+			              WHEN TO_CHAR(SYSDATE,'YYYYMMDD') &gt; = TO_CHAR(TO_DATE(S.LOTA13) - (TO_NUMBER(M.OUTDMT)/2),'YYYYMMDD') THEN 'D9E5FF'
+			              ELSE 'FFFFFF'
+			             END )   FLAGYN,
+				/* L.TEXT01 AS TEXT01, */
+			        S.SBKTXT AS TEXT01,
+			        CM4.CDESC1 AS SKUG05,
+			        CM3.CDESC1 AS ASKU04,
+			       NVL(TRUNC(S.QTSIWH /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY1,
+			       NVL(TRUNC((DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-QTSBLK-GREATEST(QTSALO,QTSPMO))/DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY2,
+			       NVL(TRUNC(S.QTSBLK /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY3,
+			       NVL(TRUNC(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO) /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY4,
+			       NVL(TRUNC(S.QTSPMI /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY5,
+			       NVL(  TRUNC(S.QTSIWH / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY1,
+			       NVL(  TRUNC((DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-QTSBLK-GREATEST(QTSALO,QTSPMO)) / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY2,
+			       NVL(  TRUNC(S.QTSBLK / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY3,
+			       NVL(  TRUNC(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO) / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY4,
+			       NVL(  TRUNC(S.QTSPMO / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY5,
+			       NVL(  TRUNC(S.QTSPMI / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY6,
+			       NVL(M.QTYSTD,0) / DECODE(M.QTDUOM, 0, NULL, M.QTDUOM) AS PLBQTY,
+			       NVL(M.QTDUOM,0) AS BXIQTY,
+			       NVL(M.QTYSTD,0) AS PLIQTY,
+			       NVL(TO_DATE(TRIM(S.LOTA13),'YYYYMMDD') - TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD')), 0) AS DTREMDAT,
+			       NVL(TRUNC(TO_NUMBER((TO_DATE(TRIM(S.LOTA13),'YYYYMMDD') - TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD')))/M.OUTDMT) * 100), 0) AS DTREMRAT
+			 FROM STKKY S INNER JOIN SKUMA M ON S.SKUKEY = M.SKUKEY AND S.OWNRKY = M.OWNRKY
+			              INNER JOIN SKUWC W ON S.SKUKEY = W.SKUKEY AND S.WAREKY = W.WAREKY AND S.OWNRKY = W.OWNRKY
+			              LEFT OUTER JOIN CMCDV CMA ON  S.LOTA06 = CMA.CMCDVL AND CMA.CMCDKY = 'LOTA06'
+			              LEFT OUTER JOIN CMCDV CMB ON S.LOTA05 = CMB.CMCDVL AND CMB.CMCDKY = 'LOTA05'
+			              LEFT OUTER JOIN BZPTN BZ ON S.OWNRKY = BZ.OWNRKY AND S.LOTA03 = BZ.PTNRKY AND BZ.PTNRTY = '0002'
+			              LEFT OUTER JOIN CMCDV CMD1 ON CMD1.CMCDKY = 'SKUG01' AND CMD1.CMCDVL = M.SKUG01
+			              LEFT OUTER JOIN CMCDV CMD2 ON CMD2.CMCDKY = 'ASKU01' AND CMD2.CMCDVL = M.ASKU01
+			              LEFT OUTER JOIN CMCDV CM3 ON CM3.CMCDVL = M.ASKU04 AND CM3.CMCDKY = 'ASKU04'  
+			              LEFT OUTER JOIN CMCDV CM4 ON CM4.CMCDVL = M.SKUG05 AND CM4.CMCDKY = 'SKUG05'
+			 WHERE (S.QTSIWH &gt; 0)
+			   AND S.OWNRKY = #{OWNRKY}
+		       AND S.WAREKY = #{WAREKY}
+			 <if test="CHKMAK == 'true'">
+			   AND S.AREAKY NOT IN ('SHP','SYS')
+			 </if>			 
+			 <if test="SKUKEY != null and SKUKEY != ''">
+			   AND S.SKUKEY = #{SKUKEY}
+			   AND S.LOTA06 = #{GLOTA06}
+			 </if> 
+			 
+			 <if test="LOTA07 != 'ALL'">
+			   <if test="LOTA07 == 'N'">
+			      AND S.LOTA07 != '21SV'
+			   </if>
+			   <if test="LOTA07 == 'Y'">
+			      AND S.LOTA07 = '21SV'
+			   </if>
+			 </if>
+			 
+			<if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+			<if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>
+			 ORDER BY S.LOCAKY) A )
+			 WHERE 1 = 1
+	</select>
+	
+	<!-- SD01 팔렛별 조회-->
+	<select id="SD01_4_LIST" parameterType="hashmap" resultType="DataMap">
+			SELECT *
+			FROM
+			(
+			SELECT X.WAREKY AS WAREKY
+			     , X.OWNRKY AS OWNRKY
+			     , X.SKUKEY AS SKUKEY
+			     , Y.DESC03 AS DESC03
+			     , X.QTSIWH AS QTSIWH
+			     , X.USEQTY AS USEQTY
+			     , X.QTSBLK AS QTSBLK
+			     , X.QTSALO AS QTSALO
+			     , X.QTSPMO AS QTSPMO
+			     , X.QTSPMI AS QTSPMI
+			     , X.AREAKY AS AREAKY
+			     , X.ZONEKY AS ZONEKY
+			     , X.LOCAKY AS LOCAKY
+			     , X.TRNUID AS TRNUID
+			     , CM1.CDESC1 AS ASKU01
+			     , CM2.CDESC1 AS SKUG01
+			     , Y.DESC01 AS DESC01
+			     , CM4.CDESC1 AS SKUG05
+			     , CM3.CDESC1 AS ASKU04
+			     , X.BOXQTY1 AS BOXQTY1
+			     , X.BOXQTY2 AS BOXQTY2
+			     , X.BOXQTY3 AS BOXQTY3
+			     , X.BOXQTY4 AS BOXQTY4
+			     , X.BOXQTY5 AS BOXQTY5
+			     , X.PLTQTY1 AS PLTQTY1
+			     , X.PLTQTY2 AS PLTQTY2
+			     , X.PLTQTY3 AS PLTQTY3
+			     , X.PLTQTY4 AS PLTQTY4
+			     , X.PLTQTY5 AS PLTQTY5
+			     , X.PLBQTY  AS PLBQTY
+			     , X.BXIQTY  AS BXIQTY
+			     , X.PLIQTY  AS PLIQTY
+			      
+			  FROM (SELECT  ROWNUM AS RN, A.*
+			        FROM (
+			        SELECT S.WAREKY AS WAREKY,
+			               S.OWNRKY AS OWNRKY,
+			               MAX(S.SKUKEY) AS SKUKEY,
+			               SUM(S.QTSIWH) AS QTSIWH,
+			               SUM(DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-S.QTSBLK-GREATEST(S.QTSALO,S.QTSPMO)) AS USEQTY,
+			               SUM(S.QTSBLK) AS QTSBLK,
+			               SUM(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO)) AS QTSALO,
+			               SUM(S.QTSPMO) AS QTSPMO,
+			               SUM(S.QTSPMI) AS QTSPMI,
+			               S.AREAKY AS AREAKY,
+			               S.ZONEKY AS ZONEKY,
+			               S.LOCAKY AS LOCAKY,
+			               S.TRNUID AS TRNUID,
+			               S.ASKU01 AS ASKU01,
+			               S.SKUG01 AS SKUG01,
+			               MAX(M.SKUG05) AS SKUG05,
+			               MAX(M.ASKU04) AS ASKU04,
+			               SUM(NVL(TRUNC(S.QTSIWH /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY1,
+			               SUM(NVL(TRUNC((DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-QTSBLK-GREATEST(QTSALO,QTSPMO))/DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY2,
+			               SUM(NVL(TRUNC(S.QTSBLK /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY3,
+			               SUM(NVL(TRUNC(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO) /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY4,
+			               SUM(NVL(TRUNC(S.QTSPMI /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY5,
+			               NVL(TRUNC(SUM(S.QTSIWH) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY1,
+			               NVL(TRUNC(SUM((DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)-QTSBLK-GREATEST(QTSALO,QTSPMO))) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY2,
+			               NVL(TRUNC(SUM(S.QTSBLK) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY3,
+			               NVL(TRUNC(SUM(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO)) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY4,
+			               NVL(TRUNC(SUM(S.QTSPMO) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY5,
+			               NVL(TRUNC(SUM(S.QTSPMI) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY6,
+			               NVL(MAX(M.QTYSTD),0) / DECODE(MAX(M.QTDUOM), 0, NULL, MAX(M.QTDUOM)) AS PLBQTY,
+			               NVL(MAX(M.QTYSTD),0) AS PLIQTY,
+			               NVL(MAX(M.QTDUOM),0) AS BXIQTY
+			        FROM STKKY S INNER JOIN SKUMA M ON S.SKUKEY = M.SKUKEY AND S.OWNRKY = M.OWNRKY
+			                     INNER JOIN SKUWC W ON S.WAREKY = W.WAREKY AND S.SKUKEY = W.SKUKEY AND S.OWNRKY = W.OWNRKY
+			        WHERE 1 = 1
+			          AND S.OWNRKY = #{OWNRKY}
+		              AND S.WAREKY = #{WAREKY}
+			         <if test="CHKMAK == 'true'">
+			          AND S.AREAKY NOT IN ('SHP','SYS')
+			         </if> 
+			         <if test="SKUKEY != null and SKUKEY != ''">
+					  AND S.SKUKEY = #{SKUKEY}
+			          AND S.LOTA06 = #{GLOTA06}
+					 </if>
+					 <if test="LOTA07 != 'ALL'">
+					   <if test="LOTA07 == 'N'">
+					      AND S.LOTA07 != '21SV'
+					   </if>
+					   <if test="LOTA07 == 'Y'">
+					      AND S.LOTA07 = '21SV'
+					   </if>
+					 </if>
+					<if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					<if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>		
+						         
+			          AND (S.QTSIWH) BETWEEN 0.001
+			          AND 9999999999
+			        GROUP BY S.WAREKY, s.ownrky, s.areaky, s.zoneky, s.locaky, s.trnuid, s.asku01, s.skug01,S.SKUKEY
+			        ORDER BY S.WAREKY, s.areaky, s.zoneky, s.locaky, max(s.skukey)) A
+			     WHERE 1=1
+			      
+			     <if test="MIN != null and MIN != ''">
+			       <if test="MAX != null and MAX != ''">
+			          AND RN BETWEEN ${MIN}
+			          AND ${MAX}
+			       </if>  
+			     </if>
+			           ) x INNER JOIN skuma y on x.ownrky = y.ownrky and x.skukey = y.skukey   
+			               LEFT OUTER JOIN CMCDV CM1 ON CM1.CMCDVL = x.ASKU01 AND CM1.CMCDKY = 'ASKU01'
+			               LEFT OUTER JOIN CMCDV CM2 ON CM2.CMCDVL = x.SKUG01 AND CM2.CMCDKY = 'SKUG01'  
+			               LEFT OUTER JOIN CMCDV CM3 ON CM3.CMCDVL = x.ASKU04 AND CM3.CMCDKY = 'ASKU04'  
+			               LEFT OUTER JOIN CMCDV CM4 ON CM4.CMCDVL = x.SKUG05 AND CM4.CMCDKY = 'SKUG05'
+			   ) z		
+	</select>
+	
+	<!-- SD01 유통기한별 조회-->
+	<select id="SD01_5_LIST" parameterType="hashmap" resultType="DataMap">
+	SELECT *
+      FROM (SELECT  ROWNUM AS RN, A.*
+		      FROM (
+		            SELECT S.WAREKY AS WAREKY,
+		                   S.LOTA13 AS LOTA13,
+		                   S.SKUKEY AS SKUKEY,
+		                   M.DESC03 AS DESC03,
+		                   CMD2.CDESC1 AS ASKU01,
+		                   M.DESC01 AS DESC01,
+		                   S.AREAKY AS AREAKY,
+		                   S.LOCAKY AS LOCAKY,
+		                   CMD1.CDESC1 AS SKUG01,
+		                   SUM(S.QTSIWH) AS QTSIWH,
+		                   SUM(DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH))-SUM(S.QTSBLK)-GREATEST(SUM(S.QTSALO),SUM(S.QTSPMO)) AS USEQTY,
+		                   SUM(S.QTSBLK) AS QTSBLK,
+		                   SUM(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO)) AS QTSALO,
+		                   SUM(S.QTSPMO) AS QTSPMO,
+		                   SUM(S.QTSPMI) AS QTSPMI,
+		                   S.ZONEKY AS ZONEKY,
+		                   M.DESC02 AS DESC02,
+		                   S.UOMKEY AS UOMKEY,
+		                   CMB.CDESC1 AS LOTA05,
+		                   CMA.CDESC1 AS LOTA06,
+		                   S.QTDUOM AS QTDUOM,
+		                   NVL(TRUNC(SUM(S.QTSIWH)/DECODE(M.QTDUOM,0,NULL,M.QTDUOM)),0) AS BOXQTY,
+		                   MOD(SUM(DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH)), S.QTDUOM) AS REMQTY,
+		                   ( CASE WHEN TO_CHAR(SYSDATE,'YYYYMMDD') &gt;= S.LOTA13 THEN  'FFD8D8'
+		                          WHEN S.LOTA13 &lt;= TO_CHAR(ADD_MONTHS(SYSDATE,3),'YYYYMMDD') THEN 'FAF4C0'              
+		                          WHEN TO_CHAR(SYSDATE,'YYYYMMDD') &gt;= TO_CHAR(TO_DATE(S.LOTA13) - (TO_NUMBER(M.OUTDMT)/2),'YYYYMMDD') THEN 'D9E5FF'
+		                          ELSE 'FFFFFF'
+		                         END )   FLAGYN,
+		                   L.TEXT01 AS TEXT01,
+		                   CM4.CDESC1 AS SKUG05,
+		                   CM3.CDESC1 AS ASKU04,
+		                   NVL(TRUNC(SUM(S.QTSIWH) /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY1,
+		                   NVL(TRUNC((SUM(DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH))-SUM(QTSBLK)-GREATEST(SUM(QTSALO),SUM(QTSPMO)))/DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY2,
+		                   NVL(TRUNC(SUM(S.QTSBLK) /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY3,
+		                   NVL(TRUNC(SUM(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO)) /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY4,
+		                   NVL(TRUNC(SUM(S.QTSPMI) /DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0) AS BOXQTY5,
+		                   NVL(TRUNC(SUM(S.QTSIWH) / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY1,
+		                   NVL(TRUNC((SUM(DECODE(S.LOCAKY, 'SHPLOC', 0, S.QTSIWH))-SUM(QTSBLK)-GREATEST(SUM(QTSALO),SUM(QTSPMO))) / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY2,
+		                   NVL(TRUNC(SUM(S.QTSBLK) / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY3,
+		                   NVL(TRUNC(SUM(DECODE(S.LOCAKY, 'SHPLOC', S.QTSIWH, S.QTSALO)) / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY4,
+		                   NVL(TRUNC(SUM(S.QTSPMO) / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY5,
+		                   NVL(TRUNC(SUM(S.QTSPMI) / DECODE(M.QTYSTD, 0, NULL, M.QTYSTD),2 ) ,0) AS PLTQTY6,
+		                   NVL(M.QTYSTD,0) / DECODE(M.QTDUOM, 0, NULL, M.QTDUOM) AS PLBQTY,
+		                   NVL(M.QTDUOM,0) AS BXIQTY,
+		                   NVL(M.QTYSTD,0) AS PLIQTY
+		             FROM STKKY S LEFT OUTER JOIN LOCMA L ON S.LOCAKY = L.LOCAKY AND S.WAREKY = L.WAREKY
+		                          INNER JOIN SKUMA M ON S.SKUKEY = M.SKUKEY AND S.OWNRKY = M.OWNRKY
+		                          INNER JOIN SKUWC W ON S.SKUKEY = W.SKUKEY AND S.WAREKY = W.WAREKY AND S.OWNRKY = W.OWNRKY 
+		                          LEFT OUTER JOIN CMCDV CMA ON  S.LOTA06 = CMA.CMCDVL AND CMA.CMCDKY = 'LOTA06'
+		                          LEFT OUTER JOIN CMCDV CMB ON S.LOTA05 = CMB.CMCDVL AND CMB.CMCDKY = 'LOTA05'
+		                          LEFT OUTER JOIN BZPTN BZ ON S.OWNRKY = BZ.OWNRKY AND S.LOTA03 = BZ.PTNRKY AND BZ.PTNRTY = '0002'
+		                          LEFT OUTER JOIN CMCDV CMD1 ON CMD1.CMCDKY = 'SKUG01' AND CMD1.CMCDVL = M.SKUG01
+		                          LEFT OUTER JOIN CMCDV CMD2 ON CMD2.CMCDKY = 'ASKU01' AND CMD2.CMCDVL = M.ASKU01
+		                          LEFT OUTER JOIN CMCDV CM3 ON CM3.CMCDVL = M.ASKU04 AND CM3.CMCDKY = 'ASKU04'  
+		                          LEFT OUTER JOIN CMCDV CM4 ON CM4.CMCDVL = M.SKUG05 AND CM4.CMCDKY = 'SKUG05'
+		            WHERE (S.QTSIWH &gt; 0)
+			          AND S.OWNRKY = #{OWNRKY}
+		              AND S.WAREKY = #{WAREKY}
+		            <if test="CHKMAK == 'true'">
+		              AND S.AREAKY NOT IN ('SHP','SYS')
+		            </if>
+		            <if test="SKUKEY != null and SKUKEY != ''">
+		              AND S.SKUKEY = #{SKUKEY}
+		              AND S.LOTA06 = #{GLOTA06}
+		            </if>
+					 <if test="LOTA07 != 'ALL'">
+					   <if test="LOTA07 == 'N'">
+					      AND S.LOTA07 != '21SV'
+					   </if>
+					   <if test="LOTA07 == 'Y'">
+					      AND S.LOTA07 = '21SV'
+					   </if>
+					 </if>
+					<if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					<if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>	
+		            GROUP BY S.WAREKY, S.LOTA13, S.SKUKEY, CMD2.CDESC1, M.DESC01, S.AREAKY, 
+		                     S.LOCAKY, CMD1.CDESC1, S.ZONEKY, M.DESC02, S.UOMKEY,  
+		                     CMB.CDESC1, CMA.CDESC1, S.QTDUOM, L.TEXT01, CM4.CDESC1, CM3.CDESC1, M.QTDUOM, M.OUTDMT, M.QTYSTD, M.DESC03
+		    ORDER BY S.LOTA13, S.SKUKEY, S.LOCAKY) A )
+		 WHERE 1=1
+				
+	</select>
+	
+	<!-- SD01 장기재고 조회-->
+	<select id="SD01_6_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT *
+		FROM
+		(
+		SELECT  ROWNUM AS RN, A.*
+		FROM (
+		      SELECT M.OWNRKY AS OWNRKY
+		           , W.WAREKY AS WAREKY
+		           , M.SKUKEY AS SKUKEY
+		           , M.DESC03 AS DESC03
+		           , M.DESC01 AS DESC01
+		           , M.DESC02 AS DESC02
+		           , CM1.CDESC1 AS ASKU01
+		           , CM2.CDESC1 AS SKUG01
+		           , CM4.CDESC1 AS SKUG05
+		           , CM3.CDESC1 AS ASKU04           
+		           , NVL(STK.QTSIWH,0) AS QTSIWH
+		           , NVL(M03.QTSIWH,0) AS QTSIWH03
+		           , NVL(M06.QTSIWH,0) AS QTSIWH06
+		           , NVL(M12.QTSIWH,0) AS QTSIWH12
+		           , NVL(M13.QTSIWH,0) AS QTSIWH13
+		        FROM SKUMA M INNER JOIN SKUWC W ON M.OWNRKY = W.OWNRKY AND M.SKUKEY = W.SKUKEY
+		              LEFT OUTER JOIN 
+		                   (SELECT S.OWNRKY,
+		                           S.WAREKY,
+		                           S.SKUKEY,
+		                           SUM(QTSIWH) AS QTSIWH, 
+		                           SUM(NVL(TRUNC(S.QTSIWH/DECODE(M.QTDUOM,0,NULL,M.QTDUOM),1),0)) AS BOXQTY,
+		                           NVL(  TRUNC(SUM(S.QTSIWH) / DECODE(MAX(M.QTYSTD), 0, NULL, MAX(M.QTYSTD)),2 ) ,0) AS PLTQTY,
+		                           NVL(MAX(M.QTYSTD),0) / DECODE(MAX(M.QTDUOM), 0, NULL, MAX(M.QTDUOM)) AS PLBQTY,
+		                           NVL(MAX(M.QTYSTD),0) AS PLINTY
+		                     FROM STKKY S
+		                          INNER JOIN SKUMA M
+		                                  ON M.OWNRKY = S.OWNRKY
+		                                 AND M.SKUKEY = S.SKUKEY
+		                    WHERE (S.QTSIWH &gt; 0 OR S.QTSPMI &gt;0)
+		                      AND S.OWNRKY = #{OWNRKY}
+		                      AND S.WAREKY = #{WAREKY}
+		                          <if test="CHKMAK == 'true'">
+		                    	   AND S.AREAKY NOT IN ('SHP','SYS')
+		                    	  </if>
+								 <if test="LOTA07 != 'ALL'">
+								   <if test="LOTA07 == 'N'">
+								      AND S.LOTA07 != '21SV'
+								   </if>
+								   <if test="LOTA07 == 'Y'">
+								      AND S.LOTA07 = '21SV'
+								   </if>
+								 </if>
+		                        <if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					            <if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>
+		                    GROUP BY S.OWNRKY, S.WAREKY, S.SKUKEY
+		                    ORDER BY S.SKUKEY
+		                    ) STK ON W.OWNRKY = STK.OWNRKY AND W.WAREKY = STK.WAREKY AND W.SKUKEY = STK.SKUKEY        
+		              LEFT OUTER JOIN 
+		                   (SELECT S.OWNRKY,
+		                           S.WAREKY,
+		                           S.SKUKEY,
+		                           SUM(QTSIWH) AS QTSIWH, 
+		                           SUM(NVL(trunc(s.qtsiwh/DECODE(M.QTDUOM,0,null,M.QTDUOM),1),0)) as BOXQTY,
+		                           NVL(  TRUNC(SUM(S.QTSIWH) / DECODE(MAX(M.QTYSTD), 0, null, MAX(M.QTYSTD)),2 ) ,0) as PLTQTY,
+		                           NVL(MAX(M.QTYSTD),0) / DECODE(MAX(M.QTDUOM), 0, null, MAX(M.QTDUOM)) AS PLBQTY,
+		                           NVL(MAX(M.QTYSTD),0) as PLINTY
+		                     FROM STKKY S
+		                          INNER JOIN SKUMA M
+		                                  ON M.OWNRKY = S.OWNRKY
+		                                 AND M.SKUKEY = S.SKUKEY
+		                    WHERE  (S.QTSIWH &gt; 0 OR S.QTSPMI &gt;0)
+		                      AND S.OWNRKY = #{OWNRKY}
+		                      AND S.WAREKY = #{WAREKY}
+		                    	  <if test="CHKMAK == 'true'">
+		                    	   AND S.AREAKY NOT IN ('SHP','SYS')
+		                    	  </if>
+								 <if test="LOTA07 != 'ALL'">
+								   <if test="LOTA07 == 'N'">
+								      AND S.LOTA07 != '21SV'
+								   </if>
+								   <if test="LOTA07 == 'Y'">
+								      AND S.LOTA07 = '21SV'
+								   </if>
+								 </if>
+		                        <if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					            <if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>
+		                      AND S.LOTA12 BETWEEN TO_CHAR(ADD_MONTHS(SYSDATE,-3),'YYYYMMDD') AND TO_CHAR(SYSDATE,'YYYYMMDD')
+		                    GROUP BY S.OWNRKY, S.WAREKY, S.SKUKEY
+		                    ORDER BY S.SKUKEY
+		                    ) M03 ON W.OWNRKY = M03.OWNRKY AND W.WAREKY = M03.WAREKY AND W.SKUKEY = M03.SKUKEY
+		              LEFT OUTER JOIN 
+		                   (SELECT S.OWNRKY,
+		                           S.WAREKY,
+		                           S.SKUKEY,
+		                           SUM(QTSIWH) AS QTSIWH, 
+		                           SUM(NVL(trunc(s.qtsiwh/DECODE(M.QTDUOM,0,null,M.QTDUOM),1),0)) as BOXQTY,
+		                           NVL(  TRUNC(SUM(S.QTSIWH) / DECODE(MAX(M.QTYSTD), 0, null, MAX(M.QTYSTD)),2 ) ,0) as PLTQTY,
+		                           NVL(MAX(M.QTYSTD),0) / DECODE(MAX(M.QTDUOM), 0, null, MAX(M.QTDUOM)) AS PLBQTY,
+		                           NVL(MAX(M.QTYSTD),0) as PLINTY
+		                     FROM STKKY S
+		                          INNER JOIN SKUMA M
+		                                  ON M.OWNRKY = S.OWNRKY
+		                                 AND M.SKUKEY = S.SKUKEY
+		                    WHERE  (S.QTSIWH &gt; 0 OR S.QTSPMI &gt;0)
+		                      AND S.OWNRKY = #{OWNRKY}
+		                      AND S.WAREKY = #{WAREKY}
+		                           <if test="CHKMAK == 'true'">
+		                            AND S.AREAKY NOT IN ('SHP','SYS')
+		                           </if> 
+								 <if test="LOTA07 != 'ALL'">
+								   <if test="LOTA07 == 'N'">
+								      AND S.LOTA07 != '21SV'
+								   </if>
+								   <if test="LOTA07 == 'Y'">
+								      AND S.LOTA07 = '21SV'
+								   </if>
+								 </if>
+								<if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					            <if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>	
+		                      AND S.LOTA12 BETWEEN TO_CHAR(ADD_MONTHS(SYSDATE,-6),'YYYYMMDD') AND TO_CHAR(ADD_MONTHS(SYSDATE,-3),'YYYYMMDD') 
+		                    GROUP BY S.OWNRKY, S.WAREKY, S.SKUKEY
+		                    ORDER BY S.SKUKEY
+		                    ) M06 ON W.OWNRKY = M06.OWNRKY AND W.WAREKY = M06.WAREKY AND W.SKUKEY = M06.SKUKEY
+		              LEFT OUTER JOIN 
+		                   (SELECT S.OWNRKY,
+		                           S.WAREKY,
+		                           S.SKUKEY,
+		                           SUM(QTSIWH) AS QTSIWH, 
+		                           SUM(NVL(trunc(s.qtsiwh/DECODE(M.QTDUOM,0,null,M.QTDUOM),1),0)) as BOXQTY,
+		                           NVL(  TRUNC(SUM(S.QTSIWH) / DECODE(MAX(M.QTYSTD), 0, null, MAX(M.QTYSTD)),2 ) ,0) as PLTQTY,
+		                           NVL(MAX(M.QTYSTD),0) / DECODE(MAX(M.QTDUOM), 0, null, MAX(M.QTDUOM)) AS PLBQTY,
+		                           NVL(MAX(M.QTYSTD),0) as PLINTY
+		                     FROM STKKY S
+		                          INNER JOIN SKUMA M
+		                                  ON M.OWNRKY = S.OWNRKY
+		                                 AND M.SKUKEY = S.SKUKEY
+		                    WHERE  (S.QTSIWH &gt; 0 OR S.QTSPMI &gt;0)
+		                      AND S.OWNRKY = #{OWNRKY}
+		                      AND S.WAREKY = #{WAREKY}
+		                            <if test="CHKMAK == 'true'">
+		                              AND S.AREAKY NOT IN ('SHP','SYS')
+		                            </if>
+								  <if test="LOTA07 != 'ALL'">
+								    <if test="LOTA07 == 'N'">
+								       AND S.LOTA07 != '21SV'
+								    </if>
+								    <if test="LOTA07 == 'Y'">
+								       AND S.LOTA07 = '21SV'
+								    </if>
+								  </if>
+		                        <if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					            <if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>	
+		                      AND S.LOTA12 BETWEEN TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYYMMDD') AND TO_CHAR(ADD_MONTHS(SYSDATE,-6),'YYYYMMDD')
+		                    GROUP BY S.OWNRKY, S.WAREKY, S.SKUKEY
+		                    ORDER BY S.SKUKEY
+		                    ) M12 ON W.OWNRKY = M12.OWNRKY AND W.WAREKY = M12.WAREKY AND W.SKUKEY = M12.SKUKEY    
+		              LEFT OUTER JOIN 
+		                   (SELECT S.OWNRKY,
+		                           S.WAREKY,
+		                           S.SKUKEY,
+		                           SUM(QTSIWH) AS QTSIWH, 
+		                           SUM(NVL(trunc(s.qtsiwh/DECODE(M.QTDUOM,0,null,M.QTDUOM),1),0)) as BOXQTY,
+		                           NVL(  TRUNC(SUM(S.QTSIWH) / DECODE(MAX(M.QTYSTD), 0, null, MAX(M.QTYSTD)),2 ) ,0) as PLTQTY,
+		                           NVL(MAX(M.QTYSTD),0) / DECODE(MAX(M.QTDUOM), 0, null, MAX(M.QTDUOM)) AS PLBQTY,
+		                           NVL(MAX(M.QTYSTD),0) as PLINTY
+		                     FROM STKKY S
+		                          INNER JOIN SKUMA M
+		                                  ON M.OWNRKY = S.OWNRKY
+		                                 AND M.SKUKEY = S.SKUKEY
+		                    WHERE (S.QTSIWH &gt; 0)
+		                      AND S.OWNRKY = #{OWNRKY}
+		                      AND S.WAREKY = #{WAREKY}
+		                            <if test="CHKMAK == 'true'">
+		                              AND S.AREAKY NOT IN ('SHP','SYS')
+		                            </if>
+								  <if test="LOTA07 != 'ALL'">
+								    <if test="LOTA07 == 'N'">
+								       AND S.LOTA07 != '21SV'
+								    </if>
+								    <if test="LOTA07 == 'Y'">
+								       AND S.LOTA07 = '21SV'
+								    </if>
+								  </if>
+		                        <if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					            <if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>	
+		                      AND S.LOTA12 &lt; TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYYMMDD') 
+		                    GROUP BY S.OWNRKY, S.WAREKY, S.SKUKEY
+		                    ORDER BY S.SKUKEY
+		                    ) M13 ON W.OWNRKY = M13.OWNRKY AND W.WAREKY = M13.WAREKY AND W.SKUKEY = M13.SKUKEY                        
+		                  LEFT OUTER JOIN CMCDV CM1
+		                          ON CM1.CMCDVL = M.ASKU01
+		                         AND CM1.CMCDKY = 'ASKU01'
+		                  LEFT OUTER JOIN CMCDV CM2
+		                          ON CM2.CMCDVL = M.SKUG01
+		                         AND CM2.CMCDKY = 'SKUG01'  
+		                  LEFT OUTER JOIN CMCDV CM3
+		                          ON CM3.CMCDVL = M.ASKU04
+		                         AND CM3.CMCDKY = 'ASKU04'  
+		                  LEFT OUTER JOIN CMCDV CM4
+		                          ON CM4.CMCDVL = M.SKUG05
+		                         AND CM4.CMCDKY = 'SKUG05'
+		           WHERE 1 = 1      
+		               AND( STK.SKUKEY IS NOT NULL
+		                    OR M03.SKUKEY IS NOT NULL
+		                    OR M06.SKUKEY IS NOT NULL
+		                    OR M12.SKUKEY IS NOT NULL
+		                    OR M13.SKUKEY IS NOT NULL)   
+		    ) A 
+		)
+		WHERE 1=1
+	</select>
+	
+	<!-- SD01 유통기한별 장기재고 조회-->
+	<select id="SD01_7_LIST" parameterType="hashmap" resultType="DataMap">
+		  SELECT *
+		  FROM (    SELECT  OWNRKY AS OWNRKY
+		                  , WAREKY AS WAREKY
+		                  , SKUKEY AS SKUKEY
+		                  , DESC03 AS DESC03
+		                  , ASKU01 AS ASKU01RE
+		                  , ASKU01NM AS ASKU01
+		                  , DESC01 AS DESC01
+		                  , DESC02 AS DESC02
+		                  , SUM(QTSIWH) AS QTSIWH
+		                  , SUM(QTYSK80) AS QTYSK80
+		                  , SUM(QTYSK70) AS QTYSK70
+		                  , SUM(QTYSK60) AS QTYSK60
+		                  , SUM(QTYSK50) AS QTYSK50
+		                  , SUM(QTYSK40) AS QTYSK40
+		                  , SUM(QTYSK30) AS QTYSK30
+		                  , ASKU04 AS ASKU04RE
+		                  , ASKU04NM AS ASKU04
+		                  , SKUG01 AS SKUG01RE
+		                  , SKUG01NM AS SKUG01
+		                  , SKUG05 AS SKUG05RE
+		                  , SKUG05NM AS SKUG05
+		              FROM (    SELECT  S.OWNRKY
+		                              , S.WAREKY
+		                              , S.SKUKEY
+		                              , M.DESC03
+		                              , M.ASKU01
+		                              , C1.CDESC1 AS ASKU01NM
+		                              , M.DESC01
+		                              , M.DESC02
+		                              , S.QTSIWH AS QTSIWH
+		                              , 0 AS QTYSK80
+		                              , 0 AS QTYSK70
+		                              , 0 AS QTYSK60
+		                              , 0 AS QTYSK50
+		                              , 0 AS QTYSK40
+		                              , 0 AS QTYSK30
+		                              , M.ASKU04
+		                              , C2.CDESC1 AS ASKU04NM
+		                              , M.SKUG01
+		                              , C3.CDESC1 AS SKUG01NM
+		                              , M.SKUG05
+		                              , C4.CDESC1 AS SKUG05NM
+		                          FROM STKKY S
+		                          INNER JOIN SKUMA M ON M.OWNRKY = S.OWNRKY AND M.SKUKEY = S.SKUKEY
+		                          LEFT OUTER JOIN CMCDV C1 ON C1.CMCDVL = M.ASKU01 AND C1.CMCDKY = 'ASKU01'  
+		                          LEFT OUTER JOIN CMCDV C2 ON C2.CMCDVL = M.ASKU04 AND C2.CMCDKY = 'ASKU04'
+		                          LEFT OUTER JOIN CMCDV C3 ON C3.CMCDVL = M.SKUG01 AND C3.CMCDKY = 'SKUG01'  
+		                          LEFT OUTER JOIN CMCDV C4 ON C4.CMCDVL = M.SKUG05 AND C4.CMCDKY = 'SKUG05'
+		                          WHERE (S.QTSIWH &gt; 0 OR S.QTSPMI &gt; 0)
+		                            AND S.OWNRKY = #{OWNRKY}
+		                            AND S.WAREKY = #{WAREKY}
+		                          <if test="CHKMAK == 'true'">
+		                           AND S.AREAKY NOT IN ('SHP','SYS')
+		                          </if>
+								  <if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					              <if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>	
+		                                UNION ALL
+		                        SELECT  S.OWNRKY
+		                              , S.WAREKY
+		                              , S.SKUKEY
+		                              , M.DESC03
+		                              , M.ASKU01
+		                              , C1.CDESC1 AS ASKU01NM
+		                              , M.DESC01
+		                              , M.DESC02
+		                              , 0 AS QTSIWH
+		                              , S.QTSIWH AS QTYSK80
+		                              , 0 AS QTYSK70
+		                              , 0 AS QTYSK60
+		                              , 0 AS QTYSK50
+		                              , 0 AS QTYSK40
+		                              , 0 AS QTYSK30
+		                              , M.ASKU04
+		                              , C2.CDESC1 AS ASKU04NM
+		                              , M.SKUG01
+		                              , C3.CDESC1 AS SKUG01NM
+		                              , M.SKUG05
+		                              , C4.CDESC1 AS SKUG05NM
+		                          FROM STKKY S
+		                          INNER JOIN SKUMA M ON M.OWNRKY = S.OWNRKY AND M.SKUKEY = S.SKUKEY
+		                          LEFT OUTER JOIN CMCDV C1 ON C1.CMCDVL = M.ASKU01 AND C1.CMCDKY = 'ASKU01'  
+		                          LEFT OUTER JOIN CMCDV C2 ON C2.CMCDVL = M.ASKU04 AND C2.CMCDKY = 'ASKU04'
+		                          LEFT OUTER JOIN CMCDV C3 ON C3.CMCDVL = M.SKUG01 AND C3.CMCDKY = 'SKUG01'  
+		                          LEFT OUTER JOIN CMCDV C4 ON C4.CMCDVL = M.SKUG05 AND C4.CMCDKY = 'SKUG05'
+		                          WHERE (S.QTSIWH &gt; 0 OR S.QTSPMI &gt; 0)
+		                            AND S.OWNRKY = #{OWNRKY}
+		                            AND S.WAREKY = #{WAREKY}
+		                          AND S.LOTA13 != ' '
+		                          AND S.LOTA11 != ' '
+		                          AND TRUNC(SYSDATE) &lt;= NVL(TRIM(S.LOTA13),SYSDATE)
+		                          AND (ROUND(NVL((TO_DATE(S.LOTA13,'YYYYMMDD')+1-TRUNC(SYSDATE)) / NULLIF((TO_DATE(S.LOTA13,'YYYYMMDD')+1-TO_DATE(S.LOTA11,'YYYYMMDD')),0),0)*100,0) &gt;= 80)
+		                          <if test="CHKMAK == 'true'">
+		                           AND S.AREAKY NOT IN ('SHP','SYS')
+		                          </if>
+								  <if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					              <if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>	
+
+		            		                                UNION ALL
+		                        SELECT  S.OWNRKY
+		                              , S.WAREKY
+		                              , S.SKUKEY
+		                              , M.DESC03
+		                              , M.ASKU01
+		                              , C1.CDESC1 AS ASKU01NM
+		                              , M.DESC01
+		                              , M.DESC02
+		                              , 0 AS QTSIWH
+		                              , 0 AS QTYSK80
+		                              , S.QTSIWH AS QTYSK70
+		                              , 0 AS QTYSK60
+		                              , 0 AS QTYSK50
+		                              , 0 AS QTYSK40
+		                              , 0 AS QTYSK30
+		                              , M.ASKU04
+		                              , C2.CDESC1 AS ASKU04NM
+		                              , M.SKUG01
+		                              , C3.CDESC1 AS SKUG01NM
+		                              , M.SKUG05
+		                              , C4.CDESC1 AS SKUG05NM
+		                          FROM STKKY S
+		                          INNER JOIN SKUMA M ON M.OWNRKY = S.OWNRKY AND M.SKUKEY = S.SKUKEY
+		                          LEFT OUTER JOIN CMCDV C1 ON C1.CMCDVL = M.ASKU01 AND C1.CMCDKY = 'ASKU01'  
+		                          LEFT OUTER JOIN CMCDV C2 ON C2.CMCDVL = M.ASKU04 AND C2.CMCDKY = 'ASKU04'
+		                          LEFT OUTER JOIN CMCDV C3 ON C3.CMCDVL = M.SKUG01 AND C3.CMCDKY = 'SKUG01'  
+		                          LEFT OUTER JOIN CMCDV C4 ON C4.CMCDVL = M.SKUG05 AND C4.CMCDKY = 'SKUG05'
+		                          WHERE (S.QTSIWH &gt; 0 OR S.QTSPMI &gt; 0)
+		                            AND S.OWNRKY = #{OWNRKY}
+		                            AND S.WAREKY = #{WAREKY}
+		                          AND S.LOTA13 != ' '
+		                          AND S.LOTA11 != ' '
+		                          AND TRUNC(SYSDATE) &lt;= NVL(TRIM(S.LOTA13),SYSDATE)
+		                          AND (ROUND(NVL((TO_DATE(S.LOTA13,'YYYYMMDD')+1-TRUNC(SYSDATE)) / NULLIF((TO_DATE(S.LOTA13,'YYYYMMDD')+1-TO_DATE(S.LOTA11,'YYYYMMDD')),0),0)*100,0) &lt;  80)
+		                          AND (ROUND(NVL((TO_DATE(S.LOTA13,'YYYYMMDD')+1-TRUNC(SYSDATE)) / NULLIF((TO_DATE(S.LOTA13,'YYYYMMDD')+1-TO_DATE(S.LOTA11,'YYYYMMDD')),0),0)*100,0) &gt;= 70)
+		                          <if test="CHKMAK == 'true'">
+		                           AND S.AREAKY NOT IN ('SHP','SYS')
+		                          </if>
+								  <if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					              <if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>	
+		                                UNION ALL    
+		                        SELECT  S.OWNRKY
+		                              , S.WAREKY
+		                              , S.SKUKEY
+		                              , M.DESC03
+		                              , M.ASKU01
+		                              , C1.CDESC1 AS ASKU01NM
+		                              , M.DESC01
+		                              , M.DESC02
+		                              , 0 AS QTSIWH
+		                              , 0 AS QTYSK80
+		                              , 0 AS QTYSK70
+		                              , S.QTSIWH AS QTYSK60
+		                              , 0 AS QTYSK50
+		                              , 0 AS QTYSK40
+		                              , 0 AS QTYSK30
+		                              , M.ASKU04
+		                              , C2.CDESC1 AS ASKU04NM
+		                              , M.SKUG01
+		                              , C3.CDESC1 AS SKUG01NM
+		                              , M.SKUG05
+		                              , C4.CDESC1 AS SKUG05NM
+		                          FROM STKKY S
+		                          INNER JOIN SKUMA M ON M.OWNRKY = S.OWNRKY AND M.SKUKEY = S.SKUKEY
+		                          LEFT OUTER JOIN CMCDV C1 ON C1.CMCDVL = M.ASKU01 AND C1.CMCDKY = 'ASKU01'  
+		                          LEFT OUTER JOIN CMCDV C2 ON C2.CMCDVL = M.ASKU04 AND C2.CMCDKY = 'ASKU04'
+		                          LEFT OUTER JOIN CMCDV C3 ON C3.CMCDVL = M.SKUG01 AND C3.CMCDKY = 'SKUG01'  
+		                          LEFT OUTER JOIN CMCDV C4 ON C4.CMCDVL = M.SKUG05 AND C4.CMCDKY = 'SKUG05'
+		                          WHERE (S.QTSIWH &gt; 0 OR S.QTSPMI &gt; 0)
+		                          AND S.LOTA13 != ' '
+		                          AND S.LOTA11 != ' '
+		                          AND TRUNC(SYSDATE) &lt;= NVL(TRIM(S.LOTA13),SYSDATE)
+		                          AND (ROUND(NVL((TO_DATE(S.LOTA13,'YYYYMMDD')+1-TRUNC(SYSDATE)) / NULLIF((TO_DATE(S.LOTA13,'YYYYMMDD')+1-TO_DATE(S.LOTA11,'YYYYMMDD')),0),0)*100,0) &lt;  70)
+		                          AND (ROUND(NVL((TO_DATE(S.LOTA13,'YYYYMMDD')+1-TRUNC(SYSDATE)) / NULLIF((TO_DATE(S.LOTA13,'YYYYMMDD')+1-TO_DATE(S.LOTA11,'YYYYMMDD')),0),0)*100,0) &gt;= 60)
+		                          AND S.OWNRKY = #{OWNRKY}
+		                          AND S.WAREKY = #{WAREKY}
+		                          <if test="CHKMAK == 'true'">
+		                           AND S.AREAKY NOT IN ('SHP','SYS')
+		                          </if>
+								  <if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					              <if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>	
+		            
+		                                UNION ALL
+		                                
+		                        SELECT  S.OWNRKY
+		                              , S.WAREKY
+		                              , S.SKUKEY
+		                              , M.DESC03
+		                              , M.ASKU01
+		                              , C1.CDESC1 AS ASKU01NM
+		                              , M.DESC01
+		                              , M.DESC02
+		                              , 0 AS QTSIWH
+		                              , 0 AS QTYSK80
+		                              , 0 AS QTYSK70
+		                              , 0 AS QTYSK60
+		                              , S.QTSIWH AS QTYSK50
+		                              , 0 AS QTYSK40
+		                              , 0 AS QTYSK30
+		                              , M.ASKU04
+		                              , C2.CDESC1 AS ASKU04NM
+		                              , M.SKUG01
+		                              , C3.CDESC1 AS SKUG01NM
+		                              , M.SKUG05
+		                              , C4.CDESC1 AS SKUG05NM
+		                          FROM STKKY S
+		                          INNER JOIN SKUMA M ON M.OWNRKY = S.OWNRKY AND M.SKUKEY = S.SKUKEY
+		                          LEFT OUTER JOIN CMCDV C1 ON C1.CMCDVL = M.ASKU01 AND C1.CMCDKY = 'ASKU01'  
+		                          LEFT OUTER JOIN CMCDV C2 ON C2.CMCDVL = M.ASKU04 AND C2.CMCDKY = 'ASKU04'
+		                          LEFT OUTER JOIN CMCDV C3 ON C3.CMCDVL = M.SKUG01 AND C3.CMCDKY = 'SKUG01'  
+		                          LEFT OUTER JOIN CMCDV C4 ON C4.CMCDVL = M.SKUG05 AND C4.CMCDKY = 'SKUG05'
+		                          WHERE (S.QTSIWH &gt; 0 OR S.QTSPMI &gt; 0)
+		                          AND S.LOTA13 != ' '
+		                          AND S.LOTA11 != ' '
+		                          AND TRUNC(SYSDATE) &lt;= NVL(TRIM(S.LOTA13),SYSDATE)
+		                          AND (ROUND(NVL((TO_DATE(S.LOTA13,'YYYYMMDD')+1-TRUNC(SYSDATE)) / NULLIF((TO_DATE(S.LOTA13,'YYYYMMDD')+1-TO_DATE(S.LOTA11,'YYYYMMDD')),0),0)*100,0) &lt;  60)
+		                          AND S.OWNRKY = #{OWNRKY}
+		                          AND S.WAREKY = #{WAREKY}
+		                           <if test="CHKMAK == 'true'">
+		                           AND S.AREAKY NOT IN ('SHP','SYS')
+		                          </if>
+								  <if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					              <if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>	
+		            
+		                                UNION ALL
+		                                
+		                        SELECT  S.OWNRKY
+		                              , S.WAREKY
+		                              , S.SKUKEY
+		                              , M.DESC03
+		                              , M.ASKU01
+		                              , C1.CDESC1 AS ASKU01NM
+		                              , M.DESC01
+		                              , M.DESC02
+		                              , 0 AS QTSIWH
+		                              , 0 AS QTYSK80
+		                              , 0 AS QTYSK70
+		                              , 0 AS QTYSK60
+		                              , 0 AS QTYSK50
+		                              , S.QTSIWH AS QTYSK40
+		                              , 0 AS QTYSK30
+		                              , M.ASKU04
+		                              , C2.CDESC1 AS ASKU04NM
+		                              , M.SKUG01
+		                              , C3.CDESC1 AS SKUG01NM
+		                              , M.SKUG05
+		                              , C4.CDESC1 AS SKUG05NM
+		                          FROM STKKY S
+		                          INNER JOIN SKUMA M ON M.OWNRKY = S.OWNRKY AND M.SKUKEY = S.SKUKEY
+		                          LEFT OUTER JOIN CMCDV C1 ON C1.CMCDVL = M.ASKU01 AND C1.CMCDKY = 'ASKU01'  
+		                          LEFT OUTER JOIN CMCDV C2 ON C2.CMCDVL = M.ASKU04 AND C2.CMCDKY = 'ASKU04'
+		                          LEFT OUTER JOIN CMCDV C3 ON C3.CMCDVL = M.SKUG01 AND C3.CMCDKY = 'SKUG01'  
+		                          LEFT OUTER JOIN CMCDV C4 ON C4.CMCDVL = M.SKUG05 AND C4.CMCDKY = 'SKUG05'
+		                          WHERE (S.QTSIWH &gt; 0 OR S.QTSPMI &gt; 0)
+		                          AND S.LOTA13 != ' '
+		                          AND S.LOTA11 != ' '
+		                          AND TRUNC(SYSDATE) &gt; NVL(TRIM(S.LOTA13),SYSDATE)
+		                          AND S.OWNRKY = #{OWNRKY}
+		                          AND S.WAREKY = #{WAREKY}
+		                          <if test="CHKMAK == 'true'">
+		                           AND S.AREAKY NOT IN ('SHP','SYS')
+		                          </if>
+								  <if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					              <if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>	
+		
+		                             UNION ALL
+		                                
+		                        SELECT  S.OWNRKY
+		                              , S.WAREKY
+		                              , S.SKUKEY
+		                              , M.DESC03
+		                              , M.ASKU01
+		                              , C1.CDESC1 AS ASKU01NM
+		                              , M.DESC01
+		                              , M.DESC02
+		                              , 0 AS QTSIWH
+		                              , 0 AS QTYSK80
+		                              , 0 AS QTYSK70
+		                              , 0 AS QTYSK60
+		                              , 0 AS QTYSK50
+		                              , 0 AS QTYSK40
+		                              , S.QTSIWH AS QTYSK30
+		                              , M.ASKU04
+		                              , C2.CDESC1 AS ASKU04NM
+		                              , M.SKUG01
+		                              , C3.CDESC1 AS SKUG01NM
+		                              , M.SKUG05
+		                              , C4.CDESC1 AS SKUG05NM
+		                          FROM STKKY S
+		                          INNER JOIN SKUMA M ON M.OWNRKY = S.OWNRKY AND M.SKUKEY = S.SKUKEY
+		                          LEFT OUTER JOIN CMCDV C1 ON C1.CMCDVL = M.ASKU01 AND C1.CMCDKY = 'ASKU01'  
+		                          LEFT OUTER JOIN CMCDV C2 ON C2.CMCDVL = M.ASKU04 AND C2.CMCDKY = 'ASKU04'
+		                          LEFT OUTER JOIN CMCDV C3 ON C3.CMCDVL = M.SKUG01 AND C3.CMCDKY = 'SKUG01'  
+		                          LEFT OUTER JOIN CMCDV C4 ON C4.CMCDVL = M.SKUG05 AND C4.CMCDKY = 'SKUG05'
+		                          WHERE (S.QTSIWH &gt; 0 OR S.QTSPMI &gt; 0)
+		                          AND (S.LOTA13 = ' ' OR S.LOTA11 = ' ')
+		                          AND S.OWNRKY = #{OWNRKY}
+		                          AND S.WAREKY = #{WAREKY}
+		                          <if test="CHKMAK == 'true'">
+		                           AND S.AREAKY NOT IN ('SHP','SYS')
+		                          </if>
+								  <if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+					              <if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>	
+		                   )
+		              GROUP BY OWNRKY, WAREKY, SKUKEY, DESC03, ASKU01, ASKU01NM, DESC01, DESC02, ASKU04, ASKU04NM, SKUG01, SKUG01NM, SKUG05, SKUG05NM
+		              ORDER BY OWNRKY, WAREKY, SKUKEY
+		       )
+				
+	</select>
+	
+	<!-- SD01 로케이션 조회-->
+	<select id="SD02_LIST" parameterType="hashmap" resultType="DataMap">
+	   <if test=" TYPE == 'COUNT'">
+		SELECT COUNT(*) AS CNT
+	   </if>
+	   <if test=" TYPE == 'SEARCH'">
+		SELECT     
+		S.STOKKY AS STOKKY,    
+		S.WAREKY AS WAREKY,    
+		S.LOTNUM AS LOTNUM,    
+		S.LOCAKY AS LOCAKY,    
+		S.TRNUID AS TRNUID,    
+		S.SECTID AS SECTID,     
+		S.QTSIWH AS QTSIWH,    
+		S.QTSIWH-QTSBLK-GREATEST(QTSALO,QTSPMO) AS USEQTY,   
+		S.QTSALO AS QTSALO,
+		S.QTSPMO AS QTSPMO,
+		S.QTSPMI AS QTSPMI,    
+		S.QTSBLK AS QTSBLK,    
+		S.QTYUOM AS QTYUOM, 
+		TRUNC(S.QTSIWH/S.QTDUOM) AS BOXQTY,
+		MOD(S.QTSIWH, S.QTDUOM) AS REMQTY,   
+		S.TRUNTY AS TRUNTY,    
+		S.MEASKY AS MEASKY,    
+		S.UOMKEY AS UOMKEY,    
+		S.QTPUOM AS QTPUOM,    
+		S.DUOMKY AS DUOMKY,    
+		S.QTDUOM AS QTDUOM,    
+		S.TKFLKY AS TKFLKY,    
+		S.STEPNO AS STEPNO,    
+		S.LSTTFL AS LSTTFL,    
+		S.SRCSKY AS SRCSKY,    
+		S.UOMDOC AS UOMDOC,    
+		S.CNTBSK AS CNTBSK,    
+		S.NUPDPS AS NUPDPS,    
+		S.REFDKY AS REFDKY,    
+		S.REFDIT AS REFDIT,    
+		S.REFCAT AS REFCAT,    
+		S.REFDAT AS REFDAT,    
+		S.PURCKY AS PURCKY,    
+		S.PURCIT AS PURCIT,    
+		S.ASNDKY AS ASNDKY,    
+		S.ASNDIT AS ASNDIT,    
+		S.RECVKY AS RECVKY,    
+		S.RECVIT AS RECVIT,    
+		S.SHPOKY AS SHPOKY,    
+		S.SHPOIT AS SHPOIT,    
+		S.GRPOKY AS GRPOKY,    
+		S.GRPOIT AS GRPOIT,    
+		S.TASKKY AS TASKKY,    
+		S.TASKIT AS TASKIT,    
+		S.SADJKY AS SADJKY,    
+		S.SADJIT AS SADJIT,    
+		S.SDIFKY AS SDIFKY,    
+		S.SDIFIT AS SDIFIT,    
+		S.PHYIKY AS PHYIKY,    
+		S.PHYIIT AS PHYIIT,    
+		S.OWNRKY AS OWNRKY,    
+		S.SKUKEY AS SKUKEY,    
+		S.LOTA01 AS LOTA01,    
+		S.LOTA02 AS LOTA02,    
+		S.LOTA03 AS LOTA03,    
+		S.LOTA04 AS LOTA04,    
+		S.LOTA05 AS LOTA05,    
+		S.LOTA06 AS LOTA06,    
+		S.LOTA07 AS LOTA07,    
+		S.LOTA08 AS LOTA08,    
+		S.LOTA09 AS LOTA09,    
+		S.LOTA10 AS LOTA10,    
+		S.LOTA11 AS LOTA11,    
+		S.LOTA12 AS LOTA12,    
+		S.LOTA13 AS LOTA13,    
+		S.LOTA14 AS LOTA14,    
+		S.LOTA15 AS LOTA15,    
+		S.LOTA16 AS LOTA16,    
+		S.LOTA17 AS LOTA17,    
+		S.LOTA18 AS LOTA18,    
+		S.LOTA19 AS LOTA19,    
+		S.LOTA20 AS LOTA20,    
+		S.AWMSNO AS AWMSNO,    
+		S.DESC01 AS DESC01,    
+		S.DESC02 AS DESC02,    
+		S.ASKU01 AS ASKU01,    
+		S.ASKU02 AS ASKU02,    
+		S.ASKU03 AS ASKU03,    
+		S.ASKU04 AS ASKU04,    
+		S.ASKU05 AS ASKU05,    
+		S.EANCOD AS EANCOD,    
+		S.GTINCD AS GTINCD,    
+		S.SKUG01 AS SKUG01,    
+		S.SKUG02 AS SKUG02,    
+		S.SKUG03 AS SKUG03,    
+		S.SKUG04 AS SKUG04,    
+		S.SKUG05 AS SKUG05,    
+		S.GRSWGT AS GRSWGT,    
+		S.NETWGT AS NETWGT,    
+		S.WGTUNT AS WGTUNT,    
+		S.LENGTH AS LENGTH,    
+		S.WIDTHW AS WIDTHW,    
+		S.HEIGHT AS HEIGHT,    
+		S.CUBICM AS CUBICM,    
+		S.CAPACT AS CAPACT,    
+		S.ZONEKY AS ZONEKY,    
+		S.TKZONE AS TKZONE,    
+		S.AREAKY AS AREAKY,    
+		S.SMANDT AS SMANDT,    
+		S.SEBELN AS SEBELN,    
+		S.SEBELP AS SEBELP,    
+		S.SZMBLNO AS SZMBLNO,    
+		S.SZMIPNO AS SZMIPNO,    
+		S.STRAID AS STRAID,    
+		S.SVBELN AS SVBELN,    
+		S.SPOSNR AS SPOSNR,    
+		S.STKNUM AS STKNUM,    
+		S.STPNUM AS STPNUM,    
+		S.SWERKS AS SWERKS,    
+		S.SLGORT AS SLGORT,    
+		S.SDATBG AS SDATBG,    
+		S.STDLNR AS STDLNR,    
+		S.SSORNU AS SSORNU,    
+		S.SSORIT AS SSORIT,    
+		S.SMBLNR AS SMBLNR,    
+		S.SZEILE AS SZEILE,    
+		S.SMJAHR AS SMJAHR,    
+		S.SBKTXT AS SXBLNR,    
+		S.SAPSTS AS SAPSTS,    
+		S.CREDAT AS CREDAT,      
+		S.CRETIM AS CRETIM,      
+		S.CREUSR AS CREUSR,      
+		S.LMODAT AS LMODAT,      
+		S.LMOTIM AS LMOTIM,      
+		S.LMOUSR AS LMOUSR,      
+		S.INDBZL AS INDBZL,      
+		S.INDARC AS INDARC,      
+		S.UPDCHK AS UPDCHK
+	   </if>   
+		FROM STKKY S, SKUMA SM   
+		WHERE 1=1 
+		  AND S.SKUKEY = SM.SKUKEY
+		  AND S.AREAKY NOT IN ('SHP','SYS')
+		  AND S.QTSIWH &gt; 0 
+		  AND S.OWNRKY = #{OWNRKY}
+		  AND S.WAREKY = #{WAREKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+		<if test="RANGELOT != null and RANGELOT != ''"> ${RANGELOT} </if>	
+	</select>
+	
+	
+	<!-- SD04  조회-->
+	<select id="SD04_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT A.OWNRKY AS OWNRKY, 
+		       A.WAREKY AS WAREKY, 
+		       B.DEPART AS DEPART, 
+		       B.CARDAT AS CARDAT, 
+		       B.CARNUM AS CARNUM,
+		       C.PERHNO AS PERHNO,
+		       B.PERHNO AS REPHNO,
+		       B.SHIPSQ AS SHIPSQ, 
+		       B.QTRECN AS QTRECN,
+		       B.RETUYN AS RETUYN, 
+		       COUNT(DISTINCT DPTNKY) AS CNT,
+		       SUM(TRUNC(I.QTALOC / DECODE(S.QTDUOM, NULL,0,S.QTDUOM) ,0)) AS BOXQTY,
+		       B.CARNUM || '-' || C.DESC01 CARNUMNM
+		  FROM SHPDH A, SHPDR B, SHPDI I, SKUMA S, CARMA C                                      
+		 WHERE C.CARNUM = B.CARNUM
+		   AND C.WAREKY = A.WAREKY
+		   AND B.SHPOIT = I.SHPOIT
+		   AND A.SHPOKY = I.SHPOKY 
+		   AND A.OWNRKY = S.OWNRKY
+		   AND I.SKUKEY = S.SKUKEY     
+		   AND A.SHPOKY = B.SHPOKY   
+		   AND A.STATDO IN ('FSH','PSH')  
+		   AND RECAYN = 'N'  
+		   AND RECNUM = ' ' 
+		   AND A.OWNRKY = #{OWNRKY}
+		   AND A.WAREKY = #{WAREKY}
+		<if test="CARGBN != null and CARGBN != ''">
+		   AND C.CARGBN = #{CARGBN}		
+		</if>
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">${RANGE_SQL}</if>
+		GROUP BY A.OWNRKY, A.WAREKY, B.DEPART, B.CARDAT, B.CARNUM, B.SHIPSQ, B.RETUYN, C.PERHNO, B.PERHNO, B.QTRECN, C.DESC01
+		UNION ALL     
+		SELECT A.OWNRKY AS OWNRKY, 
+		       A.WAREKY AS WAREKY, 
+		       B.DEPART AS DEPART, 
+		       B.RECDAT AS RECDAT, 
+		       B.RECNUM AS RECNUM,
+		       C.PERHNO AS PERHNO,
+		       B.PERHNO AS REPHNO,
+		       B.QTRECN AS QTRECN,
+		       B.SHIPSQ AS SHIPSQ, 
+		       B.RETUYN AS RETUYN, 
+		       COUNT(DISTINCT DPTNKY) AS CNT,
+		       SUM(TRUNC(I.QTALOC / DECODE(S.QTDUOM, NULL,0,S.QTDUOM) ,0)) AS BOXQTY,
+		       B.RECNUM || '-' || C.DESC01 CARNUMNM
+		  FROM SHPDH A, SHPDR B, SHPDI I, SKUMA S, CARMA C                                      
+		 WHERE C.CARNUM = B.CARNUM
+		   AND A.SHPOKY = I.SHPOKY 
+		   AND C.WAREKY = A.WAREKY
+		   AND B.SHPOIT = I.SHPOIT
+		   AND A.OWNRKY = S.OWNRKY
+		   AND I.SKUKEY = S.SKUKEY    
+		   AND A.SHPOKY = B.SHPOKY   
+		   AND A.STATDO IN ('FSH','PSH')  
+		   AND RECAYN = 'N'  
+		   AND RECNUM &gt; ' ' 
+		   AND A.OWNRKY = #{OWNRKY}
+		   AND A.WAREKY = #{WAREKY}
+		<if test="CARGBN != null and CARGBN != ''">
+		   AND C.CARGBN = #{CARGBN}		
+		</if>
+		<if test="RANGE_SQL1 != null and RANGE_SQL1 != ''">${RANGE_SQL1}</if>
+		GROUP BY A.OWNRKY, A.WAREKY, B.DEPART, B.RECDAT, B.RECNUM, B.SHIPSQ, B.RETUYN, C.PERHNO, B.PERHNO, B.QTRECN, C.DESC01 
+		UNION ALL     
+		SELECT A.OWNRKY AS OWNRKY, 
+		       A.WAREKY AS WAREKY, 
+		       B.DEPART AS DEPART, 
+		       B.RECDAT AS RECDAT, 
+		       B.RECNUM AS RECNUM,
+		       C.PERHNO AS PERHNO,
+		       B.PERHNO AS REPHNO,
+		       B.QTRECN AS QTRECN,
+		       B.SHIPSQ AS SHIPSQ, 
+		       B.RETUYN AS RETUYN, 
+		       COUNT(DISTINCT DPTNKY) AS CNT, 
+		       SUM(TRUNC(I.QTALOC / DECODE(S.QTDUOM, NULL,0,S.QTDUOM) ,0)) AS BOXQTY,
+		       B.RECNUM || '-' || C.DESC01 CARNUMNM
+		  FROM SHPDH A, SHPDR B, SHPDI I, SKUMA S, CARMA C                                        
+		 WHERE C.CARNUM = B.CARNUM
+		   AND A.SHPOKY = I.SHPOKY 
+		   AND C.WAREKY = A.WAREKY
+		   AND B.SHPOIT = I.SHPOIT
+		   AND A.OWNRKY = S.OWNRKY
+		   AND I.SKUKEY = S.SKUKEY    
+		   AND A.SHPOKY = B.SHPOKY  
+		   AND A.STATDO IN ('FSH','PSH')  
+		   AND RECAYN = 'Y'
+		   AND A.OWNRKY = #{OWNRKY}
+		   AND A.WAREKY = #{WAREKY}
+		<if test="CARGBN != null and CARGBN != ''">
+		   AND C.CARGBN = #{CARGBN}		
+		</if>
+		<if test="RANGE_SQL1 != null and RANGE_SQL1 != ''">${RANGE_SQL1}</if>
+		GROUP BY A.OWNRKY, A.WAREKY, B.DEPART, B.RECDAT, B.RECNUM, B.SHIPSQ, B.RETUYN, C.PERHNO, B.PERHNO, B.QTRECN, C.DESC01
+	</select>
+	
+	
+	<!-- SD05  전사재고조회(대림)1 조회-->
+	<select id="SD05_1_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SKY.SKUKEY SKUKEY,
+		       SKY.DESC01 DESC01,
+		       SMA.QTDUOM QTDUOM,
+		       NVL(SUM(SKY.QTSIWH),0) QTDTOT,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2213' THEN SKY.QTSIWH END),0) QTDRAN,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2214' THEN SKY.QTSIWH END),0) QTDRAS,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2215' THEN SKY.QTSIWH END),0) QTDRKH,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2216' THEN SKY.QTSIWH END),0) QTDRCK,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2217' THEN SKY.QTSIWH END),0) QTDRKJ,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2218' THEN SKY.QTSIWH END),0) QTDROP,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2219' THEN SKY.QTSIWH END),0) QTDRBS
+		  FROM STKKY SKY INNER JOIN SKUMA SMA ON SKY.SKUKEY = SMA.SKUKEY
+		       <if test="OWNRKY != null and OWNRKY != ''">
+		       AND SMA.OWNRKY = #{OWNRKY}
+		       </if>
+		 WHERE SKY.QTSIWH > 0
+		       <if test="OWNRKY != null and OWNRKY != ''">
+		       AND SKY.OWNRKY = #{OWNRKY}
+		       </if>
+		       AND SKY.WAREKY IN ('2213', '2214', '2215', '2216', '2217', '2218', '2219')
+		       <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		       ${RANGE_SQL}
+		       </if>
+		       AND SKY.AREAKY NOT IN ('SHP', 'SYS')
+		 GROUP BY SKY.SKUKEY, SKY.DESC01, SMA.QTDUOM
+		 ORDER BY TO_NUMBER(SKY.SKUKEY)
+	</select>
+	
+	<!-- SD05  전사재고조회(대림)2 조회-->
+	<select id="SD05_2_LIST" parameterType="hashmap" resultType="DataMap">
+	SELECT SKUKEY SKUKEY,
+	       DESC01 DESC01,
+	       QTDUOM QTDUOM,
+	       QTAN00+QTAS00+QTKH00+QTCK00+QTKJ00+QTOP00+QTBS00 QTTOT00,
+	       QTAN00 QTAN00,
+	       QTAS00 QTAS00,
+	       QTKH00 QTKH00,
+	       QTCK00 QTCK00,
+	       QTKJ00 QTKJ00,
+	       QTOP00 QTOP00,
+	       QTBS00 QTBS00
+	  FROM ( SELECT SKY.SKUKEY SKUKEY,
+	                SKY.DESC01,
+	                SMA.QTDUOM,
+	                NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2213' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) QTAN00,
+	                NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2214' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) QTAS00,
+	                NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2215' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) QTKH00,
+	                NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2216' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) QTCK00,
+	                NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2217' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) QTKJ00,
+	                NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2218' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) QTOP00,
+	                NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2219' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) QTBS00
+	           FROM STKKY SKY INNER JOIN SKUMA SMA ON SKY.SKUKEY = SMA.SKUKEY AND SKY.LOTA06 = '00'
+	                <if test="OWNRKY != null and OWNRKY != ''">
+	                AND SMA.OWNRKY = #{OWNRKY}
+	                </if>
+	          WHERE (SKY.QTSIWH > 0 OR QTSBLK > 0)
+	                <if test="OWNRKY != null and OWNRKY != ''">
+	                AND SKY.OWNRKY = #{OWNRKY}
+	                </if>
+	                AND SKY.WAREKY IN ('2213', '2214', '2215', '2216', '2217', '2218', '2219')
+	                <if test="RANGE_SQL != null and RANGE_SQL != ''">
+	                ${RANGE_SQL}
+	                </if>
+	                AND SKY.AREAKY NOT IN ('SHP', 'SYS')
+	          GROUP BY SKY.SKUKEY, SKY.DESC01, SMA.QTDUOM
+	        )
+	 ORDER BY TO_NUMBER(SKUKEY)
+	</select>
+	
+	<!-- SD05  전사재고조회(대림)3 조회-->
+	<select id="SD05_3_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SKY.SKUKEY SKUKEY,
+		       SKY.DESC01 DESC01,
+		       SMA.QTDUOM QTDUOM,
+		       NVL(SUM(SKY.QTSIWH),0) QTTOT20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2213' THEN SKY.QTSIWH END),0) QTAN20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2214' THEN SKY.QTSIWH END),0) QTAS20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2215' THEN SKY.QTSIWH END),0) QTKH20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2216' THEN SKY.QTSIWH END),0) QTCK20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2217' THEN SKY.QTSIWH END),0) QTKJ20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2218' THEN SKY.QTSIWH END),0) QTOP20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2219' THEN SKY.QTSIWH END),0) QTBS20
+		  FROM STKKY SKY INNER JOIN SKUMA SMA ON SKY.SKUKEY = SMA.SKUKEY AND SKY.LOTA06 = '20'
+		       <if test="OWNRKY != null and OWNRKY != ''">
+		       AND SMA.OWNRKY = #{OWNRKY}
+		       </if>
+		 WHERE SKY.QTSIWH > 0
+		       <if test="OWNRKY != null and OWNRKY != ''">
+		       AND SKY.OWNRKY = #{OWNRKY}
+		       </if>
+		       AND SKY.WAREKY IN ('2213', '2214', '2215', '2216', '2217', '2218', '2219')
+		       <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		       ${RANGE_SQL}
+		       </if>
+		       AND SKY.AREAKY NOT IN ('SHP', 'SYS')
+		 GROUP BY SKY.SKUKEY, SKY.DESC01, SMA.QTDUOM
+		 ORDER BY TO_NUMBER(SKY.SKUKEY)
+	</select>
+
+	<!-- SD05  전사재고조회(대림)4 조회-->
+	<select id="SD05_4_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SKY.SKUKEY SKUKEY,
+		       SKY.DESC01 DESC01,
+		       SMA.QTDUOM QTDUOM,
+		       NVL(SUM(SKY.QTSIWH),0) QTTOT30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2213' THEN SKY.QTSIWH END),0) QTAN30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2214' THEN SKY.QTSIWH END),0) QTAS30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2215' THEN SKY.QTSIWH END),0) QTKH30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2216' THEN SKY.QTSIWH END),0) QTCK30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2217' THEN SKY.QTSIWH END),0) QTKJ30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2218' THEN SKY.QTSIWH END),0) QTOP30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2219' THEN SKY.QTSIWH END),0) QTBS30
+		  FROM STKKY SKY INNER JOIN SKUMA SMA ON SKY.SKUKEY = SMA.SKUKEY AND SKY.LOTA06 = '30'
+		       <if test="OWNRKY != null and OWNRKY != ''">
+		       AND SMA.OWNRKY = #{OWNRKY}
+		       </if>
+		 WHERE SKY.QTSIWH > 0
+		       <if test="OWNRKY != null and OWNRKY != ''">
+		       AND SKY.OWNRKY = #{OWNRKY}
+		       </if>
+		       AND SKY.WAREKY IN ('2213', '2214', '2215', '2216', '2217', '2218', '2219')
+		       <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		       ${RANGE_SQL}
+		       </if>
+		       AND SKY.AREAKY NOT IN ('SHP', 'SYS')
+		 GROUP BY SKY.SKUKEY, SKY.DESC01, SMA.QTDUOM
+		 ORDER BY TO_NUMBER(SKY.SKUKEY)
+	</select>
+	
+	<!-- SD06  전사재고조회(해표)1 조회-->
+	<select id="SD06_1_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SKY.SKUKEY SKUKEY,
+		       SKY.DESC01 DESC01,
+		       SMA.QTDUOM QTDUOM,
+		       NVL(SUM(SKY.QTSIWH),0) QTDTOT,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2254' THEN SKY.QTSIWH END),0) QTDRIC,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2255' THEN SKY.QTSIWH END),0) QTDRCS,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2256' THEN SKY.QTSIWH END),0) QTDRAS,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2257' THEN SKY.QTSIWH END),0) QTDRYG,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2258' THEN SKY.QTSIWH END),0) QTDRYC,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2261' THEN SKY.QTSIWH END),0) QTDRPT,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2263' THEN SKY.QTSIWH END),0) QTDRGS,
+			   NVL(SUM(CASE WHEN SKY.WAREKY = '2259' THEN SKY.QTSIWH END),0) QTDRGJ
+		  FROM STKKY SKY INNER JOIN SKUMA SMA ON SKY.SKUKEY = SMA.SKUKEY AND SMA.OWNRKY = #{OWNRKY}
+		 WHERE SKY.QTSIWH &gt; 0
+		   /*AND SKY.LOTA06 = '00'*/
+		   
+		   AND SKY.OWNRKY = #{OWNRKY}
+		   <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase(" ")'>
+		      <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase("ALL")'>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("N")'>
+		            AND SKY.LOTA07 != '21SV'
+		        </if>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("Y")'>
+		            AND SKY.LOTA07 = '21SV'
+		        </if>
+		      </if>
+		   </if>
+		   AND SKY.WAREKY IN ('2263', '2254', '2255', '2256', '2257', '2258', '2261', '2259')
+		   AND SKY.AREAKY NOT IN ('SHP', 'SYS')
+		   <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		   ${RANGE_SQL}
+		   </if>
+		 GROUP BY SKY.SKUKEY, SKY.DESC01, SMA.QTDUOM
+		 ORDER BY TO_NUMBER(SKY.SKUKEY)
+	</select>
+	
+	<!-- SD06  전사재고조회(해표)2 조회-->
+	<select id="SD06_2_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SKUKEY SKUKEY,
+		       DESC01 DESC01,
+		       QTDUOM QTDUOM,
+		       QTIC00+QTCS00+QTPT00+QTAS00+QTYG00+QTYC00 QTTOT00,
+		       QTIC00 QTIC00,
+		       QTCS00 QTCS00,
+		       QTAS00 QTAS00,
+		       QTYG00 QTYG00,
+		       QTYC00 QTYC00,
+		       QTPT00 QTPT00,
+		       QTGS00 QTGS00,
+			   QTGJ00 QTGJ00
+		  FROM (
+		        SELECT SKY.SKUKEY SKUKEY,
+		               SKY.DESC01,
+		               SMA.QTDUOM,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2254' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) qtic00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2255' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) qtcs00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2256' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) qtas00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2257' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) qtyg00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2258' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) qtyc00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2261' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) qtpt00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2263' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) qtgs00,
+					   NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2259' THEN SKY.QTSIWH END)/SMA.QTDUOM),0) qtgj00
+		          FROM STKKY SKY INNER JOIN SKUMA SMA ON SKY.SKUKEY = SMA.SKUKEY AND SKY.LOTA06 = '00' AND SMA.OWNRKY = #{OWNRKY}
+		         WHERE (SKY.QTSIWH > 0 OR QTSBLK > 0)
+		           AND SKY.OWNRKY = #{OWNRKY}
+		   <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase(" ")'>
+		      <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase("ALL")'>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("N")'>
+		           AND SKY.LOTA07 != '21SV'
+		        </if>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("Y")'>
+		           AND SKY.LOTA07 = '21SV'
+		        </if>
+		      </if>
+		   </if>
+		           AND SKY.WAREKY IN ('2263', '2254', '2255', '2256', '2257', '2258', '2261', '2259')
+		           AND SKY.AREAKY NOT IN ('SHP', 'SYS')
+		           <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		           ${RANGE_SQL}
+		           </if>
+		         GROUP BY SKY.SKUKEY, SKY.DESC01, SMA.QTDUOM
+		)
+		 ORDER BY TO_NUMBER(SKUKEY)
+	</select>
+
+	<!-- SD06  전사재고조회(해표)3 조회-->
+	<select id="SD06_3_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SKUKEY SKUKEY,
+		       DESC01 DESC01,
+		       QTDUOM QTDUOM,
+		       QTIC00+QTCS00+QTPT00+QTAS00+QTYG00+QTYC00 QTTOT00,
+		       QTIC00 QTIC00,
+		       QTCS00 QTCS00,
+		       QTAS00 QTAS00,
+		       QTYG00 QTYG00,
+		       QTYC00 QTYC00,
+		       QTPT00 QTPT00,
+		       QTGS00 QTGS00,
+			   QTGJ00 QTGJ00
+		  FROM (
+		        SELECT SKY.SKUKEY SKUKEY,
+		               SKY.DESC01,
+		               SMA.QTDUOM,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2254' THEN SKY.QTSIWH END)),0) QTIC00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2255' THEN SKY.QTSIWH END)),0) QTCS00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2256' THEN SKY.QTSIWH END)),0) QTAS00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2257' THEN SKY.QTSIWH END)),0) QTYG00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2258' THEN SKY.QTSIWH END)),0) QTYC00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2261' THEN SKY.QTSIWH END)),0) QTPT00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2263' THEN SKY.QTSIWH END)),0) QTGS00,
+					   NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2259' THEN SKY.QTSIWH END)),0) QTGJ00
+		          FROM STKKY SKY INNER JOIN SKUMA SMA ON SKY.SKUKEY = SMA.SKUKEY AND SKY.LOTA06 = '00' AND SMA.OWNRKY = #{OWNRKY}
+		         WHERE (SKY.QTSIWH > 0 OR QTSBLK > 0)
+		           AND SKY.OWNRKY = #{OWNRKY}
+		   <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase(" ")'>
+		      <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase("ALL")'>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("N")'>
+		            AND SKY.LOTA07 != '21SV'
+		        </if>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("Y")'>
+		            AND SKY.LOTA07 = '21SV'
+		        </if>
+		      </if>
+		   </if>
+		           AND SKY.WAREKY IN ('2263', '2254', '2255', '2256', '2257', '2258', '2261', '2259')
+		           AND SKY.AREAKY NOT IN ('SHP', 'SYS')
+		           <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		           ${RANGE_SQL}
+		           </if>
+		         GROUP BY SKY.SKUKEY, SKY.DESC01, SMA.QTDUOM
+		)
+		 ORDER BY TO_NUMBER(SKUKEY)
+	</select>
+	
+	<!-- SD06  전사재고조회(해표)4 조회-->
+	<select id="SD06_4_LIST" parameterType="hashmap" resultType="DataMap">
+		 SELECT SKUKEY SKUKEY,
+		       DESC01 DESC01,
+		       QTDUOM QTDUOM,
+		       QTIC00+QTCS00+QTPT00+QTAS00+QTYG00+QTYC00 QTTOT00,
+		       QTIC00 QTIC00,
+		       QTCS00 QTCS00,
+		       QTAS00 QTAS00,
+		       QTYG00 QTYG00,
+		       QTYC00 QTYC00,
+		       QTPT00 QTPT00,
+		       QTGS00 QTGS00,
+			   QTGJ00 QTGJ00
+		  FROM (
+		        SELECT SKY.SKUKEY SKUKEY,
+		               SKY.DESC01,
+		               SMA.QTDUOM,
+		               
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2254' THEN SKY.QTSIWH END)/SMA.QTYSTD, 2),0) QTIC00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2255' THEN SKY.QTSIWH END)/SMA.QTYSTD, 2),0) QTCS00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2256' THEN SKY.QTSIWH END)/SMA.QTYSTD, 2),0) QTAS00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2257' THEN SKY.QTSIWH END)/SMA.QTYSTD, 2),0) QTYG00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2258' THEN SKY.QTSIWH END)/SMA.QTYSTD, 2),0) QTYC00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2261' THEN SKY.QTSIWH END)/SMA.QTYSTD, 2),0) QTPT00,
+		               NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2263' THEN SKY.QTSIWH END)/SMA.QTYSTD, 2),0) QTGS00,
+					   NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2259' THEN SKY.QTSIWH END)/SMA.QTYSTD, 2),0) QTGJ00
+		          FROM STKKY SKY INNER JOIN SKUMA SMA ON SKY.SKUKEY = SMA.SKUKEY AND SKY.LOTA06 = '00' AND SMA.OWNRKY = #{OWNRKY}
+		         WHERE (SKY.QTSIWH > 0 OR QTSBLK > 0)
+		           AND SKY.OWNRKY = #{OWNRKY}
+		   <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase(" ")'>
+		      <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase("ALL")'>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("N")'>
+		            AND SKY.LOTA07 != '21SV'
+		        </if>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("Y")'>
+		            AND SKY.LOTA07 = '21SV'
+		        </if>
+		      </if>
+		   </if>
+		           AND SKY.WAREKY IN ('2263', '2254', '2255', '2256', '2257', '2258', '2261', '2259')
+		           AND SKY.AREAKY NOT IN ('SHP', 'SYS')
+		           <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		           ${RANGE_SQL}
+		           </if>
+		     GROUP BY SKY.SKUKEY, SKY.DESC01, SMA.QTDUOM, SMA.QTYSTD
+		)
+		 ORDER BY TO_NUMBER(SKUKEY)
+	</select>
+	
+	<!-- SD06  전사재고조회(해표)5 조회-->
+	<select id="SD06_5_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SKY.SKUKEY SKUKEY,
+		       SKY.DESC01 DESC01,
+		       SMA.QTDUOM QTDUOM,
+		       NVL(SUM(SKY.QTSIWH), 0) QTTOT20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2254' THEN SKY.QTSIWH END), 0) QTIC20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2255' THEN SKY.QTSIWH END), 0) QTCS20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2256' THEN SKY.QTSIWH END), 0) QTAS20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2257' THEN SKY.QTSIWH END), 0) QTYG20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2258' THEN SKY.QTSIWH END), 0) QTYC20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2261' THEN SKY.QTSIWH END), 0) QTPT20,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2263' THEN SKY.QTSIWH END), 0) QTGS20,
+			   NVL(SUM(CASE WHEN SKY.WAREKY = '2259' THEN SKY.QTSIWH END), 0) QTGJ20
+		  FROM STKKY SKY INNER JOIN SKUMA SMA ON SKY.SKUKEY = SMA.SKUKEY AND SKY.LOTA06 = '20' AND SMA.OWNRKY = #{OWNRKY}
+		 WHERE SKY.QTSIWH > 0
+		   AND SKY.OWNRKY = #{OWNRKY}
+		   <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase(" ")'>
+		      <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase("ALL")'>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("N")'>
+		            AND SKY.LOTA07 != '21SV'
+		        </if>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("Y")'>
+		            AND SKY.LOTA07 = '21SV'
+		        </if>
+		      </if>
+		   </if>
+		   AND SKY.WAREKY IN ('2263', '2254', '2255', '2256', '2257', '2258', '2261', '2259')
+		   AND SKY.AREAKY NOT IN ('SHP', 'SYS')
+		   <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		   ${RANGE_SQL}
+		   </if>
+		 GROUP BY SKY.SKUKEY, SKY.DESC01, SMA.QTDUOM
+		 ORDER BY TO_NUMBER(SKY.SKUKEY)
+	</select>
+	
+	<!-- SD06  전사재고조회(해표)6 조회-->
+	<select id="SD06_6_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SKY.SKUKEY SKUKEY,
+		       SKY.DESC01 DESC01,
+		       SMA.QTDUOM QTDUOM,
+		       NVL(SUM(SKY.QTSIWH),0) QTTOT30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2254' THEN SKY.QTSIWH END),0) QTIC30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2255' THEN SKY.QTSIWH END),0) QTCS30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2256' THEN SKY.QTSIWH END),0) QTAS30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2257' THEN SKY.QTSIWH END),0) QTYG30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2258' THEN SKY.QTSIWH END),0) QTYC30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2261' THEN SKY.QTSIWH END),0) QTPT30,
+		       NVL(SUM(CASE WHEN SKY.WAREKY = '2263' THEN SKY.QTSIWH END),0) QTGS30,
+			   NVL(SUM(CASE WHEN SKY.WAREKY = '2259' THEN SKY.QTSIWH END),0) QTGJ30
+		  FROM STKKY SKY INNER JOIN SKUMA SMA ON SKY.SKUKEY = SMA.SKUKEY AND SKY.LOTA06 = '30' AND SMA.OWNRKY = #{OWNRKY}
+		 WHERE SKY.QTSIWH > 0
+		   AND SKY.OWNRKY = #{OWNRKY}
+		   <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase(" ")'>
+		      <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase("ALL")'>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("N")'>
+		            AND SKY.LOTA07 != '21SV'
+		        </if>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("Y")'>
+		            AND SKY.LOTA07 = '21SV'
+		        </if>
+		      </if>
+		   </if>
+		   AND SKY.WAREKY IN ('2263', '2254', '2255', '2256', '2257', '2258', '2261', '2259')
+		   AND SKY.AREAKY NOT IN ('SHP', 'SYS')
+		   <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		   ${RANGE_SQL}
+		   </if>
+		 GROUP BY SKY.SKUKEY, SKY.DESC01, SMA.QTDUOM
+		 ORDER BY TO_NUMBER(SKY.SKUKEY)
+	</select>
+	
+	<!-- SD06  전사재고조회(해표)7 조회-->
+	<select id="SD06_7_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SKY.SKUKEY SKUKEY,
+		       SKY.DESC01 DESC01,
+		       SMA.QTDUOM QTDUOM,
+		       NVL(TRUNC(SUM(SKY.QTSIWH)/SMA.QTYSTD, 2),0) QTTOT30,
+		       NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2254' THEN SKY.QTSIWH END)/SMA.QTYSTD ,2),0) QTIC30,
+		       NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2255' THEN SKY.QTSIWH END)/SMA.QTYSTD ,2),0) QTCS30,
+		       NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2256' THEN SKY.QTSIWH END)/SMA.QTYSTD ,2),0) QTAS30,
+		       NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2257' THEN SKY.QTSIWH END)/SMA.QTYSTD ,2),0) QTYG30,
+		       NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2258' THEN SKY.QTSIWH END)/SMA.QTYSTD ,2),0) QTYC30,
+		       NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2261' THEN SKY.QTSIWH END)/SMA.QTYSTD ,2),0) QTPT30,
+		       NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2263' THEN SKY.QTSIWH END)/SMA.QTYSTD ,2),0) QTGS30,
+			   NVL(TRUNC(SUM(CASE WHEN SKY.WAREKY = '2259' THEN SKY.QTSIWH END)/SMA.QTYSTD ,2),0) QTGJ30
+		  FROM STKKY SKY INNER JOIN SKUMA SMA ON SKY.SKUKEY = SMA.SKUKEY AND SKY.LOTA06 = '30' AND SMA.OWNRKY = #{OWNRKY}
+		 WHERE SKY.QTSIWH > 0
+		   AND SKY.OWNRKY = #{OWNRKY}
+		   <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase(" ")'>
+		      <if test='LOTA07 == null  or !LOTA07.equalsIgnoreCase("ALL")'>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("N")'>
+		            AND SKY.LOTA07 != '21SV'
+		        </if>
+		        <if test='LOTA07 !=null  and LOTA07.equalsIgnoreCase("Y")'>
+		            AND SKY.LOTA07 = '21SV'
+		        </if>
+		      </if>
+		   </if>
+		   AND SKY.WAREKY IN ('2263', '2254', '2255', '2256', '2257', '2258', '2261', '2259')
+		   AND SKY.AREAKY NOT IN ('SHP', 'SYS')
+		   <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		   ${RANGE_SQL}
+		   </if>
+		 GROUP BY SKY.SKUKEY, SKY.DESC01, SMA.QTDUOM,SMA.QTYSTD
+		 ORDER BY TO_NUMBER(SKY.SKUKEY)
+	</select>
+	
+</mapper>

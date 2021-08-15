@@ -1,0 +1,101 @@
+package com.common.carton;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.SerializationUtils;
+
+/**
+ * 미포장 아이템과 포장 무계 초과시 분리하는 로직
+ * @author Administrator
+ *
+ */
+public class SmartBoxPacker {
+
+	private BoxPacker bp;
+	
+	private PickingStrategy pickingStrategy;
+	
+	private List<PBox> pboxes;
+	
+	private List<Item> excludingItems = new ArrayList<>();
+
+	/**
+	 * 생성자
+	 * @param boxes 박스리스트
+	 * @param bestPackingFactor 최대충진율
+	 * @param pickingStrategy 아이템 선정 전략
+	 * @param isSorted 정렬 여부
+	 */
+	public SmartBoxPacker(List<Box> boxes, float bestPackingFactor, PickingStrategy pickingStrategy
+			, boolean isSorted) {
+		this.bp = new BoxPacker(boxes, bestPackingFactor, isSorted);
+		this.pboxes = new ArrayList<>();
+		this.pickingStrategy = pickingStrategy;
+	}
+
+	/**
+	 * 분리 포장
+	 * @param items 포장아이템
+	 */
+	public synchronized void splitPack(final List<Item> items) {
+		
+		try {
+			final PBox pb = bp.pack(items);
+			pboxes.add(pb);
+			pb.setPackingNumber(pboxes.size() + 0);
+			items.clear();
+			
+			items.addAll(pb.getUnpackedItems());
+			items.addAll(excludingItems);
+			excludingItems.clear();
+			
+		} catch (BoxNotFoundException e) {
+			
+			final PBox pb = new PBox(bp.getBiggestBox(), items);
+			pboxes.add(pb);
+			pb.setPackingNumber(pboxes.size() + 0);
+			items.clear();
+			
+		} catch (PackedBoxOverweightException e) {
+			
+			if (items.size() == 1 && items.get(0).getQty() == 1) {
+				final PBox pb = e.getPBox();
+				pboxes.add(pb);
+				pb.setPackingNumber(pboxes.size() + 0);
+				items.clear();
+				items.addAll(excludingItems);
+				excludingItems.clear();
+				
+			} else {
+				
+				final Item item = pickingStrategy.picking(items);
+				
+				if (item.getQty() == 1) {
+					excludingItems.add(items.remove(0));
+				} else if (item.getQty() > 1) {
+					item.decQty();
+					final Item copy = SerializationUtils.clone(item);
+					copy.setupQty();
+					excludingItems.add(copy);
+				} else {
+					throw new IllegalArgumentException("Invalid item qty:" + item.toString());
+				}
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if (!items.isEmpty())
+			splitPack(items);
+	}
+	
+	/**
+	 * 포장된 박스정보 조회
+	 * @return 포장된 박스리스트
+	 */
+	public List<PBox> getPackedBoxes() {
+		return pboxes;
+	}
+}

@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SajoCommon">
+	
+	<!-- [CMCDV] 공통코드 -->
+	<select id="CMCDV_COMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT CMCDVL AS VALUE_COL
+		   ,   CDESC1 AS TEXT_COL
+		FROM   CMCDV
+		WHERE  1=1
+		<if test="CMCDKY != null and CMCDKY != ''">
+			AND CMCDKY = #{CMCDKY}
+		</if>
+		<if test="USARG1 != null and USARG1 != ''">
+			AND USARG1 = #{USARG1}
+		</if>
+		<if test="USARG2 != null and USARG2 != ''">
+			AND USARG2 = #{USARG2}
+		</if>
+		<if test="USARG3 != null and USARG3 != ''">
+			AND USARG3 = #{USARG3}
+		</if>
+		<if test="USARG4 != null and USARG3 != ''">
+			AND USARG4 = #{USARG4}
+		</if>
+		<if test="USARG4 != null and USARG3 != ''">
+			AND USARG4 = #{USARG4}
+		</if>
+			AND USARG5 != 'V'
+		ORDER BY 
+		       CMCDVL
+	</select>
+	
+	<!-- [DOCTM_RTN] 반품배차 문서종류 공통 콤보 -->
+	<select id="DOCTM_RTN_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT DOCUTY AS VALUE_COL
+		    ,  SHORTX AS TEXT_COL
+		FROM   DOCTM
+		WHERE  1=1
+		AND DOCUTY IN ('131', '133', '134', '135', '137')
+		ORDER BY
+			   DOCCAT, DOCUTY 
+	</select>
+	
+	<!-- [DOCTM] 문서종류 공통 콤보 -->
+	<select id="DOCTM_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT DOCUTY AS VALUE_COL
+		    ,  SHORTX AS TEXT_COL
+		FROM   DOCTM
+		WHERE  1=1
+		<if test="DOCCAT != null and DOCCAT != ''">
+		AND    DOCCAT = #{DOCCAT}
+		</if>
+		<if test="DOCUTY != null and DOCUTY != ''">
+		AND    DOCUTY = #{DOCUTY}
+		</if>
+		<if test="CODE1 != null and CODE1 != ''">
+		AND    DOCCAT = #{CODE1}
+		</if>
+		<if test="IFTBLN != null and IFTBLN != ''">
+		AND    IFTBLN = #{IFTBLN}
+		</if>  
+		<if test="DOCGRP != null and DOCGRP != ''">
+		AND    DOCGRP = #{DOCGRP}
+		</if>
+		ORDER BY
+			   DOCCAT, DOCUTY 
+	</select>
+	
+<!-- 	<resultMap type="project.common.bean.User" id="UserMap"> -->
+<!-- 		<result property="userid" column="USERID"></result> -->
+<!-- 		<result property="passwd" column="PASSWD"></result> -->
+<!-- 		<result property="nmlast" column="NMLAST"></result> -->
+<!-- 		<result property="nmfirs" column="NMFIRS"></result> -->
+<!-- 		<result property="addr01" column="ADDR01"></result> -->
+<!-- 		<result property="addr02" column="ADDR02"></result> -->
+<!-- 		<result property="addr03" column="ADDR03"></result> -->
+<!-- 		<result property="addr04" column="ADDR04"></result> -->
+<!-- 		<result property="addr05" column="ADDR05"></result> -->
+<!-- 		<result property="city01" column="CITY01"></result> -->
+<!-- 		<result property="regn01" column="REGN01"></result> -->
+<!-- 		<result property="postcd" column="POSTCD"></result> -->
+<!-- 		<result property="natnky" column="NATNKY"></result> -->
+<!-- 		<result property="teln01" column="TELN01"></result> -->
+<!-- 		<result property="teln02" column="TELN02"></result> -->
+<!-- 		<result property="teln03" column="TELN03"></result> -->
+<!-- 		<result property="tlext1" column="TLEXT1"></result> -->
+<!-- 		<result property="faxtl1" column="FAXTL1"></result> -->
+<!-- 		<result property="faxtl2" column="FAXTL2"></result> -->
+<!-- 		<result property="pobox1" column="POBOX1"></result> -->
+<!-- 		<result property="pobpc1" column="POBPC1"></result> -->
+<!-- 		<result property="email1" column="EMAIL1"></result> -->
+<!-- 		<result property="email2" column="EMAIL2"></result> -->
+<!-- 		<result property="compky" column="COMPKY"></result> -->
+<!-- 		<result property="depart" column="DEPART"></result> -->
+<!-- 		<result property="emplid" column="EMPLID"></result> -->
+<!-- 		<result property="userg1" column="USERG1"></result> -->
+<!-- 		<result property="userg2" column="USERG2"></result> -->
+<!-- 		<result property="userg3" column="USERG3"></result> -->
+<!-- 		<result property="userg4" column="USERG4"></result> -->
+<!-- 		<result property="userg5" column="USERG5"></result> -->
+<!-- 		<result property="langky" column="LANGKY"></result> -->
+<!-- 		<result property="datefm" column="DATEFM"></result> -->
+<!-- 		<result property="datedl" column="DATEDL"></result> -->
+<!-- 		<result property="decpfm" column="DECPFM"></result> -->
+<!-- 		<result property="llogid" column="LLOGID"></result> -->
+<!-- 		<result property="llogit" column="LLOGIT"></result> -->
+<!-- 		<result property="llogod" column="LLOGOD"></result> -->
+<!-- 		<result property="llogot" column="LLOGOT"></result> -->
+<!-- 		<result property="menuky" column="MENUKY"></result> -->
+<!-- 		<result property="llogwh" column="LLOGWH"></result> -->
+<!-- 		<result property="timfmt" column="TIMFMT"></result> -->
+<!-- 		<result property="currfm" column="CURRFM"></result> -->
+<!-- 		<result property="recntf" column="RECNTF"></result> -->
+<!-- 		<result property="delmak" column="DELMAK"></result> -->
+<!-- 		<result property="pgsize" column="PGSIZE"></result> -->
+<!-- 		<result property="ftsize" column="FTSIZE"></result> -->
+<!-- 		<result property="credat" column="CREDAT"></result> -->
+<!-- 		<result property="cretim" column="CRETIM"></result> -->
+<!-- 		<result property="creusr" column="CREUSR"></result> -->
+<!-- 		<result property="lmodat" column="LMODAT"></result> -->
+<!-- 		<result property="lmotim" column="LMOTIM"></result> -->
+<!-- 		<result property="lmousr" column="LMOUSR"></result> -->
+<!-- 		<result property="updchk" column="UPDCHK"></result> -->
+<!-- 		<result property="indbzl" column="INDBZL"></result> -->
+<!-- 		<result property="indarc" column="INDARC"></result> -->
+<!-- 		<result property="fmdesc1" column="FMDESC1"></result> -->
+<!-- 		<result property="dldesc1" column="DLDESC1"></result> -->
+<!-- 		<result property="dldesc2" column="DLDESC2"></result> -->
+<!-- 		<result property="owner" column="OWNER"></result> -->
+<!-- 		<result property="wareky" column="WAREKY"></result> -->
+<!-- 	</resultMap> -->
+	
+	
+ 	<!-- [USRMA] 로그인 --> 
+<!-- 	<select id="USERCHECK_OBJECT" parameterType="hashmap" resultMap="UserMap"> -->
+<!-- 		SELECT -->
+<!-- 			  USERID -->
+<!-- 			, PASSWD -->
+<!-- 			, NMLAST -->
+<!-- 			, NMFIRS -->
+<!-- 			, ADDR01 -->
+<!-- 			, ADDR02 -->
+<!-- 			, ADDR03 -->
+<!-- 			, ADDR04 -->
+<!-- 			, ADDR05 -->
+<!-- 			, CITY01 -->
+<!-- 			, REGN01 -->
+<!-- 			, POSTCD -->
+<!-- 			, NATNKY -->
+<!-- 			, TELN01 -->
+<!-- 			, TELN02 -->
+<!-- 			, TELN03 -->
+<!-- 			, TLEXT1 -->
+<!-- 			, FAXTL1 -->
+<!-- 			, FAXTL2 -->
+<!-- 			, POBOX1 -->
+<!-- 			, POBPC1 -->
+<!-- 			, EMAIL1 -->
+<!-- 			, EMAIL2 -->
+<!-- 			, COMPKY -->
+<!-- 			, DEPART -->
+<!-- 			, EMPLID -->
+<!-- 			, USERG1 -->
+<!-- 			, USERG2 -->
+<!-- 			, USERG3 -->
+<!-- 			, USERG4 -->
+<!-- 			, USERG5 -->
+<!-- 			, LANGKY -->
+<!-- 			, DATEFM -->
+<!-- 			, DATEDL -->
+<!-- 			, DECPFM -->
+<!-- 			, LLOGID -->
+<!-- 			, LLOGIT -->
+<!-- 			, LLOGOD -->
+<!-- 			, LLOGOT -->
+<!-- 			, MENUKY -->
+<!-- 			, LLOGWH -->
+<!-- 			, TIMFMT -->
+<!-- 			, CURRFM -->
+<!-- 			, RECNTF -->
+<!-- 			, DELMAK -->
+<!-- 			, PGSIZE -->
+<!-- 			, FTSIZE -->
+<!-- 			, UROLKY -->
+<!-- 			, UM.CREDAT -->
+<!-- 			, UM.CRETIM -->
+<!-- 			, UM.CREUSR -->
+<!-- 			, UM.LMODAT -->
+<!-- 			, UM.LMOTIM -->
+<!-- 			, UM.LMOUSR -->
+<!-- 			, UM.UPDCHK -->
+<!-- 			, UM.INDBZL -->
+<!-- 			, UM.INDARC -->
+<!-- 			, FM.CDESC1 -->
+<!-- 			, DL.CDESC1 -->
+<!-- 			, DL.CDESC2 -->
+<!-- 			, 'N' AS PWDCHGYN -->
+<!-- 			, 'N' AS LOCKYN -->
+<!-- 		FROM -->
+<!-- 			USRMA UM -->
+<!-- 			INNER JOIN CMCDV FM -->
+<!-- 				ON		FM.CMCDKY = 'DATEFM' -->
+<!-- 					AND UM.DATEFM = FM.CMCDVL -->
+<!-- 			INNER JOIN CMCDV DL -->
+<!-- 				ON		DL.CMCDKY = 'DATEDL' -->
+<!-- 					AND UM.DATEDL = DL.CMCDVL -->
+<!-- 		WHERE -->
+<!-- 				UM.USERID = #{USERID} -->
+<!-- 			AND UM.PASSWD = F_PASSWORD_ENCRYPTION(#{PASSWD}) -->
+<!-- 			AND UM.DELMAK != 'Y' -->
+<!-- 	</select> -->
+
+	<resultMap type="project.common.bean.User" id="UserMap">
+		<result property="userid" column="USERID"></result>
+		<result property="passwd" column="PASSWD"></result>
+		<result property="username" column="NMLAST"></result>
+		<result property="compid" column="COMPKY"></result>
+		<result property="deptid" column="DEPART"></result>
+		<result property="menugid" column="MENUKY"></result>
+		<result property="logindate" column="LLOGID"></result>
+		<result property="logoutdate" column="LLOGOD"></result>
+		<result property="llogwhnm" column="LLOGWHNM"></result>
+		<result property="llogownm" column="LLOGOWNM"></result>
+		<result property="mmenugid" column="MENUGID"></result>
+	</resultMap>
+	
+	<select id="LOGIN_OBJECT" parameterType="hashmap" resultMap="UserMap">
+		SELECT	
+			USERID,
+			PASSWD,
+			NMLAST,
+			COMPKY,
+			MENUKY,
+			DEPART,
+			LLOGID,
+			LLOGOD,
+			LANGKY,
+			(SELECT NAME01 FROM WAHMA WHERE WAREKY= #{WAREKY}) AS LLOGWHNM,
+			(SELECT NAME01 FROM OWNER WHERE OWNRKY= #{OWNRKY}) AS LLOGOWNM
+		FROM USRMA U
+		WHERE U.USERID = #{USERID}
+			AND U.PASSWD = F_PASSWORD_ENCRYPTION(#{PASSWD})
+			AND U.DELMAK != 'Y'
+	</select>
+	
+	<select id="USERCHECK_OBJECT" parameterType="hashmap" resultMap="UserMap">
+		SELECT	
+			USERID,
+			PASSWD,
+			NMLAST,
+			COMPKY,
+			MENUKY,
+			DEPART,
+			LLOGID,
+			LLOGOD,
+			PDAMKY AS MENUGID,
+			(SELECT NAME01 FROM WAHMA WHERE WAREKY= #{WAREKY}) AS LLOGWHNM,
+			(SELECT NAME01 FROM OWNER WHERE OWNRKY= #{OWNRKY}) AS LLOGOWNM
+		FROM USRMA U
+		WHERE U.USERID = #{USERID}
+			AND U.PASSWD = F_PASSWORD_ENCRYPTION(#{PASSWD})
+			AND U.DELMAK != 'Y'
+	</select>
+	
+	<!-- [DOCTM] 문서종류 공통 콤보 -->
+	<select id="ROLOW_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT    
+			ROLOW.UROLKY,   
+			ROLOW.OWNRKY,   
+			ROLOW.MAINCK,
+			OWNER.PTNG04
+		FROM ROLOW, OWNER, USRRA 
+		WHERE
+				ROLOW.OWNRKY = OWNER.OWNRKY   
+			AND ROLOW.UROLKY = USRRA.UROLKY 
+			AND USRRA.USERID = #{USERID}
+			   
+			AND OWNER.DELMAK != 'V'  
+			AND OWNER.OWNRKY = #{OWNRKY}
+			AND ROWNUM = 1
+		ORDER BY ROLOW.OWNSEQ 
+	</select>
+	
+	<!-- [ROLOW] 화주조회쿼리 (콤보) -->
+	<select id="OWNRKY_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT OWNRKY AS VALUE_COL, 
+		      NVL((SELECT NAME01 FROM OWNER WHERE OWNRKY = ROLOW.OWNRKY), ' ') AS TEXT_COL
+		FROM ROLOW
+		WHERE 1=1 
+		<if test="UROLKY != null and UROLKY != ''">
+		  AND UROLKY = #{UROLKY}
+		</if>
+	</select>
+	
+	<!-- [ALL] 화주조회쿼리 (콤보) -->
+	<select id="ALL_OWNRKY_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT OWNRKY AS VALUE_COL, 
+		      NAME01 AS TEXT_COL
+		FROM OWNER
+		ORDER BY OWNRKY
+		
+	</select>
+	
+	<!-- [USRRA] 창고조회쿼리 (콤보) -->
+	<select id="WAREKY_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT
+			RT.WAREKY AS VALUE_COL,
+			'['|| RT.WAREKY ||']' || WH.NAME01 AS TEXT_COL
+		FROM
+			USRRA UR 
+			INNER JOIN ROLDF RD ON UR.UROLKY = RD.UROLKY
+			INNER JOIN ROLCT RT ON UR.UROLKY = RT.UROLKY
+			INNER JOIN WAHMA WH ON RT.WAREKY = WH.WAREKY
+			INNER JOIN OWNWC OW ON OW.WAREKY = WH.WAREKY
+			INNER JOIN ROLOW RW ON RD.UROLKY = RW.UROLKY AND OW.OWNRKY = RW.OWNRKY
+		WHERE
+				UR.USERID = #{SES_USER_ID}
+		<if test="OWNRKY != null and OWNRKY != ''">
+			AND RW.OWNRKY = #{OWNRKY}
+		</if>
+		ORDER BY RT.WAREKY
+	</select>
+	
+	
+	<!--YH01 서치헬프 HEAD** -->
+<!-- 	<select id="YH01HEAD_MAP" parameterType="hashmap" resultType="DataMap"> -->
+<!-- 		SELECT H.COMPKY		AS COMPKY -->
+<!-- 			 , H.COMMPOPID	AS COMMPOPID -->
+<!-- 		     , H.CPOPLABEL	AS CPOPLABEL -->
+<!-- 		     , H.CPOPNAME	AS CPOPNAME -->
+<!-- 		     , H.VIEWTNAME	AS VIEWTNAME -->
+<!-- 		     , H.CPOPDESC	AS CPOPDESC -->
+<!-- 		     , H.CPOPTYPE	AS CPOPTYPE -->
+<!-- 		     , H.EXETYPE	AS EXETYPE -->
+<!-- 		     , H.SIZEW		AS SIZEW -->
+<!-- 		     , H.SIZEH		AS SIZEH -->
+<!-- 		     , H.COMMPOPID	AS OLD_COMMPOPID -->
+<!-- 		     , H.CPOPLABEL	AS OLD_CPOPLABEL -->
+<!-- 		     , H.CPOPNAME	AS OLD_CPOPNAME -->
+<!-- 		     , H.VIEWTNAME	AS OLD_VIEWTNAME -->
+<!-- 		     , H.CPOPDESC	AS OLD_CPOPDESC -->
+<!-- 		     , H.CPOPTYPE	AS OLD_CPOPTYPE -->
+<!-- 		     , H.EXETYPE	AS OLD_EXETYPE -->
+<!-- 		     , H.SIZEW		AS OLD_SIZEW -->
+<!-- 		     , H.SIZEH		AS OLD_SIZEH -->
+<!-- 		  FROM SYSCOMMPOP H -->
+<!-- 		 WHERE COMPKY = #{SES_USER_COMPANY} -->
+<!-- 		 AND   H.COMMPOPID = #{COMMPOPID} -->
+<!-- 	</select> -->
+	
+<!-- 	<select id="YH01ITEM_LIST" parameterType="hashmap" resultType="DataMap"> -->
+<!-- 		SELECT I.COMPKY		  AS COMPKY -->
+<!-- 			 , I.COMMPOPID    AS COMMPOPID -->
+<!-- 		     , I.CPOPITEMID   AS CPOPITEMID -->
+<!-- 		     , I.CPOPITLABEL  AS CPOPITLABEL -->
+<!-- 		     , I.CPOPITNAME   AS CPOPITNAME -->
+<!-- 		     , I.ITEMTYPE     AS ITEMTYPE -->
+<!-- 		     , I.SEARCHTYPE   AS SEARCHTYPE -->
+<!-- 		     , I.SFORMAT      AS SFORMAT -->
+<!-- 		     , I.SOPTION      AS SOPTION -->
+<!-- 		     , I.SDEFAULT     AS SDEFAULT -->
+<!-- 		     , I.SREQUIRED    AS SREQUIRED -->
+<!-- 		     , I.GWIDTH       AS GWIDTH -->
+<!-- 		     , I.RETURNCOL    AS RETURNCOL -->
+<!-- 		     , I.SORTORDER    AS SORTORDER   -->
+<!-- 		  FROM SYSCPOPITEM I -->
+<!-- 		 WHERE I.COMPKY = #{SES_USER_COMPANY} -->
+<!-- 		 AND   I.COMMPOPID = #{COMMPOPID} -->
+<!-- 		 ORDER BY SORTORDER -->
+<!-- 	</select> -->
+
+	<select id="GETMESSAGE_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT FN_GET_MESSAGE(NVL(#{LANGKY},'KO'),#{MESGGR},#{MESGKY} ) AS  MESSAGE
+		  FROM DUAL 
+	</select>
+
+	<!-- [LOGIN] 화주조회쿼리 (콤보) -->
+	<select id="LOGIN_OWNRKY_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT OWNRKY AS VALUE_COL, 
+		      '['||OWNRKY||'] '||NAME01 AS TEXT_COL
+		FROM OWNER
+		WHERE 1=1 
+		 AND OWNRKY IN ('2200', '2500', '2300')
+	</select>
+	
+	<!-- [LOGIN] 창고조회쿼리 (콤보) -->
+	<select id="LOGIN_WAREKY_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT WM.WAREKY AS VALUE_COL,
+			   '['|| WM.WAREKY ||']' || WM.NAME01 AS TEXT_COL
+         FROM OWNWC OW 
+              INNER JOIN WAHMA WM ON WM.WAREKY = OW.WAREKY
+	    WHERE TRIM(WM.DELMAK) IS NULL
+	      AND OW.OWNRKY = #{OWNRKY}
+		ORDER BY WM.WAREKY
+	</select>
+	
+	
+	<!-- 그리드 화주 공통 콤보쿼리키 COMBO.OWNRKYNM  -->
+	<select id="OWNRKYNM_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT OWNRKY VALUE_COL, 
+		       NAME01 TEXT_COL
+		  FROM OWNER
+		 WHERE 1 =1
+			<if test="OWNRKY != null and OWNRKY != ''">
+			AND OWNRKY = #{OWNRKY}
+			</if>
+		ORDER BY OWNRKY
+	</select>
+	
+	<!-- 그리드 거점 공통 콤보쿼리키 COMBO.WAREKYNM  -->
+	<select id="WAREKYNM_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT WAREKY AS VALUE_COL,
+		       NAME01 AS TEXT_COL
+		  FROM WAHMA WHERE DELMAK != 'V'
+	</select>
+	
+	<!-- 그리드 문서유형 공통 콤보쿼리키 COMBO.DOCUTY  -->
+	<select id="DOCUTY_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT DOCUTY AS VALUE_COL, 
+		       SHORTX AS TEXT_COL
+		  FROM DOCTM
+		 WHERE 1 =1
+			<if test="DOCCAT != null and DOCCAT != ''">
+				AND DOCCAT = #{DOCCAT}
+			</if>
+			<if test="DOCUTY != null and DOCUTY != ''">
+				AND DOCUTY IN (${DOCUTY})
+			</if>
+		ORDER BY DOCUTY
+	</select>
+	
+	<!-- 그리드 사유코드 공통 콤보쿼리키 COMBO.RSNCOD  -->
+	<select id="RSNCOD_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT RSNCOD AS VALUE_COL ,
+		       SHORTX AS TEXT_COL
+		  FROM RSNCD
+		 WHERE OWNRKY = #{OWNRKY}
+		   AND DOCCAT = #{DOCCAT}
+		   AND SHORTX NOT LIKE '%미사용%'
+		<if test="DOCUTY != null and DOCUTY != ''">
+		   AND DOCUTY = #{DOCUTY}
+		</if>
+		<if test="DOCUTYS != null and DOCUTYS != ''">
+			AND DOCUTYS IN (${DOCUTYS})
+		</if>
+		<if test="RSNCOD != null and RSNCOD != ''">
+		   AND RSNCOD = #{RSNCOD}
+		</if>
+		<if test="DIFLOC != null and DIFLOC != ''">
+		   AND DIFLOC = ' '
+		</if>
+		<if test='DOCUTY !=null  and DOCUTY.equalsIgnoreCase("399")'>
+			<if test='OWNRKY !=null  and OWNRKY.equalsIgnoreCase("2100")'>
+		    AND CREDAT = '20170731'
+			</if>
+			<if test='OWNRKY !=null  and OWNRKY.equalsIgnoreCase("2500")'>
+		    AND CREDAT = '20170731'
+			</if>
+		</if>
+		ORDER BY CASE WHEN RSNCOD = '207' THEN 1 WHEN RSNCOD = '208' THEN 2 END, RSNCOD	
+	</select>
+	
+	<!-- 그리드 대림용 WAREKY 공통 콤보쿼리키 COMBO.WAREKYNM.DR  -->
+	<select id="DR_WAREKYNM_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT WAREKY AS VALUE_COL,
+		       NAME01 AS TEXT_COL
+		  FROM WAHMA
+		 WHERE SUBSTR(WAREKY,1,2) = '22'
+		ORDER BY WAREKY
+	</select>
+	
+	<!-- 그리드 오양용 WAREKY 공통 콤보쿼리키 COMBO.WAREKYNM.OY  -->
+	<select id="OY_WAREKYNM_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT WAREKY AS VALUE_COL,
+		       NAME01 AS TEXT_COL
+		  FROM WAHMA
+		 WHERE SUBSTR(WAREKY,1,2) = '23'
+		ORDER BY WAREKY
+	</select>
+	
+	<!-- 그리드 대림용 WAREKY 공통 콤보쿼리키 COMBO.WAREKY  -->
+	<select id="SEARCH_WAREKY_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT RT.WAREKY VALUE_COL, 
+		       WH.NAME01 TEXT_COL
+		  FROM USRRA UR INNER JOIN ROLDF RD ON UR.UROLKY = RD.UROLKY
+		                INNER JOIN ROLCT RT ON UR.UROLKY = RT.UROLKY
+		                INNER JOIN WAHMA WH ON RT.WAREKY = WH.WAREKY
+		                INNER JOIN OWNWC OW ON OW.WAREKY = WH.WAREKY
+		                INNER JOIN ROLOW RW ON RD.UROLKY = RW.UROLKY AND OW.OWNRKY = RW.OWNRKY
+		WHERE UR.USERID = #{USERID}
+		  AND RW.OWNRKY = #{OWNRKY}
+		ORDER BY RT.WAREKY
+	</select>
+	
+	<!-- 문서번호 채번  -->
+	<select id="GETDOCNUMBER_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT SZF_GETDOCNUMBER(#{DOCUTY}) AS DOCNUM FROM DUAL
+	</select>
+	
+	<!-- 그리드 사유코드 공통 콤보쿼리키 전략규칙   -->
+	<select id="ALSTKY_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT ALSTKY AS VALUE_COL
+	         , SHORTX AS TEXT_COL
+	   FROM ALSTH 
+	  WHERE OWNRKY = #{OWNRKY} 
+	    AND WAREKY = #{WAREKY} 
+	</select>
+	
+	<!-- 그리드 사유코드 공통 콤보쿼리키 거래처  -->
+	<select id="BZPTN_DATA_LIST" parameterType="hashmap" resultType="DataMap">
+	SELECT PTNRKY AS PTNRKY, 
+           NAME01 AS PTNRNM
+      FROM BZPTN
+     WHERE OWNRKY = #{OWNRKY}
+       AND PTNRTY = #{PTNRTY}
+       AND PTNRKY = #{PTNRKY}
+	</select>
+	
+	<!-- SKUKEY로 제품명 가져오기 COMMON.GETDESC.SKUNAME  -->
+	<select id="SKUMA_GETDESC_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SKUKEY AS SKUKEY,
+		       REPLACE(DESC01,CHR(38),' ') AS DESC01
+		  FROM SKUMA
+		 WHERE OWNRKY = #{OWNRKY}
+		   AND SKUKEY = #{SKUKEY}
+	</select>
+	
+	<!--  skukey onchnage  COMMON.GETDESC.SKU_INFO_RECD -->
+	<select id="SKUMA_GETDESC_RECD_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SKUKEY as SKUKEY, 
+		<![CDATA[
+			   replace(DESC01, '&amp;','&amp;amp;') as DESC01,
+			   replace(DESC02, '&amp;','&amp;amp;') as DESC02,]]>
+			   SKUG02 AS SKUG02,
+			   SKUG03 AS SKUG03,
+			   ASKU02 AS ASKU02,
+			   SKUG05 AS SKUG05,
+			   GRSWGT AS GRSWGT,
+			   NETWGT AS NETWGT,
+			   SKUG04 AS SKUG04,
+			   ASKU03 AS ASKU03,
+			   LENGTH AS LENGTH,
+			   WIDTHW AS WIDTHW,
+			   HEIGHT AS HEIGHT,
+			   CUBICM AS CUBICM,
+			   CAPACT AS CAPACT,
+			   DUOMKY AS DUOMKY,
+			   QTDUOM AS QTDUOM,
+			   MEASKY AS MEASKY,
+			   QTPUOM AS QTPUOM,
+			   ASKU01 AS ASKU01,
+			   WGTUNT AS WGTUNT,
+			   UOMKEY AS UOMKEY,
+			   ASKU04 AS ASKU04,
+			   ASKU05 AS ASKU05,
+			   EANCOD AS EANCOD,
+			   GTINCD AS GTINCD,
+			   SKUG01 AS SKUG01,
+			   BXIQTY AS BXIQTY,
+			   PLIQTY AS PLIQTY,
+			   OUTDMT AS OUTDMT,
+			   SKUKEY AS PACKID
+		  FROM V_SKU_INFO
+		 WHERE OWNRKY = #{OWNRKY}
+		   AND WAREKY = #{WAREKY}
+		   AND SKUKEY = #{SKUKEY}
+   </select>
+	
+	<!-- 대림 이고용 콤보 COMBO.WAREKYNM_IF   -->
+	<select id="WAREKYNM_IF_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT W.WAREKY AS VALUE_COL,
+		       W.NAME01 AS TEXT_COL
+		  FROM WAHMA W, OWNWC O
+		WHERE W.WAREKY != #{WAREKY}
+		  AND W.WAREKY = O.WAREKY
+		<if test='OWNRKY != null and OWNRKY != "2300"'>
+		  AND O.OWNRKY in('2200', '2500')
+		</if>
+		<if test='OWNRKY !=null  and OWNRKY.equals("2200")'>
+			<if test='OOPTION !=null  and OOPTION.equals("OD")'>
+			       AND O.OWNRKY IN ('2500')
+			</if>
+			<if test='OOPTION != null and OOPTION != "OD"'>
+			      AND O.OWNRKY = #{OWNRKY}
+			</if>
+		</if>
+		<if test="ORDER != null and ORDER != ''">
+		ORDER BY CASE WHEN W.WAREKY = #{ORDER} THEN 1 END, W.WAREKY
+		</if>
+	</select>
+	
+	<!-- 대림 이고용 콤보 COMBO.WAREKYNM_IF2   -->
+	<select id="WAREKYNM_IF2_COMCOMBO_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT W.WAREKY AS VALUE_COL,
+		       W.NAME01 AS TEXT_COL
+		  FROM WAHMA W, OWNWC O
+		WHERE 1=1
+		  AND W.WAREKY = O.WAREKY
+		<if test='OWNRKY !=null  and OWNRKY.equals("2200")'>
+		  AND O.OWNRKY IN ('2200','2500')
+		</if>
+		<if test='OWNRKY !=null  and OWNRKY.equals("2500")'>
+		  AND O.OWNRKY IN ('2200','2500')
+		</if>
+		
+		<if test='OWNRKY !=null  and OWNRKY != "2200"'>
+			<if test='OWNRKY !=null  and OWNRKY != "2500"'>
+		 AND O.OWNRKY = #{OWNRKY}
+		 AND (O.OWNRKY = '2300' AND W.NAME01 NOT LIKE '%공장%' AND W.NAME01 NOT LIKE '%본사%')
+			</if>
+		</if>
+		
+		<if test="ORDER != null and ORDER != ''">
+		ORDER BY CASE WHEN W.WAREKY = #{ORDER} THEN 1 END, W.WAREKY
+		</if>
+	</select>
+	
+	<!--  skukey onchnage  COMMON.GETDESC.SKU_INFO_RECD2 -->
+	<select id="SKUMA_GETDESC_RECD2_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SKUKEY AS SKUKEY,
+		       REPLACE(DESC01, '&amp;','&amp;amp;') AS DESC01,
+		       REPLACE(DESC02, '&amp;','&amp;amp;') AS DESC02,
+		       SKUG02 AS SKUG02,
+		       SKUG03 AS SKUG03,
+		       ASKU02 AS ASKU02,
+		       SKUG05 AS SKUG05,
+		       GRSWGT AS GRSWGT,
+		       NETWGT AS NETWGT,
+		       SKUG04 AS SKUG04,
+		       ASKU03 AS ASKU03,
+		       LENGTH AS LENGTH,
+		       WIDTHW AS WIDTHW,
+		       HEIGHT AS HEIGHT,
+		       CUBICM AS CUBICM,
+		       CAPACT AS CAPACT,
+		       DUOMKY AS DUOMKY,
+		       QTDUOM AS QTDUOM,
+		       MEASKY AS MEASKY,
+		       QTPUOM AS QTPUOM,
+		       ASKU01 AS ASKU01,
+		       WGTUNT AS WGTUNT,
+		       UOMKEY AS UOMKEY,
+		       ASKU04 AS ASKU04,
+		       ASKU05 AS ASKU05,
+		       EANCOD AS EANCOD,
+		       GTINCD AS GTINCD,
+		       SKUG01 AS SKUG01,
+		       BXIQTY AS BXIQTY,
+		       PLIQTY AS PLIQTY,
+		       NVL((SELECT SUM(QTSIWH) AS TOQTSIWH 
+		     		  FROM STKKY 
+		     		 WHERE 1=1 
+					<if test='OWNRKY !=null  and OWNRKY.equals("2200")'>
+					  AND OWNRKY IN ('2200','2500')
+					</if>
+					<if test='OWNRKY !=null  and OWNRKY.equals("2500")'>
+					  AND OWNRKY IN ('2200','2500')
+					</if>
+					<if test='OWNRKY !=null  and OWNRKY.equals("2300")'>
+					  AND OWNRKY = #{OWNRKY}
+					</if>
+		      
+				      AND skukey = #{SKUKEY}
+				      AND AREAKY NOT IN ('SHP','SYS')
+				      AND (QTSIWH > 0 OR QTSPMI >0)
+				      AND lota07 != '21SV'
+					<if test='DOCUTY !=null  and DOCUTY.equals("267")'>
+				      AND lota06 = '20'
+				      AND wareky = #{WAREKY} 
+					</if>
+					<if test='DOCUTY !=null  and DOCUTY != "267"'>
+				      AND lota06 = '00'
+				      AND wareky = #{WARERQ} 
+					</if>
+      				),0) as TOQTSIWH
+		  FROM V_SKU_INFO
+		 WHERE 1=1 
+		<if test='OWNRKY !=null  and OWNRKY.equals("2200")'>
+		  AND OWNRKY IN ('2200','2500')
+		</if>
+		<if test='OWNRKY !=null  and OWNRKY.equals("2500")'>
+		  AND OWNRKY IN ('2200','2500')
+		</if>
+		<if test='OWNRKY !=null  and OWNRKY.equals("2300")'>
+		  AND OWNRKY = #{OWNRKY}
+		</if>
+		   AND WAREKY = #{WAREKY}
+		   AND SKUKEY = #{SKUKEY}
+   </select>
+   
+   
+	<!--  skukey  INVENTORY.SKUMA.GETINFO_MTOM -->
+	<select id="INVENTORY_SKUMA_GETINFO_MTOM_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT DISTINCT
+			SM.DESC01 AS DESC01,
+			DECODE(NVL(SM.DESC02,'X'),'X',SM.DESC01, SM.DESC02) AS DESC02, 
+			SM.EANCOD AS EANCOD,
+			SM.GTINCD AS GTINCD,
+			SM.SKUG01 AS SKUG01,
+			SM.SKUL01 AS SKUL01,
+			SM.GRSWGT AS GRSWGT,
+			SM.NETWGT AS NETWGT,
+			SW.UOMDOU AS DUOMKY,
+			SM.SKUG05 AS SKUG05,
+			SW.MEASKY AS MEASKY,
+			SM.ASKU03 AS ASKU03,
+			SM.SKUKEY AS SKUKEY,
+			SM.ASKU01 AS ASKU01,
+			SM.ASKU04 AS ASKU04,
+			SM.ASKU05 AS ASKU05,
+			SM.WGTUNT AS WGTUNT,
+			SM.QTDUOM AS QTDUOM,
+			MS.UOMKEY AS UOMKEY,
+			MS.QTPUOM AS QTPUOM,
+			SM.DUOMKY AS DUOMKY,
+			SM.ASKU02 AS ASKU02,
+			SM.SKUG02 AS SKUG02,
+			SM.SKUG03 AS SKUG03,
+			SM.SKUG04 AS SKUG04,
+			SM.LENGTH AS LENGTH,
+			SM.WIDTHW AS WIDTHW,
+			SM.HEIGHT AS HEIGHT,
+			SM.CUBICM AS CUBICM,
+			SW.CAPACT AS CAPACT
+		FROM
+			SKUWC SW,
+			MEASI MS,
+			SKUMA SM
+		WHERE
+				SW.SKUKEY = #{TGSKUKEY}
+			AND SW.OWNRKY = #{OWNRKY}
+			AND SW.WAREKY = #{WAREKY}
+			AND MS.INDDFU = 'V'
+			AND MS.MEASKY = SW.MEASKY
+			AND SW.SKUKEY = SM.SKUKEY
+			AND SW.OWNRKY = SM.OWNRKY
+	</select>
+   
+   <!--  locaky  INVENTORY.LOCMA.GETINFO -->
+	<select id="INVENTORY_LOCMA_GETINFO_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT
+			AREAKY AS AREAKY,
+			LOCAKY AS LOCAKY
+		FROM LOCMA
+		WHERE
+				WAREKY = #{WAREKY}
+			AND LOCAKY = #{TGLOCAKY}
+	</select>
+	
+	
+	<!--  모바일 메뉴  -->
+	<select id="MOBILE_MENU_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT LEVEL AS LV
+		     , MGL.MENUGID 
+		     , MGL.MENUID
+		     , MGL.SORTORDER
+		     , MGL.PMENUID
+		     , TO_NUMBER(MGL.SORTORDER) AS SORT
+		     , CL.LABEL AS CLLABEL
+		     , (CASE WHEN CL.LABEL IS NULL THEN MM.MENUNAME ELSE CL.LABEL END) AS MENULABEL
+		     , MM.MENUNAME, MM.URI, MM.PARAM, CASE WHEN URI IS NOT NULL THEN 'PRG' ELSE 'FLD' END AS PRGFLG
+		     , MM.IMGPTH
+		  FROM (SELECT MENUGID
+		             , MENUID
+		             , SORTORDER
+		             , PMENUID
+		          FROM MSTMENUGL 
+		         WHERE MENUGID = #{MENUKEY}) MGL
+			   LEFT OUTER JOIN MSTMENU MM ON MM.MENUID = MGL.MENUID
+			   LEFT OUTER JOIN SYSLABEL CL ON CL.LABELGID = 'MENU' AND CL.LANGCODE = 'KO' AND MM.MENULABEL = CL.LABELID
+		 START WITH MGL.PMENUID = 'root' CONNECT BY PRIOR MGL.MENUID = MGL.PMENUID
+		 ORDER BY MGL.SORTORDER	
+	</select>
+	
+	<!-- 창고명 가져오기 -->
+	<select id="WAREKYNM_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT NAME01
+		  FROM WAHMA WHERE WAREKY = #{WAREKY}
+	</select>
+	
+	<select id="SIDO_COMBO_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT
+			  SIDO AS VALUE_COL
+			, SIDO AS TEXT_COL
+		FROM ZIP_INFO
+		WHERE 1=1
+		GROUP BY SIDO
+		ORDER BY SIDO
+	</select>
+</mapper>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GCIM map</title>
+<link rel="stylesheet" type="text/css" href="/map/ol-4.6.5.css">
+<style type="text/css">
+	html,body {
+		margin: 0;
+		height: 100%;
+		overflow: hidden;
+	}
+	
+	.layerswitcher-opacity{
+		display:none;
+	}
+	.layerup{
+		display:none !important;
+	}
+</style>
+</head>
+<body>
+	<div id="map" class="map" style="width: 100%; height: 100%;"></div>
+	<script src="/map/jquery-3.4.1.min.js"></script>
+	<script src="/map/ol-4.6.5.js"></script>
+	<script src="/map/gcenmap.js"></script>
+	<script>
+		var map;                // 지도 전역 변수
+		var view;               // view 전역 변수
+
+		$(document).ready(function(){
+			var map;                // 지도 전역 변수
+			var view;               // view 전역 변수
+			
+			view = new ol.View({
+				center: ol.proj.fromLonLat([127.100426600818, 37.3177715447]), // 페이지 시작시 지도 중심 좌표 설정
+				zoom: 90,       // 페이지 시작시 지도 레벨 설정(필수)
+				minZoom: 5,     // 축소 지도 레벨 설정(필수)
+				maxZoom: 18,     // 확대 지도 레벨 설정(필수),
+				projection: 'EPSG:3857'	// 좌표계
+			});
+			
+			// 지도 객체 선언
+			map = gcen.loadMap("map", view, "vt_maplabel");
+			
+			var zoomControl = new ol.control.Zoom();
+			
+			map.addControl(zoomControl);
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MobileCommon">
+	<!-- PD99T 인서트 -->
+	<insert id="PD99T_INSERT"  parameterType="hashmap">
+		INSERT INTO PD99T ( WAREKY, LGTIME, LOGSEQ, AREAKY, JOBSTS, STTIME, ENTIME, 
+							SPOSIT, ZPOSIT, XPOSIT, YPOSIT, LOCASR, LOCATG, TRUNTY, 
+							TRNUSR, TRNUTG, WARETG, TRAREA, TRPOCD, TRUOKY , JOBTYP, 
+							TASKKY, TASKIT, SHPOKY, SHPOIT, SHPMTY, ASNDKY, ASNDIT, 
+							RECVKY, RECVIT, REFDKY, REFDIT, REFCAT, STOKKY, OWNRKY, 
+							SKUKEY, DESC01, DESC02, LOTA01, LOTA02, LOTA03, LOTA04, 
+							LOTA05, LOTA06, LOTA07, LOTA08, LOTA09, LOTA10, LOTA11, 
+							LOTA12, LOTA13, LOTA14, LOTA15, LOTA16, LOTA17, LOTA18, 
+							LOTA19, LOTA20, PUTSKU, PTLT01, PTLT02, PTLT03, PTLT04, 
+							PTLT05, PTLT06, PTLT07, PTLT08, PTLT09, PTLT10, PTLT11, 
+							PTLT12, PTLT13, PTLT14, PTLT15, PTLT16, PTLT17, PTLT18, 
+							PTLT19, PTLT20, AWMSNO, TRNQTY, INOQTY, PRODDT, VEHINO, 
+							IFFLAG, CPFLAG, DSTNAT, ERRTXT, RSNCOD, RSNTXT, SMANDT, 
+							SEBELN, SEBELP, SZMBLNO, SZMIPNO, STRAID, SVBELN, SPOSNR, 
+							STKNUM, STPNUM, SWERKS, SLGORT, SDATBG, STDLNR, SSORNU, 
+							SSORIT, SMBLNR, SZEILE, SMJAHR, SXBLNR, SAPSTS, SBKTXT, 
+							LANGKY, CREDAT, CRETIM, CREUSR, LMODAT, LMOTIM, LMOUSR, 
+							INDBZL, INDARC, UPDCHK
+		                  )
+  		           VALUES ( #{WAREKY},TO_CHAR(SYSTIMESTAMP, 'YYYYMMDDHH24MISSFF3'),LPAD(#{LOGSEQ}, 6, '0'), NVL(#{AREAKY}, ' '),NVL(#{JOBSTS}, ' '),TO_CHAR(SYSDATE, 'HH24MISS'),TO_CHAR(SYSDATE, 'HH24MISS'),
+							NVL(#{SPOSIT}, 0), NVL(#{ZPOSIT}, 0), NVL(#{XPOSIT}, 0), NVL(#{YPOSIT}, 0), NVL(#{LOCASR}, ' '), NVL(#{LOCATG}, ' '), NVL(#{TRUNTY}, ' '),
+							NVL(#{TRNUSR}, ' '), NVL(#{TRNUTG}, ' '), NVL(#{WARETG}, ' '), NVL(#{TRAREA}, ' '), NVL(#{TRPOCD}, ' '), NVL(#{TRUOKY}, ' '), NVL(#{JOBTYP}, ' '),
+							NVL(#{TASKKY}, ' '), NVL(#{TASKIT}, ' '), NVL(#{SHPOKY}, ' '), NVL(#{SHPOIT}, ' '), NVL(#{SHPMTY}, ' '), NVL(#{ASNDKY}, ' '), NVL(#{ASNDIT}, ' '),
+							NVL(#{RECVKY}, ' '), NVL(#{RECVIT}, ' '), NVL(#{REFDKY}, ' '), NVL(#{REFDIT}, ' '), NVL(#{REFCAT}, ' '), NVL(#{STOKKY}, ' '), NVL(#{OWNRKY}, ' '),
+							NVL(#{SKUKEY}, ' '), NVL(#{DESC01}, ' '), NVL(#{DESC02}, ' '), NVL(#{LOTA01}, ' '), NVL(#{LOTA02}, ' '), NVL(#{LOTA03}, ' '), NVL(#{LOTA04}, ' '),
+							NVL(#{LOTA05}, ' '), NVL(#{LOTA06}, ' '), NVL(#{LOTA07}, ' '), NVL(#{LOTA08}, ' '), NVL(#{LOTA09}, ' '), NVL(#{LOTA10}, ' '), NVL(#{LOTA11}, ' '),
+							NVL(#{LOTA12}, ' '), NVL(#{LOTA13}, ' '), NVL(#{LOTA14}, ' '), NVL(#{LOTA15}, ' '), NVL(#{LOTA16}, 0), NVL(#{LOTA17}, 0), NVL(#{LOTA18}, 0),
+							NVL(#{LOTA19}, 0), NVL(#{LOTA20}, 0), NVL(#{PUTSKU}, ' '), NVL(#{PTLT01}, ' '), NVL(#{PTLT02}, ' '), NVL(#{PTLT03}, ' '), NVL(#{PTLT04}, ' '),
+							NVL(#{PTLT05}, ' '), NVL(#{PTLT06}, ' '), NVL(#{PTLT07}, ' '), NVL(#{PTLT08}, ' '), NVL(#{PTLT09}, ' '), NVL(#{PTLT10}, ' '), NVL(#{PTLT11}, ' '),
+							NVL(#{PTLT12}, ' '), NVL(#{PTLT13}, ' '), NVL(#{PTLT14}, ' '), NVL(#{PTLT15}, ' '), NVL(#{PTLT16}, 0), NVL(#{PTLT17}, 0), NVL(#{PTLT18}, 0),
+							NVL(#{PTLT19}, 0), NVL(#{PTLT20}, 0), NVL(#{AWMSNO}, ' '), NVL(#{TRNQTY}, 0), NVL(#{INOQTY}, 0), NVL(#{PRODDT}, ' '), NVL(#{VEHINO}, ' '),
+							NVL(#{IFFLAG}, ' '), NVL(#{CPFLAG}, ' '), NVL(#{DSTNAT}, ' '), NVL(#{ERRTXT}, ' '), NVL(#{RSNCOD}, ' '), NVL(#{RSNTXT}, ' '), NVL(#{SMANDT}, ' '),
+							NVL(#{SEBELN}, ' '), NVL(#{SEBELP}, ' '), NVL(#{SZMBLNO}, ' '),NVL(#{SZMIPNO},' '), NVL(#{STRAID}, ' '), NVL(#{SVBELN}, ' '), NVL(#{SPOSNR}, ' '),
+							NVL(#{STKNUM}, ' '), NVL(#{STPNUM}, ' '), NVL(#{SWERKS}, ' '), NVL(#{SLGORT}, ' '), NVL(#{SDATBG}, ' '), NVL(#{STDLNR}, ' '), NVL(#{SSORNU}, ' '),
+							NVL(#{SSORIT}, ' '), NVL(#{SMBLNR}, ' '), NVL(#{SZEILE}, ' '), NVL(#{SMJAHR}, ' '), NVL(#{SXBLNR}, ' '), NVL(#{SAPSTS}, ' '), NVL(#{SBKTXT}, ' '),
+							'KO',TO_CHAR(SYSDATE, 'YYYYMMDD'), TO_CHAR(SYSDATE, 'HH24MISS'),#{SES_USER_ID},TO_CHAR(SYSDATE, 'YYYYMMDD'), TO_CHAR(SYSDATE, 'HH24MISS'),#{SES_USER_ID},
+							NVL(#{INDBZL}, ' '),NVL(#{INDARC}, ' '),0
+		                  )
+	</insert>
+</mapper>

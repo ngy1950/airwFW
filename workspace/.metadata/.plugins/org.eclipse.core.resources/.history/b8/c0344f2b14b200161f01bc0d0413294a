@@ -1,0 +1,19 @@
+package com.common.carton;
+
+import java.util.List;
+
+/**
+ * 아이템을 선정하기 위한 전략
+ * @author Administrator
+ *
+ */
+public interface PickingStrategy {
+
+	/**
+	 * 아이템 선정
+	 * @param items 포장아이템 리스트
+	 * @return 선정 아이템
+	 */
+	public Item picking(final List<Item> items);
+	
+}

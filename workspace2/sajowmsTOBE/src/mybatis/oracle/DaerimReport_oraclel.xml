@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DaerimReport">
+
+	<!-- **[DR14] 거래명세서발행(통합)조회쿼리 -->
+	<select id="DR14_HEAD_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT CM.CMCDVL AS KEY,
+		       CM.CMCDVL AS PTNG08,
+		       SUM(NVL(IFT.CNT1, 0)) AS NUM01,
+		       '0' AS NUM99
+		  FROM CMCDV CM LEFT OUTER JOIN (SELECT /*+ ordered */ B2.PTNG08, 
+		  										<if test='PTNRTY == "0001"'> COUNT(DISTINCT IT.PTNROD) CNT1 </if>
+		  										<if test='PTNRTY == "0007"'> COUNT(DISTINCT IT.PTNRTO) CNT1 </if>
+		                                   FROM IFWMS113 IT
+		                                                   INNER JOIN BZPTN B ON IT.OWNRKY = B.OWNRKY AND IT.PTNROD = B.PTNRKY AND B.PTNRTY = '0001'
+		                                                   INNER JOIN BZPTN B2 ON IT.OWNRKY = B2.OWNRKY AND IT.PTNRTO = B2.PTNRKY AND B2.PTNRTY = '0007'
+		                                                   INNER JOIN SKUMA SM ON IT.OWNRKY = SM.OWNRKY AND IT.SKUKEY = SM.SKUKEY AND SM.DELMAK = ' '
+		                                                   LEFT OUTER JOIN (SELECT F.OWNRKY, F.WAREKY, F.PTNRKY, C.CARNUM, C.DESC01
+		                                                                      FROM CARFX F INNER JOIN CARMA C ON F.OWNRKY = C.OWNRKY AND F.WAREKY = C.WAREKY AND F.CARNUM = C.CARNUM
+		                                                                     WHERE F.OWNRKY = '2200'
+		                                                                       AND F.WAREKY = #{SES_WAREKY}
+		                                                                   ) C ON IT.OWNRKY = C.OWNRKY AND IT.PTNRTO = C.PTNRKY
+		                                 WHERE IT.MANDT = 'SAP'
+		                                   AND IT.OWNRKY = #{OWNRKY}
+		                                   AND IT.DOCUTY IN ('211', '212', '213', '214', '215', '216', '266', '267')
+		                                   AND IT.C00102 = 'Y'
+		                                   AND IT.XSTAT IN ('R', 'D')
+		                                   <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		                                   	${RANGE_SQL}
+		                                   </if>
+		                                 GROUP BY B2.PTNG08) IFT ON CM.CMCDVL = IFT.PTNG08
+		 WHERE CM.CMCDKY = 'PTNG08'
+		 GROUP BY CM.CMCDVL
+		 ORDER BY CM.CMCDVL
+		 
+	</select>
+	
+	<!-- **[DR14] 거래명세서발행(통합)아이템조회쿼리 -->
+	<select id="DR14_ITEM_LIST" parameterType="hashmap" resultType="DataMap">
+	
+		SELECT /*+ ORDERED */ B2.PTNG08 AS KEY, 
+		       IT.TEXT02 AS TEXT02,
+		       IT.DOCUTY AS DOCUTY,
+		       IT.ORDDAT AS ORDDAT,
+		       IT.OTRQDT AS OTRQDT,
+		       IT.PTNROD AS PTNRKY,
+		       B.NAME01 AS PTNRNM,
+		       B2.PTNG08 AS PTNG08,
+		       IT.DIRDVY AS DIRDVY,
+		       IT.DIRSUP AS DIRSUP,
+		       IT.C00102 AS C00102,
+		       C.CARNUM AS CARNUM,
+		       C.DESC01 AS CARNUMNM,
+		       MAX(IT.TEXT01) AS TEXT01,
+		       '0' AS NUM99
+		  FROM IFWMS113 IT INNER JOIN BZPTN B ON IT.OWNRKY = B.OWNRKY AND B.PTNRTY = '0001' AND IT.PTNROD = B.PTNRKY
+		                   INNER JOIN BZPTN B2 ON IT.OWNRKY = B2.OWNRKY AND B2.PTNRTY = '0007' AND IT.PTNRTO = B2.PTNRKY
+		                   INNER JOIN SKUMA SM ON IT.OWNRKY = SM.OWNRKY AND IT.SKUKEY = SM.SKUKEY AND SM.DELMAK = ' '
+		                   LEFT OUTER JOIN (SELECT F.OWNRKY, F.WAREKY, F.PTNRKY, C.CARNUM, C.DESC01
+		                                      FROM CARFX F INNER JOIN CARMA C ON F.OWNRKY = C.OWNRKY AND F.WAREKY = C.WAREKY AND F.CARNUM = C.CARNUM
+		                                     WHERE F.OWNRKY = '2200'
+		                                       AND F.WAREKY = #{SES_WAREKY}
+		                           ) C ON IT.OWNRKY = C.OWNRKY AND IT.PTNRTO = C.PTNRKY
+		 WHERE IT.MANDT = 'SAP'
+		   AND IT.OWNRKY = #{OWNRKY}
+		   AND IT.DOCUTY IN ('211','212','213','214','215','216','266','267')
+		   AND IT.C00102 = 'Y'
+		   AND IT.XSTAT IN ('R', 'D')
+		   AND B2.PTNG08 = #{PTNG08} <!-- 추가 -->
+		   <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		   	  ${RANGE_SQL}
+		   </if>
+		 GROUP BY IT.DOCUTY, IT.ORDDAT, IT.OTRQDT, IT.PTNROD, B.NAME01, 
+		          IT.DIRDVY, IT.DIRSUP, IT.C00102, B2.PTNG08, IT.TEXT02, C.CARNUM, C.DESC01
+		 ORDER BY IT.ORDDAT
+	
+	</select>
+	
+	<!-- **[DR14] 거래명세서발행(통합)아이템2조회쿼리 -->
+	<select id="DR14_ITEM2_LIST" parameterType="hashmap" resultType="DataMap">
+	
+		SELECT /*+ ORDERED */ B2.PTNG08 AS KEY, 
+		       IT.TEXT02 AS TEXT02,
+		       IT.DOCUTY AS DOCUTY,
+		       IT.ORDDAT AS ORDDAT,
+		       IT.OTRQDT AS OTRQDT,
+		       IT.PTNRTO AS PTNRKY,
+		       B2.NAME01 AS PTNRNM,
+		       B2.PTNG08 AS PTNG08,
+		       IT.DIRDVY AS DIRDVY,
+		       IT.DIRSUP AS DIRSUP,
+		       IT.C00102 AS C00102,
+		       C.CARNUM AS CARNUM,
+		       C.DESC01 AS CARNUMNM,
+		       MAX(IT.TEXT01) AS TEXT01
+		  FROM IFWMS113 IT INNER JOIN BZPTN B  ON IT.OWNRKY = B.OWNRKY AND B.PTNRTY = '0001' AND IT.PTNROD = B.PTNRKY 
+		                   INNER JOIN BZPTN B2 ON IT.OWNRKY = B2.OWNRKY AND B2.PTNRTY = '0007' AND IT.PTNRTO = B2.PTNRKY 
+		                   INNER JOIN SKUMA SM ON IT.OWNRKY = SM.OWNRKY AND IT.SKUKEY = SM.SKUKEY AND SM.DELMAK = ' '
+		                   LEFT OUTER JOIN (SELECT F.OWNRKY, F.WAREKY, F.PTNRKY, C.CARNUM, C.DESC01
+		                                      FROM CARFX F INNER JOIN CARMA C ON F.OWNRKY = C.OWNRKY AND F.WAREKY = C.WAREKY AND F.CARNUM = C.CARNUM
+		                                     WHERE F.OWNRKY = '2200'
+		                                       AND F.WAREKY = #{SES_WAREKY}
+		                           ) C ON IT.OWNRKY = C.OWNRKY AND IT.PTNRTO = C.PTNRKY
+		 WHERE IT.MANDT = 'SAP'
+		   AND IT.OWNRKY = #{OWNRKY}
+		   AND IT.DOCUTY IN ('211','212','213','214','215','216','266','267')
+		   AND IT.C00102 = 'Y'
+		   AND IT.XSTAT IN ('R', 'D')
+		   AND B2.PTNG08 = #{PTNG08} <!-- 추가 -->
+		   <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		   	  ${RANGE_SQL}
+		   </if>
+		 GROUP BY IT.DOCUTY, IT.ORDDAT, IT.OTRQDT, IT.PTNRTO, B2.NAME01, IT.DIRDVY, IT.DIRSUP, IT.C00102, B2.PTNG08, IT.TEXT02, C.CARNUM, C.DESC01
+		 ORDER BY IT.ORDDAT
+			
+	</select>
+	
+	
+	<!-- **[DR14] 업데이트 쿼리 -->
+	<update id="DR14_PRINT_UPDATE" parameterType="hashmap">
+	
+		MERGE INTO IFWMS113 IFT
+		USING 
+		(
+		SELECT  /*+ ORDERED INDEX(IT IDX_IFWMS113K17) */IT.SEQNO  
+		  FROM IFWMS113 IT INNER JOIN BZPTN B ON IT.OWNRKY = B.OWNRKY AND IT.PTNROD = B.PTNRKY AND B.PTNRTY = '0001'
+		                   INNER JOIN BZPTN B2 ON IT.OWNRKY = B2.OWNRKY AND IT.PTNRTO = B2.PTNRKY AND B2.PTNRTY = '0007' AND B2.PTNG08||'' = #{PTNG08}
+		                   INNER JOIN SKUMA SM ON IT.OWNRKY = SM.OWNRKY AND IT.SKUKEY = SM.SKUKEY
+		                   LEFT OUTER JOIN CARFX C ON IT.OWNRKY = C.OWNRKY AND C.WAREKY = #{SES_WAREKY} AND IT.PTNRTO = C.PTNRKY
+		 WHERE IT.OWNRKY = #{OWNRKY}
+		   AND IT.DOCUTY||'' IN ('211','212','213','214','215','216')
+		   AND IT.XSTAT IN ('R', 'D')
+		   AND IT.C00102||'' = 'Y'
+		   AND IT.TEXT02 = ' '
+		   <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		   	  ${RANGE_SQL}
+		   </if>
+		) S
+		    ON (S.SEQNO = IFT.SEQNO)
+		WHEN MATCHED THEN
+		UPDATE SET IFT.TEXT02 = #{SES_USER_ID}
+	
+	</update>
+	
+	
+	
+	<!-- 납품처 프로시저   --> 
+	<select id="P_ORDER_GROUPING_PTNRTO_UPDATE" statementType="CALLABLE"  parameterType="hashmap">
+	{ call P_ORDER_GROUPING_PTNRTO(#{SES_USER_ID}) }
+ 	</select>
+	<!-- 매출처 프로시저   --> 
+	<select id="P_ORDER_GROUPING_PTNROD_UPDATE" statementType="CALLABLE"  parameterType="hashmap">
+	{ call P_ORDER_GROUPING_PTNROD(#{SES_USER_ID}) }
+ 	</select>
+ 	
+ 	
+ 	<!-- **[DR24] 주문조회(전체)조회쿼리 -->
+	<select id="DR24_HEAD_LIST" parameterType="hashmap" resultType="DataMap">
+	
+		SELECT CM.CMCDVL AS PTNG08,
+		       SUM(NVL(IFT.TOT1, 0)) AS TOT01,
+		       SUM(NVL(IFT.NUM1, 0)) AS NUM01,
+		       SUM(NVL(IFT.NUM2, 0)) AS NUM02,
+		       SUM(NVL(IFT.NUM3, 0)) AS NUM03,
+		       COUNT(PTNROD) AS NUM04
+		  FROM CMCDV CM LEFT OUTER JOIN (SELECT BZ2.PTNG08, COUNT(DISTINCT IT.SVBELN) AS TOT1,
+		                                                    CASE IT.C00102 WHEN 'X' THEN COUNT(DISTINCT IT.SVBELN) ELSE 0 END AS NUM1,
+		                                                    CASE IT.C00102 WHEN 'N' THEN COUNT(DISTINCT IT.SVBELN) ELSE 0 END AS NUM2,
+		                                                    CASE IT.C00102 WHEN 'Y' THEN COUNT(DISTINCT IT.SVBELN) ELSE 0 END AS NUM3,
+		                                                    IT.PTNROD AS PTNROD
+		                                  FROM IFWMS113 IT INNER JOIN BZPTN BZ2 ON IT.OWNRKY = BZ2.OWNRKY AND IT.PTNRTO = BZ2.PTNRKY AND BZ2.PTNRTY = '0007'
+		                                                   INNER JOIN SKUMA SM ON IT.OWNRKY = SM.OWNRKY AND IT.SKUKEY = SM.SKUKEY AND SM.DELMAK = ' '
+		                                 WHERE IT.MANDT = 'SAP'
+		                                   AND IT.OWNRKY = #{OWNRKY}
+		                                   AND IT.DOCUTY IN ('211', '212', '213', '214', '215', '216')
+		                                   AND IT.C00102 IN ('X', 'N', 'Y')
+		                                   AND IT.XSTAT IN ('R', 'D')
+		                                   <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		                                   		${RANGE_SQL}
+		                                   </if>
+		                                 GROUP BY BZ2.PTNG08, IT.C00102, IT.PTNROD) IFT ON CM.CMCDVL = IFT.PTNG08
+		 WHERE CM.CMCDKY = 'PTNG08'
+		 GROUP BY CM.CMCDVL
+		 ORDER BY CM.CMCDVL
+	
+	</select>
+	
+ 	<!-- **[DR24] 주문조회(전체)아이템조회쿼리 -->
+	<select id="DR24_ITEM_LIST" parameterType="hashmap" resultType="DataMap">
+	
+		SELECT BZ2.PTNG08 AS KEY, 
+		       IT.SVBELN AS SVBELN, 
+		       IT.DOCUTY AS DOCUTY,
+		       IT.ORDDAT AS ORDDAT,
+		       IT.OTRQDT AS OTRQDT,
+		       IT.PTNROD AS PTNROD,
+		       BZ1.NAME01 AS PTNRODNM,
+		       IT.PTNRTO AS PTNRTO,
+		       BZ2.NAME01 AS PTNRTONM,
+		       BZ2.PTNG08 AS PTNG08,
+		       IT.DIRDVY AS DIRDVY,
+		       IT.DIRSUP AS DIRSUP,
+		       IT.WARESR AS WARESR,
+		       IT.C00102 AS C00102,
+		       SUM(IT.QTYREQ) AS QTYREQ,
+		       SUM(IT.QTSHPD) AS QTSHPD,
+		       CASE IT.DOCUTY WHEN '214' THEN MAX(IT.C00103) ELSE ' ' END AS C00103,
+		       MAX(IT.TEXT01) AS TEXT01,
+		       MAX(IT.XDATS) AS XDATS,
+		       MAX(IT.XTIMS) AS XTIMS
+		  FROM IFWMS113 IT INNER JOIN BZPTN BZ1 ON IT.OWNRKY = BZ1.OWNRKY AND IT.PTNROD = BZ1.PTNRKY AND BZ1.PTNRTY = '0001'
+		                   INNER JOIN BZPTN BZ2 ON IT.OWNRKY = BZ2.OWNRKY AND IT.PTNRTO = BZ2.PTNRKY AND BZ2.PTNRTY = '0007'
+		                   INNER JOIN SKUMA SM ON IT.OWNRKY = SM.OWNRKY AND IT.SKUKEY = SM.SKUKEY AND SM.DELMAK = ' '
+		 WHERE IT.MANDT = 'SAP'
+		   AND IT.OWNRKY = #{OWNRKY}
+		   AND BZ2.PTNG08 = #{PTNG08}
+		   AND IT.C00102 LIKE #{C00102}
+		   AND IT.DOCUTY IN ('211','212','213','214','215','216')
+		   AND IT.XSTAT IN ('R', 'D')
+		   <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		   		${RANGE_SQL}
+		   </if>
+		 GROUP BY IT.SVBELN, IT.DOCUTY, IT.ORDDAT, IT.OTRQDT, IT.PTNROD, BZ1.NAME01, IT.PTNRTO, BZ2.NAME01, IT.DIRDVY, IT.DIRSUP, IT.C00102, BZ2.PTNG08, IT.WARESR
+
+	</select>
+	
+	<!-- **[DR26] 피킹그룹핑내역 조회조회쿼리 -->
+	<select id="DR26_HEAD_LIST" parameterType="hashmap" resultType="DataMap">
+	
+		SELECT TEXT03 AS KEY,
+		       ORDDAT AS ORDDAT,
+		       TEXT03 AS TEXT03,
+		       WAREPT AS WAREKY,
+		       MAX(CREDAT) AS CREDAT,
+		       MAX(CRETIM) AS CRETIM,
+		       SF_GET_USERNM(MAX(CREUSR)) AS CREUSR
+		  FROM DRPIC
+		 WHERE WAREPT = #{SES_WAREKY}
+		       <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		       		${RANGE_SQL}
+		       </if>
+		 GROUP BY ORDDAT, TEXT03, WAREPT, WAREPTNM
+		 ORDER BY TEXT03 
+	
+	</select>
+	
+	<!-- **[DR26] 피킹그룹핑내역 조회조회쿼리 -->
+	<select id="DR26_ITEM_LIST" parameterType="hashmap" resultType="DataMap">
+	
+		SELECT TEXT03 AS KEY,
+		       TEXT03 AS TEXT03,
+		       WAREPT AS WAREKY,
+		       DOCUTY AS DOCUTY,
+		       SVBELN AS SVBELN,
+		       PTNROD AS PTNROD,
+		       PTNRODNM AS PTNRODNM,
+		       PTNRTO AS PTNRTO,
+		       PTNRTONM AS PTNRTONM,
+		       PTNG08 AS PTNG08,
+		       SKUG03 AS SKUG03,       
+		       SKUKEY AS SKUKEY,
+		       DESC01 AS DESC01,
+		       DESC02 AS DESC02,
+		       NETWGT AS NETWGT,
+		       QTYREQ AS QTYREQ,
+		       QTDUOM AS QTDUOM
+		  FROM DRPIC
+		 WHERE WAREPT = #{SES_WAREKY}
+		   AND TEXT03 = #{TEXT03}
+		       <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		       		${RANGE_SQL}
+		       </if>
+		 ORDER BY SKUG03, REGEXP_REPLACE(REPLACE(UPPER(DESC01), 'G', ''), '[0-9]'), NETWGT
+	
+	</select>
+	
+
+	<!-- **[DR21] 등급별 주문조회 -->
+	<select id="DR21_HEAD_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SKUG03 AS SKUG03,
+		       SUM(TOT01)         AS TOT01,
+		       SUM(TOT02) / 1000  AS TOT02,
+		       SUM(NUM01)         AS NUM01,
+		       SUM(NUM02) / 1000  AS NUM02,
+		       SUM(NUM03)         AS NUM03,
+		       SUM(NUM04) / 1000  AS NUM04,
+		       SUM(NUM05)         AS NUM05,
+		       SUM(NUM06) / 1000  AS NUM06,
+		       SUM(NUM07)         AS NUM07,
+		       SUM(NUM08) / 1000  AS NUM08,
+		       SUM(NUM09)         AS NUM09,
+		       SUM(NUM10) / 1000  AS NUM10,
+		       SUM(NUM11)         AS NUM11,
+		       SUM(NUM12) / 1000  AS NUM12,
+		       SUM(NUM13)         AS NUM13,
+		       SUM(NUM14) / 1000  AS NUM14,
+		       WAREKY AS WAREKY,
+		       SUM(TOTBOX) AS TOT01_BOX
+		 FROM (
+		       SELECT /*+ ORDERED */SM.SKUG03  AS SKUG03,
+		              CASE IT.WAREKY WHEN '2213' THEN IT.QTYREQ ELSE 0 END AS NUM01,
+		              CASE IT.WAREKY WHEN '2213' THEN IT.QTYREQ * REPLACE(NETWGT * 1000, '.', '') ELSE 0 END AS NUM02,
+		              CASE IT.WAREKY WHEN '2214' THEN IT.QTYREQ ELSE 0 END AS NUM03,
+		              CASE IT.WAREKY WHEN '2214' THEN IT.QTYREQ * REPLACE(NETWGT * 1000, '.', '') ELSE 0 END AS NUM04,
+		              CASE IT.WAREKY WHEN '2215' THEN IT.QTYREQ ELSE 0 END AS NUM05,
+		              CASE IT.WAREKY WHEN '2215' THEN IT.QTYREQ * REPLACE(NETWGT * 1000, '.', '') ELSE 0 END AS NUM06,
+		              CASE IT.WAREKY WHEN '2216' THEN IT.QTYREQ ELSE 0 END AS NUM07,
+		              CASE IT.WAREKY WHEN '2216' THEN IT.QTYREQ * REPLACE(NETWGT * 1000, '.', '') ELSE 0 END AS NUM08,
+		              CASE IT.WAREKY WHEN '2217' THEN IT.QTYREQ ELSE 0 END AS NUM09,
+		              CASE IT.WAREKY WHEN '2217' THEN IT.QTYREQ * REPLACE(NETWGT * 1000, '.', '') ELSE 0 END AS NUM10,
+		              CASE IT.WAREKY WHEN '2218' THEN IT.QTYREQ ELSE 0 END AS NUM11,
+		              CASE IT.WAREKY WHEN '2218' THEN IT.QTYREQ * REPLACE(NETWGT * 1000, '.', '') ELSE 0 END AS NUM12,
+		              CASE IT.WAREKY WHEN '2219' THEN IT.QTYREQ ELSE 0 END AS NUM13,
+		              CASE IT.WAREKY WHEN '2219' THEN IT.QTYREQ * REPLACE(NETWGT * 1000, '.', '') ELSE 0 END AS NUM14,
+		              IT.QTYREQ AS TOT01,
+		              IT.QTYREQ * REPLACE(NETWGT * 1000, '.', '') AS TOT02,
+		              IT.WAREKY AS WAREKY,
+		              SM.QTDUOM AS QTDUOM,
+		              ROUND(NVL(IT.QTYREQ / SM.QTDUOM,0),0) AS TOTBOX
+		         FROM IFWMS113 IT INNER JOIN SKUMA SM ON IT.OWNRKY = SM.OWNRKY AND IT.SKUKEY = SM.SKUKEY
+		                           INNER JOIN BZPTN BZ2 ON IT.OWNRKY = BZ2.OWNRKY AND IT.PTNRTO = BZ2.PTNRKY AND BZ2.PTNRTY IN ('0004', '0007')
+		                           LEFT OUTER JOIN PICSK PK ON IT.OWNRKY = PK.OWNRKY AND PK.WAREKY = IT.WAREKY AND IT.SKUKEY = PK.SKUKEY
+		                           LEFT OUTER JOIN CMCDV CM ON CM.CMCDKY = 'PTNG08' AND BZ2.PTNG08 = CM.CMCDVL
+		                           LEFT OUTER JOIN SKUWC SW ON SW.WAREKY = IT.WAREKY AND SW.SKUKEY = IT.SKUKEY AND SW.OWNRKY = #{OWNRKY}
+		
+		
+		        WHERE IT.OWNRKY = #{OWNRKY}
+		          AND IT.DOCUTY IN ('211', '212', '213', '214', '215', '216', '266', '267')
+		          AND IT.C00102 IN ('N', 'Y')
+		          AND IT.XSTAT IN ('R', 'D')
+		       <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		       		${RANGE_SQL}
+		       </if>
+		       )
+		GROUP BY SKUG03,WAREKY
+		ORDER BY SKUG03,WAREKY
+	</select>
+	
+
+	<!-- **[DR21] 등급별 주문조회 -->
+	<select id="DR21_ITEM_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT  IT.OWNRKY AS OWNRKY
+		      , IT.WAREKY AS WAREKY
+		      , IT.WARESR AS WARESR
+		      , IT.DOCUTY AS DOCUTY
+		      , IT.OTRQDT AS OTRQDT
+		      , IT.PTNRTO AS PTNRTO
+		      , BZ2.NAME01 AS PTNRTONM
+		      , IT.PTNROD AS PTNROD
+		      , BZ.NAME01 AS PTNRODNM
+		      , BZ2.PTNG08 AS PTNG08
+		      , IT.DIRSUP AS DIRSUP
+		      , IT.DIRDVY AS DIRDVY
+		      , IT.SKUKEY AS SKUKEY
+		      , SM.DESC01 AS DESC01
+		      , NVL( ROUND((IT.QTYREQ) * SM.NETWGT, 3),0) AS NETWGT
+		      , ROUND(NVL(IT.QTYREQ / SM.QTDUOM,0),0) AS QTDUOM
+		      , SM.QTYSTD AS QTYSTD
+		      , IT.QTYREQ AS QTYREQ
+		FROM IFWMS113 IT
+		INNER JOIN SKUMA SM ON IT.OWNRKY = SM.OWNRKY AND IT.SKUKEY = SM.SKUKEY
+		INNER JOIN BZPTN BZ ON IT.OWNRKY = BZ.OWNRKY AND IT.PTNROD = BZ.PTNRKY AND BZ.PTNRTY IN('0001','0004')
+		INNER JOIN BZPTN BZ2 ON IT.OWNRKY = BZ2.OWNRKY AND IT.PTNRTO = BZ2.PTNRKY AND BZ2.PTNRTY IN('0004','0007')
+		LEFT OUTER JOIN PICSK PK ON IT.OWNRKY = PK.OWNRKY AND PK.WAREKY = IT.WAREKY AND IT.SKUKEY = PK.SKUKEY
+		LEFT OUTER JOIN CMCDV CM ON CM.CMCDKY = 'PTNG08' AND BZ2.PTNG08 = CM.CMCDVL
+		LEFT OUTER JOIN SKUWC SW ON SW.WAREKY = IT.WAREKY AND SW.SKUKEY = IT.SKUKEY AND SW.OWNRKY = #{OWNRKY}
+		WHERE IT.OWNRKY = #{OWNRKY}
+		AND IT.DOCUTY IN ('211', '212', '213', '214', '215', '216', '266', '267')
+		AND IT.C00102 IN ('N', 'Y')
+		AND IT.XSTAT IN ('R', 'D')
+		AND IT.WAREKY = #{WAREKY}
+		AND SM.SKUG03 = #{SKUG03}
+		       <if test="RANGE_SQL != null and RANGE_SQL != ''">
+		       		${RANGE_SQL}
+		       </if>	
+	</select>
+</mapper>

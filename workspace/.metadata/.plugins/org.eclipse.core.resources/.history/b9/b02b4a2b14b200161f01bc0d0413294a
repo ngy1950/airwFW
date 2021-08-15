@@ -1,0 +1,26 @@
+package com.common.carton;
+
+/**
+ * 부적절한 포장 데이터가 입력되었을 때 발생되는 예외
+ * @author Administrator
+ *
+ */
+public class IllegalPackingDataException extends RuntimeException {
+
+	private static final long serialVersionUID = -5317266516838819496L;
+
+	/**
+	 * 생성자
+	 */
+	public IllegalPackingDataException() {
+		super("Invalid packing data");
+	}
+	
+	/**
+	 * 생성자
+	 * @param cause 예외
+	 */
+	public IllegalPackingDataException(Throwable cause) {
+		super(cause);
+	}
+}

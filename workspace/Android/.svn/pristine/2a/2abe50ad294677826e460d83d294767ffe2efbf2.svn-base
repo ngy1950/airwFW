@@ -1,0 +1,418 @@
+[
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_setup_stalk.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_setup_stalk.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_line_classify.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_line_classify.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_deactivation.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_deactivation.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\leave_check_box_on.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\leave_check_box_on.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_gyeong_nam.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_gyeong_nam.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_gangwon.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_gangwon.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\omgs_close.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\omgs_close.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\animation_img3.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\animation_img3.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_mychurch_barogagi.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_mychurch_barogagi.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\text_indicator.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\text_indicator.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_pw_password_txt_box.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_pw_password_txt_box.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\ic_sls.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\ic_sls.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_map.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_map.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_setup_on.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_setup_on.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_round_signup_two_select.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_round_signup_two_select.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_round_signup_two.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_round_signup_two.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_seoul.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_seoul.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_lnb.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_lnb.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_lnb_pro_pic.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_lnb_pro_pic.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_replyp_btn_popup_ok_push.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_replyp_btn_popup_ok_push.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_p_gu_title.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_p_gu_title.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\omg_btn_check_on.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\omg_btn_check_on.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_ck_open.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_ck_open.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_round_signup_three.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_round_signup_three.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_setup_icon.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_setup_icon.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\btn_s_close.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\btn_s_close.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_leave_text_box.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_leave_text_box.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_x.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_x.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_chonh.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_chonh.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_mychurch_gasulhagi.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_mychurch_gasulhagi.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_round_signup_three_select.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_round_signup_three_select.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_search_box.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_search_box.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_ck_close.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_ck_close.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_like_non.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_like_non.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_ascending_order.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_ascending_order.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\password_non.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\password_non.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_icon_bell.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_icon_bell.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_lnb_gu.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_lnb_gu.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\default_error.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\default_error.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_chongcheng.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_chongcheng.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_pw_password_ok.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_pw_password_ok.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_gyeonggi.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_gyeonggi.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_gyeong_hunam.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_gyeong_hunam.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_round_mid.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_round_mid.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_popup_select_box.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_popup_select_box.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_box_read.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_box_read.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\crop__ic_cancel.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\crop__ic_cancel.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\crop__divider.9.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\crop__divider.9.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\popup_flame.9.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\popup_flame.9.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\add_icon_img_list.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\add_icon_img_list.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_main.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_main.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\ic_small.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\ic_small.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_p_gu.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_p_gu.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_id_search.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_id_search.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_mif_camera.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_mif_camera.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_telephone.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_telephone.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_icon_bell_non.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_icon_bell_non.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_agree.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_agree.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_leave_ok.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_leave_ok.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_pro_mysetup.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_pro_mysetup.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_round_signup_one_select.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_round_signup_one_select.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_back.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_back.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\add_icon_img_file.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\add_icon_img_file.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\intro_log.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\intro_log.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_like_in.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_like_in.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_descending_order.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_descending_order.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_mif_popup_flame.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_mif_popup_flame.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_round_signup_one.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_round_signup_one.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_password.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_password.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_navigation_no.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_navigation_no.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\omg_talk_btn_back.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\omg_talk_btn_back.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_accredit_push.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_accredit_push.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\leave_check_box_off.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\leave_check_box_off.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_replyp_btn_popup_delete.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_replyp_btn_popup_delete.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_mail.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_mail.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_agree_ok.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_agree_ok.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_navigation_present.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_navigation_present.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_popup_deactivation.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_popup_deactivation.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_accredit.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_accredit.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_logout.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_logout.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_popup_x.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_popup_x.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_gps_sangse.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_gps_sangse.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_message.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_message.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_push.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_push.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_v.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_v.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_gps.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_gps.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_popup_frame.9.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_popup_frame.9.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_setup_off.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_setup_off.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\omg_email_list.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\omg_email_list.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_bottom_banner.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_bottom_banner.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_signup.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_signup.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\omg_btn_check_off.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\omg_btn_check_off.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\crop__tile.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\crop__tile.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\crop__ic_done.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\crop__ic_done.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_replyp_btn_popup_delete_push.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_replyp_btn_popup_delete_push.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_replyp_btn_popup_ok.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_replyp_btn_popup_ok.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_gyeong_buk.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_gyeong_buk.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\add_icon_img_ext.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\add_icon_img_ext.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_open_btn_search.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_open_btn_search.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\default_check.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\default_check.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_btn_normal.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_btn_normal.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_box_accredit.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_box_accredit.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\ic_chooser_external_storage.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\ic_chooser_external_storage.png"
+    },
+    {
+        "merged": "D:\\SCM_AND2\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\addressbook_church_pro_pic.png",
+        "source": "D:\\SCM_AND2\\app\\src\\main\\res\\drawable-xhdpi\\addressbook_church_pro_pic.png"
+    }
+]

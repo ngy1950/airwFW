@@ -1,0 +1,110 @@
+��															��
+   user.home : C:\Users\atspeed
+   java.home : C:\airFW\jdk\jdk1.8.0_92\jre
+   java.vendor : Oracle Corporation
+   java.version : 1.8.0_92
+   os.name : Windows 10
+   os.arch : x86
+   os.version : 10.0
+   sun.cpu.endian : little
+   user.timezone : Asia/Seoul
+   file.encoding : UTF-8
+��															��
+13:18:13 [ERROR] java.io.FileNotFoundException: \app\softcamp\02_Module\02_ServiceLinker\softcamp.properties (지정된 경로를 찾을 수 없습니다)
+	at java.io.FileInputStream.open0(Native Method)
+	at java.io.FileInputStream.open(FileInputStream.java:195)
+	at java.io.FileInputStream.<init>(FileInputStream.java:138)
+	at java.io.FileInputStream.<init>(FileInputStream.java:93)
+	at com.softcamp.util.PropertyManager.loadPropertyFile(PropertyManager.java:73)
+	at com.softcamp.util.PropertyManager.setPropertyFile(PropertyManager.java:66)
+	at com.softcamp.scsl.SLDsFile.setPropertyPath(SLDsFile.java:117)
+	at SCSL.SLDsFile.SettingPathForProperty(SLDsFile.java:38)
+	at com.common.util.SoftCamp.writeExcel(SoftCamp.java:74)
+	at com.common.view.ExcelDownloadView.renderMergedOutputModel(ExcelDownloadView.java:73)
+	at org.springframework.web.servlet.view.AbstractView.render(AbstractView.java:264)
+	at org.springframework.web.servlet.DispatcherServlet.render(DispatcherServlet.java:1216)
+	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1001)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:945)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:867)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:951)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:853)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:650)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:827)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:731)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:303)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:208)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:241)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:208)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:88)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:106)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:241)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:208)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:220)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:122)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:505)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:169)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:103)
+	at org.apache.catalina.valves.AccessLogValve.invoke(AccessLogValve.java:956)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:116)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:436)
+	at org.apache.coyote.http11.AbstractHttp11Processor.process(AbstractHttp11Processor.java:1078)
+	at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:625)
+	at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:318)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Thread.java:745)
+
+13:18:13 [DEBUG] setUseServiceLinkerIcon : false
+
+13:18:13 [INFO] Version : 4.1.10.9
+13:18:13 [INFO] propertyPath : /app/softcamp/02_Module/02_ServiceLinker/softcamp.properties
+13:18:13 [INFO] SendType:[0],LogType:[0]
+13:18:13 [INFO] Server:[127.0.0.1:62004],Write:Path[],SysName:[LinkSystem],SysIP:[127.0.0.0]
+
+13:18:15 [INFO] Version : 4.1.10.9
+13:18:15 [INFO] :/app/softcamp/04_KeyFile/keyGrade_SVR0.sc:System:none:0000035:SECURITYDOMAIN:SECURITYDOMAIN;:
+13:18:15 [INFO] :none:C:/airFW/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/airfw2/file/excel/02faa6f4-c28b-4ff0-bb86-77d85e37ea91.xls:C:/airFW/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/airfw2/file/excel/02faa6f4-c28b-4ff0-bb86-77d85e37ea91_Enc.xls:SECURITYDOMAIN:SECURITYDOMAIN;:
+13:18:15 [INFO] :/app/softcamp/04_KeyFile/keyGrade_SVR0.sc:0:0:
+13:18:15 [ERROR] com.softcamp.scsl.SCSLException: exceptionNo : 1000 :  exceptionMsg : C:/airFW/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/airfw2/file/excel/02faa6f4-c28b-4ff0-bb86-77d85e37ea91.xls
+	at com.softcamp.scsl.SLDsFile.encryptGrade(SLDsFile.java:1947)
+	at SCSL.SLDsFile.DSSLDocuGradeEncAddCreator(SLDsFile.java:931)
+	at com.common.util.SoftCamp.writeExcel(SoftCamp.java:76)
+	at com.common.view.ExcelDownloadView.renderMergedOutputModel(ExcelDownloadView.java:73)
+	at org.springframework.web.servlet.view.AbstractView.render(AbstractView.java:264)
+	at org.springframework.web.servlet.DispatcherServlet.render(DispatcherServlet.java:1216)
+	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1001)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:945)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:867)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:951)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:853)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:650)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:827)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:731)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:303)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:208)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:241)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:208)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:88)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:106)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:241)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:208)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:220)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:122)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:505)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:169)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:103)
+	at org.apache.catalina.valves.AccessLogValve.invoke(AccessLogValve.java:956)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:116)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:436)
+	at org.apache.coyote.http11.AbstractHttp11Processor.process(AbstractHttp11Processor.java:1078)
+	at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:625)
+	at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:318)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Thread.java:745)
+
+13:18:15 [WARNING] LogPath is null or Empty

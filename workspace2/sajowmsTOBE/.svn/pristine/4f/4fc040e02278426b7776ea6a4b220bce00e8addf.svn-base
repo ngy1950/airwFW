@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="InventorySetBom">
+
+	<!-- SJ01 헤더 조회-->
+	<select id="SJ01_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT ' ' AS SADJKY,
+		       #{OWNRKY} AS OWNRKY,
+		       #{WAREKY} AS WAREKY,
+		       WH.NAME01 AS WAREKYNM,
+		       #{ADJUTY} AS ADJUTY,
+		       DT.SHORTX AS ADJUTYNM,
+		       TO_CHAR(SYSDATE,'YYYYMMDD') AS DOCDAT,
+		       #{ADJUCA} AS DOCCAT,
+		       DC.SHORTX AS DOCCATNM,
+		       #{ADJUCA} AS ADJUCA,
+		       DT.SHORTX AS ADJSTX,
+		       DC.SHORTX AS ADJUCANM,
+		       TO_CHAR(SYSDATE, 'YYYYMMDD') AS CREDAT,
+		       TO_CHAR(SYSDATE, 'HH24MISS') AS CRETIM,
+		       #{CREUSR} AS CREUSR,
+		       '' AS CUSRNM,
+		       TO_CHAR(SYSDATE, 'YYYYMMDD') AS LMODAT,
+		       TO_CHAR(SYSDATE, 'HH24MISS') AS LMOTIM,
+		       #{CREUSR} AS LMOUSR,
+		       '' AS LUSRNM,
+		       '' AS ADJUCANM,
+		       '' AS DOCTXT
+		  FROM DUAL
+		       LEFT OUTER JOIN WAHMA WH
+		               ON WH.WAREKY = #{WAREKY}
+		       LEFT OUTER JOIN DOCCM DC
+		               ON DC.DOCCAT = #{ADJUCA}
+		       LEFT OUTER JOIN DOCTM DT
+		               ON DT.DOCUTY = #{ADJUTY}
+	</select>
+	
+	<!-- SJ01 PAKMA VALIDATION-->
+	<select id="SJ01_VALID_PAKMA_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(1) AS CNT
+		  FROM PAKMA 
+		 WHERE OWNRKY = #{OWNRKY}
+		   AND WAREKY = #{WAREKY}
+		   AND PACKID = #{PACKID}
+		 
+	</select>
+	
+
+	<!-- SJ01 아이템 조회-->
+	<select id="SJ01ITEM_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SM.OWNRKY AS OWNRKY
+		  	 , '' AS SVBELN
+		     , SM.SKUKEY AS SKUKEY
+		     , SM.DELMAK AS DELMAK
+		     , SM.DESC01 AS DESC01
+		     , SM.DESC02 AS DESC02
+		     , SM.VENDKY AS VENDKY
+		     , SM.ASKU01 AS ASKU01
+		     , SM.ASKU02 AS ASKU02
+		     , SM.ASKU03 AS ASKU03
+		     , SM.ASKU04 AS ASKU04
+		     , SM.ASKU05 AS ASKU05
+		     , SM.ASKL01 AS ASKL01
+		     , SM.ASKL02 AS ASKL02
+		     , SM.ASKL03 AS ASKL03
+		     , SM.ASKL04 AS ASKL04
+		     , SM.ASKL05 AS ASKL05
+		     , SM.EANCOD AS EANCOD
+		     , SM.GTINCD AS GTINCD
+		     , SM.SKUG01 AS SKUG01
+		     , SM.SKUG02 AS SKUG02
+		     , SM.SKUG03 AS SKUG03
+		     , SM.SKUG04 AS SKUG04
+		     , SM.SKUG05 AS SKUG05
+		     , SM.SKUL01 AS SKUL01
+		     , SM.SKUL02 AS SKUL02
+		     , SM.SKUL03 AS SKUL03
+		     , SM.SKUL04 AS SKUL04
+		     , SM.SKUL05 AS SKUL05
+		     , SM.GRSWGT AS GRSWGT
+		     , SM.NETWGT AS NETWGT
+		     , SM.WGTUNT AS WGTUNT
+		     , SM.LENGTH AS LENGTH
+		     , SM.WIDTHW AS WIDTHW
+		     , SM.HEIGHT AS HEIGHT
+		     , SM.CUBICM AS CUBICM
+		     , SM.CAPACT AS CAPACT
+		     , SM.DUOMKY AS DUOMKY
+		     , SM.QTDUOM AS QTDUOM
+		     , SM.ABCANV AS ABCANV
+		     , SM.LOTL01 AS LOTL01
+		     , SM.LOTL02 AS LOTL02
+		     , SM.LOTL03 AS LOTL03
+		     , SM.LOTL04 AS LOTL04
+		     , SM.LOTL05 AS LOTL05
+		     , SM.LOTL06 AS LOTL06
+		     , SM.LOTL07 AS LOTL07
+		     , SM.LOTL08 AS LOTL08
+		     , SM.LOTL09 AS LOTL09
+		     , SM.LOTL10 AS LOTL10
+		     , SM.LOTL11 AS LOTL11
+		     , SM.LOTL12 AS LOTL12
+		     , SM.LOTL13 AS LOTL13
+		     , SM.LOTL14 AS LOTL14
+		     , SM.LOTL15 AS LOTL15
+		     , SM.LOTL16 AS LOTL16
+		     , SM.LOTL17 AS LOTL17
+		     , SM.LOTL18 AS LOTL18
+		     , SM.LOTL19 AS LOTL19
+		     , SM.LOTL20 AS LOTL20
+		     , SM.OUTDMT AS OUTDMT
+		     , SM.RIMDMT AS RIMDMT
+		     , SM.INNDPT AS INNDPT
+		     , SM.SECTWD AS SECTWD
+		     , SM.WEIGHT AS WEIGHT
+		     , SM.DLGORT AS DLGORT
+		     , SM.BATMNG AS BATMNG
+		     , SM.LGPRO AS LGPRO
+		     , SM.CSTDAT AS CSTDAT
+		     , SM.CPSKUG AS CPSKUG
+		     , SM.DESC03 AS DESC03
+		     , SM.DESC04 AS DESC04
+		     , SM.QTYMON AS QTYMON
+		     , SM.QTYSTD AS QTYSTD
+		     , SM.QTYCNT AS QTYCNT
+		     , SM.BUFMNG AS BUFMNG
+		     , SM.CREDAT AS CREDAT
+		     , SM.CRETIM AS CRETIM
+		     , SM.CREUSR AS CREUSR
+		     , SM.LMODAT AS LMODAT
+		     , SM.LMOTIM AS LMOTIM
+		     , SM.LMOUSR AS LMOUSR
+		     , PK.PACKID AS PACKID
+		     , PK.UOMQTY AS UOMQTY
+		     , #{QTADJU} AS QTADJU
+             , SUM(NVL(ST.QTSIWH,0)) AS QTSIWH
+             , #{QTADJU} * PK.UOMQTY AS QTNEED
+             , CASE WHEN SUM(NVL(ST.QTSIWH,0)) - #{QTADJU} * PK.UOMQTY > 0 THEN 0 
+                    ELSE SUM(NVL(ST.QTSIWH,0)) - #{QTADJU} * PK.UOMQTY 
+                END AS QTLACK
+             , CASE WHEN SUM(NVL(ST.QTSIWH,0)) - #{QTADJU} * PK.UOMQTY > 0 THEN SUM(NVL(ST.QTSIWH,0)) - #{QTADJU} * PK.UOMQTY 
+                    ELSE 0 
+                END AS  QTREMA
+             , #{SES_USER_ID} AS CREUSR
+             , (SELECT NMLAST FROM USRMA WHERE USERID = #{SES_USER_ID}) AS CUSRNM
+             , TO_CHAR(SYSDATE, 'YYYYMMDD') AS CREDAT
+             , TO_CHAR(SYSDATE, 'HH24MISS') AS CRETIM
+             , #{LOTA11} AS LOTA11
+             , #{LOTA12} AS LOTA12
+             , #{LOTA13} AS LOTA13
+             , #{DOCTXT} AS DOCTXT
+             , #{ADJUTY} AS ADJUTY
+             , #{DOCDAT} AS DOCDAT
+		  FROM PAKMA PK 
+		       INNER JOIN SKUMA SM ON SM.OWNRKY = PK.OWNRKY 
+		                          AND SM.SKUKEY = PK.SKUKEY
+               LEFT OUTER JOIN STKKY ST ON ST.OWNRKY = PK.OWNRKY 
+                                       AND ST.WAREKY = PK.WAREKY AND ST.SKUKEY = PK.SKUKEY 
+                                       AND ST.LOCAKY = 'SETLOC'
+               						   AND ST.LOTA06 = '00' AND ST.QTSIWH > 0 AND ST.QTSALO = 0
+                                       AND ST.QTSPMO = 0 AND ST.QTSPMI = 0 AND ST.QTSBLK = 0
+		 WHERE PK.OWNRKY = #{OWNRKY} 
+		   AND PK.WAREKY = #{WAREKY}
+		   AND PK.PACKID = #{PACKID}
+         GROUP BY SM.OWNRKY, SM.SKUKEY, SM.DELMAK, SM.DESC01, SM.DESC02, SM.VENDKY, SM.ASKU01, SM.ASKU02, SM.ASKU03, SM.ASKU04
+				, SM.ASKU05, SM.ASKL01, SM.ASKL02, SM.ASKL03, SM.ASKL04, SM.ASKL05, SM.EANCOD, SM.GTINCD, SM.SKUG01, SM.SKUG02
+				, SM.SKUG03, SM.SKUG04, SM.SKUG05, SM.SKUL01, SM.SKUL02, SM.SKUL03, SM.SKUL04, SM.SKUL05, SM.GRSWGT, SM.NETWGT
+				, SM.WGTUNT, SM.LENGTH, SM.WIDTHW, SM.HEIGHT, SM.CUBICM, SM.CAPACT, SM.DUOMKY, SM.QTDUOM, SM.ABCANV, SM.LOTL01
+				, SM.LOTL02, SM.LOTL03, SM.LOTL04, SM.LOTL05, SM.LOTL06, SM.LOTL07, SM.LOTL08, SM.LOTL09, SM.LOTL10, SM.LOTL11
+				, SM.LOTL12, SM.LOTL13, SM.LOTL14, SM.LOTL15, SM.LOTL16, SM.LOTL17, SM.LOTL18, SM.LOTL19, SM.LOTL20, SM.OUTDMT
+				, SM.RIMDMT, SM.INNDPT, SM.SECTWD, SM.WEIGHT, SM.DLGORT, SM.BATMNG, SM.LGPRO , SM.CSTDAT, SM.CPSKUG, SM.DESC03
+				, SM.DESC04, SM.QTYMON, SM.QTYSTD, SM.QTYCNT, SM.BUFMNG, SM.CREDAT, SM.CRETIM, SM.CREUSR, SM.LMODAT, SM.LMOTIM
+				, SM.LMOUSR, PK.PACKID, PK.UOMQTY
+	</select>
+	
+
+	<!-- SJ01 아이템 조회-->
+	<select id="SJ01_PAKMA_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT PK.PACKID
+		     , PK.UOMQTY
+		     , PK.SKUKEY            
+		  FROM PAKMA PK            
+               INNER JOIN SKUMA SM ON SM.SKUKEY = PK.PACKID AND SM.OWNRKY = PK.OWNRKY
+               INNER JOIN SKUWC SW ON SW.SKUKEY = PK.PACKID AND SW.OWNRKY = PK.OWNRKY AND SW.WAREKY = PK.WAREKY
+		 WHERE PK.OWNRKY = #{OWNRKY}   
+		   AND PK.WAREKY = #{WAREKY}
+		   and PK.PACKID = #{PACKID} 
+   </select>
+	
+	
+	<!-- SJ01 세트조립 프로시저 테스트용  -->
+	<select id="P_SETSKU_ASSEMBLE_UPDATE" statementType="CALLABLE"  parameterType="hashmap">
+   		{ call P_SETSKU_ASSEMBLE(#{OWNRKY}, #{WAREKY}, #{SADJKY, mode=INOUT, jdbcType=VARCHAR, javaType=java.lang.String}, #{SADJIT, mode=INOUT, jdbcType=VARCHAR, javaType=java.lang.String}, #{DOCDAT}, #{PACKID}, #{QTADJU}, #{ADJUTY}, #{LOCAKY}, #{LOTA11}, #{LOTA12}, #{LOTA13}, #{DOCTXT}, #{SES_USER_ID}, #{ERRNUM,mode=INOUT,jdbcType=VARCHAR}, #{ERRMSG,mode=INOUT,jdbcType=VARCHAR}) }
+ 	</select>
+	
+	
+	<!-- SJ01 ADJDH 생성 프로시저   -->
+	<select id="P_ADJDH_CREATE_UPDATE" statementType="CALLABLE"  parameterType="hashmap">
+   		{ call P_ADJDH_CREATE(#{OWNRKY}, #{WAREKY}, #{SADJKY}, #{ADJUTY}, #{DOCTXT}, #{DOCDAT}, #{SES_USER_ID}, #{ERRNUM,mode=INOUT,jdbcType=VARCHAR}, #{ERRMSG, mode=INOUT, jdbcType=VARCHAR, javaType=java.lang.String}) }
+ 	</select>
+	
+	
+	<!-- SJ01 ADJDI 재고 생성 프로시저   -->
+	<select id="P_ADJDI_INCREASE_UPDATE" statementType="CALLABLE"  parameterType="hashmap">
+   		{ call P_ADJDI_INCREASE(#{OWNRKY}, #{WAREKY}, #{PACKID}, #{SKUKEY}, #{LOCAKY}, #{QTADJU}, #{RSNADJ},
+								#{TRNUID}, #{LOTA03}, #{LOTA05}, #{LOTA06}, #{LOTA11}, #{LOTA12}, #{LOTA13},
+								#{ADJRSN}, #{SBKTXT}, #{SADJKY}, #{SADJIT}, #{SES_USER_ID}, #{ERRNUM}, #{ERRMSG, mode=INOUT, jdbcType=VARCHAR, javaType=java.lang.String}) }
+ 	</select>
+	
+	
+	<!-- SJ01 ADJDI 재고 차감 프로시저   --> 
+	<select id="P_ADJDI_DECREASE_UPDATE" statementType="CALLABLE"  parameterType="hashmap">
+	{ call P_ADJDI_DECREASE(#{OWNRKY}, #{WAREKY}, #{SKUKEY}, #{ADJQTY}, #{LOCAKY}, #{SADJKY},
+								#{SADJIT, mode=INOUT, jdbcType=VARCHAR, javaType=java.lang.String}, #{PACKID}, #{SES_USER_ID}, #{ERRNUM}, #{ERRMSG, mode=INOUT, jdbcType=VARCHAR, javaType=java.lang.String}) }
+ 	</select>
+ 	 
+ 	 
+ 	<!-- SJ02 아이템 조회-->
+	<select id="SJ02_ITEM_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT ' ' AS SADJKY,
+		       ' ' AS SADJIT,
+		       ' ' AS RSNADJ,
+		       S.STOKKY AS STOKKY,
+		       S.LOTNUM AS LOTNUM,
+		       S.LOCAKY AS LOCAKY,
+		       S.TRNUID AS TRNUID,
+		       S.SECTID AS SECTID,
+		       S.PACKID AS PACKID,
+		       S.QTSIWH AS QTSIWH,
+		       S.QTSIWH AS QTADJU,
+		       0 AS QTBLKD,
+		       S.QTYUOM AS QTYUOM,
+		       S.TRUNTY AS TRUNTY,
+		       S.MEASKY AS MEASKY,
+		       S.UOMKEY AS UOMKEY,
+		       S.QTPUOM AS QTPUOM,
+		       S.DUOMKY AS DUOMKY,
+		       S.QTDUOM AS QTDUOM,
+		       S.OWNRKY AS OWNRKY,
+		       S.SKUKEY AS SKUKEY,
+		       S.LOTA01 AS LOTA01,
+		       S.LOTA02 AS LOTA02,
+		       S.LOTA03 AS LOTA03,
+		       S.LOTA04 AS LOTA04,
+		       S.LOTA05 AS LOTA05,
+		       S.LOTA06 AS LOTA06,
+		       S.LOTA07 AS LOTA07,
+		       S.LOTA08 AS LOTA08,
+		       S.LOTA09 AS LOTA09,
+		       S.LOTA10 AS LOTA10,
+		       S.LOTA11 AS LOTA11,
+		       S.LOTA12 AS LOTA12,
+		       S.LOTA13 AS LOTA13,
+		       S.LOTA14 AS LOTA14,
+		       S.LOTA15 AS LOTA15,
+		       S.LOTA16 AS LOTA16,
+		       S.LOTA17 AS LOTA17,
+		       S.LOTA18 AS LOTA18,
+		       S.LOTA19 AS LOTA19,
+		       S.LOTA20 AS LOTA20,
+		       S.AWMSNO AS AWMSNO,
+		       S.AREAKY AS AREAKY,
+		       S.DESC01 AS DESC01,
+		       S.DESC02 AS DESC02,
+		       S.ASKU01 AS ASKU01,
+		       S.ASKU02 AS ASKU02,
+		       S.ASKU03 AS ASKU03,
+		       S.ASKU04 AS ASKU04,
+		       S.ASKU05 AS ASKU05,
+		       S.EANCOD AS EANCOD,
+		       S.GTINCD AS GTINCD,
+		       S.SKUG01 AS SKUG01,
+		       S.SKUG02 AS SKUG02,
+		       S.SKUG03 AS SKUG03,
+		       S.SKUG04 AS SKUG04,
+		       S.SKUG05 AS SKUG05,
+		       S.GRSWGT AS GRSWGT,
+		       S.NETWGT AS NETWGT,
+		       S.WGTUNT AS WGTUNT,
+		       S.LENGTH AS LENGTH,
+		       S.WIDTHW AS WIDTHW,
+		       S.HEIGHT AS HEIGHT,
+		       S.CUBICM AS CUBICM,
+		       S.CAPACT AS CAPACT,
+		       S.SKUKEY AS PACKID,
+		       '261' AS REFCAT,
+		       '' AS SPOSNR,
+		       '' AS SPOSNR,
+		       TO_CHAR(SYSDATE, 'YYYYMMDD') AS CREDAT,
+		       TO_CHAR(SYSDATE, 'HH24MISS') AS CRETIM,
+		       '' AS CREUSR,
+		       '' AS CUSRNM,
+		       TO_CHAR(SYSDATE, 'YYYYMMDD') AS LMODAT,
+		       TO_CHAR(SYSDATE, 'HH24MISS') AS LMOTIM,
+		       '' AS LMOUSR,
+		       '' AS LUSRNM,
+		       REFDKY AS REFDKY
+		  FROM STKKY S JOIN SKUMA M ON S.OWNRKY = M.OWNRKY AND S.SKUKEY = M.SKUKEY
+		 WHERE 1=1
+		   AND S.WAREKY = #{WAREKY}
+		   AND S.OWNRKY = #{OWNRKY}
+		   AND S.SKUKEY IN (SELECT PACKID FROM PAKMA WHERE OWNRKY = #{OWNRKY})
+		   AND S.QTSIWH > 0
+		   AND S.QTSALO = 0
+		   AND S.QTSPMO = 0
+		   AND S.QTSPMI = 0
+		   AND S.LOTA06 = '00'
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+								
+		<if test="RANGELOT_SQL != null and RANGELOT_SQL != ''">
+			${RANGELOT_SQL}
+		</if>	
+	</select>
+	
+	<!-- SJ02 세트 해체 조회 -->
+	<select id="SJ02_DISJOIN_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT #{SADJKY} AS SADJKY,
+		       ' ' AS SADJIT,
+		       ' ' AS RSNADJ,
+		       #{STOKKY} AS STOKKY,
+		       ' ' AS LOTNUM,
+		       'SETLOC' AS LOCAKY,
+		       ' ' AS TRNUID,
+		       ' ' AS SECTID,
+		       PACKID AS PACKID,
+		       ${QTADJU} * PM.UOMQTY AS QTADJU,
+		       0 AS QTBLKD,
+		       ${QTADJU} * PM.UOMQTY AS QTYUOM,
+		       ' ' AS TRUNTY,
+		       NVL(SW.MEASKY,' ') AS MEASKY,
+		       NVL(SW.UOMDIN,' ') AS UOMKEY,
+		       0 AS QTPUOM,
+		       NVL(SM.DUOMKY,' ') AS DUOMKY,
+		       NVL(SM.QTDUOM,0) AS QTDUOM,
+		       NVL(SM.OWNRKY,' ') AS OWNRKY,
+		       NVL(SM.SKUKEY,' ') AS SKUKEY,
+		       PM.SORTSQ AS SORTSQ,
+		       ' ' AS LOTA01,
+		       ' ' AS LOTA02,
+		       ' ' AS LOTA03,
+		       ' ' AS LOTA04,
+		       ' ' AS LOTA05,
+		       '00' AS LOTA06,
+		       ' ' AS LOTA07,
+		       ' ' AS LOTA08,
+		       ' ' AS LOTA09,
+		       ' ' AS LOTA10,
+		       ' ' AS LOTA11,
+		       TO_CHAR(SYSDATE,'YYYYMMDD') AS LOTA12,
+		       ' ' AS LOTA13,
+		       ' ' AS LOTA14,
+		       ' ' AS LOTA15,
+		       0 AS LOTA16,
+		       0 AS LOTA17,
+		       0 AS LOTA18,
+		       0 AS LOTA19,
+		       0 AS LOTA20,
+		       NVL(LM.AREAKY,' ') AS AREAKY,
+		       NVL(SM.DESC01,' ') AS DESC01,
+		       NVL(SM.DESC02,' ') AS DESC02,
+		       NVL(SM.ASKU01,' ') AS ASKU01,
+		       NVL(SM.ASKU02,' ') AS ASKU02,
+		       NVL(SM.ASKU03,' ') AS ASKU03,
+		       NVL(SM.ASKU04,' ') AS ASKU04,
+		       NVL(SM.ASKU05,' ') AS ASKU05,
+		       NVL(SM.EANCOD,' ') AS EANCOD,
+		       NVL(SM.GTINCD,' ') AS GTINCD,
+		       NVL(SM.SKUG01,' ') AS SKUG01,
+		       NVL(SM.SKUG02,' ') AS SKUG02,
+		       NVL(SM.SKUG03,' ') AS SKUG03,
+		       NVL(SM.SKUG04,' ') AS SKUG04,
+		       NVL(SM.SKUG05,' ') AS SKUG05,
+		       NVL(SM.GRSWGT,0) AS GRSWGT,
+		       NVL(SM.NETWGT,0) AS NETWGT,
+		       NVL(SM.WGTUNT,' ') AS WGTUNT,
+		       NVL(SM.LENGTH,0) AS LENGTH,
+		       NVL(SM.WIDTHW,0) AS WIDTHW,
+		       NVL(SM.HEIGHT,0) AS HEIGHT,
+		       NVL(SM.CUBICM,0) AS CUBICM,
+		       NVL(SM.CAPACT,0) AS CAPACT,
+		       SM.OUTDMT AS OUTDMT,
+		       PM.PACKID  AS PACKID,
+               TO_CHAR(SYSDATE,'YYYYMMDD') AS CREDAT, 
+               TO_CHAR(SYSDATE,'HH24MIDD') AS CRETIM,
+               TO_CHAR(SYSDATE,'YYYYMMDD') AS LMODAT, 
+               TO_CHAR(SYSDATE,'HH24MIDD') AS LMOTIM,
+               '' AS LMOUSR,
+               '' AS LUSRNM,
+               '' AS CREUSR,
+               '' AS CUSRNM,
+               '' AS SPOSNR,
+               '' AS SVBELN,
+		       '' AS REFDIT,
+		       #{REFCAT} AS REFCAT,
+		       #{REFDKY} AS REFDKY,
+		       '' AS ADJRSN
+		  FROM PAKMA PM
+		       INNER JOIN LOCMA LM
+		               ON LM.WAREKY = #{WAREKY}
+		              AND LM.LOCAKY = 'SETLOC'
+		       LEFT OUTER JOIN SKUMA SM
+		               ON SM.OWNRKY = #{OWNRKY}
+		              AND SM.SKUKEY = PM.SKUKEY
+		       LEFT OUTER JOIN SKUWC SW
+		               ON SW.OWNRKY = #{OWNRKY}
+		              AND SW.WAREKY = #{WAREKY}
+		              AND SW.SKUKEY = PM.SKUKEY
+		 WHERE PM.OWNRKY = #{OWNRKY}
+		   AND PM.PACKID = #{PACKID}
+		ORDER BY SM.SKUKEY, PM.SORTSQ
+	</select>
+	
+	<!-- SJ02 세트 해체 조회 -->
+	<select id="SJ02_STOKKY_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT STOKKY  AS STOKKY,
+		       WAREKY  AS WAREKY,
+		       LOTNUM  AS LOTNUM,
+		       LOCAKY  AS LOCAKY,
+		       TRNUID  AS TRNUID,
+		       SECTID  AS SECTID,
+		       PACKID  AS PACKID,
+		       QTSIWH-QTSBLK-GREATEST(QTSALO,QTSPMO)  AS QTSIWH,
+		       QTSALO  AS QTSALO,
+		       QTSPMO  AS QTSPMO,
+		       QTSPMI  AS QTSPMI,
+		       QTSBLK  AS QTSBLK,
+		       QTYUOM  AS QTYUOM,
+		       TRUNTY  AS TRUNTY,
+		       MEASKY  AS MEASKY,
+		       UOMKEY  AS UOMKEY,
+		       QTPUOM  AS QTPUOM,
+		       DUOMKY  AS DUOMKY,
+		       QTDUOM  AS QTDUOM,
+		       TKFLKY  AS TKFLKY,
+		       STEPNO  AS STEPNO,
+		       LSTTFL  AS LSTTFL,
+		       SRCSKY  AS SRCSKY,
+		       UOMDOC  AS UOMDOC,
+		       CNTBSK  AS CNTBSK,
+		       NUPDPS  AS NUPDPS,
+		       REFDKY  AS REFDKY,
+		       REFDIT  AS REFDIT,
+		       REFCAT  AS REFCAT,
+		       REFDAT  AS REFDAT,
+		       PURCKY  AS PURCKY,
+		       PURCIT  AS PURCIT,
+		       ASNDKY  AS ASNDKY,
+		       ASNDIT  AS ASNDIT,
+		       RECVKY  AS RECVKY,
+		       RECVIT  AS RECVIT,
+		       SHPOKY  AS SHPOKY,
+		       SHPOIT  AS SHPOIT,
+		       GRPOKY  AS GRPOKY,
+		       GRPOIT  AS GRPOIT,
+		       TASKKY  AS TASKKY,
+		       TASKIT  AS TASKIT,
+		       SADJKY  AS SADJKY,
+		       SADJIT  AS SADJIT,
+		       SDIFKY  AS SDIFKY,
+		       SDIFIT  AS SDIFIT,
+		       PHYIKY  AS PHYIKY,
+		       PHYIIT  AS PHYIIT,
+		       OWNRKY  AS OWNRKY,
+		       SKUKEY  AS SKUKEY,
+		       LOTA01  AS LOTA01,
+		       LOTA02  AS LOTA02,
+		       LOTA03  AS LOTA03,
+		       LOTA04  AS LOTA04,
+		       LOTA05  AS LOTA05,
+		       LOTA06  AS LOTA06,
+		       LOTA07  AS LOTA07,
+		       LOTA08  AS LOTA08,
+		       LOTA09  AS LOTA09,
+		       LOTA10  AS LOTA10,
+		       LOTA11  AS LOTA11,
+		       LOTA12  AS LOTA12,
+		       LOTA13  AS LOTA13,
+		       LOTA14  AS LOTA14,
+		       LOTA15  AS LOTA15,
+		       LOTA16  AS LOTA16,
+		       LOTA17  AS LOTA17,
+		       LOTA18  AS LOTA18,
+		       LOTA19  AS LOTA19,
+		       LOTA20  AS LOTA20,
+		       AWMSNO  AS AWMSNO,
+		       DESC01  AS DESC01,
+		       DESC02  AS DESC02,
+		       ASKU01  AS ASKU01,
+		       ASKU02  AS ASKU02,
+		       ASKU03  AS ASKU03,
+		       ASKU04  AS ASKU04,
+		       ASKU05  AS ASKU05,
+		       EANCOD  AS EANCOD,
+		       GTINCD  AS GTINCD,
+		       SKUG01  AS SKUG01,
+		       SKUG02  AS SKUG02,
+		       SKUG03  AS SKUG03,
+		       SKUG04  AS SKUG04,
+		       SKUG05  AS SKUG05,
+		       GRSWGT  AS GRSWGT,
+		       NETWGT  AS NETWGT,
+		       WGTUNT  AS WGTUNT,
+		       LENGTH  AS LENGTH,
+		       WIDTHW  AS WIDTHW,
+		       HEIGHT  AS HEIGHT,
+		       CUBICM  AS CUBICM,
+		       CAPACT  AS CAPACT,
+		       ZONEKY  AS ZONEKY,
+		       TKZONE  AS TKZONE,
+		       AREAKY  AS AREAKY,
+		       SMANDT  AS SMANDT,
+		       SEBELN  AS SEBELN,
+		       SEBELP  AS SEBELP,
+		       SZMBLNO AS SZMBLNO,
+		       SZMIPNO AS SZMIPNO,
+		       STRAID  AS STRAID,
+		       SVBELN  AS SVBELN,
+		       SPOSNR  AS SPOSNR,
+		       STKNUM  AS STKNUM,
+		       STPNUM  AS STPNUM,
+		       SWERKS  AS SWERKS,
+		       SLGORT  AS SLGORT,
+		       SDATBG  AS SDATBG,
+		       STDLNR  AS STDLNR,
+		       SSORNU  AS SSORNU,
+		       SSORIT  AS SSORIT,
+		       SMBLNR  AS SMBLNR,
+		       SZEILE  AS SZEILE,
+		       SMJAHR  AS SMJAHR,
+		       SXBLNR  AS SXBLNR,
+		       SAPSTS  AS SAPSTS,
+		       SBKTXT  AS SBKTXT,
+		/*       (SELECT MAX(P.PACKID) FROM PAKMA P WHERE P.OWNRKY = STKKY.OWNRKY AND P.SKUKEY = STKKY.SKUKEY ) PACKID */
+		       (SELECT MAX(P.PACKID) FROM PAKMA P WHERE P.OWNRKY = STKKY.OWNRKY AND P.SKUKEY = STKKY.SKUKEY AND P.PACKID = #{PACKID}) PACKID
+		  FROM STKKY
+		 WHERE WAREKY = #{WAREKY}
+		   AND SKUKEY = #{SKUKEY}
+		   AND LOTA06 = '00'
+		   AND LOCAKY = 'SETLOC'
+		   AND QTSIWH > 0
+		   AND QTSALO = 0
+		   AND QTSPMO = 0
+		   AND QTSPMI = 0
+		   AND QTSBLK = 0
+		 ORDER BY STOKKY ASC
+	</select>
+	
+	
+		<!-- SJ05 헤더 조회 SJ01동일, 조정타입설명 -->
+	<select id="SJ05_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT ' ' AS SADJKY,
+		       #{OWNRKY} AS OWNRKY,
+		       #{WAREKY} AS WAREKY,
+		       WH.NAME01 AS WAREKYNM,
+		       #{ADJUTY} AS ADJUTY,
+		       DT.SHORTX AS ADJUTYNM,
+		       TO_CHAR(SYSDATE,'YYYYMMDD') AS DOCDAT,
+		       #{ADJUCA} AS DOCCAT,
+		       DC.SHORTX AS DOCCATNM,
+		       #{ADJUCA} AS ADJUCA,
+		       '화주변경' AS ADJSTX,
+		       DC.SHORTX AS ADJUCANM,
+		       TO_CHAR(SYSDATE, 'YYYYMMDD') AS CREDAT,
+		       TO_CHAR(SYSDATE, 'HH24MISS') AS CRETIM,
+		       #{CREUSR} AS CREUSR,
+		       '' AS CUSRNM,
+		       TO_CHAR(SYSDATE, 'YYYYMMDD') AS LMODAT,
+		       TO_CHAR(SYSDATE, 'HH24MISS') AS LMOTIM,
+		       #{CREUSR} AS LMOUSR,
+		       '' AS LUSRNM,
+		       '' AS ADJUCANM,
+		       '' AS DOCTXT
+		  FROM DUAL
+		       LEFT OUTER JOIN WAHMA WH
+		               ON WH.WAREKY = #{WAREKY}
+		       LEFT OUTER JOIN DOCCM DC
+		               ON DC.DOCCAT = #{ADJUCA}
+		       LEFT OUTER JOIN DOCTM DT
+		               ON DT.DOCUTY = #{ADJUTY}
+	</select>
+	
+	
+	
+</mapper>

@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MobileInventory">
+
+	<!-- **[MSD00] 재고이동 조회 -->
+	<select id="MSD00_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT ST.STOKKY AS KEY,		
+		       ST.STOKKY AS STOKKY,		
+		       ST.WAREKY AS WAREKY,		
+		       ST.STOKKY AS STOKKY,		
+		       ST.ZONEKY AS ZONEKY,		
+		       ST.QTSIWH - GREATEST(ST.QTSALO, ST.QTSPMO) - ST.QTSBLK AS QTSIWH,		
+		       ST.QTSIWH - GREATEST(ST.QTSALO, ST.QTSPMO) - ST.QTSBLK AS QTYWRK,		
+		       TRUNC((ST.QTSIWH - GREATEST(ST.QTSALO, ST.QTSPMO) - ST.QTSBLK)/ST.QTDUOM) AS BOXQTY,		
+		       MOD((ST.QTSIWH - GREATEST(ST.QTSALO, ST.QTSPMO) - ST.QTSBLK),ST.QTDUOM) AS REMQTY,		
+		       ST.LOCAKY AS LOCAKY,		
+		       ST.SECTID AS SECTID,		
+		       ST.PACKID AS PAIDID,		
+		       ST.TRNUID AS TRNUID,		
+		       ST.MEASKY AS MEASKY,		
+		       ST.UOMKEY AS UOMKEY,		
+		       ST.QTPUOM AS QTPUOM,		
+		       ST.DUOMKY AS DUOMKY,		
+		       ST.QTDUOM AS QTDUOM,		
+		       ST.OWNRKY AS OWNRKY,		
+		       ST.SKUKEY AS SKUKEY,		
+		       ST.ASKU01 AS ASKU01,		
+		       ST.LOTNUM AS LOTNUM,		
+		       ST.DESC01 AS DESC01,		
+		       ST.DESC02 AS DESC02,		
+		       ST.ASKU01 AS ASKU01,		
+		       ST.ASKU02 AS ASKU02,		
+		       ST.ASKU03 AS ASKU03,		
+		       SM.ASKU04 AS ASKU04,		
+		       SM.ASKU05 AS ASKU05,		
+		       ST.SKUG01 AS SKUG01,		
+		       ST.SKUG02 AS SKUG02,		
+		       ST.SKUG03 AS SKUG03,		
+		       ST.SKUG04 AS SKUG04,		
+		       SM.SKUG05 AS SKUG05,		
+		       ST.AREAKY AS AREAKY,		
+		       ST.LOTA01 AS LOTA01,		
+		       ST.LOTA02 AS LOTA02,		
+		       ST.LOTA03 AS LOTA03,		
+		       ST.LOTA04 AS LOTA04,		
+		       ST.LOTA05 AS LOTA05,		
+		       ST.LOTA06 AS LOTA06,		
+		       ST.LOTA07 AS LOTA07,		
+		       ST.LOTA08 AS LOTA08,		
+		       ST.LOTA09 AS LOTA09,		
+		       ST.LOTA10 AS LOTA10,		
+		       ST.LOTA11 AS LOTA11,		
+		       ST.LOTA12 AS LOTA12,		
+		       ST.LOTA13 AS LOTA13,		
+		       ST.LOTA14 AS LOTA14,		
+		       ST.LOTA15 AS LOTA15,		
+		       ST.LOTA16 AS LOTA16,		
+		       ST.LOTA17 AS LOTA17,		
+		       ST.LOTA18 AS LOTA18,		
+		       ST.LOTA19 AS LOTA19,		
+		       ST.LOTA20 AS LOTA20,	
+		       ST.LOTA01 AS PTLT01,		
+		       ST.LOTA02 AS PTLT02,		
+		       ST.LOTA03 AS PTLT03,		
+		       ST.LOTA04 AS PTLT04,		
+		       ST.LOTA05 AS PTLT05,		
+		       ST.LOTA06 AS PTLT06,		
+		       ST.LOTA07 AS PTLT07,		
+		       ST.LOTA08 AS PTLT08,		
+		       ST.LOTA09 AS PTLT09,		
+		       ST.LOTA10 AS PTLT10,		
+		       ST.LOTA11 AS PTLT11,		
+		       ST.LOTA12 AS PTLT12,		
+		       ST.LOTA13 AS PTLT13,		
+		       ST.LOTA14 AS PTLT14,		
+		       ST.LOTA15 AS PTLT15,		
+		       ST.LOTA16 AS PTLT16,		
+		       ST.LOTA17 AS PTLT17,		
+		       ST.LOTA18 AS PTLT18,		
+		       ST.LOTA19 AS PTLT19,		
+		       ST.LOTA20 AS PTLT20,
+		       SM.OUTDMT		
+		  FROM STKKY ST
+		       INNER JOIN SKUWC SW ON SW.OWNRKY = ST.OWNRKY AND SW.WAREKY = ST.WAREKY AND SW.SKUKEY = ST.SKUKEY 		
+		       INNER JOIN SKUMA SM ON SM.OWNRKY = ST.OWNRKY AND SM.SKUKEY = ST.SKUKEY		
+		       INNER JOIN AREMA AM ON AM.WAREKY = ST.WAREKY AND AM.AREAKY = ST.AREAKY  		
+		 WHERE ST.OWNRKY = #{OWNRKY} 		
+		   AND ST.WAREKY = #{WAREKY} 		
+		   AND ST.QTSIWH - GREATEST(ST.QTSALO, ST.QTSPMO) - ST.QTSBLK > 0 		
+		   AND ST.QTSPMI = 0 		
+		   AND AM.AREATY NOT IN ('SYS', 'SHIP') 		
+		   AND AM.AREATY IN ('STOR','RECV') 		
+		   AND LOTA03 != '21SV'
+		   AND (ST.TRNUID = #{BARCODE} OR ST.LOCAKY = #{BARCODE} OR ST.SKUKEY = #{BARCODE}) 		
+
+    </select>
+	
+	
+
+	<!-- MSD00 생성 VALDATION 체크 -->
+	<select id="MSD00_VALDATION_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT CASE WHEN (SELECT COUNT(1) FROM LOCMA WHERE WAREKY = #{WAREKY} AND LOCAKY = #{LOCATG}) &lt; 1 THEN 'OUT_M0070'   
+		            ELSE ''
+		        END AS MSGKEY
+		     , 1 as dummy
+		     , (SELECT DOCCAT FROM DOCTM WHERE DOCUTY = #{DOCUTY}) AS DOCCAT
+		  FROM DUAL
+	</select>
+	
+	<!-- **[MSD01] 재고실사 조회 -->
+	<select id="MSD01_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT I.PHYIKY || I.PHYIIT AS KEY,
+		       I.PHYIKY AS PHYIKY,
+		       I.PHYIIT AS PHYIIT,
+		       I.STOKKY AS STOKKY,
+		       I.LOTNUM AS LOTNUM,
+		       I.LOCAKY AS LOCAKY,
+		       I.TRNUID AS TRNUID,
+		       I.SECTID AS SECTID,
+		       I.PACKID AS PACKID,
+		       I.QTADJU AS QTADJU,
+		       I.QTBLKD AS QTBLKD,
+		       I.QTYUOM AS QTYUOM,
+		       I.TRUNTY AS TRUNTY,
+		       I.MEASKY AS MEASKY,
+		       I.UOMKEY AS UOMKEY,
+		       I.QTPUOM AS QTPUOM,
+		       I.DUOMKY AS DUOMKY,
+		       I.SUBSIT AS SUBSIT,
+		       I.SUBSFL AS SUBSFL,
+		       I.REFDKY AS REFDKY,
+		       I.REFDIT AS REFDIT,
+		       I.REFCAT AS REFCAT,
+		       I.OWNRKY AS OWNRKY,
+		       I.SKUKEY AS SKUKEY,
+		       I.ASKU01 AS OLDSKU,
+		       I.LOTA01 AS LOTA01,
+		       I.LOTA02 AS LOTA02,
+		       I.LOTA03 AS LOTA03,
+		       I.LOTA04 AS LOTA04,
+		       I.LOTA05 AS LOTA05,
+		       I.LOTA06 AS LOTA06,
+		       I.LOTA07 AS LOTA07,
+		       I.LOTA08 AS LOTA08,
+		       I.LOTA09 AS LOTA09,
+		       I.LOTA10 AS LOTA10,
+		       I.LOTA11 AS LOTA11,
+		       I.LOTA12 AS LOTA12,
+		       I.LOTA13 AS LOTA13,
+		       I.LOTA14 AS LOTA14,
+		       I.LOTA15 AS LOTA15,
+		       I.LOTA16 AS LOTA16,
+		       I.LOTA17 AS LOTA17,
+		       I.LOTA18 AS LOTA18,
+		       I.LOTA19 AS LOTA19,
+		       I.LOTA20 AS LOTA20,
+		       I.AWMSNO AS AWMSNO,
+		       I.AREAKY AS AREAKY,
+		       I.DESC01 AS DESC01,
+		       I.DESC02 AS DESC02,
+		       I.ASKU01 AS ASKU01,
+		       I.ASKU02 AS ASKU02,
+		       I.ASKU03 AS ASKU03,
+		       I.ASKU04 AS ASKU04,
+		       I.ASKU05 AS ASKU05,
+		       I.EANCOD AS EANCOD,
+		       I.GTINCD AS GTINCD,
+		       I.SKUG01 AS SKUG01,
+		       I.SKUG02 AS SKUG02,
+		       I.SKUG03 AS SKUG03,
+		       I.SKUG04 AS SKUG04,
+		       I.SKUG05 AS SKUG05,
+		       I.QTSPHY AS QTSPHY,
+		       I.QTSIWH AS QTSIWH,
+		       I.QTDUOM AS QTDUOM,
+		       TRUNC(I.QTSIWH/I.QTDUOM) AS BOXQTY,
+		       MOD(I.QTSIWH,I.QTDUOM) AS REMQTY,
+		       I.QTSPHY AS QTSPHY,
+		       I.QTSALO AS QTSALO,
+		       I.QTSIWH-GREATEST(I.QTSALO, I.QTSPMO) - I.QTBLKD AS QTSIWH,
+		       DECODE(HHTTID,' ',I.QTSIWH-GREATEST(I.QTSALO, I.QTSPMO) - I.QTBLKD,QTYPDA) AS QTYWRK 
+		  FROM PHYDH H, PHYDI I, LOCMA S 
+		 WHERE H.WAREKY = #{WAREKY} 
+		   AND H.PHYIKY = I.PHYIKY 
+		   AND H.WAREKY = S.WAREKY 
+		   AND I.OWNRKY = #{OWNRKY} 
+		   AND I.LOCAKY = S.LOCAKY 
+		   AND H.PHYIKY = #{PHYIKY} 
+		   AND SUBSTR(I.PHYIIT,5,2) = '00' 
+		   AND ((H.PHSCTY = '520')) 
+	</select>
+	
+	<!-- **[MSD02] 수시조정 조회 -->
+	<select id="MSD02_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT A.STOKKY AS STOKKY,
+		       A.WAREKY AS WAREKY,
+		       A.STOKKY AS STOKKY,
+		       A.ZONEKY AS ZONEKY,
+		       A.QTSIWH - GREATEST(A.QTSALO, A.QTSPMO) - A.QTSBLK AS QTSIWH,
+		       A.QTSIWH - GREATEST(A.QTSALO, A.QTSPMO) - A.QTSBLK AS QTYWRK,
+		       A.QTDUOM AS QTDUOM,
+		       TRUNC((A.QTSIWH - GREATEST(A.QTSALO, A.QTSPMO) - A.QTSBLK)/A.QTDUOM) AS BOXQTY,
+		       MOD((A.QTSIWH - GREATEST(A.QTSALO, A.QTSPMO) - A.QTSBLK),A.QTDUOM) AS REMQTY,
+		       A.LOCAKY AS LOCAKY,
+		       A.SECTID AS SECTID,
+		       A.PACKID AS PAIDID,
+		       A.TRNUID AS TRNUID,
+		       A.MEASKY AS SMEAKY,
+		       A.UOMKEY AS SUOMKY,
+		       A.QTPUOM AS QTSPUM,
+		       A.DUOMKY AS SDUOKY,
+		       A.QTDUOM AS QTSDUM,
+		       A.OWNRKY AS OWNRKY,
+		       A.SKUKEY AS SKUKEY,
+		       A.ASKU01 AS OLDSKU,
+		       A.LOTNUM AS LOTNUM,
+		       A.DESC01 AS DESC01,
+		       A.DESC02 AS DESC02,
+		       A.ASKU01 AS ASKU01,
+		       A.ASKU02 AS ASKU02,
+		       A.ASKU03 AS ASKU03,
+		       F.ASKU04 AS ASKU04,
+		       F.ASKU05 AS ASKU05,
+		       A.SKUG01 AS SKUG01,
+		       A.SKUG02 AS SKUG02,
+		       A.SKUG03 AS SKUG03,
+		       A.SKUG04 AS SKUG04,
+		       F.SKUG05 AS SKUG05,
+		       A.AREAKY AS AREAKY,
+		       A.LOTA01 AS LOTA01,
+		       A.LOTA02 AS LOTA02,
+		       A.LOTA03 AS LOTA03,
+		       A.LOTA04 AS LOTA04,
+		       A.LOTA05 AS LOTA05,
+		       A.LOTA06 AS LOTA06,
+		       A.LOTA07 AS LOTA07,
+		       A.LOTA08 AS LOTA08,
+		       A.LOTA09 AS LOTA09,
+		       A.LOTA10 AS LOTA10,
+		       A.LOTA11 AS LOTA11,
+		       A.LOTA12 AS LOTA12,
+		       A.LOTA13 AS LOTA13,
+		       A.LOTA14 AS LOTA14,
+		       A.LOTA15 AS LOTA15,
+		       A.LOTA16 AS LOTA16,
+		       A.LOTA17 AS LOTA17,
+		       A.LOTA18 AS LOTA18,
+		       A.LOTA19 AS LOTA19,
+		       A.LOTA20 AS LOTA20
+		FROM   STKKY A,
+		       WAHMA B,
+		       SKUWC D,
+		       SKUMA F,
+		       AREMA E 
+		WHERE  A.WAREKY = B.WAREKY 
+		AND    A.WAREKY = #{WAREKY}
+		AND    A.OWNRKY = #{OWNRKY}
+		AND    A.WAREKY = D.WAREKY 
+		AND    A.OWNRKY = D.OWNRKY 
+		AND    A.SKUKEY = D.SKUKEY 
+		AND    A.WAREKY = E.WAREKY 
+		AND    A.AREAKY = E.AREAKY 
+		AND    A.QTSIWH - GREATEST(A.QTSALO, A.QTSPMO) - A.QTSBLK > 0 
+		AND    A.QTSPMI = 0 
+		AND    E.AREATY NOT IN ('SYST', 'SHIP') 
+		AND    E.AREATY IN ('STOR','RECV') 
+		AND    A.SKUKEY = F.SKUKEY  
+		AND    A.OWNRKY = F.OWNRKY  
+		AND    (A.TRNUID = #{BARCODE} OR A.LOCAKY = #{BARCODE})
+		AND    A.LOTA06 NOT IN ('10', '30') 
+		ORDER BY A.SKUKEY 
+	</select>
+	
+	<!-- **[MSD03] 위치별 재고현황 조회 -->
+	<select id="MSD03_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT 
+		       A.LOCAKY AS LOCAKY,
+		       A.TRNUID AS TRNUID,
+		       (SELECT CDESC1 FROM CMCDV WHERE CMCDKY = 'LOTA06' AND CMCDVL = A.LOTA06) AS LOTA06,
+		       A.LOTA13 AS LOTA13,
+		       F.SKUKEY AS SKUKEY,
+		       A.ASKU01 AS OLDSKU,
+		       F.DESC01 AS DESC01,
+		       A.QTDUOM AS QTDUOM,
+		       SUM(A.QTSIWH) AS QTYIN,
+		
+		       SUM(A.QTSIWH - GREATEST(A.QTSALO, A.QTSPMO) - A.QTSBLK) AS QTSIWH,
+		       TRUNC(SUM(A.QTSIWH - GREATEST(A.QTSALO, A.QTSPMO) - A.QTSBLK)/MAX(F.QTYSTD)) AS PLTQTY,
+		       TRUNC(MOD(SUM(A.QTSIWH - GREATEST(A.QTSALO, A.QTSPMO) - A.QTSBLK),MAX(F.QTYSTD))/MAX(F.QTDUOM)) AS BOXQTY,      
+		       MOD(SUM(A.QTSIWH - GREATEST(A.QTSALO, A.QTSPMO) - A.QTSBLK),MAX(F.QTDUOM)) AS REMQTY,   
+		
+		       SUM(A.QTSALO) AS QTSALO,
+		       SUM(A.QTSPMI) AS STSPMI,
+		       SUM(A.QTSPMO) AS STSPMO,
+		       SUM(A.QTSBLK) AS QTSBLK 
+		  FROM STKKY A,
+		       WAHMA B,
+		       SKUWC D,
+		       SKUMA F,
+		       AREMA E 
+		  WHERE A.WAREKY = B.WAREKY 
+		    AND A.WAREKY = #{WAREKY} 
+		    AND A.OWNRKY = #{OWNRKY} 
+		    AND A.WAREKY = D.WAREKY 
+		    AND A.OWNRKY = D.OWNRKY 
+		    AND A.SKUKEY = D.SKUKEY 
+		    AND A.WAREKY = E.WAREKY 
+		    AND A.AREAKY = E.AREAKY 
+		    AND (A.QTSIWH > 0 OR A.QTSPMI >0) 
+		    AND E.AREATY NOT IN ('SYST', 'SHIP') 
+		    AND E.AREATY IN ('STOR','RECV') 
+		    AND A.SKUKEY = F.SKUKEY  
+		    AND A.OWNRKY = F.OWNRKY  
+		    AND (A.LOCAKY = #{BARCODE} OR A.TRNUID = #{BARCODE}) 
+		GROUP BY A.LOCAKY, A.TRNUID, F.SKUKEY, F.DESC01, A.LOTA06, LOTA13, A.ASKU01, A.QTDUOM 
+	</select>
+	
+	<!-- **[MSD04] 바코드별 기준정보 조회 -->
+	<select id="MSD04_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT SM.SKUKEY AS SKUKEY, 
+		       SM.DESC01 AS DESC01, 
+		       LC.LOCAKY AS LOCAKY, 
+		       SM.QTDUOM AS QTDUOM, 
+		       DECODE(SM.QTYSTD,0,1,SM.QTYSTD)/DECODE(SM.QTDUOM,0,1,SM.QTDUOM) AS PLTBOX, 
+		       SM.QTYSTD AS QTYSTD, 
+		       SM.EANCOD AS EANCOD, 
+		       SM.GTINCD AS GTINCD 
+		         FROM SKUMA SM 
+		                    INNER JOIN SKUWC SW ON SM.OWNRKY = SW.OWNRKY AND SM.SKUKEY = SW.SKUKEY 
+		               LEFT OUTER JOIN LOCMA LC ON SW.WAREKY = LC.WAREKY AND SM.SKUKEY = LC.LOCSKU 
+		WHERE 1=1 
+		  AND (SM.SKUKEY = #{BARCODE} OR SM.EANCOD = #{BARCODE} OR SM.GTINCD = #{BARCODE}) 
+		  AND SW.WAREKY = #{WAREKY} 
+		  AND SM.OWNRKY = #{OWNRKY} 
+		ORDER BY 1 
+	</select>
+	
+	<!-- **[MSD06] 오프라인재고실사 조회 -->
+	<select id="MSD06_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT I.PHYIKY || I.PHYIIT AS KEY,
+		       I.PHYIKY AS PHYIKY,
+		       I.PHYIIT AS PHYIIT,
+		       I.STOKKY AS STOKKY,
+		       I.LOTNUM AS LOTNUM,
+		       I.LOCAKY AS LOCAKY,
+		       I.TRNUID AS TRNUID,
+		       I.SECTID AS SECTID,
+		       I.PACKID AS PACKID,
+		       I.QTADJU AS QTADJU,
+		       I.QTBLKD AS QTBLKD,
+		       I.QTYUOM AS QTYUOM,
+		       I.TRUNTY AS TRUNTY,
+		       I.MEASKY AS MEASKY,
+		       I.UOMKEY AS UOMKEY,
+		       I.QTPUOM AS QTPUOM,
+		       I.DUOMKY AS DUOMKY,
+		       I.SUBSIT AS SUBSIT,
+		       I.SUBSFL AS SUBSFL,
+		       I.REFDKY AS REFDKY,
+		       I.REFDIT AS REFDIT,
+		       I.REFCAT AS REFCAT,
+		       I.OWNRKY AS OWNRKY,
+		       I.SKUKEY AS SKUKEY,
+		       I.ASKU01 AS OLDSKU,
+		       I.LOTA01 AS LOTA01,
+		       I.LOTA02 AS LOTA02,
+		       I.LOTA03 AS LOTA03,
+		       I.LOTA04 AS LOTA04,
+		       I.LOTA05 AS LOTA05,
+		       I.LOTA06 AS LOTA06,
+		       I.LOTA07 AS LOTA07,
+		       I.LOTA08 AS LOTA08,
+		       I.LOTA09 AS LOTA09,
+		       I.LOTA10 AS LOTA10,
+		       I.LOTA11 AS LOTA11,
+		       I.LOTA12 AS LOTA12,
+		       I.LOTA13 AS LOTA13,
+		       I.LOTA14 AS LOTA14,
+		       I.LOTA15 AS LOTA15,
+		       I.LOTA16 AS LOTA16,
+		       I.LOTA17 AS LOTA17,
+		       I.LOTA18 AS LOTA18,
+		       I.LOTA19 AS LOTA19,
+		       I.LOTA20 AS LOTA20,
+		       I.AWMSNO AS AWMSNO,
+		       I.AREAKY AS AREAKY,
+		       I.DESC01 AS DESC01,
+		       I.DESC02 AS DESC02,
+		       I.ASKU01 AS ASKU01,
+		       I.ASKU02 AS ASKU02,
+		       I.ASKU03 AS ASKU03,
+		       I.ASKU04 AS ASKU04,
+		       I.ASKU05 AS ASKU05,
+		       I.EANCOD AS EANCOD,
+		       I.GTINCD AS GTINCD,
+		       I.SKUG01 AS SKUG01,
+		       I.SKUG02 AS SKUG02,
+		       I.SKUG03 AS SKUG03,
+		       I.SKUG04 AS SKUG04,
+		       I.SKUG05 AS SKUG05,
+		       I.QTSPHY AS QTSPHY,
+		       I.QTSIWH AS QTSIWH,
+		       I.QTDUOM AS QTDUOM,
+		       TRUNC(I.QTSIWH/I.QTDUOM) AS BOXQTY,
+		       MOD(I.QTSIWH,I.QTDUOM) AS REMQTY,
+		       I.QTSPHY AS QTSPHY,
+		       I.QTSALO AS QTSALO,
+		       I.QTSIWH-GREATEST(I.QTSALO, I.QTSPMO) - I.QTBLKD AS QTSIWH,
+		       DECODE(HHTTID,' ',I.QTSIWH-GREATEST(I.QTSALO, I.QTSPMO) - I.QTBLKD,QTYPDA) AS QTYWRK,
+		       I.QTYPDA,
+		       H.WAREKY
+		  FROM PHYDH H, PHYDI I, LOCMA S 
+		 WHERE H.WAREKY = #{WAREKY} 
+		   AND H.PHYIKY = I.PHYIKY 
+		   AND H.WAREKY = S.WAREKY 
+		   AND I.OWNRKY = #{OWNRKY} 
+		   AND I.LOCAKY = S.LOCAKY 
+		   AND H.PHYIKY = #{PHYIKY} 
+		   AND SUBSTR(I.PHYIIT,5,2) = '00' 
+		   AND ((H.PHSCTY = '520'))
+
+	</select>
+	
+	<!-- **[MSD06] 오프라인재고실사 조회 -->
+	<select id="PHYDI_VALIDATION_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(1) AS RESULT 
+		  FROM PHYDI 
+		 WHERE PHYIKY = #{PHYIKY} 
+		   AND PHYIIT = #{PHYIIT}
+	</select>
+</mapper>

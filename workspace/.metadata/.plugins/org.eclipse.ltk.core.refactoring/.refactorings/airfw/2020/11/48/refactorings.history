@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 3 elements to &apos;sajowms&apos;&#x0D;&#x0A;- Original project: &apos;airfw&apos;&#x0D;&#x0A;- Destination element: &apos;sajowms&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     doc&#x0D;&#x0A;     lib&#x0D;&#x0A;     erd" description="Copy folders" element1="doc" element2="lib" element3="erd" files="0" flags="589830" folders="3" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1606293036719" target="/sajowms" units="0" version="1.0"/>
+</session>

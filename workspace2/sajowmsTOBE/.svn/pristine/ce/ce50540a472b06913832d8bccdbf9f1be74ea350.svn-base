@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CenterClose">
+
+	<!-- **[CL01] 센터별미운영일관리 조회쿼리 -->
+	<select id="CL01_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT OWNRKY OWNRKY,
+	           CLSDAT CLSDAT,
+	           WAREKY WAREKY,
+	           TEXT01 TEXT01,
+	           CREDAT CREDAT,
+	           CRETIM CRETIM,
+	           CREUSR CREUSR,
+	           LMODAT LMODAT,
+	           LMOTIM LMOTIM,
+	           LMOUSR LMOUSR
+		  FROM CALMA
+	     WHERE OWNRKY = #{OWNRKY}
+	       AND WAREKY = #{WAREKY}
+	       AND CLSDAT LIKE #{YEAR} || #{MONTH}||'%'
+    </select>
+    
+<!--     <select id="COMBO_WAREKY_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT RT.WAREKY VALUE_COL,   
+	           WH.NAME01 TEXT_COL 
+	      FROM USRRA UR INNER JOIN ROLDF RD ON UR.UROLKY = RD.UROLKY
+	                	INNER JOIN ROLCT RT ON UR.UROLKY = RT.UROLKY
+	               		INNER JOIN WAHMA WH ON RT.WAREKY = WH.WAREKY
+	                	INNER JOIN OWNWC OW ON OW.WAREKY = WH.WAREKY
+	                	INNER JOIN ROLOW RW ON RD.UROLKY = RW.UROLKY AND OW.OWNRKY = RW.OWNRKY
+		 WHERE UR.USERID = #{SES_USER_ID}
+	       AND RW.OWNRKY = #{OWNRKY}
+	  ORDER BY RT.WAREKY
+	</select>
+	
+	**[CL01] 센터별미운영일관리 콤보쿼리
+	<select id="COMBO_OWNRKY_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT OWNRKY VALUE_COL, 
+      		   NVL((SELECT NAME01 FROM OWNER WHERE OWNRKY = ROLOW.OWNRKY), ' ') TEXT_COL
+		FROM ROLOW
+		WHERE UROLKY = #{UROLKY}
+	</select> -->
+	
+	<!-- **[CL01] 센터별미운영일관리 추가쿼리 -->
+	<insert id="CL01_INSERT"  parameterType="hashmap">
+		INSERT INTO CALMA (
+            <if test="OWNRKY != null and OWNRKY != ''">OWNRKY,</if>
+            <if test="WAREKY != null and WAREKY != ''">WAREKY,</if>
+            <if test="CLSDAT != null and CLSDAT != ''">CLSDAT,</if>
+            <if test="TEXT01 != null and TEXT01 != ''">TEXT01,</if>
+            CREDAT,
+            CRETIM,
+            CREUSR,
+            LMODAT,
+            LMOTIM,
+            LMOUSR
+			) 
+	 VALUES(
+	 		<if test="OWNRKY != null and OWNRKY != ''">#{OWNRKY},</if>
+            <if test="WAREKY != null and WAREKY != ''">#{WAREKY},</if>
+            <if test="CLSDAT != null and CLSDAT != ''">#{CLSDAT},</if>
+            <if test="TEXT01 != null and TEXT01 != ''">#{TEXT01},</if>
+            TO_CHAR(SYSDATE, 'YYYYMMDD'),
+            TO_CHAR(SYSDATE, 'HH24MISS'),
+	 		#{SES_USER_ID},
+            TO_CHAR(SYSDATE, 'YYYYMMDD'),
+            TO_CHAR(SYSDATE, 'HH24MISS'),
+            #{SES_USER_ID}
+			)
+	</insert>
+	
+	<!-- **[CL01] 센터별미운영일관리 수정쿼리 -->
+	<update id="CL01_UPDATE"  parameterType="hashmap">
+		UPDATE CALMA
+		   SET TEXT01 = #{TEXT01},
+		       CLSDAT = to_char(TO_DATE(CLSDAT,'YYYYMMDDHH24MI'),'YYYYMMDD'),
+		       LMODAT = to_char(SYSDATE,'YYYYMMDD'),
+		       LMOTIM = to_char(SYSDATE,'HH24MISS'),
+		       LMOUSR = #{SES_USER_ID}
+		 WHERE OWNRKY = #{OWNRKY}
+		   AND WAREKY = #{WAREKY}
+		   AND CLSDAT = #{CLSDAT}
+	</update>
+	
+	<!-- **[CL01] 센터별미운영일관리 삭제쿼리 -->
+	<delete id="CL01_DELETE"  parameterType="hashmap">
+		   DELETE FROM CALMA
+	        WHERE OWNRKY = #{OWNRKY}
+	          AND WAREKY = #{WAREKY}
+	          AND CLSDAT = #{CLSDAT}
+	</delete>
+	
+	<!-- **[CL01] 센터별미운영일관리 매핑쿼리 -->
+	<select id="CL01_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(*) AS CHK
+		FROM CALMA
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND CLSDAT = #{CLSDAT}
+	</select>
+	
+	
+	<!-- **[CL02] 출고마감 조회쿼리 -->
+	<select id="CL02_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT CLSDAT AS CLSDAT,
+	       	   CLSTYP AS CLSTYP,
+			   CDESC1 AS CDESC1,
+			   STATUS AS STATUS,
+			   STATUS2 AS STATUS2
+  		  FROM ORDCL_NOTICE
+  		 WHERE 1=1
+		<if test="CLSDAT != null and CLSDAT != ''">
+ 		   AND CLSDAT = #{CLSDAT}
+		</if>
+ 		ORDER BY CLSDAT,ORDSEQ,CLSTYP
+    </select>
+    
+	
+	<!-- **[CL02] 출고마감 추가쿼리 -->
+ 	<insert id="CL02_INSERT"  parameterType="hashmap">
+		INSERT INTO ORDCL_NOTICE
+		SELECT #{CLSDAT}, 
+		       CMCDVL, 
+		       CDESC1, 
+		       'N',
+		       'N',
+		       TO_NUMBER(USARG2)
+		FROM CMCDV 
+		WHERE CMCDKY = 'PTNG08'
+	</insert> 
+	
+	<!-- **[CL02] 출고마감 수정쿼리 -->
+	<update id="CL02_UPDATE"  parameterType="hashmap">
+		UPDATE ORDCL_NOTICE
+		   SET STATUS = #{STATUS},
+		       STATUS2 = #{STATUS2}
+		 WHERE CLSTYP = #{CLSTYP}
+		   AND CLSDAT = #{CLSDAT}
+	</update>
+	
+	<!-- **[CL02] 출고마감 삭제쿼리 -->
+	<!-- <delete id="CL01_DELETE"  parameterType="hashmap">
+		   DELETE FROM CALMA
+	        WHERE OWNRKY = #{OWNRKY}
+	          AND WAREKY = #{WAREKY}
+	          AND CLSDAT = #{CLSDAT}
+	</delete> -->
+	
+	<!-- **[CL02] 출고마감 매핑쿼리 -->
+	<select id="CL02_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(CLSDAT) AS CHK
+		FROM ORDCL_NOTICE
+		WHERE 1=1 
+		<if test="CLSDAT != null and CLSDAT != ''">
+		 AND CLSDAT = #{CLSDAT}
+		</if>
+
+	</select>
+	
+</mapper>

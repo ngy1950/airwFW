@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="android-processes-1.0.8">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.android/build-cache/db6da62799a54850e7be8f3f2c13bf623a9e4b86/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/db6da62799a54850e7be8f3f2c13bf623a9e4b86/output/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jaredrummler/android-processes/1.0.8/71fe74134fe2e03a8125b7526df0692ee0b8b79a/android-processes-1.0.8-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

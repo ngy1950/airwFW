@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.samyang.and.logistics.mobile.util.view.TextViewYJH
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingBottom="@dimen/h17"
+    android:paddingTop="@dimen/w17"
+    android:paddingLeft="@dimen/w50"
+    android:paddingRight="@dimen/w50"
+    android:textSize="@dimen/textSize_29pt"
+    android:textColor="#000000"
+/>

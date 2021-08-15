@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AdvancedShipmentNotice">
+
+	<!-- AS09  입고예정 정보 조회 --> 
+    <select id="AS09_HEAD_LIST"  parameterType="hashmap" resultType="DataMap">
+    	SELECT AH.ASNDKY AS KEY,
+		       AH.ASNDKY AS ASNDKY,
+		       AH.WAREKY AS WAREKY,
+		       IFW.ORDDAT AS ORDDAT,
+		       NVL(WH.NAME01,' ') AS WAREKYNM,
+		       AH.ASNTTY AS ASNTTY,
+		       NVL(DT.SHORTX,' ') AS ASNTTYNM,
+		       AH.STATDO AS STATDO,
+		       AH.DOCDAT AS DOCDAT,
+		       AH.DOCCAT AS DOCCAT,
+		       NVL(DC.SHORTX,' ') AS DOCCATNM,
+		       AH.OWNRKY AS OWNRKY,
+		       AH.DPTNKY AS DPTNKY,
+		       NVL(VD.NAME01,' ') AS DPTNKYNM,
+		       AH.DRELIN AS DRELIN,
+		       AH.PRCPTD AS PRCPTD,
+		       AH.INDDCL AS INDDCL,
+		       AH.RSNCOD AS RSNCOD,
+		       AH.RSNRET AS RSNRET,
+		       AI.SLGORT AS LGORT,
+		       NVL(LG.NAME01,' ') AS LGORTNM,
+		       AH.QTYASN AS QTYASN,
+		       AH.QTYRCV AS QTYRCV,
+		       AH.USRID1 AS USRID1,
+		       AH.UNAME1 AS UNAME1,
+		       AH.DEPTID1 AS DEPTID1,
+		       AH.DNAME1 AS DNAME1,
+		       AH.USRID2 AS USRID2,
+		       AH.UNAME2 AS UNAME2,
+		       AH.DEPTID2 AS DEPTID2,
+		       AH.DNAME2 AS DNAME2,
+		       AH.USRID3 AS USRID3,
+		       AH.UNAME3 AS UNAME3,
+		       AH.DEPTID3 AS DEPTID3,
+		       AH.DNAME3 AS DNAME3,
+		       AH.USRID4 AS USRID4,
+		       AH.UNAME4 AS UNAME4,
+		       AH.DEPTID4 AS DEPTID4,
+		       AH.DNAME4 AS DNAME4,
+		       AH.DOCTXT AS DOCTXT,
+		       AI.SEBELN AS EBELN,
+		       AH.CREDAT AS CREDAT,
+		       AH.CRETIM AS CRETIM,
+		       AH.CREUSR AS CREUSR,
+		       CU.NMLAST AS CUSRNM,
+		       AH.LMODAT AS LMODAT,
+		       AH.LMOTIM AS LMOTIM,
+		       AH.LMOUSR AS LMOUSR,
+		       LU.NMLAST AS LUSRNM
+		  FROM ASNDH AH
+		       INNER JOIN ASNDI AI
+		               ON AI.ASNDKY = AH.ASNDKY
+		       INNER JOIN  ( SELECT AI.ASNDKY, 
+		                            AI.ASNDIT,
+		                            IFW.ORDDAT
+		                       FROM ASNDI AI, IFWMS103 IFW
+		                       WHERE IFW.OWNRKY = #{OWNRKY}
+		                       	AND IFW.WAREKY = #{WAREKY}
+		                      	AND AI.REFDKY = IFW.SEBELN    
+		                        AND AI.REFDIT = IFW.SEBELP
+		                      GROUP BY  AI.ASNDKY, 
+		                            AI.ASNDIT,
+		                            IFW.ORDDAT
+		                       ) IFW 
+		               ON IFW.ASNDKY = AH.ASNDKY  
+		       LEFT OUTER JOIN USRMA CU
+		               ON CU.USERID = AH.CREUSR
+		       LEFT OUTER JOIN USRMA LU
+		               ON LU.USERID = AH.LMOUSR
+		       LEFT OUTER JOIN WAHMA WH
+		               ON WH.WAREKY = AH.WAREKY
+		       LEFT OUTER JOIN DOCCM DC
+		               ON DC.DOCCAT = '050'
+		       LEFT OUTER JOIN DOCTM DT
+		               ON DT.DOCUTY = AH.ASNTTY
+		       LEFT OUTER JOIN BZPTN VD
+		               ON VD.PTNRKY = AH.DPTNKY
+		              AND VD.OWNRKY = AH.OWNRKY
+		              AND VD.PTNRTY = '0002'
+		       LEFT OUTER JOIN BZPTN LG
+		               ON LG.PTNRKY = AH.DPTNKY
+		              AND LG.OWNRKY = AH.OWNRKY
+		              AND LG.PTNRTY = '0002'
+		 WHERE 1 = 1
+				AND AH.OWNRKY = #{OWNRKY}
+				AND AH.WAREKY = #{WAREKY}
+				
+			<if test="ASNTTY != null and ASNTTY != ''">
+				AND AH.ASNTTY = #{ASNTTY}
+			</if>
+			
+			<if test="RANGE_SQL != null and RANGE_SQL != ''">
+				${RANGE_SQL}
+			</if>
+		 GROUP BY AH.ASNDKY, AH.WAREKY, AH.ASNTTY, AH.STATDO, AH.DOCDAT, AH.DOCCAT, AH.OWNRKY, AH.DPTNKY,
+		          AH.DRELIN, AH.PRCPTD, AH.INDDCL, AH.RSNCOD, AH.RSNRET, AH.QTYASN, AH.QTYRCV, AI.SEBELN, AI.SLGORT,
+		          AH.CREDAT, AH.CRETIM, AH.CREUSR, CU.NMLAST, AH.LMODAT, AH.LMOTIM, AH.LMOUSR, LU.NMLAST,
+		          WH.NAME01, DC.SHORTX, DT.SHORTX, VD.NAME01, LG.NAME01,
+		          AH.USRID1, AH.UNAME1, AH.DEPTID1, AH.DNAME1, AH.USRID2, AH.UNAME2, AH.DEPTID2, AH.DNAME2,
+		          AH.USRID3, AH.UNAME3, AH.DEPTID3, AH.DNAME3, AH.USRID4, AH.UNAME4, AH.DEPTID4, AH.DNAME4,
+		          AH.DOCTXT, IFW.ORDDAT
+		ORDER BY 1,2,3
+    </select>
+    
+    <!-- AS09  입고예정 정보 조회 --> 
+    <select id="AS09_ITEM_LIST"  parameterType="hashmap" resultType="DataMap">
+    	SELECT ROW_NUMBER() OVER(ORDER BY AI.ASNDKY, AI.ASNDKY) AS NUM,
+		       AI.ASNDKY  AS KEY,
+		       AI.ASNDKY  AS ASNDKY,
+		       AI.ASNDIT  AS ASNDIT,
+		       AI.STATIT  AS STATIT,
+		       CM.CDESC1  AS STATITNM,
+		       AI.SKUKEY  AS SKUKEY,
+		       IFW.ORDQTY AS POIQTY,
+		       NVL(IFW.ORDQTY-AI.QTYASN,0) AS QTYASN, 
+		       NVL(  TRUNC((AI.QTYASN) / DECODE(MI.QTPUOM, 0, NULL,MI.QTPUOM )) ,0) AS BOXQTY,
+		       DECODE(SM.DLGORT, 'Y', NVL(CEIL((AI.QTYASN) / DECODE(MI.QTPUOM, 0, NULL,MI.QTPUOM )) ,0), 0) AS PBOXQTY,
+		       NVL(MI.QTPUOM,0) AS BXIQTY,
+		       NVL(MOD(AI.QTYASN,MI.QTPUOM),0) AS REMQTY,        
+		       NVL(  TRUNC((AI.QTYASN) / DECODE(MIP.QTPUOM, 0, NULL, MIP.QTPUOM) ) ,0) AS PLTQTY,
+		       NVL(MIP.QTPUOM,0) AS PLTQTYCAL,
+		       AI.QTYASN  AS QTYASN,
+		       AI.QTYRCV  AS QTYRCV,
+		       AI.QTYUOM  AS QTYUOM,
+		       AI.MEASKY  AS MEASKY,
+		       AI.UOMKEY  AS UOMKEY,
+		       AI.QTPUOM  AS QTPUOM,
+		       AI.DUOMKY  AS DUOMKY,
+		       AI.QTDUOM  AS QTDUOM,
+		       AI.RCSTKY  AS RCSTKY,
+		       AI.LOCARV  AS LOCARV,
+		       AI.LOTA01  AS LOTA01,
+		       BZ.NAME01  AS LOTA01NM,
+		       AI.LOTA02  AS LOTA02,
+		       AI.LOTA03  AS LOTA03,
+		       AI.LOTA04  AS LOTA04,
+		       AI.LOTA05  AS LOTA05,
+		       AI.LOTA06  AS LOTA06,
+		       AI.LOTA07  AS LOTA07,
+		       AI.LOTA08  AS LOTA08,
+		       AI.LOTA09  AS LOTA09,
+		       AI.LOTA10  AS LOTA10,
+		       AI.LOTA11  AS LOTA11,
+		       AI.LOTA12  AS LOTA12,
+		       AI.LOTA13  AS LOTA13,
+		       AI.LOTA14  AS LOTA14,
+		       AI.LOTA15  AS LOTA15,
+		       AI.LOTA16  AS LOTA16,
+		       AI.LOTA17  AS LOTA17,
+		       AI.LOTA18  AS LOTA18,
+		       AI.LOTA19  AS LOTA19,
+		       AI.LOTA20  AS LOTA20,
+		       AI.LRCPTD  AS LRCPTD,
+		       AI.REFDKY  AS REFDKY,
+		       AI.REFDIT  AS REFDIT,
+		       AI.REFCAT  AS REFCAT,
+		       AI.EASNKY  AS EASNKY,
+		       AI.EASNIT  AS EASNIT,
+		       AI.DESC01  AS DESC01,
+		       AI.DESC02  AS DESC02,
+		       AI.ASKU01  AS ASKU01,
+		       AI.ASKU02  AS ASKU02,
+		       AI.ASKU03  AS ASKU03,
+		       AI.ASKU04  AS ASKU04,
+		       AI.ASKU05  AS ASKU05,
+		       AI.EANCOD  AS EANCOD,
+		       AI.GTINCD  AS GTINCD,
+		       AI.SKUG01  AS SKUG01,
+		       AI.SKUG02  AS SKUG02,
+		       AI.SKUG03  AS SKUG03,
+		       AI.SKUG04  AS SKUG04,
+		       AI.SKUG05  AS SKUG05,
+		       NVL(AI.GRSWGT,0) * NVL(AI.QTYASN,0)  AS GRSWGT,
+		       NVL(AI.NETWGT,0) * NVL(AI.QTYASN,0)  AS NETWGT,
+		       AI.WGTUNT  AS WGTUNT,
+		       AI.LENGTH  AS LENGTH,
+		       AI.WIDTHW  AS WIDTHW,
+		       AI.HEIGHT  AS HEIGHT,
+		       AI.CUBICM  AS CUBICM,
+		       AI.CAPACT  AS CAPACT,
+		       AI.SMANDT  AS SMANDT,
+		       AI.SEBELN  AS SEBELN,
+		       AI.SEBELP  AS SEBELP,
+		       AI.SZMBLNO AS SZMBLNO,
+		       AI.SZMIPNO AS SZMIPNO,
+		       AI.STRAID  AS STRAID,
+		       AI.SVBELN  AS SVBELN,
+		       AI.SPOSNR  AS SPOSNR,
+		       AI.STKNUM  AS STKNUM,
+		       AI.STPNUM  AS STPNUM,
+		       AI.SWERKS  AS SWERKS,
+		       AI.SLGORT  AS SLGORT,
+		       AI.SDATBG  AS SDATBG,
+		       AI.STDLNR  AS STDLNR,
+		       AI.SSORNU  AS SSORNU,
+		       AI.SSORIT  AS SSORIT,
+		       AI.SMBLNR  AS SMBLNR,
+		       AI.SZEILE  AS SZEILE,
+		       AI.SMJAHR  AS SMJAHR,
+		       AI.SXBLNR  AS SXBLNR,
+		       AI.SBKTXT  AS SBKTXT,
+		       AI.AWMSNO  AS AWMSNO,
+		       IFW.BUYCOST AS BUYCOST,
+		       IFW.BUYAMT  AS BUYAMT,
+		       IFW.VATAMT  AS VATAMT,
+		       AI.CREDAT  AS CREDAT,
+		       AI.CRETIM  AS CRETIM,
+		       AI.CREUSR  AS CREUSR,
+		       CU.NMLAST  AS CUSRNM,
+		       AI.LMODAT  AS LMODAT,
+		       AI.LMOTIM  AS LMOTIM,
+		       AI.LMOUSR  AS LMOUSR,
+		       LU.NMLAST  AS LUSRNM,
+		       SM.OUTDMT AS OUTDMT,
+		       0 AS GRSWGTCNT,
+		       0 AS NETWGTCNT,
+		       NVL(TO_DATE(TRIM(AI.LOTA13),'YYYYMMDD') - TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD')),0) AS DTREMDAT,
+		       NVL(TRUNC(((TO_DATE(TRIM(AI.LOTA13),'YYYYMMDD') - TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD')))/SM.OUTDMT) * 100),0) AS DTREMRAT,
+		       AH.WAREKY AS WAREKY
+		  FROM ASNDI AI INNER JOIN ASNDH AH ON AI.ASNDKY = AH.ASNDKY
+		                INNER JOIN  ( SELECT AI.ASNDKY, AI.ASNDIT, IFW.SEBELN, IFW.SEBELP, 
+		                                     IFW.ORDQTY, IFW.BUYCOST, IFW.BUYAMT, IFW.VATAMT, IFW.ORDDAT
+		                                FROM ASNDI AI, IFWMS103 IFW
+		                               WHERE AI.REFDKY = IFW.SEBELN    
+		                                 AND AI.REFDIT = IFW.SEBELP
+		                                 AND IFW.XSTAT IN ('Y','N','R','D')
+		                               GROUP BY IFW.SEBELN, IFW.SEBELP, AI.ASNDKY, AI.ASNDIT, IFW.ORDQTY,
+		                                        IFW.BUYCOST, IFW.BUYAMT, IFW.VATAMT,IFW.ORDDAT ) IFW ON AI.ASNDKY = IFW.ASNDKY 
+		                                                                                            AND AI.ASNDIT = IFW.ASNDIT
+		                LEFT OUTER JOIN SKUMA SM ON SM.OWNRKY = AH.OWNRKY AND SM.SKUKEY = AI.SKUKEY
+		                LEFT OUTER JOIN USRMA CU ON CU.USERID = AI.CREUSR
+		                LEFT OUTER JOIN USRMA LU ON LU.USERID = AI.LMOUSR
+		                LEFT OUTER JOIN BZPTN BZ ON BZ.OWNRKY = AH.OWNRKY AND BZ.PTNRKY = AH.DPTNKY AND BZ.PTNRTY = '0002'
+		                LEFT OUTER JOIN MEASI MI ON MI.OWNRKY = AH.OWNRKY AND MI.WAREKY = AH.WAREKY
+		                                        AND MI.MEASKY = AI.MEASKY AND MI.UOMKEY = 'BOX'  
+		                LEFT OUTER JOIN MEASI MIP ON MIP.OWNRKY = AH.OWNRKY AND MIP.WAREKY = AH.WAREKY
+		                                         AND MIP.MEASKY = AI.MEASKY AND MIP.UOMKEY = 'PL' 
+		                LEFT OUTER JOIN CMCDV CM ON CM.CMCDKY = 'STATIT' AND CM.CMCDVL = AI.STATIT
+		 WHERE 1 = 1
+				AND AH.OWNRKY = #{OWNRKY}
+				AND AH.WAREKY = #{WAREKY}
+				
+			<if test="ASNDKY != null and ASNDKY != ''">
+				AND AH.ASNDKY = #{ASNDKY}
+			</if>
+			
+			<if test="RANGE_SQL != null and RANGE_SQL != ''">
+				${RANGE_SQL}
+			</if>
+		ORDER BY AI.ASNDKY, AI.ASNDIT
+    </select>
+    
+    <!-- [OUTTIM] AS09 센터입고시간 콤보 -->
+	<select id="COMBO_OUTTIM_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT '070000' AS VALUE_COL, 
+		       '07:00' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '073000' AS VALUE_COL,
+		       '07:30' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '080000' AS VALUE_COL,
+		       '08:00' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '083000' AS VALUE_COL,
+		       '08:30' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '090000' AS VALUE_COL,
+		       '09:00' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '093000' AS VALUE_COL,
+		       '09:30' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '100000' AS VALUE_COL,
+		       '10:00' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '103000' AS VALUE_COL,
+		       '10:30' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '110000' AS VALUE_COL,
+		       '11:00' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '113000' AS VALUE_COL,
+		       '11:30' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '120000' AS VALUE_COL,
+		       '12:00' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '123000' AS VALUE_COL,
+		       '12:30' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '130000' AS VALUE_COL,
+		       '13:00' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '133000' AS VALUE_COL,
+		       '13:30' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '140000' AS VALUE_COL,
+		       '14:00' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '143000' AS VALUE_COL,
+		       '14:30' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '150000' AS VALUE_COL,
+		       '15:00' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '153000' AS VALUE_COL,
+		       '15:30' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '160000' AS VALUE_COL,
+		       '16:00' AS TEXT_COL
+		  FROM DUAL
+		UNION ALL
+		SELECT '163000' AS VALUE_COL,
+		       '16:30' AS TEXT_COL
+		  FROM DUAL
+	</select>
+	
+	<!-- AS10  입고예정 정보 상세조회 --> 
+    <select id="AS10_LIST"  parameterType="hashmap" resultType="DataMap">
+    	SELECT ROW_NUMBER() OVER(ORDER BY AI.ASNDKY, AI.ASNDKY) AS NUM,		
+    		   AH.OWNRKY AS OWNRKY,
+		       AH.WAREKY AS WAREKY,											
+		       NVL(WH.NAME01,' ') AS WAREKYNM,											
+		       AH.ASNTTY AS ASNTTY,											
+		       NVL(DT.SHORTX,' ') AS ASNTTYNM,											
+			   AH.DOCDAT AS DOCDAT,										
+			   AH.DOCCAT AS DOCCAT, 										
+			   AH.DPTNKY AS DPTNKY,   										
+		       NVL(BZ.NAME01,' ') AS DPTNKYNM,											
+			   AH.USRID1 AS USRID1,   										
+			   AH.UNAME1 AS UNAME1,   										
+			   AH.DEPTID1 AS DEPTID1,  										
+		       AH.DNAME1 AS DNAME1,											
+		       AH.USRID2 AS USRID2,											
+		       AH.DOCTXT AS DOCTXT,											
+		       AI.SEBELN AS EBELN,											
+		       IFW.ORDDAT AS ORDDAT,											
+		       IFW.DLVDAT AS DLVDAT,											
+		       AH.PRCPTD AS PRCPTD,											
+		       											
+		       AI.ASNDKY  AS ASNDKY,											
+		       AI.ASNDIT  AS ASNDIT,											
+		       AI.STATIT  AS STATIT,											
+		       CM.CDESC1  AS STATITNM,											
+		       AI.SKUKEY  AS SKUKEY,											
+		       IFW.ORDQTY AS POIQTY,											
+		       NVL(IFW.ORDQTY-AI.QTYASN,0) AS QTYASN, 											
+		       NVL(  TRUNC((AI.QTYASN) / DECODE(MI.QTPUOM, 0, NULL,MI.QTPUOM )) ,0) AS BOXQTY,											
+		       NVL(MI.QTPUOM,0) AS BXIQTY,											
+		       NVL(MOD(AI.QTYASN,MI.QTPUOM),0) AS REMQTY,        											
+		       NVL(  TRUNC((AI.QTYASN) / DECODE(MIP.QTPUOM, 0, NULL, MIP.QTPUOM) ) ,0) AS PLTQTY,											
+		       NVL(MIP.QTPUOM,0) AS PLTQTYCAL,											
+		       DECODE(SM.DLGORT, 'Y', NVL(CEIL((AI.QTYASN) / DECODE(MI.QTPUOM, 0, NULL,MI.QTPUOM )), 0), 0) AS PBOXQTY,											
+		       AI.QTYASN  AS QTYASN,											
+		       AI.QTYRCV  AS QTYRCV,											
+		       AI.QTYUOM  AS QTYUOM,											
+		       AI.MEASKY  AS MEASKY,											
+		       AI.UOMKEY  AS UOMKEY,											
+		       AI.QTPUOM  AS QTPUOM,											
+		       AI.DUOMKY  AS DUOMKY,											
+		       AI.QTDUOM  AS QTDUOM,											
+		       AI.RCSTKY  AS RCSTKY,											
+		       AI.LOCARV  AS LOCARV,											
+		       AI.LOTA01  AS LOTA01,											
+		       BZ.NAME01  AS LOTA01NM,											
+		       AI.LOTA02  AS LOTA02,											
+		       AI.LOTA03  AS LOTA03,											
+		       AI.LOTA04  AS LOTA04,											
+		       AI.LOTA05  AS LOTA05,											
+		       AI.LOTA06  AS LOTA06,											
+		       AI.LOTA07  AS LOTA07,											
+		       AI.LOTA08  AS LOTA08,											
+		       AI.LOTA09  AS LOTA09,											
+		       AI.LOTA10  AS LOTA10,											
+		       AI.LOTA11  AS LOTA11,											
+		       AI.LOTA12  AS LOTA12,											
+		       AI.LOTA13  AS LOTA13,											
+		       AI.LOTA14  AS LOTA14,											
+		       AI.LOTA15  AS LOTA15,											
+		       AI.LOTA16  AS LOTA16,											
+		       AI.LOTA17  AS LOTA17,											
+		       AI.LOTA18  AS LOTA18,											
+		       AI.LOTA19  AS LOTA19,											
+		       AI.LOTA20  AS LOTA20,											
+		       AI.LRCPTD  AS LRCPTD,											
+		       AI.REFDKY  AS REFDKY,											
+		       AI.REFDIT  AS REFDIT,											
+		       AI.REFCAT  AS REFCAT,											
+		       AI.EASNKY  AS EASNKY,											
+		       AI.EASNIT  AS EASNIT,											
+		       AI.DESC01  AS DESC01,											
+		       AI.DESC02  AS DESC02,											
+		       AI.ASKU01  AS ASKU01,											
+		       AI.ASKU02  AS ASKU02,											
+		       AI.ASKU03  AS ASKU03,											
+		       AI.ASKU04  AS ASKU04,											
+		       AI.ASKU05  AS ASKU05,											
+		       AI.EANCOD  AS EANCOD,											
+		       AI.GTINCD  AS GTINCD,											
+		       AI.SKUG01  AS SKUG01,											
+		       AI.SKUG02  AS SKUG02,											
+		       AI.SKUG03  AS SKUG03,											
+		       AI.SKUG04  AS SKUG04,											
+		       AI.SKUG05  AS SKUG05,											
+		       NVL(AI.GRSWGT,0) * NVL(AI.QTYASN,0)  AS GRSWGT,											
+		       NVL(AI.NETWGT,0) * NVL(AI.QTYASN,0)  AS NETWGT,											
+		       AI.WGTUNT  AS WGTUNT,											
+		       AI.LENGTH  AS LENGTH,											
+		       AI.WIDTHW  AS WIDTHW,											
+		       AI.HEIGHT  AS HEIGHT,											
+		       AI.CUBICM  AS CUBICM,											
+		       AI.CAPACT  AS CAPACT,											
+		       AI.SMANDT  AS SMANDT,											
+		       AI.SEBELN  AS SEBELN,											
+		       AI.SEBELP  AS SEBELP,											
+		       AI.SZMBLNO AS SZMBLNO,											
+		       AI.SZMIPNO AS SZMIPNO,											
+		       AI.STRAID  AS STRAID,											
+		       AI.SVBELN  AS SVBELN,											
+		       AI.SPOSNR  AS SPOSNR,											
+		       AI.STKNUM  AS STKNUM,											
+		       AI.STPNUM  AS STPNUM,											
+		       AI.SWERKS  AS SWERKS,											
+		       AI.SLGORT  AS SLGORT,											
+		       AI.SDATBG  AS SDATBG,											
+		       AI.STDLNR  AS STDLNR,											
+		       AI.SSORNU  AS SSORNU,											
+		       AI.SSORIT  AS SSORIT,											
+		       AI.SMBLNR  AS SMBLNR,											
+		       AI.SZEILE  AS SZEILE,											
+		       AI.SMJAHR  AS SMJAHR,											
+		       AI.SXBLNR  AS SXBLNR,											
+		       AI.SBKTXT  AS SBKTXT,											
+		       AI.AWMSNO  AS AWMSNO,											
+		       IFW.BUYCOST AS BUYCOST,											
+		       IFW.BUYAMT  AS BUYAMT,											
+		       IFW.VATAMT  AS VATAMT,											
+		       AI.CREDAT  AS CREDAT,											
+		       AI.CRETIM  AS CRETIM,											
+		       AI.CREUSR  AS CREUSR,											
+		       CU.NMLAST  AS CREUSR,											
+		       AI.LMODAT  AS LMODAT,											
+		       AI.LMOTIM  AS LMOTIM,											
+		       AI.LMOUSR  AS LMOUSR,											
+		       LU.NMLAST  AS LUSRNM,											
+		       NVL(TO_DATE(TRIM(AI.LOTA13),'YYYYMMDD') - TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD')), 0) AS DTREMDAT,											
+		       NVL(TRUNC((TO_NUMBER(TO_DATE(TRIM(AI.LOTA13),'YYYYMMDD') - TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD')))/SM.OUTDMT) * 100), 0) AS DTREMRAT											
+		  FROM ASNDI AI											
+		       INNER JOIN ASNDH AH											
+		               ON AI.ASNDKY = AH.ASNDKY											
+		       INNER JOIN  ( SELECT AI.ASNDKY, 											
+		                            AI.ASNDIT, 											
+		                            IFW.SEBELN, 											
+		                            IFW.SEBELP, 											
+		                            IFW.ORDQTY,											
+		                            IFW.BUYCOST, 											
+		                            IFW.BUYAMT, 											
+		                            IFW.VATAMT,											
+		                            IFW.DLVDAT,											
+		                            IFW.ORDDAT											
+		                       FROM ASNDI AI, IFWMS103 IFW											
+		                      WHERE AI.REFDKY = IFW.SEBELN    											
+		                        AND AI.REFDIT = IFW.SEBELP											
+		                        AND IFW.XSTAT IN ('D','R')											
+		                      GROUP BY  IFW.SEBELN, 											
+		                                IFW.SEBELP, 											
+		                                AI.ASNDKY, 											
+		                                AI.ASNDIT, 											
+		                                IFW.ORDQTY,											
+		                                IFW.BUYCOST, 											
+		                                IFW.BUYAMT, 											
+		                                IFW.VATAMT,											
+		                                IFW.DLVDAT,											
+		                                IFW.ORDDAT ) IFW											
+		               ON AI.ASNDKY = IFW.ASNDKY    											
+		              AND AI.ASNDIT = IFW.ASNDIT											
+		       LEFT OUTER JOIN USRMA CU											
+		               ON CU.USERID = AI.CREUSR											
+		       LEFT OUTER JOIN USRMA LU											
+		               ON LU.USERID = AI.LMOUSR											
+		       LEFT OUTER JOIN BZPTN BZ											
+		               ON BZ.OWNRKY = AH.OWNRKY											
+		              AND BZ.PTNRKY = AH.DPTNKY											
+		              AND BZ.PTNRTY = '0002'											
+		       LEFT OUTER JOIN MEASI MI											
+		               ON MI.OWNRKY = AH.OWNRKY											
+		              AND MI.WAREKY = AH.WAREKY											
+		              AND MI.MEASKY = AI.MEASKY											
+		              AND MI.UOMKEY = 'BOX'  											
+		       LEFT OUTER JOIN MEASI MIP											
+		               ON MIP.OWNRKY = AH.OWNRKY											
+		              AND MIP.WAREKY = AH.WAREKY											
+		              AND MIP.MEASKY = AI.MEASKY											
+		              AND MIP.UOMKEY = 'PL' 											
+		       LEFT OUTER JOIN CMCDV CM											
+		               ON CM.CMCDKY = 'STATIT' 											
+		              AND CM.CMCDVL = AI.STATIT											
+		       LEFT OUTER JOIN WAHMA WH											
+		               ON WH.WAREKY = AH.WAREKY    											
+		       LEFT OUTER JOIN DOCTM DT											
+		               ON DT.DOCUTY = AH.ASNTTY        											
+		       LEFT OUTER JOIN SKUMA SM											
+		               ON SM.OWNRKY = AH.OWNRKY											
+		              AND SM.SKUKEY = AI.SKUKEY       											
+		 WHERE 1 = 1											
+			
+			AND AH.OWNRKY = #{OWNRKY}
+			AND AH.WAREKY = #{WAREKY}
+		
+			<if test="ASNTTY != null and ASNTTY != ''">
+				AND AH.ASNTTY = #{ASNTTY}
+			</if>
+
+			<if test="RANGE_SQL != null and RANGE_SQL != ''">
+				${RANGE_SQL}
+			</if>
+				
+		ORDER BY AI.ASNDKY, AI.ASNDIT	
+		
+	</select>
+	
+	
+</mapper>

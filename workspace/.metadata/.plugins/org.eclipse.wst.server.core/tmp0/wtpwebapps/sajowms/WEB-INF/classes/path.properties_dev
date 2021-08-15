@@ -1,0 +1,15 @@
+repository.root=/
+
+# LOCAL, DEV, PROD
+file.system.type=DEV
+file.path.img=/data/ewdata/files
+sku.image.path=http://27.122.139.216/eh/ma/retrieveImageView.do
+app.icon.path=
+
+mail.host=27.122.139.229
+mail.port=25
+
+# Webspehre dev setting
+# Tomcat dev setting 
+#repository.root=C:/gsfwm/workspace/gsfwm/WebContent/
+#repository.root=/appl/HWMSServer/hwms.ear/hwmsWeb.war/

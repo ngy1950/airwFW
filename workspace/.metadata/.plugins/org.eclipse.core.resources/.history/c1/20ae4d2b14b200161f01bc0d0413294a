@@ -1,0 +1,178 @@
+package com.common.carton;
+
+/**
+ * 포장된 아이템 정보
+ * @author Administrator
+ *
+ */
+public final class PItem extends Item {
+
+	private static final long serialVersionUID = -2234507190798551523L;
+
+	private boolean isPacked;
+	
+	private int cox;
+
+	private int coy;
+
+	private int coz;
+
+	private int packx;
+
+	private int packy;
+
+	private int packz;
+
+	/**
+	 * 생성자
+	 * @param sku sku
+	 * @param name name
+	 * @param cartonNumber cartonNumber
+	 * @param dim1 dim1
+	 * @param dim2 dim2
+	 * @param dim3 dim3
+	 * @param weight weight
+	 * @param qty qty
+	 */
+	public PItem(String sku
+			, String name
+			, String cartonNumber
+			, int dim1
+			, int dim2
+			, int dim3
+			, int weight
+			, int qty) {
+		super(sku, name, cartonNumber, dim1, dim2, dim3, weight, qty);
+	}
+	
+	/**
+	 * 포장여부
+	 * @return 포장여부
+	 */
+	public boolean isPacked() {
+		return isPacked;
+	}
+
+	void setPacked(boolean isPacked) {
+		this.isPacked = isPacked;
+	}
+
+	/**
+	 * x값
+	 * @return cox
+	 */
+	public int getCox() {
+		return cox;
+	}
+
+	void setCox(int cox) {
+		this.cox = cox;
+	}
+
+	/**
+	 * y값
+	 * @return coy
+	 */
+	public int getCoy() {
+		return coy;
+	}
+
+	void setCoy(int coy) {
+		this.coy = coy;
+	}
+
+	/**
+	 * z값
+	 * @return coz
+	 */
+	public int getCoz() {
+		return coz;
+	}
+
+	void setCoz(int coz) {
+		this.coz = coz;
+	}
+
+	/**
+	 * 포장 x값
+	 * @return packx
+	 */
+	public int getPackx() {
+		return packx;
+	}
+
+	void setPackx(int packx) {
+		this.packx = packx;
+	}
+
+	/**
+	 * 포장 y값
+	 * @return packy
+	 */
+	public int getPacky() {
+		return packy;
+	}
+
+	void setPacky(int packy) {
+		this.packy = packy;
+	}
+
+	/**
+	 * 포장 z값
+	 * @return packz
+	 */
+	public int getPackz() {
+		return packz;
+	}
+
+	void setPackz(int packz) {
+		this.packz = packz;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + cox;
+		result = prime * result + coy;
+		result = prime * result + coz;
+		result = prime * result + (isPacked ? 1231 : 1237);
+		result = prime * result + packx;
+		result = prime * result + packy;
+		result = prime * result + packz;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PItem other = (PItem) obj;
+		if (cox != other.cox)
+			return false;
+		if (coy != other.coy)
+			return false;
+		if (coz != other.coz)
+			return false;
+		if (isPacked != other.isPacked)
+			return false;
+		if (packx != other.packx)
+			return false;
+		if (packy != other.packy)
+			return false;
+		if (packz != other.packz)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "PItem [isPacked=" + isPacked + ", cox=" + cox + ", coy=" + coy + ", coz=" + coz + ", packx=" + packx
+				+ ", packy=" + packy + ", packz=" + packz + "]";
+	}
+
+}

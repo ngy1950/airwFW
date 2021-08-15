@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Board">
+
+
+	<!-- BD10 공지사항 조회-->
+	<select id="BD10_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT OWNRKY AS OWNRKY,
+		       TEXTNO AS TEXTNO,
+		       BOARDNO AS BOARDNO,
+		       AMNUNO AS AMNUNO,
+		       TITLE AS TITLE,
+		       CONTENT AS CONTENT,
+		       WRDATE AS WRDATE,
+		       WRTIME AS WRTIME,
+		       WRITER AS WRITER
+		  FROM BOARD
+		 WHERE OWNRKY = #{OWNRKY}
+		       AND BOARDNO = #{BOARDNO}
+		   <if test="CONTENT != NULL and CONTENT != ''">
+		       AND (TITLE LIKE '%'||#{CONTENT}||'%' OR CONTENT LIKE '%'||#{CONTENT}||'%')
+		   </if> 
+		   <if test="TEXTNO != NULL and TEXTNO != ''">
+		       AND TEXTNO = #{TEXTNO}
+		   </if>
+		   <if test="WRDATE != NULL and WRDATE != ''">
+		       AND WRDATE = #{WRDATE}
+		   </if> 
+		   <if test="WRITER != NULL and WRITER != ''">
+		       AND UPPER(WRITER) = UPPER(#{WRITER})
+		   </if> 
+		   <if test="RANGE_SQL != null and RANGE_SQL != ''">  
+	         ${RANGE_SQL}  
+		   </if>
+		ORDER BY TO_NUMBER(TEXTNO) DESC
+	</select>
+	
+	<insert id="BD10_INSERT"  parameterType="hashmap">
+		MERGE INTO BOARD
+			 USING DUAL
+			    ON (OWNRKY = #{OWNRKY} AND TEXTNO = #{TEXTNO})
+			    
+			    
+	     WHEN MATCHED THEN
+				UPDATE SET 
+			       <if test="BOARDNO != NULL and BOARDNO != ''">BOARDNO = #{BOARDNO},</if>
+			       <if test="AMNUNO != NULL and AMNUNO != ''">AMNUNO = #{AMNUNO},</if>
+			       <if test="TITLE != NULL and TITLE != ''">TITLE = #{TITLE},</if>
+			       <if test="CONTENT != NULL and CONTENT != ''">CONTENT = #{CONTENT},</if>
+			       WRDATE = TO_CHAR(SYSDATE, 'YYYYMMDD'),
+			       WRTIME = TO_CHAR(SYSDATE, 'HH24MISS'),
+			       WRITER = #{WRITER},
+			       LMODAT = TO_CHAR(SYSDATE, 'YYYYMMDD'),
+			       LMOTIM = TO_CHAR(SYSDATE, 'HH24MISS'),
+			       LMOUSR = #{WRITER}
+			    
+         WHEN NOT MATCHED THEN		    
+					INSERT (
+					          OWNRKY, 
+					          TEXTNO, 
+					          BOARDNO, 
+					          AMNUNO,
+					          TITLE, 
+					          CONTENT, 
+					          WRDATE,
+					          WRTIME,
+					          WRITER, 
+					          CREDAT, 
+					          CRETIM,
+					          CREUSR,
+					          LMODAT,
+					          LMOTIM,
+					          LMOUSR, 
+					          INDBZL, 
+					          INDARC, 
+					          UPDCHK
+					       )
+					VALUES (#{OWNRKY},  
+					       SEQ_BOARD.NEXTVAL,
+					       NVL(#{BOARDNO}, 'NOTI'),
+					       NVL(#{AMNUNO},  ' '),
+					       NVL(#{TITLE},   ' '),
+					       NVL(#{CONTENT}, ' '),
+					       TO_CHAR(SYSDATE, 'YYYYMMDD'),
+					       TO_CHAR(SYSDATE, 'HH24MISS'),  
+					       #{WRITER}  ,
+					       TO_CHAR(SYSDATE, 'YYYYMMDD'),
+					       TO_CHAR(SYSDATE, 'HH24MISS'),  
+					       #{WRITER}, 
+					       TO_CHAR(SYSDATE, 'YYYYMMDD'),
+					       TO_CHAR(SYSDATE, 'HH24MISS'), 
+					       #{WRITER},  
+					       ' ',  
+					       ' ',
+					       0)
+
+	</insert>
+	
+	<delete id="BD10_DELETE"  parameterType="hashmap">
+		DELETE FROM BOARD
+		 WHERE TEXTNO = #{TEXTNO}
+		   AND OWNRKY = #{OWNRKY}
+	</delete>
+	
+	<!-- 	
+	<update id="BD10_UPDATE" parameterType="hashmap">
+		UPDATE BOARD
+		   SET <if test="BOARDNO != NULL and BOARDNO != ''">BOARDNO = #{BOARDNO},</if>
+		       <if test="AMNUNO != NULL and AMNUNO != ''">AMNUNO = #{AMNUNO},</if>
+		       <if test="TITLE != NULL and TITLE != ''">TITLE = #{TITLE},</if>
+		       <if test="CONTENT != NULL and CONTENT != ''">CONTENT = #{CONTENT},</if>
+		       WRDATE = TO_CHAR(SYSDATE, 'YYYYMMDD'),
+		       WRTIME = TO_CHAR(SYSDATE, 'HH24MISS'),
+		       WRITER = #{WRITER},
+		       LMODAT = TO_CHAR(SYSDATE, 'YYYYMMDD'),
+		       LMOTIM = TO_CHAR(SYSDATE, 'HH24MISS'),
+		       LMOUSR = #{WRITER}
+		 WHERE 1 = 1
+		   AND OWNRKY = #{OWNRKY}
+		   AND TEXTNO = #{TEXTNO}
+	</update> -->
+	
+	
+</mapper>

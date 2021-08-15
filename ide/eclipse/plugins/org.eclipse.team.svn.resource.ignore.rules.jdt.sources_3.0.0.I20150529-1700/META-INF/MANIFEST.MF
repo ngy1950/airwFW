@@ -1,0 +1,42 @@
+Manifest-Version: 1.0
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.eclipse.team.svn.resource.ignore.rules.jdt.so
+ urces; singleton=true
+Bundle-Version: 3.0.0.I20150529-1700
+
+Name: about.ini
+SHA1-Digest: v43VFt6tqZS/LeQexD2/klPoZC0=
+
+Name: Subversive.png
+SHA1-Digest: eRbbpm0wCXworxZwvRzVZvN7s5k=
+
+Name: META-INF/eclipse.inf
+SHA1-Digest: 09gN05tobgS/MdtqyTNQhOhB73M=
+
+Name: src/org.eclipse.team.svn.resource.ignore.rules.jdt_3.0.0.I201505
+ 29-1700/about.ini
+SHA1-Digest: +H2KrjAN3H8tczrxxXb+xIPnz90=
+
+Name: src/org.eclipse.team.svn.resource.ignore.rules.jdt_3.0.0.I201505
+ 29-1700/about.html
+SHA1-Digest: TJE/VnPy57cRfceSrcf0Ew/GbX0=
+
+Name: src/org.eclipse.team.svn.resource.ignore.rules.jdt_3.0.0.I201505
+ 29-1700/src.zip
+SHA1-Digest: +oFlW7AmkHdgN2lBsQ8fa17smJ0=
+
+Name: about.html
+SHA1-Digest: TJE/VnPy57cRfceSrcf0Ew/GbX0=
+
+Name: plugin.xml
+SHA1-Digest: I0t+o6kXbySrxIY1bLaTaeai3Vc=
+
+Name: plugin.properties
+SHA1-Digest: rtQA5Fea84kS8b3AW+dANVanbxo=
+
+Name: src/org.eclipse.team.svn.resource.ignore.rules.jdt_3.0.0.I201505
+ 29-1700/Subversive.png
+SHA1-Digest: eRbbpm0wCXworxZwvRzVZvN7s5k=
+

@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="LabelPrint">
+	
+	<!-- LB01  팔레트 바코드 라벨 --> <!--SZP_CHECKBARCODE-->
+    <insert id="LB01_INSERT"  parameterType="hashmap">
+		INSERT INTO BARCD (
+					REFDKY
+				  , WAREKY
+				  , SKUKEY
+				  , DESC01
+				  , DESC02
+				  , QTDUOM
+				  , QTDBOX
+				  , QTDREM
+				  , QTDPRT
+				  , LOTA13 
+				<if test="LOTA01 != null and LOTA01 != ''">
+				, LOTA01
+				</if>
+				<if test="LOTA11 != null and LOTA11 != ''">
+				, LOTA11
+				</if>
+				<if test="LOTA03 != null and LOTA03 != ''">
+				, LOTA03
+				</if>
+				   , CREDAT
+				   , CRETIM
+				   , CREUSR
+				   , LMODAT
+				   , LMOTIM
+				   , LMOUSR
+				    )			
+			VALUES(
+		 	  #{REFDKY}
+		 	, #{WAREKY}
+		 	, #{SKUKEY}
+		 	, NVL(#{DESC01},' ')
+		 	, NVL(#{DESC02},' ')
+		 	, NVL(#{QTDUOM},0)
+		 	, NVL(#{QTDBOX},0)
+		 	, NVL(#{QTDREM},0)
+		 	, NVL(#{QTDPRT},0)
+		 	, #{LOTA13}		
+			<if test="LOTA01 != null and LOTA01 != ''">
+			, #{LOTA01}
+			</if>
+			<if test="LOTA11 != null and LOTA11 != ''">
+			, #{LOTA11}
+			</if>
+			<if test="LOTA03 != null and LOTA03 != ''">
+			, #{LOTA03}
+			</if>								
+			   , TO_CHAR(SYSDATE,'YYYYMMDD')					
+		       , TO_CHAR(SYSDATE, 'HH24MISS')					
+		       , NVL(#{SES_USER_ID},' ')					
+		       , TO_CHAR(SYSDATE,'YYYYMMDD')					
+		       , TO_CHAR(SYSDATE, 'HH24MISS')					
+		       , NVL(#{SES_USER_ID},' '))	
+	</insert>
+	
+	<select id="LB01_MAP"  parameterType="hashmap" resultType="DataMap">
+		SELECT SM.SKUKEY AS SKUKEY	
+			    <![CDATA[ ,REPLACE(SM.DESC01, '&AMP;','&AMP;AMP;') AS DESC01
+			     ,REPLACE(SM.DESC02, '&AMP;','&AMP;AMP;') AS DESC02]]>	
+			     , SM.QTDUOM AS QTDUOM
+			     , MI.QTPUOM AS QTDPRT
+			     , MI.QTPUOM / SM.QTDUOM AS QTDBOX
+			     , MOD(MI.QTPUOM,SM.QTDUOM) AS QTDREM
+			     , SM.OUTDMT AS OUTDMT
+			  FROM SKUMA SM INNER JOIN SKUWC SW	
+			                        ON SM.OWNRKY = SW.OWNRKY	
+			                       AND SM.SKUKEY = SW.SKUKEY
+			       INNER JOIN MEASI MI
+			               ON MI.WAREKY = #{WAREKY}
+			              AND MI.MEASKY = #{SKUKEY}
+			              AND MI.UOMKEY = 'PL'
+			 WHERE 1=1	
+			  AND SM.OWNRKY = #{OWNRKY} 	
+			  AND SW.WAREKY = #{WAREKY}	
+			  AND SM.SKUKEY = #{SKUKEY}	
+	</select> 
+	
+	
+	<select id="LOTA03INFO_MAP"  parameterType="hashmap" resultType="DataMap">
+		SELECT PTNRKY AS LOTA03
+		  FROM BZPTN
+		 WHERE PTNRKY = #{PTNRKY}
+		   AND OWNRKY = #{OWNRKY}
+		   AND (PTNRTY = '0002' OR PTNRTY = '0004')
+	</select>
+	
+	<parameterMap id="resSequence" type="hashmap">
+		<parameter property="WAREKY" mode="IN"  jdbcType="VARCHAR" javaType="string"/> 
+		<parameter property="RETURN" mode="OUT" jdbcType="VARCHAR" javaType="string" /> 
+	</parameterMap>
+	
+	<select id="CHECKBARCODE_UPDATE" statementType="CALLABLE" parameterMap="resSequence">
+	{ call SZP_CHECKBARCODE( ? , ? ) }
+	</select>
+	
+	
+	<!-- LB02 로케이션 바코드 라벨 -->
+	<select id="LB02_LIST"  parameterType="hashmap" resultType="DataMap">
+		
+		SELECT  A.WAREKY AS WAREKY							
+		       ,A.LOCAKY AS LOCAKY							
+		       ,A.LOCATY AS LOCATY							
+		       ,A.SHORTX AS SHORTX							
+		       ,A.TASKTY AS TASKTY							
+		       ,A.ZONEKY AS ZONEKY							
+		       ,A.ZONEKY AS ZONEKY2							
+		       ,A.AREAKY AS AREAKY							
+		       ,A.AREAKY AS AREAKY2							
+		       ,A.TKZONE AS TKZONE							
+		       ,A.FACLTY AS FACLTY							
+		       ,A.ARLVLL AS ARLVLL							
+		       ,A.INDCPC AS INDCPC							
+		       ,A.INDTUT AS INDTUT							
+		       ,A.IBROUT AS IBROUT							
+		       ,A.OBROUT AS OBROUT							
+		       ,A.RPROUT AS RPROUT							
+		       ,A.STATUS AS STATUS							
+		       ,A.ABCANV AS ABCANV							
+		       ,A.LENGTH AS LENGTH							
+		       ,A.WIDTHW AS WIDTHW							
+		       ,A.HEIGHT AS HEIGHT							
+		       ,A.CUBICM AS CUBICM							
+		       ,A.MAXCPC AS MAXCPC							
+		       ,A.MAXQTY AS MAXQTY							
+		       ,A.MAXWGT AS MAXWGT							
+		       ,A.MAXLDR AS MAXLDR							
+		       ,A.MAXSEC AS MAXSEC							
+		       ,A.MIXSKU AS MIXSKU							
+		       ,A.MIXLOT AS MIXLOT							
+		       ,A.RPNCAT AS RPNCAT							
+		       ,A.INDQTC AS INDQTC							
+		       ,A.QTYCHK AS QTYCHK							
+		       ,A.NEDSID AS NEDSID							
+		       ,A.INDUPA AS INDUPA							
+		       ,A.INDUPK AS INDUPK							
+		       ,A.AUTLOC AS AUTLOC							
+		       ,A.CREDAT AS CREDAT							
+		       ,A.CRETIM AS CRETIM							
+		       ,A.CREUSR AS CREUSR							
+		       ,(SELECT NMLAST FROM USRMA WHERE USRMA.USERID = A.CREUSR AND ROWNUM = 1) AS CUSRNM							
+		       ,A.LMODAT AS LMODAT							
+		       ,A.LMOTIM AS LMOTIM							
+		       ,A.LMOUSR AS LMOUSR							
+		       ,(SELECT NMLAST FROM USRMA WHERE USRMA.USERID = A.LMOUSR AND ROWNUM = 1) AS LUSRNM							
+		       ,A.INDBZL AS INDBZL							
+		       ,A.INDARC AS INDARC							
+		       ,A.UPDCHK AS UPDCHK							
+		       ,A.LOCSKU AS LOCSKU							
+		       ,SK.DESC01 AS LOCSKUNM 							
+		       ,A.TEXT01 AS TEXT01				
+
+		 FROM LOCMA A							
+		      LEFT OUTER JOIN SKUMA SK ON SK.OWNRKY = '2500' AND A.LOCSKU = SK.SKUKEY							
+		      LEFT OUTER JOIN SKUWC SC ON SK.SKUKEY = SC.SKUKEY							
+		                              AND SK.OWNRKY = SC.OWNRKY							
+		                              AND A.WAREKY = SC.WAREKY							
+		WHERE 1 = 1	
+				
+		<if test="STATUS != null and STATUS != ''">					
+			AND A.STATUS = #{STATUS}
+		</if>
+			
+		<if test="WAREKY != null and WAREKY != ''">		
+			AND A.WAREKY = #{WAREKY}	
+		</if>
+			
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+		
+		<if test="LOCATY != null and LOCATY != ''">
+			AND A.LOCATY = #{LOCATY}
+		</if>	
+		
+		<!-- checkBox -->			
+		<if test="INDUPA == 'on' ">
+	  		AND INDUPA = 'V'
+	  	</if>
+	  	
+	  	<if test="INDUPK == 'on' ">
+	  		AND INDUPK = 'V'
+	  	</if>
+
+	</select>
+	
+	<!-- LB03 업체 바코드 라벨 -->
+	<select id="LB03_LIST"  parameterType="hashmap" resultType="DataMap">
+		
+		SELECT A.OWNRKY AS OWNRKY ,				
+		       A.PTNRKY AS PTNRKY ,				
+		       A.PTNRTY AS PTNRTY ,				
+		       A.DELMAK AS DELMAK ,				
+		       A.NAME01 AS NAME01 ,				
+		       A.NAME02 AS NAME02 ,				
+		       A.NAME03 AS NAME03 ,				
+		       A.ADDR01 AS ADDR01 ,				
+		       A.ADDR02 AS ADDR02 ,				
+		       A.ADDR05 AS ADDR05 ,				
+		       A.POSTCD AS POSTCD ,				
+		       A.TELN01 AS TELN01 ,				
+		       A.TELN02 AS TELN02 ,				
+		       A.FAXTL1 AS FAXTL1 ,				
+		       A.VATREG AS VATREG ,				
+		       A.EMAIL1 AS EMAIL1 ,				
+		       A.EMAIL2 AS EMAIL2 ,				
+		       A.CTTN01 AS CTTN01 ,				
+		       A.CTTT01 AS CTTT01 ,				
+		       A.CTTT02 AS CTTT02 ,				
+		       A.CTTM01 AS CTTM01 ,				
+		       A.SALN01 AS SALN01 ,				
+		       A.SALT01 AS SALT01 ,				
+		       A.SALT02 AS SALT02 ,				
+		       A.SALM01 AS SALM01 ,				
+		       A.EXPTNK AS EXPTNK ,				
+		       A.CUSTMR AS CUSTMR ,				
+		       A.PTNG01 AS PTNG01 ,				
+		       A.PTNG02 AS PTNG02 ,				
+		       A.PTNG03 AS PTNG03 ,				
+		       A.PTNG04 AS PTNG04 ,				
+		       A.PTNG05 AS PTNG05 ,				
+		       A.PTNG06 AS PTNG06 ,				
+		       A.PTNG07 AS PTNG07 ,				
+		       A.PTNG08 AS PTNG08 ,				
+		       A.PTNG09 AS PTNG09 ,				
+		       A.PTNL01 AS PTNL01 ,				
+		       A.PTNL02 AS PTNL02 ,				
+		       A.PTNL03 AS PTNL03 ,				
+		       A.PTNL04 AS PTNL04 ,				
+		       A.PTNL06 AS PTNL06 ,				
+		       A.PTNL07 AS PTNL07 ,				
+		       A.PTNL09 AS PTNL09 ,				
+		       A.PTNL10 AS PTNL10 ,				
+		       A.PROCHA AS PROCHA ,				
+		       A.FORKYN AS FORKYN 				
+		  FROM BZPTN A				
+		WHERE 1=1	
+					
+		<if test="OWNRKY != null and OWNRKY != ''">
+			AND A.OWNRKY = #{OWNRKY}	
+		</if>	
+		
+		<if test="DELMAK == 'on' ">
+	  		AND A.DELMAK = 'V'
+	  	</if>
+	  					
+<!-- 		<if test='NORMAL !=null  and NORMAL == "N")'> -->
+<!-- 			AND (A.PTNRTY = 'CT' AND (A.PTNG01 NOT IN (SELECT DISTINCT TMRKEY FROM TMRMA) OR A.EXPTNK = ' ')) -->
+<!-- 		</if>	 -->
+						
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>			
+				
+	</select>
+	
+	<!-- LB04 박스 바코드 라벨 -->
+	<select id="LB04_LIST"  parameterType="hashmap" resultType="DataMap">
+	
+		SELECT  A.OWNRKY || A.SKUKEY AS KEY 
+		      , A.OWNRKY AS OWNRKY
+		      , A.SKUKEY AS SKUKEY
+		      , A.DELMAK AS DELMAK
+		      , A.DESC01 AS DESC01
+		      , A.DESC02 AS DESC02
+		      , A.VENDKY AS VENDKY
+		      , A.ASKU01 AS ASKU01
+		      , A.ASKU02 AS ASKU02
+		      , A.ASKU03 AS ASKU03
+		      , A.ASKU04 AS ASKU04
+		      , A.ASKU05 AS ASKU05
+		      , A.ASKL01 AS ASKL01
+		      , (SELECT CDESC1 FROM CMCDV WHERE CMCDKY = 'OERE' AND CMCDVL = A.ASKL01) AS ASKL01M
+		      , A.ASKL02 AS ASKL02
+		      , A.ASKL03 AS ASKL03
+		      , A.ASKL04 AS ASKL04
+		      , A.ASKL05 AS ASKL05
+		      , A.EANCOD AS EANCOD
+		      , A.GTINCD AS GTINCD
+		      , A.SKUG01 AS SKUG01
+		      , A.SKUG02 AS SKUG02
+		      , A.SKUG03 AS SKUG03
+		      , A.SKUG04 AS SKUG04
+		      , A.SKUG05 AS SKUG05
+		      , A.SKUL01 AS SKUL01
+		      , A.SKUL02 AS SKUL02
+		      , A.SKUL03 AS SKUL03
+		      , A.SKUL04 AS SKUL04
+		      , A.SKUL05 AS SKUL05
+		      , A.GRSWGT AS GRSWGT
+		      , A.NETWGT AS NETWGT
+		      , A.WGTUNT AS WGTUNT
+		      , A.LENGTH AS LENGTH
+		      , A.WIDTHW AS WIDTHW
+		      , A.HEIGHT AS HEIGHT
+		      , A.CUBICM AS CUBICM
+		      , A.CAPACT AS CAPACT
+		      , A.DUOMKY AS DUOMKY
+		      , A.QTDUOM AS QTDUOM
+		      , A.ABCANV AS ABCANV
+		      , A.LOTL01 AS LOTL01
+		      , A.LOTL02 AS LOTL02
+		      , A.LOTL03 AS LOTL03
+		      , A.LOTL04 AS LOTL04
+		      , A.LOTL05 AS LOTL05
+		      , A.LOTL06 AS LOTL06
+		      , A.LOTL07 AS LOTL07
+		      , A.LOTL08 AS LOTL08
+		      , A.LOTL09 AS LOTL09
+		      , A.LOTL10 AS LOTL10
+		      , A.LOTL11 AS LOTL11
+		      , A.LOTL12 AS LOTL12
+		      , A.LOTL13 AS LOTL13
+		      , A.LOTL14 AS LOTL14
+		      , A.LOTL15 AS LOTL15
+		      , A.LOTL16 AS LOTL16
+		      , A.LOTL17 AS LOTL17
+		      , A.LOTL18 AS LOTL18
+		      , A.LOTL19 AS LOTL19
+		      , A.LOTL20 AS LOTL20
+		      , A.OUTDMT AS OUTDMT
+		      , A.RIMDMT AS RIMDMT
+		      , A.INNDPT AS INNDPT
+		      , A.SECTWD AS SECTWD
+		      , A.WEIGHT AS WEIGHT
+		      , A.LGPRO  AS LGPRO
+		      , A.DLGORT AS DLGORT
+		      , A.BATMNG AS BATMNG
+		      , A.CSTDAT AS CSTDAT
+		      , A.CPSKUG AS CPSKUG
+		      , A.DESC03 AS DESC03
+		      , A.QTYMON AS QTYMON
+		      , A.QTYSTD AS QTYSTD
+		      , A.QTYCNT AS QTYCNT
+		      , A.DESC04 AS DESC04
+		      , A.BUFMNG AS BUFMNG
+		      , A.QTYSTD AS QTYSTD
+		      , A.QTYCNT AS QTYCNT
+		      , B.WAREKY AS WAREKY
+		      , B.CAPACT AS CAPACT
+		      , B.MEASKY AS MEASKY
+		      , B.LOCARV AS LOCARV
+		      , B.LOCAQC AS LOCAQC
+		      , B.RCSTKY AS RCSTKY
+		      , B.PASTKY AS PASTKY
+		      , B.CAPACR AS CAPACR
+		      , B.SASTKY AS SASTKY
+		      , B.ALSTKY AS ALSTKY
+		      , B.TKFLKY AS TKFLKY
+		      , B.SPRIKY AS SPRIKY
+		      , B.IBPROT AS IBPROT
+		      , B.OBPROT AS OBPROT
+		      , B.UOMDIN AS UOMDIN
+		      , B.UOMDOU AS UOMDOU
+		      , B.UOMDTA AS UOMDTA
+		      , B.ABCANV AS ABCANV
+		      , B.INDSLC AS INDSLC
+		      , B.SLCLAT AS SLCLAT
+		      , B.SLCTYP AS SLCTYP
+		      , B.SLCPDI AS SLCPDI
+		      , B.SLCPDO AS SLCPDO
+		      , B.DPUTZO AS DPUTZO
+		      , B.DPUTLO AS DPUTLO
+		      , B.CPVNDR AS CPVNDR
+		      , B.CPMEAS AS CPMEAS
+		      , B.LOCOVR AS LOCOVR
+		      , B.PLOCOV AS PLOCOV
+		      , B.TARIKY AS TARIKY
+		      , B.LOTRKY AS LOTRKY
+		      , B.EXPDCK AS EXPDCK
+		      , B.PRODCK AS PRODCK
+		      , B.OUTDMT AS OUTDMT
+		      , B.RIMDMT AS RIMDMT
+		      , B.INNDPT AS INNDPT
+		      , B.SECTWD AS SECTWD
+		      , B.WEIGHT AS WEIGHT
+		      , B.SHPPRT AS SHPPRT
+		      , B.IFFLAG AS IFFLAG
+		      , B.CREDAT AS CREDAT
+		      , B.CRETIM AS CRETIM
+		      , B.CREUSR AS CREUSR
+		      , (SELECT NMLAST FROM USRMA WHERE USRMA.USERID = B.CREUSR AND ROWNUM = 1) AS CUSRNM
+		      , B.LMODAT AS LMODAT
+		      , B.LMOTIM AS LMOTIM
+		      , B.LMOUSR AS LMOUSR
+		      , (SELECT NMLAST FROM USRMA WHERE USRMA.USERID = B.LMOUSR AND ROWNUM = 1) AS LUSRNM
+		      , B.UPDCHK AS UPDCHK
+		      , A.WARAPP AS WARAPP
+		      , C.WIDQTY AS WIDQTY
+		      , C.LENQTY AS LENQTY
+		      , C.ADDQTY AS ADDQTY
+		      , C.HEIQTY AS HEIQTY
+		      , B.SLCPDI AS SLCPDI				
+		
+		FROM SKUMA A 					
+		INNER JOIN SKUWC B					
+		        ON A.OWNRKY = B.OWNRKY		
+		       AND A.SKUKEY = B.SKUKEY					
+		LEFT OUTER JOIN SKUPT C 					
+		             ON A.OWNRKY = C.OWNRKY
+		            AND A.SKUKEY = C.SKUKEY					
+		WHERE 1 = 1	
+		
+			AND A.OWNRKY = #{OWNRKY}
+			AND B.WAREKY = #{WAREKY}
+			AND A.GTINCD NOT LIKE '% %'	
+		
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+		
+		<if test="DELMAK != null and DELMAK != ''">					
+			AND A.DELMAK = #{DELMAK}				
+		</if>					
+									
+	</select>
+	
+	<!-- LB05 팔레트 바코드 출력 이력 -->
+	<select id="LB09_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT BARCD.REFDKY AS REFDKY,		
+		       BARCD.BARCOD AS BARCOD,
+		       BARCD.WAREKY AS WAREKY,		
+		       BARCD.SKUKEY AS SKUKEY,		
+		       BARCD.DESC01 AS DESC01,		
+		       BARCD.DESC02 AS DESC02,		
+		       BARCD.PRTDAT AS PRTDAT,		
+		       BARCD.QTDUOM AS QTDUOM,		
+		       BARCD.QTDBOX AS QTDBOX,		
+		       BARCD.QTDREM AS QTDREM,		
+		       BARCD.QTDPRT AS QTDPRT,		
+		       BARCD.LOTA05 AS LOTA05,		
+		       BARCD.LOTA11 AS LOTA11,		
+		       BARCD.LOTA13 AS LOTA13,		
+		       BARCD.LOTA03 AS LOTA03,		
+		       BZ.NAME01 AS LOTA03NM,		
+		       BARCD.CREDAT AS CREDAT,		
+		       BARCD.CRETIM AS CRETIM,		
+		       BARCD.CREUSR AS CREUSR,		
+		       CU.NMLAST AS CUSRNM,		
+		       BARCD.LMODAT AS LMODAT,		
+		       BARCD.LMOTIM AS LMOTIM,		
+		       BARCD.LMOUSR AS LMOUSR,		
+		       LU.NMLAST AS LUSRNM
+	
+		  FROM BARCD		
+		       LEFT OUTER JOIN USRMA CU		
+		               ON CU.USERID = BARCD.CREUSR		
+		       LEFT OUTER JOIN USRMA LU		
+		               ON LU.USERID = BARCD.LMOUSR 		
+		       LEFT OUTER JOIN BZPTN BZ		
+		               ON BZ.PTNRKY = BARCD.LOTA03 AND BZ.PTNRTY IN ('0002','0004')		
+		
+		 WHERE BARCD.WAREKY = #{WAREKY}	
+		 	
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+		
+		 ORDER BY BARCD.REFDKY DESC
+	
+	</select>
+	  
+
+	
+</mapper>

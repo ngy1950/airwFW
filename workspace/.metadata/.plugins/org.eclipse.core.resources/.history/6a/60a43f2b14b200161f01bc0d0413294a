@@ -1,0 +1,26 @@
+package com.common.carton;
+
+import java.util.List;
+
+/**
+ * BoxSelector의 추상 구현체
+ * @author Administrator
+ *
+ */
+abstract class AbstractBoxSelector implements BoxSelector {
+
+	protected List<Box> boxes;
+	
+	protected Item refItem;
+	
+	/**
+	 * 생성자
+	 * @param boxes 박스리스트
+	 * @param refItem 기준 아이템
+	 */
+	public AbstractBoxSelector(List<Box> boxes, Item refItem) {
+		this.boxes = boxes;
+		this.refItem = refItem;
+	}
+	
+}

@@ -1,0 +1,3200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Master">
+	
+	<!-- MW01  거점 --> 
+	<select id="MW01_LIST"  parameterType="hashmap" resultType="DataMap">
+	  SELECT
+			WM.* ,
+			(SELECT NMLAST FROM USRMA WHERE USERID = WM.CREUSR AND ROWNUM = 1) AS CUSRNM,
+			(SELECT NMLAST FROM USRMA WHERE USERID = WM.LMOUSR AND ROWNUM = 1) AS LUSRNM
+		FROM WAHMA WM
+		WHERE 1=1
+	  	<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+	  	<if test="DELMAK == 'on' ">
+	  		AND DELMAK = 'V'
+	  	</if>
+	</select>
+	
+	<insert id="MW01_INSERT"  parameterType="hashmap">
+	  INSERT INTO WAHMA (
+				  WAREKY	
+				, TSPKEY  
+				, DELMAK  
+				, CHKSHA  
+				, NAME01  
+				, NAME02  
+				, NAME03  
+				, ADDR01  
+				, ADDR02  
+				, ADDR03  
+				, ADDR04  
+				, ADDR05  
+				, CITY01  
+				, REGN01  
+				, POSTCD  
+				, NATNKY  
+				, TELN01  
+				, TELN02  
+				, TELN03  
+				, FAXTL1  
+				, FAXTL2  
+				, TAXCD1  
+				, TAXCD2  
+				, VATREG  
+				, POBOX1  
+				, POBPC1  
+				, WADN01  
+				, WADT01  
+				, WADT02  
+				, WADM01  
+				, EXCOMK  
+				, INDOVA  
+				, PLOCOV  
+				, INDUAC  
+				, DSORKY  
+				, DRECLO  
+				, CREDAT  
+				, CRETIM  
+				, CREUSR  
+				, LMODAT  
+				, LMOTIM  
+				, LMOUSR  
+				, INDBZL  
+				, INDARC  
+				, UPDCHK 
+				)
+			VALUES(
+			  NVL(#{WAREKY},' ')
+			, NVL(#{TSPKEY},' ')
+			, NVL(#{DELMAK},' ')
+			, NVL(#{CHKSHA},' ')
+			, NVL(#{NAME01},' ')
+			, NVL(#{NAME02},' ')
+			, NVL(#{NAME03},' ')
+			, NVL(#{ADDR01},' ')
+			, NVL(#{ADDR02},' ')
+			, NVL(#{ADDR03},' ')
+			, NVL(#{ADDR04},' ')
+			, NVL(#{ADDR05},' ')
+			, NVL(#{CITY01},' ')
+			, NVL(#{REGN01},' ')
+			, NVL(#{POSTCD},' ')
+			, NVL(#{NATNKY},' ')
+			, NVL(#{TELN01},' ')
+			, NVL(#{TELN02},' ')
+			, NVL(#{TELN03},' ')
+			, NVL(#{FAXTL1},' ')
+			, NVL(#{FAXTL2},' ')
+			, NVL(#{TAXCD1},' ')
+			, NVL(#{TAXCD2},' ')
+			, NVL(#{VATREG},' ')
+			, NVL(#{POBOX1},' ')
+			, NVL(#{POBPC1},' ')
+			, NVL(#{WADN01},' ')
+			, NVL(#{WADT01},' ')
+			, NVL(#{WADT02},' ')
+			, NVL(#{WADM01},' ')
+			, NVL(#{EXCOMK},' ')
+			, NVL(#{INDOVA},' ')
+			, NVL(#{PLOCOV},' ')
+			, NVL(#{INDUAC},' ')
+			, NVL(#{DSORKY},' ')
+			, NVL(#{DRECLO},' ')
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+			, NVL(#{INDBZL},' ')
+			, NVL(#{INDARC},' ')
+			, NVL(#{UPDCHK}, 0)
+			)
+	</insert>
+	
+	<update id="MW01_UPDATE"  parameterType="hashmap">
+	   UPDATE WAHMA  
+		SET   WAREKY = NVL(#{WAREKY},' ')
+			, TSPKEY = NVL(#{TSPKEY},' ')
+			, DELMAK = NVL(#{DELMAK},' ')
+			, CHKSHA = NVL(#{CHKSHA},' ')
+			, NAME01 = NVL(#{NAME01},' ')
+			, NAME02 = NVL(#{NAME02},' ')
+			, NAME03 = NVL(#{NAME03},' ')
+			, ADDR01 = NVL(#{ADDR01},' ')
+			, ADDR02 = NVL(#{ADDR02},' ')
+			, ADDR03 = NVL(#{ADDR03},' ')
+			, ADDR04 = NVL(#{ADDR04},' ')
+			, ADDR05 = NVL(#{ADDR05},' ')
+			, CITY01 = NVL(#{CITY01},' ')
+			, REGN01 = NVL(#{REGN01},' ')
+			, POSTCD = NVL(#{POSTCD},' ')
+			, NATNKY = NVL(#{NATNKY},' ')
+			, TELN01 = NVL(#{TELN01},' ')
+			, TELN02 = NVL(#{TELN02},' ')
+			, TELN03 = NVL(#{TELN03},' ')
+			, FAXTL1 = NVL(#{FAXTL1},' ')
+			, FAXTL2 = NVL(#{FAXTL2},' ')
+			, TAXCD1 = NVL(#{TAXCD1},' ')
+			, TAXCD2 = NVL(#{TAXCD2},' ')
+			, VATREG = NVL(#{VATREG},' ')
+			, POBOX1 = NVL(#{POBOX1},' ')
+			, POBPC1 = NVL(#{POBPC1},' ')
+			, WADN01 = NVL(#{WADN01},' ')
+			, WADT01 = NVL(#{WADT01},' ')
+			, WADT02 = NVL(#{WADT02},' ')
+			, WADM01 = NVL(#{WADM01},' ')
+			, EXCOMK = NVL(#{EXCOMK},' ')
+			, INDOVA = NVL(#{INDOVA},' ')
+			, PLOCOV = NVL(#{PLOCOV},' ')
+			, INDUAC = NVL(#{INDUAC},' ')
+			, DSORKY = NVL(#{DSORKY},' ')
+			, DRECLO = NVL(#{DRECLO},' ')
+			, LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD')
+			, LMOTIM = TO_CHAR(SYSDATE,'HH24MISS')
+			, LMOUSR = #{SES_USER_ID}
+			, INDBZL = NVL(#{INDBZL},' ')
+			, INDARC = NVL(#{INDARC},' ')
+			, UPDCHK = NVL(#{UPDCHK}, 0)
+		WHERE WAREKY = #{WAREKY}
+	</update>
+
+	<select id="MW01_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(1) AS CHK
+		FROM WAHMA
+		WHERE
+			WAREKY = #{WAREKY}
+	</select>
+	
+	<select id="MO01_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT 
+			  OWNRKY AS OWNRKY
+			, COMPKY AS COMPKY
+			, DELMAK AS DELMAK
+			, NAME01 AS NAME01
+			, NAME02 AS NAME02
+			, NAME03 AS NAME03
+			, ADDR01 AS ADDR01
+			, ADDR02 AS ADDR02
+			, ADDR03 AS ADDR03
+			, ADDR04 AS ADDR04
+			, ADDR05 AS ADDR05
+			, CITY01 AS CITY01
+			, REGN01 AS REGN01
+			, POSTCD AS POSTCD
+			, NATNKY AS NATNKY
+			, TELN01 AS TELN01
+			, TELN02 AS TELN02
+			, TELN03 AS TELN03
+			, FAXTL1 AS FAXTL1
+			, FAXTL2 AS FAXTL2
+			, TAXCD1 AS TAXCD1
+			, TAXCD2 AS TAXCD2
+			, VATREG AS VATREG
+			, POBOX1 AS POBOX1
+			, POBPC1 AS POBPC1
+			, EMAIL1 AS EMAIL1
+			, EMAIL2 AS EMAIL2
+			, CTTN01 AS CTTN01
+			, CTTT01 AS CTTT01
+			, CTTT02 AS CTTT02
+			, CTTM01 AS CTTM01
+			, EXOWNK AS EXOWNK
+			, PTNG01 AS PTNG01
+			, PTNG02 AS PTNG02
+			, PTNG03 AS PTNG03
+			, PTNG04 AS PTNG04
+			, PTNG05 AS PTNG05
+			, CREDAT AS CREDAT
+			, CRETIM AS CRETIM
+			, CREUSR AS CREUSR
+			, LMODAT AS LMODAT
+			, LMOTIM AS LMOTIM
+			, LMOUSR AS LMOUSR
+			, INDBZL AS INDBZL
+			, INDARC AS INDARC
+			, UPDCHK AS UPDCHK
+		FROM OWNER
+		WHERE 1=1
+		<if test="DELMAK != null and DELMAK != ''">
+			AND DELMAK = #{DELMAK}
+		</if>
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+		ORDER BY OWNRKY
+	</select>
+	
+	<select id="MO01_ITEM_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT 
+			  O.OWNRKY AS OWNRKY
+			, O.WAREKY AS WAREKY
+			, (SELECT WAHMA.NAME01 FROM WAHMA WHERE WAHMA.WAREKY = O.WAREKY) AS NAME01
+			, (SELECT WAHMA.ADDR01 FROM WAHMA WHERE WAHMA.WAREKY = O.WAREKY) AS ADDR01
+			, (SELECT WAHMA.ADDR02 FROM WAHMA WHERE WAHMA.WAREKY = O.WAREKY) AS ADDR02
+			, O.DELMAK AS DELMAK
+			, O.LOCARV AS LOCARV
+			, O.LOCAQC AS LOCAQC
+			, O.PASTKY AS PASTKY
+			, O.CAPACR AS CAPACR
+			, O.SASTKY AS SASTKY
+			, O.ALSTKY AS ALSTKY
+			, O.TKFLKY AS TKFLKY
+			, O.IBPROT AS IBPROT
+			, O.OBPROT AS OBPROT
+			, O.TYOVPR AS TYOVPR
+			, O.LOCOVR AS LOCOVR
+			, O.TARIKY AS TARIKY
+		FROM OWNWC O 
+		WHERE OWNRKY = #{OWNRKY}
+	</select>
+	
+	<select id="MO01_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(1) AS CHK
+		FROM OWNER
+		WHERE
+			OWNRKY = #{OWNRKY}
+	</select>
+	
+	<insert id="MO01_INSERT"  parameterType="hashmap">
+		INSERT INTO OWNER(
+			  OWNRKY
+			, COMPKY
+			, DELMAK
+			, NAME01
+			, NAME02
+			, NAME03
+			, ADDR01
+			, ADDR02
+			, ADDR03
+			, ADDR04
+			, ADDR05
+			, CITY01
+			, REGN01
+			, POSTCD
+			, NATNKY
+			, TELN01
+			, TELN02
+			, TELN03
+			, FAXTL1
+			, FAXTL2
+			, TAXCD1
+			, TAXCD2
+			, VATREG
+			, POBOX1
+			, POBPC1
+			, EMAIL1
+			, EMAIL2
+			, CTTN01
+			, CTTT01
+			, CTTT02
+			, CTTM01
+			, EXOWNK
+			, PTNG01
+			, PTNG02
+			, PTNG03
+			, PTNG04
+			, PTNG05
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		)VALUES(
+			  #{OWNRKY}
+			, 'SAJO'
+			, NVL(#{DELMAK},' ')
+			, NVL(#{NAME01},' ')
+			, NVL(#{NAME02},' ')
+			, NVL(#{NAME03},' ')
+			, NVL(#{ADDR01},' ')
+			, NVL(#{ADDR02},' ')
+			, NVL(#{ADDR03},' ')
+			, NVL(#{ADDR04},' ')
+			, NVL(#{ADDR05},' ')
+			, NVL(#{CITY01},' ')
+			, NVL(#{REGN01},' ')
+			, NVL(#{POSTCD},' ')
+			, NVL(#{NATNKY},' ')
+			, NVL(#{TELN01},' ')
+			, NVL(#{TELN02},' ')
+			, NVL(#{TELN03},' ')
+			, NVL(#{FAXTL1},' ')
+			, NVL(#{FAXTL2},' ')
+			, NVL(#{TAXCD1},' ')
+			, NVL(#{TAXCD2},' ')
+			, NVL(#{VATREG},' ')
+			, NVL(#{POBOX1},' ')
+			, NVL(#{POBPC1},' ')
+			, NVL(#{EMAIL1},' ')
+			, NVL(#{EMAIL2},' ')
+			, NVL(#{CTTN01},' ')
+			, NVL(#{CTTT01},' ')
+			, NVL(#{CTTT02},' ')
+			, NVL(#{CTTM01},' ')
+			, NVL(#{EXOWNK},' ')
+			, NVL(#{PTNG01},' ')
+			, NVL(#{PTNG02},' ')
+			, NVL(#{PTNG03},' ')
+			, NVL(#{PTNG04},' ')
+			, NVL(#{PTNG05},' ')
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+)
+	</insert>
+	
+	<update id="MO01_UPDATE"  parameterType="hashmap">
+		UPDATE OWNER
+		SET
+			  COMPKY = NVL(#{COMPKY},' ')		  
+			, DELMAK = NVL(#{DELMAK},' ')		  
+			, NAME01 = NVL(#{NAME01},' ')		  
+			, NAME02 = NVL(#{NAME02},' ')		  
+			, NAME03 = NVL(#{NAME03},' ')		  
+			, ADDR01 = NVL(#{ADDR01},' ')		  
+			, ADDR02 = NVL(#{ADDR02},' ')		  
+			, ADDR03 = NVL(#{ADDR03},' ')		  
+			, ADDR04 = NVL(#{ADDR04},' ')		  
+			, ADDR05 = NVL(#{ADDR05},' ')		  
+			, CITY01 = NVL(#{CITY01},' ')		  
+			, REGN01 = NVL(#{REGN01},' ')		  
+			, POSTCD = NVL(#{POSTCD},' ')		  
+			, NATNKY = NVL(#{NATNKY},' ')		  
+			, TELN01 = NVL(#{TELN01},' ')		  
+			, TELN02 = NVL(#{TELN02},' ')		  
+			, TELN03 = NVL(#{TELN03},' ')		  
+			, FAXTL1 = NVL(#{FAXTL1},' ')		  
+			, FAXTL2 = NVL(#{FAXTL2},' ')		  
+			, TAXCD1 = NVL(#{TAXCD1},' ')		  
+			, TAXCD2 = NVL(#{TAXCD2},' ')		  
+			, VATREG = NVL(#{VATREG},' ')		  
+			, POBOX1 = NVL(#{POBOX1},' ')		  
+			, POBPC1 = NVL(#{POBPC1},' ')		  
+			, EMAIL1 = NVL(#{EMAIL1},' ')		  
+			, EMAIL2 = NVL(#{EMAIL2},' ')		  
+			, CTTN01 = NVL(#{CTTN01},' ')		  
+			, CTTT01 = NVL(#{CTTT01},' ')		  
+			, CTTT02 = NVL(#{CTTT02},' ')		  
+			, CTTM01 = NVL(#{CTTM01},' ')		  
+			, EXOWNK = NVL(#{EXOWNK},' ')		  
+			, PTNG01 = NVL(#{PTNG01},' ')		  
+			, PTNG02 = NVL(#{PTNG02},' ')		  
+			, PTNG03 = NVL(#{PTNG03},' ')		  
+			, PTNG04 = NVL(#{PTNG04},' ')		  
+			, PTNG05 = NVL(#{PTNG05},' ')					 
+			, LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD') 
+			, LMOTIM = TO_CHAR(SYSDATE,'HH24MISS') 
+			, LMOUSR = #{SES_USER_ID}
+		WHERE
+			OWNRKY = #{OWNRKY}	  
+	</update>
+	
+	
+	<select id="MO01_ITEM_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(1) AS CHK
+		FROM OWNWC
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+	</select>
+	
+	<insert id="MO01_ITEM_INSERT"  parameterType="hashmap">
+		INSERT INTO OWNWC(
+			  OWNRKY
+			, WAREKY
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		)VALUES(
+			  #{OWNRKY}
+			, #{WAREKY}
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+		)
+	</insert>
+	
+	<update id="MO01_ITEM_UPDATE"  parameterType="hashmap">
+		UPDATE OWNWC
+		SET
+			  WAREKY = NVL(#{WAREKY},' ')		  
+			, LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD') 
+			, LMOTIM = TO_CHAR(SYSDATE,'HH24MISS') 
+			, LMOUSR = #{SES_USER_ID}
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+	</update>
+	
+	<delete id="MO01_ITEM_DELETE"  parameterType="hashmap">
+		DELETE
+		FROM OWNWC
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+	</delete>
+	
+	
+	<select id="MA01_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT 
+			  WAREKY
+			, AREAKY
+			, AREATY
+			, SHORTX
+			, NEGSTK
+			, INDCDO
+			, INDAES
+			, INDSHW
+			, INDULT
+			, RDDALL
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, (SELECT NMLAST FROM USRMA WHERE USRMA.USERID = CREUSR AND ROWNUM = 1) AS CUSRNM 
+			, LMODAT 
+			, LMOTIM 
+			, LMOUSR 
+			, (SELECT NMLAST FROM USRMA WHERE USRMA.USERID = LMOUSR AND ROWNUM = 1) AS LUSRNM
+		FROM  AREMA  
+		WHERE
+			WAREKY = #{WAREKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+		<if test="AREATY != null and AREATY != ''">
+			AND AREATY = #{AREATY}
+		</if>
+		ORDER BY AREATY
+   </select>
+   
+	<select id="MA01_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(1) AS CHK
+		FROM AREMA
+		WHERE
+				WAREKY = #{WAREKY}
+			AND AREAKY = #{AREAKY}
+	</select>
+	
+	<select id="MA01_DEL_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT
+			COUNT(1) AS CHK
+		FROM ZONMA
+		WHERE 1 = 1
+		AND   WAREKY = #{WAREKY}
+		AND   AREAKY = #{AREAKY}
+	</select>
+	
+	<insert id="MA01_INSERT"  parameterType="hashmap">
+		INSERT INTO AREMA(
+			  WAREKY
+			, AREAKY
+			, AREATY
+			, SHORTX
+			, NEGSTK
+			, INDCDO
+			, INDAES
+			, INDSHW
+			, INDULT
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		)VALUES(
+			  #{WAREKY}
+			, #{AREAKY}
+			, #{AREATY}
+			, NVL(#{SHORTX},' ')
+			, NVL(#{NEGSTK},' ')
+			, NVL(#{INDCDO},' ')
+			, NVL(#{INDAES},' ')
+			, NVL(#{INDSHW},' ')
+			, NVL(#{INDULT},' ')
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+		)
+	</insert>
+	
+	<insert id="MA01_UPDATE"  parameterType="hashmap">
+		UPDATE AREMA
+		SET
+			  AREATY = #{AREATY}
+			, SHORTX = NVL(#{SHORTX},' ')   
+			, NEGSTK = NVL(#{NEGSTK},' ')
+			, INDCDO = NVL(#{INDCDO},' ')
+			, INDAES = NVL(#{INDAES},' ')
+			, INDSHW = NVL(#{INDSHW},' ')
+			, INDULT = NVL(#{INDULT},' ')	   
+			, LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD') 
+			, LMOTIM = TO_CHAR(SYSDATE,'HH24MISS') 
+			, LMOUSR = #{SES_USER_ID}
+		WHERE
+				WAREKY = #{WAREKY}
+			AND AREAKY = #{AREAKY}
+	</insert>
+	
+	<delete id="MA01_DELETE"  parameterType="hashmap">
+		DELETE
+		FROM AREMA
+		WHERE
+				WAREKY = #{WAREKY}
+			AND AREAKY = #{AREAKY}
+	</delete>
+	
+	
+	<select id="MZ01_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT  
+			  WAREKY
+			, ZONEKY
+			, ZONETY
+			, SHORTX
+			, AREAKY
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, (SELECT NMLAST FROM USRMA WHERE USRMA.USERID = CREUSR AND ROWNUM = 1) AS CUSRNM
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+			, (SELECT NMLAST FROM USRMA WHERE USRMA.USERID = LMOUSR AND ROWNUM = 1) AS LUSRNM
+			, GRPOKY
+			, CHKSTG
+		FROM ZONMA
+		WHERE
+			WAREKY = #{WAREKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+		ORDER BY ZONEKY
+   </select>
+   
+	<select id="MZ01_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(1) AS CHK
+		FROM ZONMA
+		WHERE
+				WAREKY = #{WAREKY}
+			AND ZONEKY = #{ZONEKY}
+	</select>
+	
+	<select id="MZ01_DEL_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT
+			COUNT(1) AS CHK
+		FROM LOCMA
+		WHERE WAREKY = #{WAREKY}
+		AND   ZONEKY = #{ZONEKY}
+	</select>
+	
+	<insert id="MZ01_INSERT"  parameterType="hashmap">
+		INSER INTO ZONMA(
+			  WAREKY
+			, ZONEKY
+			, AREAKY
+			, ZONETY
+			, SHORTX
+			, GRPOKY
+			, CHKSTG
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		)VALUES(
+			  #{WAREKY}
+			, #{ZONEKY}
+			, #{AREAKY}
+			, #{ZONETY}
+			, NVL(#{SHORTX},' ')
+			, NVL(#{GRPOKY},' ')
+			, NVL(#{CHKSTG},' ')
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+		)
+	</insert>
+	
+	<insert id="MZ01_UPDATE"  parameterType="hashmap">
+		UPDATE ZONMA
+		SET
+			  AREAKY = #{AREAKY}  
+			, ZONETY = #{ZONETY}
+			, SHORTX = NVL(#{SHORTX},' ')
+			, GRPOKY = NVL(#{GRPOKY},' ')
+			, CHKSTG = NVL(#{CHKSTG},' ')
+			, LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD') 
+			, LMOTIM = TO_CHAR(SYSDATE,'HH24MISS') 
+			, LMOUSR = #{SES_USER_ID}
+		WHERE
+				WAREKY = #{WAREKY}
+			AND ZONEKY = #{ZONEKY}
+	</insert>
+	
+	<delete id="MZ01_DELETE"  parameterType="hashmap">
+		DELETE
+		FROM ZONMA
+		WHERE
+				WAREKY = #{WAREKY}
+			AND ZONEKY = #{ZONEKY}
+	</delete>
+	
+	<select id="SK01_VALID_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT MSG AS "RESULTMSG"
+		FROM (SELECT A.ROWTYP,
+				   A.WAREKY,
+				   A.OWNRKY,
+				   A.SKUKEY,
+				   A.SKUG01,
+				   A.MEASKY,
+				   A.DUOMKY,
+				   A.LOCARV,
+				   A.PASTKY,
+				   A.ALSTKY,
+				   A.UOMDTA,
+				   A.DPUTLO,
+				   CASE WHEN MSG = ' ' 
+							 THEN (CASE
+		
+									 
+										WHEN A.LOCARV != ' 'AND (SELECT 1 FROM LOCMA WHERE OWNRKY = A.OWNRKY AND WAREKY = A.WAREKY AND LOCAKY = A.LOCARV) IS NULL
+											 THEN 'VALID_M0914/' || A.SKUKEY || ',' || A.LOCARV
+										WHEN A.PASTKY != ' ' AND (SELECT 1 FROM PASTH WHERE OWNRKY = A.OWNRKY AND WAREKY = A.WAREKY AND PASTKY = A.PASTKY) IS NULL
+											 THEN 'VALID_M0915/' || A.SKUKEY || ',' || A.PASTKY
+										WHEN A.ALSTKY != ' ' AND (SELECT 1 FROM ALSTH WHERE OWNRKY = A.OWNRKY AND WAREKY = A.WAREKY AND ALSTKY = A.ALSTKY) IS NULL
+											 THEN 'VALID_M0916/' || A.SKUKEY || ',' || A.ALSTKY
+										WHEN A.UOMDTA != ' ' AND (SELECT 1 FROM MEASI WHERE OWNRKY = A.OWNRKY AND WAREKY = A.WAREKY AND MEASKY = A.MEASKY AND UOMKEY = A.UOMDTA) IS NULL
+											 THEN 'VALID_M0917/' || A.SKUKEY || ',' || A.UOMDTA
+										WHEN A.DPUTLO != ' ' AND (SELECT 1 FROM LOCMA WHERE OWNRKY = A.OWNRKY AND WAREKY = A.WAREKY AND LOCAKY = A.DPUTLO) IS NULL
+											 THEN 'VALID_M0918/' || A.SKUKEY || ',' || A.DPUTLO
+										ELSE ' ' END
+								  )
+						ELSE MSG END AS MSG
+			  FROM (SELECT MAX(A.ROWTYP) AS ROWTYP,
+						   A.WAREKY,
+						   A.OWNRKY,
+						   A.SKUKEY,
+						   COUNT(*),
+						   MAX(A.SKUG01) AS SKUG01,
+						   MAX(A.MEASKY) AS MEASKY,
+						   MAX(A.DUOMKY) AS DUOMKY,
+						   MAX(A.LOCARV) AS LOCARV,
+						   MAX(A.PASTKY) AS PASTKY,
+						   MAX(A.ALSTKY) AS ALSTKY,
+						   MAX(A.UOMDTA) AS UOMDTA,
+						   MAX(A.DPUTLO) AS DPUTLO,
+						   CASE WHEN MAX(A.ROWTYP) = 3 AND COUNT(*) > 1 THEN 'VALID_M0306/' || A.SKUKEY
+		
+								ELSE ' ' END AS MSG
+					  FROM (SELECT 1 AS ROWTYP,
+								   W.WAREKY,
+								   W.OWNRKY,
+								   W.SKUKEY,
+								   ' ' AS SKUG01,
+								   ' ' AS MEASKY,
+								   ' ' AS DUOMKY,
+								   ' ' AS LOCARV,
+								   ' ' AS PASTKY,
+								   ' ' AS ALSTKY,
+								   ' ' AS UOMDTA,
+								   ' ' AS DPUTLO
+							  FROM SKUWC W, SKUMA M
+							 WHERE M.OWNRKY = W.OWNRKY
+							   AND M.SKUKEY = W.SKUKEY
+							   AND W.WAREKY = #{WAREKY}
+							   AND W.OWNRKY = #{OWNRKY}
+						   	   ${appendQuery}
+						   ) A
+					 GROUP BY A.WAREKY, A.OWNRKY, A.SKUKEY
+					HAVING MAX(ROWTYP) IN (2,3)
+				   ) A
+		   )
+		WHERE MSG != ' '
+	</select>
+	
+	<select id="SK01_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT
+			  A.OWNRKY||A.SKUKEY AS KEY 
+			, A.OWNRKY AS OWNRKY
+			, A.SKUKEY AS SKUKEY
+			, A.DELMAK AS DELMAK
+			, A.DESC01 AS DESC01
+			, A.DESC02 AS DESC02
+			, A.VENDKY AS VENDKY
+			, A.ASKU01 AS ASKU01
+			, A.ASKU02 AS ASKU02
+			, A.ASKU03 AS ASKU03
+			, A.ASKU04 AS ASKU04
+			, A.ASKU05 AS ASKU05
+			, A.ASKL01 AS ASKL01
+			, (SELECT CDESC1 FROM CMCDV WHERE CMCDKY = 'OERE' AND CMCDVL = A.ASKL01) AS ASKL01M
+			, A.ASKL02 AS ASKL02
+			, A.ASKL03 AS ASKL03
+			, A.ASKL04 AS ASKL04
+			, A.ASKL05 AS ASKL05
+			, A.EANCOD AS EANCOD
+			, A.GTINCD AS GTINCD
+			, A.SKUG01 AS SKUG01
+			, A.SKUG02 AS SKUG02
+			, A.SKUG03 AS SKUG03
+			, A.SKUG04 AS SKUG04
+			, A.SKUG05 AS SKUG05
+			, A.SKUL01 AS SKUL01
+			, A.SKUL02 AS SKUL02
+			, A.SKUL03 AS SKUL03
+			, A.SKUL04 AS SKUL04
+			, A.SKUL05 AS SKUL05
+			, A.GRSWGT AS GRSWGT
+			, A.NETWGT AS NETWGT
+			, A.WGTUNT AS WGTUNT
+			, A.LENGTH AS LENGTH
+			, A.WIDTHW AS WIDTHW
+			, A.HEIGHT AS HEIGHT
+			, A.CUBICM AS CUBICM
+			, A.CAPACT AS CAPACT
+			, A.DUOMKY AS DUOMKY
+			, A.QTDUOM AS QTDUOM
+			, A.ABCANV AS ABCANV
+			, A.LOTL01 AS LOTL01
+			, A.OUTDMT AS OUTDMT
+			, A.RIMDMT AS RIMDMT
+			, A.INNDPT AS INNDPT
+			, A.SECTWD AS SECTWD
+			, A.WEIGHT AS WEIGHT
+			, A.LGPRO  AS LGPRO
+			, A.DLGORT AS DLGORT
+			, A.BATMNG AS BATMNG
+			, A.CSTDAT AS CSTDAT
+			, A.CPSKUG AS CPSKUG
+			, A.DESC03 AS DESC03
+			, A.QTYMON AS QTYMON
+			, A.QTYSTD AS QTYSTD
+			, A.QTYCNT AS QTYCNT
+			, A.DESC04 AS DESC04
+			, A.BUFMNG AS BUFMNG
+			, B.WAREKY AS WAREKY
+			, B.MEASKY AS MEASKY
+			, B.LOCARV AS LOCARV
+			, B.LOCAQC AS LOCAQC
+			, B.RCSTKY AS RCSTKY
+			, B.PASTKY AS PASTKY
+			, B.CAPACR AS CAPACR
+			, B.SASTKY AS SASTKY
+			, B.ALSTKY AS ALSTKY
+			, B.TKFLKY AS TKFLKY
+			, B.SPRIKY AS SPRIKY
+			, B.IBPROT AS IBPROT
+			, B.OBPROT AS OBPROT
+			, B.UOMDIN AS UOMDIN
+			, B.UOMDOU AS UOMDOU
+			, B.UOMDTA AS UOMDTA
+			, B.INDSLC AS INDSLC
+			, B.SLCLAT AS SLCLAT
+			, B.SLCTYP AS SLCTYP
+			, B.SLCPDI AS SLCPDI
+			, B.SLCPDO AS SLCPDO
+			, B.DPUTZO AS DPUTZO
+			, B.DPUTLO AS DPUTLO
+			, B.CPVNDR AS CPVNDR
+			, B.CPMEAS AS CPMEAS
+			, B.LOCOVR AS LOCOVR
+			, B.PLOCOV AS PLOCOV
+			, B.TARIKY AS TARIKY
+			, B.LOTRKY AS LOTRKY
+			, B.EXPDCK AS EXPDCK
+			, B.PRODCK AS PRODCK
+			, B.SHPPRT AS SHPPRT
+			, B.IFFLAG AS IFFLAG
+			, B.CREDAT AS CREDAT
+			, B.CRETIM AS CRETIM
+			, B.CREUSR AS CREUSR
+			, B.LMODAT AS LMODAT
+			, B.LMOTIM AS LMOTIM
+			, B.LMOUSR AS LMOUSR
+			, A.WARAPP AS WARAPP
+			, C.WIDQTY AS WIDQTY
+			, C.LENQTY AS LENQTY
+			, C.ADDQTY AS ADDQTY
+			, C.HEIQTY AS HEIQTY
+		FROM SKUMA A 
+		INNER JOIN SKUWC B
+				ON A.OWNRKY = B.OWNRKY
+			   AND A.SKUKEY = B.SKUKEY
+		LEFT OUTER JOIN SKUPT C 
+					 ON A.OWNRKY = C.OWNRKY 
+					AND A.SKUKEY = C.SKUKEY
+		WHERE
+				A.OWNRKY = #{OWNRKY}
+			AND B.WAREKY = #{WAREKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+	</select>
+	
+	<update id="SKUMA_UPDATE"  parameterType="hashmap">
+		UPDATE SKUMA
+		SET
+			DELMAK = NVL(#{DELMAK} , ' '),
+			DESC02 = NVL(#{DESC02} , ' '),
+			ASKU01 = NVL(#{ASKU01} , ' '),
+			ASKU02 = NVL(#{ASKU02} , ' '),
+			ASKU03 = NVL(#{ASKU03} , ' '),
+			ASKU04 = NVL(#{ASKU04} , ' '),
+			ASKU05 = NVL(#{ASKU05} , ' '),
+			ASKL01 = NVL(#{ASKL01} , ' '),
+			ASKL02 = NVL(#{ASKL02} , ' '),
+			ASKL03 = NVL(#{ASKL03} , ' '),
+			ASKL04 = NVL(#{ASKL04} , ' '),
+			ASKL05 = NVL(#{ASKL05} , ' '),
+			EANCOD = NVL(#{EANCOD} , ' '),
+			GTINCD = NVL(#{GTINCD} , ' '),
+			SKUG01 = NVL(#{SKUG01} , ' '),
+			SKUG02 = NVL(#{SKUG02} , ' '),
+			SKUG03 = NVL(#{SKUG03} , ' '),
+			SKUG04 = NVL(#{SKUG04} , ' '),
+			SKUG05 = NVL(#{SKUG05} , ' '),
+			SKUL01 = NVL(#{SKUL01} , ' '),
+			SKUL02 = NVL(#{SKUL02} , ' '),
+			SKUL03 = NVL(#{SKUL03} , ' '),
+			SKUL04 = NVL(#{SKUL04} , ' '),
+			SKUL05 = NVL(#{SKUL05} , ' '),
+			GRSWGT = NVL(#{GRSWGT} , ' '),
+			NETWGT = NVL(#{NETWGT} , ' '),
+			WEIGHT = NVL(#{WEIGHT} , ' '),
+			WGTUNT = NVL(#{WGTUNT} , ' '),
+			LENGTH = NVL(#{LENGTH} , 0  ),
+			WIDTHW = NVL(#{WIDTHW} , 0)  ,
+			HEIGHT = NVL(#{HEIGHT} , 0)  ,
+			CUBICM = NVL(#{CUBICM} , 0)  ,
+			CAPACT = NVL(#{CAPACT} , 0)  ,
+			DUOMKY = NVL(#{DUOMKY} , ' '),
+			QTDUOM = NVL(#{QTDUOM} , 0)  ,
+			ABCANV = NVL(#{ABCANV} , ' '),
+			LOTL01 = NVL(#{LOTL01} , ' '),
+			DLGORT = NVL(#{DLGORT} , ' '),
+			OUTDMT = NVL(#{OUTDMT} , 0 ) ,
+			BATMNG = NVL(#{BATMNG} , ' '),
+			DESC03 = NVL(#{DESC03} , ' '),
+			DESC04 = NVL(#{DESC04} , ' '),
+			QTYMON = NVL(#{QTYMON} , 0)  ,
+			QTYSTD = NVL(#{QTYSTD} , ' '),
+			BUFMNG = NVL(#{BUFMNG} , ' '),
+			WARAPP = NVL(#{WARAPP} , 0)
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND SKUKEY = #{SKUKEY}
+	</update>
+	
+	<update id="SKUWC_UPDATE"  parameterType="hashmap">
+		UPDATE SKUWC
+		SET
+			MEASKY = NVL(#{MEASKY} , ' ' ),
+			LOCARV = NVL(#{LOCARV} , ' ' ),
+			LOCAQC = NVL(#{LOCAQC} , ' ' ),
+			RCSTKY = NVL(#{RCSTKY} , ' ' ),
+			PASTKY = NVL(#{PASTKY} , ' ' ),
+			CAPACR = NVL(#{CAPACR} , ' ' ),
+			SASTKY = NVL(#{SASTKY} , ' ' ),
+			ALSTKY = NVL(#{ALSTKY} , ' ' ),
+			TKFLKY = NVL(#{TKFLKY} , ' ' ),
+			SPRIKY = NVL(#{SPRIKY} , ' ' ),
+			IBPROT = NVL(#{IBPROT} , ' ' ),
+			OBPROT = NVL(#{OBPROT} , ' ' ),
+			UOMDIN = NVL(#{UOMDIN} , ' ' ),
+			UOMDOU = NVL(#{UOMDOU} , ' ' ),
+			UOMDTA = NVL(#{UOMDTA} , ' ' ),
+			INDSLC = NVL(#{INDSLC} , ' ' ),
+			SLCLAT = NVL(#{SLCLAT} , ' ' ),
+			SLCTYP = NVL(#{SLCTYP} , ' ' ),
+			SLCPDI = NVL(#{SLCPDI} , 0 ),
+			SLCPDO = NVL(#{SLCPDO} , 0 ),
+			DPUTZO = NVL(#{DPUTZO} , ' ' ),
+			DPUTLO = NVL(#{DPUTLO} , ' ' ),
+			CPVNDR = NVL(#{CPVNDR} , ' ' ),
+			CPMEAS = NVL(#{CPMEAS} , ' ' ),
+			LOCOVR = NVL(#{LOCOVR} , ' ' ),
+			PLOCOV = NVL(#{PLOCOV} , ' ' ),
+			TARIKY = NVL(#{TARIKY} , ' ' ),
+			LOTRKY = NVL(#{LOTRKY} , ' ' ),
+			EXPDCK = NVL(#{EXPDCK} , ' ' ),
+			PRODCK = NVL(#{PRODCK} , ' ' ),
+			OUTDMT = NVL(#{OUTDMT} , 0 ),
+			RIMDMT = NVL(#{RIMDMT} , 0 ),
+			INNDPT = NVL(#{INNDPT} , 0 ),
+			SECTWD = NVL(#{SECTWD} , 0 ),
+			SHPPRT = NVL(#{SHPPRT} , ' ' ),
+			IFFLAG = NVL(#{IFFLAG} , ' ' ),
+			LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD'),
+			LMOTIM = TO_CHAR(SYSDATE,'HH24MISS'),
+			LMOUSR = #{SES_USER_ID}
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND SKUKEY = #{SKUKEY}
+
+	</update>
+	
+	<select id="SM01_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT  
+			  OWNRKY
+			, WAREKY
+			, MEASKY
+			, SHORTX
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+			, INDBZL
+			, INDARC
+			, UPDCHK
+		FROM  MEASH
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+	</select>
+	
+	
+	<select id="SM01_ITEM_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT
+			  OWNRKY
+			, WAREKY
+			, MEASKY
+			, ITEMNO
+			, UOMKEY
+			, QTPUOM
+			, INDDFU
+			, DISREC
+			, DISSHP
+			, DISTAS
+			, UPDCHK
+			, OWNRKY
+		FROM  MEASI
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND MEASKY = #{MEASKY}	
+	</select>
+	
+	<select id="SM01_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(1) AS CHK
+		FROM MEASI
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND MEASKY = #{MEASKY}
+	</select>
+	
+	<update id="SM01_UPDATE"  parameterType="hashmap">
+		UPDATE MEASH
+		SET
+			  SHORTX = NVL(#{SHORTX}, ' ')
+			, LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD')
+			, LMOTIM = TO_CHAR(SYSDATE,'HH24MISS')
+			, LMOUSR = #{SES_USER_ID}
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND MEASKY = #{MEASKY}
+	</update>
+	
+	
+	<update id="SM01_ITEM_UPDATE"  parameterType="hashmap">
+		UPDATE MEASI
+		SET
+			  INDDFU = NVL(#{INDDFU}, ' ')
+			, DISREC = NVL(#{DISREC}, ' ')
+			, DISSHP = NVL(#{DISSHP}, ' ')
+			, DISTAS = NVL(#{DISTAS}, ' ')
+			, LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD')
+			, LMOTIM = TO_CHAR(SYSDATE,'HH24MISS')
+			, LMOUSR = #{SES_USER_ID}
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND MEASKY = #{MEASKY}
+			AND ITEMNO = #{ITEMNO}
+	</update>
+	
+	<select id="SK03_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT
+			  PT.OWNRKY
+			, PT.WAREKY
+			, PT.SKUKEY
+			, SM.DESC01
+			, PT.WIDQTY
+			, PT.LENQTY
+			, PT.ADDQTY
+			, PT.HEIQTY
+			, PT.GRSQTY
+			, PT.REMQTY
+			, PT.PLTWGT
+			, PT.CREDAT
+			, PT.CRETIM
+			, PT.CREUSR
+			, PT.LMODAT
+			, PT.LMOTIM
+			, PT.LMOUSR
+		FROM
+			SKUPT PT
+			INNER JOIN SKUMA SM
+				ON	  SM.OWNRKY = PT.OWNRKY
+					AND SM.SKUKEY = PT.SKUKEY
+		WHERE
+			PT.OWNRKY = #{OWNRKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>	
+	</select>
+	
+	<insert id="SK03_INSERT"  parameterType="hashmap">
+		INSERT INTO SKUPT(
+			  OWNRKY
+			, SKUKEY
+			, DESC01
+			, WIDQTY
+			, LENQTY
+			, ADDQTY
+			, HEIQTY
+			, GRSQTY
+			, REMQTY
+			, PLTWGT
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		)VALUES(
+			  #{OWNRKY}
+			, NVL(#{SKUKEY} , ' ' )
+			, NVL(#{DESC01} , ' ' )
+			, NVL(#{WIDQTY} , 0 )
+			, NVL(#{LENQTY} , 0 )
+			, NVL(#{ADDQTY} , 0 )
+			, NVL(#{HEIQTY} , 0 )
+			, NVL(#{GRSQTY} , 0 )
+			, NVL(#{REMQTY} , 0 )
+			, NVL(#{PLTWGT} , 0 )
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+		)
+	</insert>
+	
+	<update id="SK03_UPDATE"  parameterType="hashmap">
+		UPDATE SKUPT
+		SET
+			  WIDQTY = NVL(#{WIDQTY} , 0 )
+			, LENQTY = NVL(#{LENQTY} , 0 )
+			, ADDQTY = NVL(#{ADDQTY} , 0 )
+			, HEIQTY = NVL(#{HEIQTY} , 0 )
+			, GRSQTY = NVL(#{GRSQTY} , 0 )
+			, REMQTY = NVL(#{REMQTY} , 0 )
+			, PLTWGT = NVL(#{PLTWGT} , 0 )		  
+			, LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD') 
+			, LMOTIM = TO_CHAR(SYSDATE,'HH24MISS') 
+			, LMOUSR = #{SES_USER_ID}
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND SKUKEY = #{SKUKEY}
+	</update>
+	
+	<delete id="SK03_DELETE"  parameterType="hashmap">
+		DELETE
+		FROM SKUPT
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND SKUKEY = #{SKUKEY}
+	</delete>
+	
+	<select id="SK03_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(1) AS CHK
+		FROM SKUPT
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND SKUKEY = #{SKUKEY}
+	</select>
+	
+	<select id="SL01_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT  S.LOTNUM AS LOTNUM
+			   ,S.WAREKY AS WAREKY
+			   ,S.WAREKYNM AS WAREKYNM
+			   ,S.OWNRKY AS OWNRKY
+			   ,S.OWNRKYNM AS OWNRKYNM
+			   ,S.SKUKEY AS SKUKEY
+			   ,S.DESC01 AS DESC01
+			   ,S.DESC02 AS DESC02
+			   ,S.LOTA01 AS LOTA01
+			   ,S.LOTA02 AS LOTA02
+			   ,S.LOTA03 AS LOTA03
+			   ,S.LOTA04 AS LOTA04
+			   ,S.LOTA05 AS LOTA05
+			   ,S.LOTA05NM AS LOTA05NM
+			   ,S.LOTA06 AS LOTA06
+			   ,S.LOTA06NM AS LOTA06NM
+			   ,S.LOTA07 AS LOTA07
+			   ,S.LOTA08 AS LOTA08
+			   ,S.LOTA09 AS LOTA09
+			   ,S.LOTA10 AS LOTA10
+			   ,S.LOTA11 AS LOTA11
+			   ,S.LOTA12 AS LOTA12
+			   ,S.LOTA13 AS LOTA13
+			   ,S.LOTA14 AS LOTA14
+			   ,S.LOTA15 AS LOTA15
+			   ,S.LOTA16 AS LOTA16
+			   ,S.LOTA17 AS LOTA17
+			   ,S.LOTA18 AS LOTA18
+			   ,S.LOTA19 AS LOTA19
+			   ,S.LOTA20 AS LOTA20
+			   ,S.CREDAT AS CREDAT
+			   ,S.CRETIM AS CRETIM
+			   ,S.CREUSR AS CREUSR
+			   ,S.CUSRNM AS CUSRNM
+			   ,S.LMODAT AS LMODAT
+			   ,S.LMOTIM AS LMOTIM
+			   ,S.LMOUSR AS LMOUSR
+			   ,S.LUSRNM AS LUSRNM
+			   ,S.INDBZL AS INDBZL
+			   ,S.INDARC AS INDARC
+			   ,S.UPDCHK AS UPDCHK
+		FROM   ( 
+			SELECT  S.LOTNUM 
+				   ,S.WAREKY 
+				   ,W.NAME01 AS WAREKYNM
+				   ,S.OWNRKY 
+				   ,O.NAME01 AS OWNRKYNM
+				   ,S.SKUKEY 
+				   ,SM.DESC01 
+				   ,SM.DESC02 
+				   ,S.LOTA01
+				   ,S.LOTA02
+				   ,S.LOTA03
+				   ,S.LOTA04
+				   ,S.LOTA05
+				   ,CA.CDESC1 AS LOTA05NM
+				   ,S.LOTA06 
+				   ,CB.CDESC1 AS LOTA06NM
+				   ,S.LOTA07 
+				   ,S.LOTA08 
+				   ,S.LOTA09 
+				   ,S.LOTA10 
+				   ,S.LOTA11 
+				   ,S.LOTA12 
+				   ,S.LOTA13 
+				   ,S.LOTA14 
+				   ,S.LOTA15 
+				   ,S.LOTA16 
+				   ,S.LOTA17 
+				   ,S.LOTA18 
+				   ,S.LOTA19 
+				   ,S.LOTA20 
+				   ,S.CREDAT 
+				   ,S.CRETIM 
+				   ,S.CREUSR 
+				   ,(SELECT NMLAST FROM USRMA WHERE USRMA.USERID = S.CREUSR AND ROWNUM = 1) AS CUSRNM
+				   ,S.LMODAT AS LMODAT
+				   ,S.LMOTIM AS LMOTIM
+				   ,S.LMOUSR AS LMOUSR
+				   ,(SELECT NMLAST FROM USRMA WHERE USRMA.USERID = S.LMOUSR AND ROWNUM = 1) AS LUSRNM
+				   ,S.INDBZL AS INDBZL
+				   ,S.INDARC AS INDARC
+				   ,S.UPDCHK AS UPDCHK
+			
+			FROM LOTAT S 
+			LEFT OUTER JOIN OWNER O
+						 ON O.OWNRKY = S.OWNRKY
+			LEFT OUTER JOIN WAHMA W
+						 ON W.WAREKY = S.WAREKY
+					  
+			LEFT OUTER JOIN SKUMA SM
+						 ON SM.OWNRKY = S.OWNRKY
+						AND SM.SKUKEY = S.SKUKEY
+			LEFT OUTER JOIN CMCDV CA
+						 ON CA.CMCDVL = S.LOTA05
+						AND CA.CMCDKY = 'LOTA05'
+			LEFT OUTER JOIN CMCDV CB
+						 ON CB.CMCDVL = S.LOTA06
+						AND CB.CMCDKY = 'LOTA06'
+		) S
+		WHERE
+				S.OWNRKY = #{OWNRKY}
+			AND S.WAREKY = #{WAREKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>	
+	</select>
+	
+	<select id="SP02_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT
+			  PAKMA.OWNRKY
+			, PAKMA.PACKID
+			, PAKMA.SKUKEY
+			, PAKMA.SORTSQ
+			, NVL(DESC01SM.DESC01,' ') AS DESC01
+			, DESC01SM.QTDUOM AS SKDUOM
+			, NVL(SHORTXSM.DESC01,' ') AS SHORTX
+			, SHORTXSM.QTDUOM AS PKDUOM
+			, PAKMA.UOMQTY
+			, PAKMA.PAKQTY
+			, PAKMA.CREDAT
+			, PAKMA.CRETIM
+			, PAKMA.CREUSR
+			, NVL(CU.NMLAST,' ') AS CUSRNM
+			, PAKMA.LMODAT
+			, PAKMA.LMOTIM
+			, PAKMA.LMOUSR
+		FROM PAKMA
+		LEFT OUTER JOIN USRMA CU
+                ON CU.USERID = PAKMA.CREUSR
+        LEFT OUTER JOIN USRMA LU
+                ON LU.USERID = PAKMA.LMOUSR
+        LEFT OUTER JOIN SKUMA DESC01SM
+                ON DESC01SM.OWNRKY = #{OWNRKY}
+               AND DESC01SM.SKUKEY = PAKMA.SKUKEY
+        LEFT OUTER JOIN SKUMA SHORTXSM
+                ON SHORTXSM.OWNRKY = #{OWNRKY}
+               AND SHORTXSM.SKUKEY = PAKMA.PACKID
+		WHERE
+			PAKMA.OWNRKY = #{OWNRKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>	
+	</select>
+	
+	<select id="TC01_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT
+			  OWNRKY
+			, WAREKY
+			, CARNUM
+			, DESC01
+			, DCMPNM
+			, DRIVER
+			, PERHNO
+			, CARTYP
+			, CARORD
+			, CARWHD
+			, CARHIG
+			, CARLNG
+			, CARWEG
+			, CUBICM
+			, CAROPT
+			, CARSTS
+			, CARGBN
+			, CARTMP
+			, DECODE(DELMAK,' ',' ','0',' ','1','V') AS DELMAK
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		FROM CARMA
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != '' " >
+			${RANGE_SQL}
+		</if>
+		<choose>
+			<when test=' DELMAK.equals("V") '>
+				AND DELMAK = '1'
+			</when>
+			<otherwise>
+				AND DELMAK != '1'
+			</otherwise>
+		</choose>   
+		<if test="CARTYP != null and CARTYP != '' " >
+			AND CARTYP = #{CARTYP}
+		</if>
+		<if test="CAROPT != null and CAROPT != '' " >
+			AND CAROPT = #{CAROPT}
+		</if>
+		<if test="CARSTS != null and CARSTS != '' " >
+			AND CARSTS = #{CARSTS}
+		</if>
+		<if test="CARGBN != null and CARGBN != '' " >
+			AND CARGBN = #{CARGBN}
+		</if>
+		
+	</select>
+	
+	<insert id="TC01_INSERT"  parameterType="hashmap">
+		INSERT INTO CARMA
+		(
+			  OWNRKY
+			, WAREKY
+			, CARNUM
+			, DESC01
+			, DCMPNM
+			, DRIVER
+			, PERHNO
+			, CARTYP
+			, CARORD
+			, CARWHD
+			, CARHIG
+			, CARLNG
+			, CARWEG
+			, CUBICM
+			, CAROPT
+			, CARSTS
+			, CARGBN
+			, CARTMP
+			, DELMAK
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		)
+		VALUES(
+			  NVL(#{OWNRKY}, ' ')
+			, NVL(#{WAREKY}, ' ')
+			, NVL(#{CARNUM}, ' ')
+			, NVL(#{DESC01}, ' ')
+			, NVL(#{DCMPNM}, ' ')
+			, NVL(#{DRIVER}, ' ')
+			, NVL(#{PERHNO}, ' ')
+			, NVL(#{CARTYP}, ' ')
+			, NVL(#{CARORD}, 0  )
+			, NVL(#{CARWHD}, 0  )
+			, NVL(#{CARHIG}, 0  )
+			, NVL(#{CARLNG}, 0  )
+			, NVL(#{CARWEG}, 0  )
+			, NVL(#{CUBICM}, 0  )
+			, NVL(#{CAROPT}, ' ')
+			, NVL(#{CARSTS}, ' ')
+			, NVL(#{CARGBN}, ' ')
+			, NVL(#{CARTMP}, ' ')
+			, DECODE(NVL(#{DELMAK}, ' '),'V','1',' ')
+			, TO_CHAR(SYSDATE, 'YYYYMMDD')
+			, TO_CHAR(SYSDATE, 'HH24MISS')
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE, 'YYYYMMDD')
+			, TO_CHAR(SYSDATE, 'HH24MISS')
+			, #{SES_USER_ID}
+		)	
+	</insert>
+	
+	<update id="TC01_UPDATE"  parameterType="hashmap">
+		UPDATE CARMA
+		SET
+			DESC01 = NVL(#{DESC01}, ' '), 
+			DCMPNM = NVL(#{DCMPNM}, ' '), 
+			DRIVER = NVL(#{DRIVER}, ' '), 
+			PERHNO = NVL(#{PERHNO}, ' '), 
+			CARTYP = NVL(#{CARTYP}, ' '), 
+			CARORD = NVL(#{CARORD}, 0  ), 
+			CARWHD = NVL(#{CARWHD}, 0  ), 
+			CARHIG = NVL(#{CARHIG}, 0  ), 
+			CARLNG = NVL(#{CARLNG}, 0  ), 
+			CARWEG = NVL(#{CARWEG}, 0  ), 
+			CUBICM = NVL(#{CUBICM}, 0  ), 
+			CAROPT = NVL(#{CAROPT}, ' '), 
+			CARSTS = NVL(#{CARSTS}, ' '), 
+			CARGBN = NVL(#{CARGBN}, ' '), 
+			CARTMP = NVL(#{CARTMP}, ' '), 
+			DELMAK = DECODE(NVL(#{DELMAK}, ' '),'V','1',' '), 
+			LMODAT = TO_CHAR(SYSDATE, 'YYYYMMDD'),
+			LMOTIM = TO_CHAR(SYSDATE, 'HH24MISS'),
+			LMOUSR = #{SES_USER_ID}
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND CARNUM = #{CARNUM}
+	</update>
+	
+	<select id="TC01_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(1) AS CHK
+		FROM CARMA
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND CARNUM = #{CARNUM}
+	</select>
+	
+	
+	<select id="TP01_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT 
+			  OWNRKY AS OWNRKY
+			, WAREKY AS WAREKY
+			, PASTKY AS PASTKY
+			, SHORTX AS SHORTX
+			, CREDAT AS CREDAT
+			, CRETIM AS CRETIM
+			, CREUSR AS CREUSR
+			, LMODAT AS LMODAT
+			, LMOTIM AS LMOTIM
+			, LMOUSR AS LMOUSR
+		FROM PASTH
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != '' " >
+			${RANGE_SQL}
+		</if>
+	</select>
+	
+	<select id="TP01_ITEM_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT 
+			  OWNRKY AS OWNRKY
+			, WAREKY AS WAREKY
+			, PASTKY AS PASTKY
+			, STEPNO AS STEPNO
+			, SRMEKY AS SRMEKY
+			, USDOCT AS USDOCT
+			, LOCASR AS LOCASR
+			, RMTGLS AS RMTGLS
+			, LOCATG AS LOCATG
+			, ZONETG AS ZONETG
+			, CAPACR AS CAPACR
+			, CREDAT AS CREDAT
+			, CRETIM AS CRETIM
+			, CREUSR AS CREUSR
+			, LMODAT AS LMODAT
+			, LMOTIM AS LMOTIM
+			, LMOUSR AS LMOUSR
+		FROM PASTI
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND PASTKY = #{PASTKY}
+	</select>
+	
+	<select id="TP01_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(1) AS CHK
+		FROM PASTH
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND PASTKY = #{PASTKY}
+	</select>
+	
+	<select id="TP01_ITEM_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(1) AS CHK
+		FROM PASTI
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND PASTKY = #{PASTKY}
+			AND STEPNO = #{STEPNO}
+	</select>
+	
+	<insert id="TP01_INSERT"  parameterType="hashmap">
+		INSERT INTO PASTH
+		(
+			  OWNRKY
+			, WAREKY
+			, PASTKY
+			, SHORTX
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		)
+		VALUES(
+			  #{OWNRKY}
+			, #{WAREKY}
+			, #{PASTKY}
+			, #{SHORTX}
+			, TO_CHAR(SYSDATE, 'YYYYMMDD')
+			, TO_CHAR(SYSDATE, 'HH24MISS')
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE, 'YYYYMMDD')
+			, TO_CHAR(SYSDATE, 'HH24MISS')
+			, #{SES_USER_ID}
+		)
+	</insert>
+	
+	<insert id="TP01_ITEM_INSERT"  parameterType="hashmap">
+		INSERT INTO PASTI
+		(
+			  OWNRKY
+			, WAREKY
+			, PASTKY
+			, STEPNO
+			, SRMEKY
+			, USDOCT
+			, LOCASR
+			, RMTGLS
+			, LOCATG
+			, ZONETG
+			, CAPACR
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		)
+		VALUES(
+			  #{OWNRKY}
+			, #{WAREKY}
+			, #{PASTKY}
+			, #{STEPNO}
+			, NVL(#{SRMEKY}, ' ')
+			, NVL(#{USDOCT}, ' ')
+			, NVL(#{LOCASR}, ' ')
+			, #{RMTGLS}
+			, NVL(#{LOCATG}, ' ')
+			, NVL(#{ZONETG}, ' ')
+			, NVL(#{CAPACR}, ' ')
+			, TO_CHAR(SYSDATE, 'YYYYMMDD')
+			, TO_CHAR(SYSDATE, 'HH24MISS')
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE, 'YYYYMMDD')
+			, TO_CHAR(SYSDATE, 'HH24MISS')
+			, #{SES_USER_ID}
+		)
+	</insert>
+	
+	<delete id="TP01_ITEM_DELETE"  parameterType="hashmap">
+		DELETE FROM PASTI
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND PASTKY = #{PASTKY}
+			AND STEPNO = #{STEPNO}
+	</delete>
+	
+	<update id="TP01_UPDATE"  parameterType="hashmap">
+		UPDATE PASTH
+		SET
+			  SHORTX = #{SHORTX}
+			, LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD')
+			, LMOTIM = TO_CHAR(SYSDATE,'HH24MISS')
+			, LMOUSR = #{SES_USER_ID}
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND PASTKY = #{PASTKY}	
+	</update>
+	
+	<update id="TP01_ITEM_UPDATE"  parameterType="hashmap">
+		UPDATE PASTI
+		SET
+			  SRMEKY = NVL(#{SRMEKY}, ' ')
+			, USDOCT = NVL(#{USDOCT}, ' ')
+			, LOCASR = NVL(#{LOCASR}, ' ')
+			, RMTGLS = #{RMTGLS}
+			, LOCATG = NVL(#{LOCATG}, ' ')
+			, ZONETG = NVL(#{ZONETG}, ' ')
+			, CAPACR = NVL(#{CAPACR}, ' ')
+			, LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD')
+			, LMOTIM = TO_CHAR(SYSDATE,'HH24MISS')
+			, LMOUSR = #{SES_USER_ID}
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND PASTKY = #{PASTKY}
+			AND STEPNO = #{STEPNO}
+	</update>
+	
+	<select id="TF01_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT  A.LOTRKY AS LOTRKY
+			   ,A.WAREKY AS WAREKY
+			   ,A.SHORTX AS SHORTX
+			   ,A.CREDAT AS CREDAT
+			   ,A.CRETIM AS CRETIM
+			   ,A.CREUSR AS CREUSR
+			   ,A.LMODAT AS LMODAT
+			   ,A.LMOTIM AS LMOTIM
+			   ,A.LMOUSR AS LMOUSR
+			   ,A.INDBZL AS INDBZL
+			   ,A.INDARC AS INDARC
+			   ,A.UPDCHK AS UPDCHK
+			   ,A.OWNRKY AS OWNRKY
+		FROM RLRRH A
+		WHERE
+			OWNRKY = #{OWNRKY} 
+		AND A.WAREKY = #{WAREKY}
+		AND A.LOTRKY = #{LOTRKY}
+	</select>
+	
+	<select id="TF01_ITEM_LIST" parameterType="hashmap" resultType="DataMap">
+<!-- 		SELECT  A.OWNRKY   -->
+<!-- 			   ,A.WAREKY  -->
+<!-- 			   ,A.LOTRKY  -->
+<!-- 			   ,MAX(A.ITEMNO) AS ITEMNO -->
+<!-- 			   ,A.DBFILD  -->
+<!-- 			   ,MAX(A.RNGVIE) AS RNGVIE -->
+<!-- 			   ,MAX(A.RNGVOP) AS RNGVOP -->
+<!-- 			   ,MAX(A.RNGVMI) AS RNGVMI -->
+<!-- 			   ,MAX(A.RNGVMX) AS RNGVMX -->
+<!-- 			   ,MAX(A.CREDAT) AS CREDAT -->
+<!-- 			   ,MAX(A.CRETIM) AS CRETIM -->
+<!-- 			   ,MAX(A.CREUSR) AS CREUSR -->
+<!-- 			   ,MAX(A.LMODAT) AS LMODAT -->
+<!-- 			   ,MAX(A.LMOTIM) AS LMOTIM -->
+<!-- 			   ,MAX(A.LMOUSR) AS LMOUSR -->
+<!-- 			   ,MAX(A.INDBZL) AS INDBZL -->
+<!-- 			   ,MAX(A.INDARC) AS INDARC -->
+<!-- 			   ,MAX(A.UPDCHK) AS UPDCHK -->
+<!-- 		FROM RLRRI A -->
+<!-- 		WHERE -->
+<!-- 				OWNRKY = #{OWNRKY}  -->
+<!-- 			AND A.WAREKY = #{WAREKY} -->
+<!-- 			AND A.LOTRKY = #{LOTRKY} -->
+<!-- 		GROUP BY -->
+<!-- 		A.OWNRKY ,A.WAREKY ,A.LOTRKY ,A.DBFILD -->
+		SELECT  A.WAREKY 
+			   ,A.LOTRKY 
+			   ,A.ITEMNO 
+			   ,(CASE 
+					 WHEN A.RNGVOP = 'GP' AND A.DBFILD != 'GROUP' 
+					 THEN A.DBFILD || '_G'
+					 ELSE A.DBFILD
+					 END 
+				)AS DBFILD
+			   ,A.RNGVIE 
+			   ,A.RNGVOP 
+			   ,A.RNGVMI 
+			   ,A.RNGVMX
+<!-- 			   ,A.LGCOPT AS LOGICAL -->
+			   ,A.CREDAT 
+			   ,A.CRETIM 
+			   ,A.CREUSR 
+			   ,A.LMODAT 
+			   ,A.LMOTIM 
+			   ,A.LMOUSR 
+			   ,A.INDBZL 
+			   ,A.INDARC 
+			   ,A.UPDCHK 
+		FROM RLRRI A
+		WHERE
+				OWNRKY = #{OWNRKY} 
+			AND A.WAREKY = #{WAREKY}
+			AND A.LOTRKY = #{LOTRKY}
+	</select>
+	
+	<select id="TS01_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT
+			  OWNRKY AS OWNRKY
+			, SSORKY AS SSORKY
+			, WAREKY AS WAREKY
+			, SHORTX AS SHORTX
+			, STLCAT AS STLCAT
+			, CREDAT AS CREDAT			 
+			, CRETIM AS CRETIM			 
+			, CREUSR AS CREUSR			
+			, LMODAT AS LMODAT			 
+			, LMOTIM AS LMOTIM			 
+			, LMOUSR AS LMOUSR			
+			, INDBZL AS INDBZL			 
+			, INDARC AS INDARC			 
+			, UPDCHK AS UPDCHK
+		FROM STSRH
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND SSORKY = #{SSORKY}
+	</select>
+	
+	<select id="TS01_ITEM_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT
+			  OWNRKY
+			, WAREKY
+			, SSORKY
+			, ITEMNO
+			, FIELDN
+			, FLDCMT
+			, ACTVAT
+			, SORTSQ
+			, INDASD
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		FROM STSRI
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND SSORKY = #{SSORKY}
+	</select>
+	
+	<select id="TS01_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT
+			  COUNT(1) CHK
+		FROM STSRH
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND SSORKY = #{SSORKY}
+	</select>
+	
+	<insert id="TS01_INSERT"  parameterType="hashmap">
+		INSERT INTO STSRH
+		(
+			  OWNRKY
+			, WAREKY
+			, SSORKY
+			, SHORTX
+			, STLCAT
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		)VALUES(
+			  #{OWNRKY}
+			, #{WAREKY}
+			, #{SSORKY}
+			, NVL(#{SHORTX},' ')
+			, '10'
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+		)	
+	</insert>
+	
+	<insert id="TS01_ITEM_INSERT"  parameterType="hashmap">
+		INSERT INTO STSRI
+		(
+			  OWNRKY
+			, WAREKY
+			, SSORKY
+			, ITEMNO
+			, FIELDN
+			, FLDCMT
+			, ACTVAT
+			, SORTSQ
+			, INDASD
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		)VALUES(
+			  #{OWNRKY}
+			, #{WAREKY}
+			, #{SSORKY}
+			, #{ITEMNO}
+			, #{FIELDN}
+			, #{FLDCMT}
+			, NVL(#{ACTVAT},' ')
+			, NVL(#{SORTSQ}, 0 )
+			, NVL(#{INDASD},' ')
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+		)	
+	</insert>
+	
+	<update id="TS01_UPDATE"  parameterType="hashmap">
+		UPDATE STSRH
+		SET
+			  SHORTX = NVL(#{SHORTX},' ')
+			, LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD')
+			, LMOTIM = TO_CHAR(SYSDATE,'HH24MISS')
+			, LMOUSR = #{SES_USER_ID}
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND SSORKY = #{SSORKY}
+	</update>
+	
+	<update id="TS01_ITEM_UPDATE"  parameterType="hashmap">
+		UPDATE STSRI
+		SET
+			  ACTVAT = NVL(#{ACTVAT},' ')
+			, SORTSQ = NVL(#{SORTSQ}, 0 )
+			, INDASD = NVL(#{INDASD},' ')
+			, LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD')
+			, LMOTIM = TO_CHAR(SYSDATE,'HH24MISS')
+			, LMOUSR = #{SES_USER_ID}
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND SSORKY = #{SSORKY}
+			AND ITEMNO = #{ITEMNO}
+	</update>
+	
+	<select id="BZ01_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT A.OWNRKY AS OWNRKY ,
+		       A.PTNRKY AS PTNRKY ,
+		       A.PTNRTY AS PTNRTY ,
+		       A.DELMAK AS DELMAK ,
+		       A.NAME01 AS NAME01 ,
+		       A.NAME02 AS NAME02 ,
+		       A.NAME03 AS NAME03 ,
+		       A.ADDR01 AS ADDR01 ,
+		       A.ADDR02 AS ADDR02 ,
+		       A.ADDR05 AS ADDR05 ,
+		       A.POSTCD AS POSTCD ,
+		       A.TELN01 AS TELN01 ,
+		       A.TELN02 AS TELN02 ,
+		       A.FAXTL1 AS FAXTL1 ,
+		       A.VATREG AS VATREG ,
+		       A.PTNL05 AS PTNL05 ,
+		       A.EMAIL1 AS EMAIL1 ,
+		       A.EMAIL2 AS EMAIL2 ,
+		       A.CTTN01 AS CTTN01 ,
+		       A.CTTT01 AS CTTT01 ,
+		       A.CTTT02 AS CTTT02 ,
+		       A.CTTM01 AS CTTM01 ,
+		       A.SALN01 AS SALN01 ,
+		       A.SALT01 AS SALT01 ,
+		       A.SALT02 AS SALT02 ,
+		       A.SALM01 AS SALM01 ,
+		       A.EXPTNK AS EXPTNK ,
+		       A.CUSTMR AS CUSTMR ,
+		       A.PTNG01 AS PTNG01 ,
+		       A.PTNG02 AS PTNG02 ,
+		       A.PTNG03 AS PTNG03 ,
+		       A.PTNG04 AS PTNG04 ,
+		       A.PTNG05 AS PTNG05 ,
+		       A.PTNG06 AS PTNG06 ,
+		       A.PTNG07 AS PTNG07 ,
+		       A.PTNG08 AS PTNG08 ,
+		       A.PTNG09 AS PTNG09 ,
+		       A.PTNL01 AS PTNL01 ,
+		       A.PTNL02 AS PTNL02 ,
+		       A.PTNL03 AS PTNL03 ,
+		       A.PTNL04 AS PTNL04 ,
+		       A.PTNL06 AS PTNL06 ,
+		       A.PTNL07 AS PTNL07 ,
+		       A.PTNL09 AS PTNL09 ,
+		       A.PTNL10 AS PTNL10 ,
+		       A.PROCHA AS PROCHA ,
+		       A.FORKYN AS FORKYN ,
+			   A.CREDAT AS CREDAT ,
+			   A.CRETIM AS CRETIM ,
+			   A.CREUSR AS CREUSR ,
+			   A.LMODAT AS LMODAT ,
+			   A.LMOTIM AS LMOTIM ,
+			   A.LMOUSR AS LMOUSR 
+		  FROM BZPTN A
+		WHERE 1=1
+		<if test="OWNRKY != null and OWNRKY != ''">
+		   AND A.OWNRKY = #{OWNRKY}
+		</if>
+		<if test="DELMAK == 'on'">
+		   AND A.DELMAK = #{DELMAK}
+		</if>
+		<if test="NORMAL == 'N'">
+		   AND (A.PTNRTY = 'CT' AND (A.PTNG01 NOT IN (SELECT DISTINCT TMRKEY FROM TMRMA) OR A.EXPTNK = ' '))
+		</if>
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+	</select>
+	
+	<insert id="BZ01_INSERT"  parameterType="hashmap">
+		INSERT INTO BZPTN
+			(  PTNRKY,
+				PTNRTY,
+				DELMAK,
+				NAME01,
+				NAME02,
+				NAME03,
+				ADDR01,
+				ADDR02,
+				ADDR03,
+				ADDR04,
+				ADDR05,
+				CITY01,
+				REGN01,
+				POSTCD,
+				NATNKY,
+				TELN01,
+				TELN02,
+				TELN03,
+				FAXTL1,
+				FAXTL2,
+				TAXCD1,
+				TAXCD2,
+				VATREG,
+				POBOX1,
+				POBPC1,
+				EMAIL1,
+				EMAIL2,
+				CTTN01,
+				CTTT01,
+				CTTT02,
+				CTTM01,
+				EXPTNK,
+				OWNRKY,
+				CUSTMR,
+				PTNG01,
+				PTNG02,
+				PTNG03,
+				PTNG04,
+				PTNG05,
+				PTNL01,
+				PTNL02,
+				PTNL03,
+				PTNL04,
+				PTNL05,
+				WTOPPM,
+				WTOPMU,
+				WTOPDV,
+				PROCHA,
+				CREDAT,
+				CRETIM,
+				CREUSR,
+				LMODAT,
+				LMOTIM,
+				LMOUSR,
+				PTNG07,
+				PTNG08,
+				FORKYN,
+				PTNL10,
+				PTNL09,
+				UPDCHK
+			)
+		VALUES(NVL(#{PTNRKY},' '),
+			   NVL(#{PTNRTY},' '),
+			   NVL(#{DELMAK},' '),
+			   NVL(#{NAME01},' '),
+			   NVL(#{NAME02},' '),
+			   NVL(#{NAME03},' '),
+			   NVL(#{ADDR01},' '),
+			   NVL(#{ADDR02},' '),
+			   NVL(#{ADDR03},' '),
+			   NVL(#{ADDR04},' '),
+			   NVL(#{ADDR05},' '),
+			   NVL(#{CITY01},' '),
+			   NVL(#{REGN01},' '),
+			   NVL(#{POSTCD},' '),
+			   NVL(#{NATNKY},' '),
+			   NVL(#{TELN01},' '),
+			   NVL(#{TELN02},' '),
+			   NVL(#{TELN03},' '),
+			   NVL(#{FAXTL1},' '),
+			   NVL(#{FAXTL2},' '),
+			   NVL(#{TAXCD1},' '),
+			   NVL(#{TAXCD2},' '),
+			   NVL(#{VATREG},' '),
+			   NVL(#{POBOX1},' '),
+			   NVL(#{POBPC1},' '),
+			   NVL(#{EMAIL1},' '),
+			   NVL(#{EMAIL2},' '),
+			   NVL(#{CTTN01},' '),
+			   NVL(#{CTTT01},' '),
+			   NVL(#{CTTT02},' '),
+			   NVL(#{CTTM01},' '),
+			   NVL(#{EXPTNK},' '),
+			   NVL(#{OWNRKY},' '),
+			   NVL(#{CUSTMR},' '),
+			   NVL(#{PTNG01},' '),
+			   NVL(#{PTNG02},' '),
+			   NVL(#{PTNG03},' '),
+			   NVL(#{PTNG04},' '),
+			   NVL(#{PTNG05},' '),
+			   NVL(#{PTNL01},' '),
+			   NVL(#{PTNL02},' '),
+			   NVL(#{PTNL03},' '),
+			   NVL(#{PTNL04},' '),
+			   NVL(#{PTNL05},' '),
+			   NVL(#{WTOPPM},'0'),
+			   NVL(#{WTOPMU},'0'),
+			   NVL(#{WTOPDV},'0'),
+			   NVL(#{PROCHA},' '),
+			   TO_CHAR(SYSDATE, 'YYYYMMDD'),
+			   TO_CHAR(SYSDATE,'HH24MISS'),
+			   #{SES_USER_ID},
+			   TO_CHAR(SYSDATE, 'YYYYMMDD'),
+			   TO_CHAR(SYSDATE,'HH24MISS'),
+			   #{SES_USER_ID},
+			   NVL(#{PTNG07},' '),
+			   NVL(#{PTNG08},' '),
+			   NVL(#{FORKYN},' '),
+			   NVL(#{PTNL10},' '),
+			   NVL(#{PTNL09},' '),
+			   '0'
+		)	
+	</insert>
+	
+	<update id="BZ01_UPDATE"  parameterType="hashmap">
+		UPDATE BZPTN
+			SET   NAME01 = NVL(#{NAME01},' ')
+				, EXPTNK = NVL(#{EXPTNK},' ')
+				, NAME02 = NVL(#{NAME02},' ')
+				, ADDR01 = NVL(#{ADDR01},' ')
+				, ADDR02 = NVL(#{ADDR02},' ')
+				, POSTCD = NVL(#{POSTCD},' ')
+				, TELN01 = NVL(#{TELN01},' ')
+				, VATREG = NVL(#{VATREG},' ')
+				, PTNL05 = NVL(#{PTNL05},' ')
+				, DELMAK = NVL(#{DELMAK},' ')
+				, NAME03 = NVL(#{NAME03},' ')
+				, ADDR05 = NVL(#{ADDR05},' ')
+				, TELN02 = NVL(#{TELN02},' ')
+				, FAXTL1 = NVL(#{FAXTL1},' ')
+				, EMAIL1 = NVL(#{EMAIL1},' ')
+				, EMAIL2 = NVL(#{EMAIL2},' ')
+				, CTTN01 = NVL(#{CTTN01},' ')
+				, CTTT01 = NVL(#{CTTT01},' ')
+				, CTTT02 = NVL(#{CTTT02},' ')
+				, CTTM01 = NVL(#{CTTM01},' ')
+				, SALN01 = NVL(#{SALN01},' ')
+				, SALT01 = NVL(#{SALT01},' ')
+				, SALT02 = NVL(#{SALT02},' ')
+				, SALM01 = NVL(#{SALM01},' ')
+				, CUSTMR = NVL(#{CUSTMR},' ')
+				, PTNG01 = NVL(#{PTNG01},' ')
+				, PTNG02 = NVL(#{PTNG02},' ')
+				, PTNG03 = NVL(#{PTNG03},' ')
+				, PTNG04 = NVL(#{PTNG04},' ')
+				, PTNG06 = NVL(#{PTNG06},' ')
+				, PTNG07 = NVL(#{PTNG07},' ')
+				, PTNG08 = NVL(#{PTNG08},' ')
+				, PTNL01 = NVL(#{PTNL01},' ')
+				, PTNL02 = NVL(#{PTNL02},' ')
+				, PTNL06 = NVL(#{PTNL06},' ')
+				, PTNL07 = NVL(#{PTNL07},' ')
+				, PROCHA = NVL(#{PROCHA},' ')
+				, FORKYN = NVL(#{FORKYN},' ')
+				, PTNL10 = NVL(#{PTNL10},' ')
+				, PTNL09 = NVL(#{PTNL09},' ')
+				, LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD')
+				, LMOTIM = TO_CHAR(SYSDATE,'HH24MISS')
+				, LMOUSR = #{SES_USER_ID}
+				, UPDCHK = UPDCHK + 1
+			WHERE PTNRTY NOT IN ('LOC', 'ROT')
+			  AND PTNRKY = #{PTNRKY}
+			  AND PTNRTY = #{PTNRTY}
+			  AND OWNRKY = #{OWNRKY}
+	</update>
+	
+<!-- 	<delete id="BZ01_DELETE"  parameterType="hashmap"> -->
+<!-- 		DELETE FROM BZPTN -->
+<!-- 		 WHERE PTNRTY NOT IN ('LOC', 'ROT') -->
+<!-- 		   AND PTNRKY = #{PTNRKY} -->
+<!-- 		   AND PTNRTY = #{PTNRTY} -->
+<!-- 		   AND OWNRKY = #{OWNRKY} -->
+<!-- 	</delete> -->
+	
+	<!-- [BZ01] 중복체크 -->
+	<select id="BZ01_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(*) AS CHK
+		 FROM BZPTN
+		WHERE PTNRTY NOT IN ('LOC', 'ROT')
+		  AND PTNRKY = #{PTNRKY}
+		  AND PTNRTY = #{PTNRTY}
+		  AND OWNRKY = #{OWNRKY}
+	</select>
+	
+	<select id="TA01_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT
+			  OWNRKY
+			, WAREKY
+			, ALSTKY
+			, SHORTX
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+			, (SELECT NMLAST FROM USRMA WHERE USERID = CREUSR AND ROWNUM = 1) AS CUSRNM
+			, (SELECT NMLAST FROM USRMA WHERE USERID = LMOUSR AND ROWNUM = 1) AS LUSRNM
+		FROM ALSTH
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+	</select>
+	
+	<select id="TA01_ITEM_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT 
+			  OWNRKY
+			, WAREKY
+			, ALSTKY
+			, STEPNO
+			, SSORKY
+			, ALFTKY
+			, ALORTO
+			, ALUNIT
+			, SUALKY
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+			, (SELECT NMLAST FROM USRMA WHERE USERID = CREUSR AND ROWNUM = 1) AS CUSRNM
+			, (SELECT NMLAST FROM USRMA WHERE USERID = LMOUSR AND ROWNUM = 1) AS LUSRNM
+		FROM ALSTI
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+			AND ALSTKY = #{ALSTKY}	
+	</select>
+	
+	<select id="ML01_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT
+			  A.WAREKY AS WAREKY
+			, A.LOCAKY AS LOCAKY
+			, A.LOCATY AS LOCATY
+			, A.SHORTX AS SHORTX
+			, A.TASKTY AS TASKTY
+			, A.ZONEKY AS ZONEKY
+			, A.ZONEKY AS ZONEKY2
+			, A.AREAKY AS AREAKY
+			, A.AREAKY AS AREAKY2
+			, A.TKZONE AS TKZONE
+			, A.FACLTY AS FACLTY
+			, A.ARLVLL AS ARLVLL
+			, A.INDCPC AS INDCPC
+			, A.INDTUT AS INDTUT
+			, A.IBROUT AS IBROUT
+			, A.OBROUT AS OBROUT
+			, A.RPROUT AS RPROUT
+			, A.STATUS AS STATUS
+			, A.ABCANV AS ABCANV
+			, A.LENGTH AS LENGTH
+			, A.WIDTHW AS WIDTHW
+			, A.HEIGHT AS HEIGHT
+			, A.CUBICM AS CUBICM
+			, A.MAXCPC AS MAXCPC
+			, A.MAXQTY AS MAXQTY
+			, A.MAXWGT AS MAXWGT
+			, A.MAXLDR AS MAXLDR
+			, A.MAXSEC AS MAXSEC
+			, A.MIXSKU AS MIXSKU
+			, A.MIXLOT AS MIXLOT
+			, A.RPNCAT AS RPNCAT
+			, A.INDQTC AS INDQTC
+			, A.QTYCHK AS QTYCHK
+			, A.NEDSID AS NEDSID
+			, A.INDUPA AS INDUPA
+			, A.INDUPK AS INDUPK
+			, A.AUTLOC AS AUTLOC
+			, A.CREDAT AS CREDAT
+			, A.CRETIM AS CRETIM
+			, A.CREUSR AS CREUSR
+			, (SELECT NMLAST FROM USRMA WHERE USRMA.USERID = A.CREUSR AND ROWNUM = 1) AS CUSRNM
+			, A.LMODAT AS LMODAT
+			, A.LMOTIM AS LMOTIM
+			, A.LMOUSR AS LMOUSR
+			, (SELECT NMLAST FROM USRMA WHERE USRMA.USERID = A.LMOUSR AND ROWNUM = 1) AS LUSRNM
+			, A.INDBZL AS INDBZL
+			, A.INDARC AS INDARC
+			, A.UPDCHK AS UPDCHK
+			, A.LOCSKU AS LOCSKU
+			, SK.DESC01 AS LOCSKUNM 
+			, A.TEXT01 AS TEXT01
+ 
+		FROM
+			LOCMA A
+			INNER JOIN OWNWC OC
+				ON	OC.WAREKY = A.WAREKY
+			LEFT OUTER JOIN SKUMA SK
+				ON		SK.OWNRKY = OC.OWNRKY
+					AND A.LOCSKU = SK.SKUKEY
+			LEFT OUTER JOIN SKUWC SC
+				ON		SK.SKUKEY = SC.SKUKEY
+					AND SK.OWNRKY = SC.OWNRKY
+					AND A.WAREKY = SC.WAREKY
+		WHERE
+				A.WAREKY = #{WAREKY}
+		<if test="STATUS != null and STATUS != ''">
+			AND A.STATUS = #{STATUS}
+		</if>
+		<if test="LOCATY != null and LOCATY != ''">
+			AND A.LOCATY = #{LOCATY}
+		</if>
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+		<if test="INDUPA == 'V'">
+			AND INDUPA = #{INDUPA}
+		</if>
+		<if test="INDUPK == 'V'">
+			AND INDUPK = #{INDUPK}
+		</if>
+		
+	</select>
+	
+	<insert id="ML01_INSERT"  parameterType="hashmap">
+INSERT INTO LOCMA 
+		            (LOCATY
+		           , SHORTX
+		           , TASKTY
+		           , ZONEKY
+		           , AREAKY
+		           , TKZONE
+		           , FACLTY
+		           , ARLVLL
+		           , INDCPC
+		           , INDTUT
+		           , IBROUT
+		           , OBROUT
+		           , RPROUT
+		           , STATUS
+		           , ABCANV
+		           , LENGTH
+		           , WIDTHW
+		           , HEIGHT
+		           , CUBICM
+		           , MAXCPC
+		           , MAXQTY
+		           , MAXWGT
+		           , MAXLDR
+		           , MAXSEC
+		           , MIXSKU
+		           , MIXLOT
+		           , RPNCAT
+		           , INDQTC
+		           , QTYCHK
+		           , NEDSID
+		           , INDUPA
+		           , INDUPK
+		           , AUTLOC
+		           , LOCSKU
+		           , TEXT01
+		           , CREDAT
+		           , CRETIM
+		           , CREUSR
+		           , LMODAT
+		           , LMOTIM
+		           , LMOUSR
+		           , INDBZL
+		           , INDARC
+		           , UPDCHK
+		           , WAREKY
+		           , LOCAKY
+		   ) VALUES (#{LOCATY}
+		           , NVL(#{SHORTX},' ')
+		           , NVL(#{TASKTY},' ')
+		           , NVL(#{ZONEKY},' ')
+		           , NVL(#{AREAKY},' ')
+		           , NVL(#{TKZONE},' ')
+		           , NVL(#{FACLTY},' ')
+		           , NVL(#{ARLVLL},' ')
+		           , NVL(#{INDCPC},' ')
+		           , NVL(#{INDTUT},' ')
+		           , NVL(#{IBROUT},' ')
+		           , '1'
+		           , NVL(#{RPROUT},' ')
+		           , NVL(#{STATUS},' ')
+		           , NVL(#{ABCANV},' ')
+		           , NVL(#{LENGTH},' ')
+		           , NVL(#{WIDTHW},' ')
+		           , NVL(#{HEIGHT},' ')
+		           , NVL(#{CUBICM},' ')
+		           , NVL(#{MAXCPC},' ')
+		           , 0
+		           , 0
+		           , 0
+		           , 0
+		           , 'V'
+		           , 'V'
+		           , NVL(#{RPNCAT},' ')
+		           , NVL(#{INDQTC},' ')
+		           , '0'
+		           , NVL(#{NEDSID},' ')
+		           , NVL(#{INDUPA},' ')
+		           , NVL(#{INDUPK},' ')
+		           , NVL(#{AUTLOC},' ')
+		           , NVL(#{LOCSKU},' ')
+		           , NVL(#{TEXT01},' ')
+		           , TO_CHAR(SYSDATE,'YYYYMMDD')
+		           , TO_CHAR(SYSDATE,'HH24MISS')
+		           , #{SES_USER_ID}
+		           , TO_CHAR(SYSDATE,'YYYYMMDD')
+		           , TO_CHAR(SYSDATE,'HH24MISS')
+		           , #{SES_USER_ID}
+		           , NVL(#{INDBZL},' ')
+		           , NVL(#{INDARC},' ')
+		           , 0
+		           , NVL(#{WAREKY},' ')
+		           , NVL(#{LOCAKY},' ')
+		  )
+   </insert>
+   
+   	<select id="ML01_LOCAKY_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(*) AS CHK
+		 FROM LOCMA A
+		      LEFT OUTER JOIN SKUMA SK ON SK.OWNRKY = '2500' AND A.LOCSKU = SK.SKUKEY
+		      LEFT OUTER JOIN SKUWC SC ON SK.SKUKEY = SC.SKUKEY
+		                              AND SK.OWNRKY = SC.OWNRKY
+		                              AND A.WAREKY = SC.WAREKY
+		WHERE 1 = 1
+
+			AND	A.WAREKY = #{WAREKY}
+		<if test="STATUS != null and STATUS != ''">
+			AND A.STATUS = #{STATUS}
+		</if>
+		<if test="LOCATY != null and LOCAKTY != ''">
+			AND A.LOCATY = #{LOCATY}
+		</if>
+		<if test="LOCAKY != null and LOCAKY != ''">
+			AND A.LOCAKY = #{LOCAKY}
+		</if>
+		<if test="INDUPA == 'V'">
+			AND INDUPA = #{INDUPA}
+		</if>
+		<if test="INDUPK == 'V'">
+			AND INDUPK = #{INDUPK}
+		</if>
+	</select>
+	
+	<update id="ML01_UPDATE"  parameterType="hashmap">
+		UPDATE LOCMA
+		SET    LOCATY = NVL(#{LOCATY},' '),
+			   AREAKY = NVL(#{AREAKY},' '),
+			   SHORTX = NVL(#{SHORTX},' '),
+			   ZONEKY = NVL(#{ZONEKY},' '),
+			   TKZONE = NVL(#{TKZONE},' '),
+			   FACLTY = NVL(#{FACLTY},' '),
+			   INDCPC = NVL(#{INDCPC},' '),
+			   OBROUT = NVL(#{OBROUT},' '),
+			   STATUS = NVL(#{STATUS},' '),
+			   LENGTH = NVL(#{LENGTH},' '),
+			   WIDTHW = NVL(#{WIDTHW},' '),
+			   HEIGHT = NVL(#{HEIGHT},' '),
+			   CUBICM = NVL(#{CUBICM},' '),
+			   MAXCPC = NVL(#{MAXCPC},' '),
+			   NEDSID = NVL(#{NEDSID},' '),
+			   INDUPA = NVL(#{INDUPA},' '),
+			   INDUPK = NVL(#{INDUPK},' '),
+			   TEXT01 = NVL(#{TEXT01},' '),
+               LOCSKU = NVL(#{LOCSKU},' '),
+               LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD'),
+			   LMOTIM = TO_CHAR(SYSDATE,'HH24MISS'),
+			   LMOUSR = #{SES_USER_ID},
+			   UPDCHK = UPDCHK + 1
+		WHERE  WAREKY = #{WAREKY}
+		AND    LOCAKY = #{LOCAKY}
+	</update>
+	<select id="ML01_JONETY_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT AREAKY AS AREAKY
+		FROM ZONMA
+		WHERE WAREKY = #{WAREKY}
+		AND   ZONEKY = #{ZONEKY}
+		AND   AREAKY = #{AREAKY}
+	</select>
+	
+	<update id="ML01_STKKY_UPDATE"  parameterType="hashmap">
+		UPDATE STKKY
+		SET   AREAKY = #{AREAKY}
+		     ,ZONEKY = #{ZONEKY}
+		     ,INDBZL = 'V'
+		     ,LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD')
+		     ,LMOTIM = TO_CHAR(SYSDATE,'HH24MISS')
+		     ,LMOUSR = #{SES_USER_ID}
+		WHERE WAREKY = #{WAREKY}
+		AND   LOCAKY = #{LOCAKY}
+	</update>
+	
+	<delete id="ML01_DELETE"  parameterType="hashmap">
+		DELETE 
+		FROM   LOCMA
+		WHERE WAREKY = #{WAREKY}
+		AND   LOCAKY = #{LOCAKY}
+	</delete>
+	
+	<select id="LOCMA_LIST"  parameterType="hashmap" resultType="DataMap">
+	SELECT  A.WAREKY AS WAREKY
+	       ,A.LOCAKY AS LOCAKY
+	       ,A.LOCATY AS LOCATY
+	       ,A.SHORTX AS SHORTX
+	       ,A.TASKTY AS TASKTY
+	       ,A.ZONEKY AS ZONEKY
+	       ,A.ZONEKY AS ZONEKY2
+	       ,A.AREAKY AS AREAKY
+	       ,A.AREAKY AS AREAKY2
+	       ,A.TKZONE AS TKZONE
+	       ,A.FACLTY AS FACLTY
+	       ,A.ARLVLL AS ARLVLL
+	       ,A.INDCPC AS INDCPC
+	       ,A.INDTUT AS INDTUT
+	       ,A.IBROUT AS IBROUT
+	       ,A.OBROUT AS OBROUT
+	       ,A.RPROUT AS RPROUT
+	       ,A.STATUS AS STATUS
+	       ,A.ABCANV AS ABCANV
+	       ,A.LENGTH AS LENGTH
+	       ,A.WIDTHW AS WIDTHW
+	       ,A.HEIGHT AS HEIGHT
+	       ,A.CUBICM AS CUBICM
+	       ,A.MAXCPC AS MAXCPC
+	       ,A.MAXQTY AS MAXQTY
+	       ,A.MAXWGT AS MAXWGT
+	       ,A.MAXLDR AS MAXLDR
+	       ,A.MAXSEC AS MAXSEC
+	       ,A.MIXSKU AS MIXSKU
+	       ,A.MIXLOT AS MIXLOT
+	       ,A.RPNCAT AS RPNCAT
+	       ,A.INDQTC AS INDQTC
+	       ,A.QTYCHK AS QTYCHK
+	       ,A.NEDSID AS NEDSID
+	       ,A.INDUPA AS INDUPA
+	       ,A.INDUPK AS INDUPK
+	       ,A.AUTLOC AS AUTLOC
+	       ,A.CREDAT AS CREDAT
+	       ,A.CRETIM AS CRETIM
+	       ,A.CREUSR AS CREUSR
+	       ,(SELECT NMLAST FROM USRMA WHERE USRMA.USERID = A.CREUSR AND ROWNUM = 1) AS CUSRNM
+	       ,A.LMODAT AS LMODAT
+	       ,A.LMOTIM AS LMOTIM
+	       ,A.LMOUSR AS LMOUSR
+	       ,(SELECT NMLAST FROM USRMA WHERE USRMA.USERID = A.LMOUSR AND ROWNUM = 1) AS LUSRNM
+	       ,A.INDBZL AS INDBZL
+	       ,A.INDARC AS INDARC
+	       ,A.UPDCHK AS UPDCHK
+	       ,A.LOCSKU AS LOCSKU
+	       ,SK.DESC01 AS LOCSKUNM 
+	       ,A.TEXT01 AS TEXT01
+	
+	 
+	 FROM LOCMA A
+	      LEFT OUTER JOIN SKUMA SK ON SK.OWNRKY = '2500' AND A.LOCSKU = SK.SKUKEY
+	      LEFT OUTER JOIN SKUWC SC ON SK.SKUKEY = SC.SKUKEY
+	                              AND SK.OWNRKY = SC.OWNRKY
+	                              AND A.WAREKY = SC.WAREKY
+	WHERE 1 = 1
+	
+	AND   A.WAREKY = #{WAREKY}
+	AND   A.LOCAKY = #{LOCAKY}
+	</select>
+	
+	<select id="OWNRKY_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT OWNRKY
+		FROM OWNWC
+		WHERE
+			WAREKY = #{WAREKY}
+	</select>
+	
+	<select id="TR01_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT   
+			  A.OWNRKY AS OWNRKY
+			, A.WAREKY AS WAREKY 
+			, A.SEQCUS AS SEQCUS 
+			, A.CUSTMR AS CUSTMR 
+			, (SELECT B.NAME01 FROM BZPTN B
+				WHERE A.CUSTMR = B.PTNRKY AND B.PTNRTY = '0001' AND B.OWNRKY = A.OWNRKY ) AS CUSTMRNM
+			, A.ALSTKY AS ALSTKY 
+			, (SELECT SHORTX FROM ALSTH D
+				WHERE A.ALSTKY = D.ALSTKY
+				AND A.WAREKY = D.WAREKY) AS SHORTX
+			, A.REGN01 AS REGN01 
+			, A.NATNKY AS NATNKY 
+			, (SELECT CDESC1 FROM CMCDV C
+				WHERE C.CMCDKY = 'NATNKY'
+				AND A.NATNKY = C.CMCDVL) AS NATNKYNM
+			, A.DOCUTY AS DOCUTY 
+			, A.SLGORT AS SLGORT
+			, A.DIRSUP AS DIRSUP
+			, A.PTNG02 AS PTNG02
+			, A.PTNG03 AS PTNG03
+			, A.DIRDVY AS DIRDVY
+			, A.EXPTNK AS EXPTNK
+			, A.CREDAT AS CREDAT  
+			, A.CRETIM AS CRETIM  
+			, A.CREUSR AS CREUSR  
+			, A.LMODAT AS LMODAT  
+			, A.LMOTIM AS LMOTIM  
+			, A.LMOUSR AS LMOUSR  
+			, A.INDBZL AS INDBZL  
+			, A.INDARC AS INDARC  
+			, A.UPDCHK AS UPDCHK  
+		FROM   ALCUS A  
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND WAREKY = #{WAREKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+	</select>
+	
+	<select id="BD01_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT 
+			  OWNRKY||PTNRKY AS KEY
+			, OWNRKY AS OWNRKY
+			, PTNRKY AS PTNRKY
+			, NAME01 AS NAME01
+			, NAME03 AS NAME03
+			, PTNL09 AS PTNL09
+			, CREDAT AS CREDAT
+			, CRETIM AS CRETIM
+			, CREUSR AS CREUSR
+			, LMODAT AS LMODAT
+			, LMOTIM AS LMOTIM
+			, LMOUSR AS LMOUSR
+		FROM BZPTN 
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND PTNRTY = '0007'
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+	</select>
+	
+	<select id="BD01_ITEM_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT 
+			  OWNRKY||PTNRKY AS KEY
+			, OWNRKY AS OWNRKY
+			, PTNRKY AS PTNRKY
+			, SEQNO  AS SEQNO
+			, STDDAT AS STDDAT
+			, ENDDAT AS ENDDAT
+			, BBDRTO AS BBDRTO
+			, CREDAT AS CREDAT
+			, CRETIM AS CRETIM
+			, CREUSR AS CREUSR
+			, LMODAT AS LMODAT
+			, LMOTIM AS LMOTIM
+			, LMOUSR AS LMOUSR
+			, INDBZL AS INDBZL
+			, INDARC AS INDARC
+			, UPDCHK AS UPDCHK
+		FROM SKUBBD
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND PTNRKY = #{PTNRKY}
+			
+		ORDER BY PTNRKY, SEQNO
+	</select>
+	
+	<select id="BD01_VALID_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT SZF_SKUBBD_CHK( #{OWNRKY},#{PRNTKY},#{SEQNO},#{STDDAT},#{ENDDAT},DECODE(#{GRowState},'C','1','U','2','D','3') ) AS RETURN FROM DUAL
+	</select>
+	
+	<insert id="BD01_INSERT"  parameterType="hashmap">
+		INSERT INTO SKUBBD
+		VALUES(
+			 #{OWNRKY}
+			,#{PTNRKY}
+			,#{SEQNO}
+			,#{STDDAT}
+			,#{ENDDAT}
+			,#{BBDRTO}
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, TO_CHAR(SYSDATE,'HH24MISS')
+			, #{SES_USER_ID}
+			,' '
+			,' '
+			,0
+		)
+	</insert>
+	
+	<update id="BD01_UPDATE"  parameterType="hashmap">
+		UPDATE SKUBBD
+		SET
+			  STDDAT = #{STDDAT}
+			, ENDDAT = #{ENDDAT}
+			, BBDRTO = #{BBDRTO}
+			, LMODAT = , TO_CHAR(SYSDATE,'YYYYMMDD')
+			, LMOTIM = , TO_CHAR(SYSDATE,'HH24MISS')
+			, LMOUSR = , #{SES_USER_ID}
+			, UPDCHK = UPDCHK+1
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND PTNRKY = #{PTNRKY}
+			AND SEQNO = #{SEQNO}
+	</update>
+
+	<delete id="BD01_DELETE"  parameterType="hashmap">
+		DELETE SKUBBD
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND PTNRKY = #{PTNRKY}
+			AND SEQNO = TRUNC(#SEQNO})
+	</delete>
+	
+	<select id="SHPMA_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT 
+			S.REGNKY AS KEY,
+			S.OWNRKY AS OWNRKY,
+			S.REGNKY AS REGNKY,
+			S.REGNNM AS REGNNM,
+			S.DESC01 AS DESC01,
+			MAX(S.CREDAT) AS CREDAT,
+			MAX(S.CRETIM) AS CRETIM,
+			MAX(S.CREUSR) AS CREUSR,
+			MAX(S.LMODAT) AS LMODAT,
+			MAX(S.LMOTIM) AS LMOTIM,
+			MAX(S.LMOUSR) AS LMOUSR
+		FROM SHPMA S 
+		INNER JOIN ZIP_INFO Z ON S.SEQ = Z.SEQ
+		WHERE
+			S.OWNRKY = #{OWNRKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+		GROUP BY S.OWNRKY, S.REGNKY, S.REGNNM, S.DESC01
+		ORDER BY REGNKY
+	</select>
+	
+	<select id="ZIPINFO_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT
+			TRIM(#{REGNKY}) AS KEY,
+			Z.SEQ AS SEQ,
+			(TRIM(Z.ZIP1)||'-'||TRIM(Z.ZIP2)) AS POSTCD,
+			Z.ZIP1 AS ZIP1,
+			Z.ZIP2 AS ZIP2,
+			Z.SIDO AS SIDO,
+			Z.GUGUN AS GUGUN,
+			Z.DONG AS DONG,
+			Z.BUNJI AS BUNJI 
+		FROM ZIP_INFO Z
+		WHERE
+			EXISTS
+			(
+				SELECT 1 
+				FROM SHPMA 
+				WHERE SEQ = Z.SEQ
+				AND OWNRKY = #{OWNRKY}
+				AND REGNKY = #{REGNKY}
+			)
+		ORDER BY Z.ZIP1||Z.ZIP2
+	</select>
+	
+	<select id="ZIPMA_LIST"  parameterType="hashmap" resultType="DataMap">
+		SELECT
+			TRIM(#{REGNKY}) AS KEY,
+			Z.SEQ AS SEQ,
+			(TRIM(Z.ZIP1)||'-'||TRIM(Z.ZIP2)) AS POSTCD,
+			Z.ZIP1 AS ZIP1,
+			Z.ZIP2 AS ZIP2,
+			Z.SIDO AS SIDO,
+			Z.GUGUN AS GUGUN,
+			Z.DONG AS DONG,
+			Z.BUNJI AS BUNJI 
+		FROM ZIP_INFO Z
+		WHERE
+				Z.SIDO = #{SIDO}
+			AND NOT EXISTS
+			(
+				SELECT 1 
+				FROM SHPMA 
+				WHERE SEQ = Z.SEQ
+				AND OWNRKY = #{OWNRKY}
+			)
+		ORDER BY Z.ZIP1||Z.ZIP2
+	</select>
+	
+	<delete id="TC02_ALL_DELETE"  parameterType="hashmap">
+		DELETE FROM SHPMA
+		WHERE
+				OWNRKY = #{OWNRKY}
+			AND REGNKY = #{REGNKY}
+	</delete>
+	
+	<update id="TC02_UPDATE"  parameterType="hashmap">
+	
+	</update>
+	
+	
+	
+	<select id="UM01_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT
+		    MENUGID AS MENUKY, LEVEL, MGL.MENUID, MGL.PMENUID, CL.LABEL AS CLLABEL,
+		    (CASE WHEN CL.LABEL IS NULL THEN MM.MENUNAME ELSE CL.LABEL END) AS MENULABEL,
+		    MM.MENUNAME, MM.URI, MM.PARAM, CASE WHEN URI IS NOT NULL THEN 'PRG' ELSE 'FLD' END AS PRGFLG , MGL.SORTORDER ,MGL.DELETEYN,
+		     CASE WHEN URI IS NOT NULL THEN LEVEL+10 
+		          ELSE LEVEL 
+		      END AS IMGLEVEL
+		FROM
+		(SELECT 
+             MENUGID,
+             MENUID, 
+             SORTORDER,
+             PMENUID,
+             DELETEYN
+         FROM MSTMENUGL 
+         WHERE MENUGID = #{MENUGID}) MGL
+		LEFT OUTER JOIN MSTMENU MM ON MM.MENUID = MGL.MENUID
+		LEFT OUTER JOIN SYSLABEL CL ON CL.LABELGID = 'MENU' AND CL.LANGCODE = #{LANGKY} AND MM.MENULABEL = CL.LABELID
+		START WITH MGL.PMENUID = 'root'
+		CONNECT BY PRIOR MGL.MENUID = MGL.PMENUID
+		ORDER BY MGL.SORTORDER
+	</select> 
+	
+	
+	<select id="GET_MENU_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT MENUID
+		     , MENUNAME
+             , URI 
+          FROM MSTMENU
+         WHERE MENUID = #{PMENUID}
+	</select>
+	
+	<!-- TC05 헤더 조회-->
+	<select id="TC05_HEAD_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT DISTINCT
+		       C.OWNRKY||C.WAREKY||C.CARNUM AS KEY,
+		       C.OWNRKY AS OWNRKY,
+		       C.WAREKY AS WAREKY,
+		       C.CARNUM AS CARNUM,
+		       C.DESC01 AS DESC01,
+		       C.DCMPNM AS DCMPNM,
+		       C.DRIVER AS DRIVER,
+		       C.PERHNO AS PERHNO,
+		       C.CARTYP AS CARTYP,
+		       C.CARORD AS CARORD,
+		       C.CARWHD AS CARWHD,
+		       C.CARHIG AS CARHIG,
+		       C.CARLNG AS CARLNG,
+		       C.CARWEG AS CARWEG,
+		       C.CAROPT AS CAROPT,
+		       C.CARSTS AS CARSTS,
+		       C.CARGBN AS CARGBN,
+		       C.CARTMP AS CARTMP,
+		       C.DELMAK AS DELMAK,
+		       C.CREDAT AS CREDAT,
+		       C.CRETIM AS CRETIM,
+		       C.CREUSR AS CREUSR,
+		       C.LMODAT AS LMODAT,
+		       C.LMOTIM AS LMOTIM,
+		       C.LMOUSR AS LMOUSR
+		  FROM CARMA C 
+		       LEFT OUTER JOIN CARFX CF ON C.OWNRKY = CF.OWNRKY AND C.WAREKY = CF.WAREKY AND C.CARNUM = CF.CARNUM 
+		 WHERE 1 = 1
+			<if test="OWNRKY != null and OWNRKY != ''">
+			   AND C.OWNRKY = #{OWNRKY}
+			</if>
+			<if test="WAREKY != null and WAREKY != ''">
+			   AND C.WAREKY = #{WAREKY}
+			</if>
+			<if test="CARTYP != null and CARTYP != ''">
+			   AND C.CARTYP = #{CARTYP}
+			</if>
+			<if test="CAROPT != null and CAROPT != ''">
+			   AND C.CAROPT = #{CAROPT}
+			</if>
+			<if test="CARSTS != null and CARSTS != ''">
+			   AND C.CARSTS = #{CARSTS}
+			</if>
+			<if test="CARGBN != null and CARGBN != ''">
+			   AND C.CARGBN = #{CARGBN}
+			</if>
+			<if test="CARTMP != null and CARTMP != ''">
+			   AND C.CARTMP = #{CARTMP}
+			</if>
+			<if test="DELMAK != null and DELMAK != ''">
+			   AND C.DELMAK = #{DELMAK}
+			</if>
+			<if test="DELMAK == null or DELMAK == ''">
+			   AND C.DELMAK &lt;&gt; '1'
+			</if>
+			<if test="RANGE_SQL != null and RANGE_SQL != ''">
+				${RANGE_SQL}
+			</if>
+		ORDER BY C.CARNUM
+	</select>
+	
+	<!-- TC05 아이템 조회-->
+	<select id="TC05_ITEM_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT CF.OWNRKY||CF.WAREKY||CF.CARNUM AS KEY,
+		       CF.OWNRKY AS OWNRKY,
+		       CF.WAREKY AS WAREKY,
+		       CF.CARNUM AS CARNUM,
+		       CM.DESC01 AS DESC01,
+		       CF.PTNRKY AS PTNRKY,
+		       BZ.NAME01 AS PTNRKYNM,
+		       BZ.ADDR01 AS ADDR01,
+		       CF.SORTSQ AS SORTSQ,
+		       CF.DISTGR AS DISTGR,
+		       CF.CTADSC AS CTADSC,
+		       CF.CREDAT AS CREDAT,
+		       CF.CRETIM AS CRETIM,
+		       CF.CREUSR AS CREUSR,
+		       CF.LMODAT AS LMODAT,
+		       CF.LMOTIM AS LMOTIM,
+		       CF.LMOUSR AS LMOUSR       
+		  FROM CARFX CF 
+		  LEFT OUTER JOIN CARMA CM ON CM.OWNRKY = CF.OWNRKY AND CF.WAREKY = CM.WAREKY AND CM.CARNUM = CF.CARNUM
+		  LEFT OUTER JOIN BZPTN BZ ON CF.OWNRKY = BZ.OWNRKY AND CF.PTNRKY = BZ.PTNRKY AND BZ.PTNRTY IN ('0000', '0004')
+		 WHERE 1 = 1
+		   AND CF.OWNRKY = #{OWNRKY}
+		   AND CF.WAREKY = #{WAREKY}
+		   <if test="KEY != null and KEY != ''">
+			   AND CF.OWNRKY||CF.WAREKY||CF.CARNUM = #{KEY}
+			</if>
+			<if test="RANGE_SQL1 != null and RANGE_SQL1 != ''">
+				${RANGE_SQL1}
+			</if>
+		 ORDER BY CF.SORTSQ 
+	</select>
+	<!-- TM05 업체명 -->
+	<select id="TM05_PTNRKY_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT OWNRKY,PTNRKY,NAME01
+		  FROM BZPTN
+		 WHERE 1=1 
+		   AND OWNRKY = #{OWNRKY}
+	       AND PTNRKY = #{PTNRKY}
+	</select>
+	
+	<!-- [TC05] 추가쿼리 -->
+	<insert id="TC05_INSERT"  parameterType="hashmap">
+		INSERT INTO CARFX
+		(
+		   <if test="OWNRKY != null and OWNRKY != ''">OWNRKY,</if>
+		   <if test="WAREKY != null and WAREKY != ''">WAREKY,</if>
+		   <if test="CARNUM != null and CARNUM != ''">CARNUM,</if>
+		   <if test="PTNRKY != null and PTNRKY != ''">PTNRKY,</if>
+		   <if test="SORTSQ != null and SORTSQ != ''">SORTSQ,</if>
+		   <if test="DISTGR != null and DISTGR != ''">DISTGR,</if>
+		   <if test="CTADSC != null and CTADSC != ''">CTADSC,</if>
+		   CREDAT,
+		   CRETIM,
+		   CREUSR,
+		   LMODAT,
+		   LMOTIM,
+		   LMOUSR
+		)
+		VALUES(
+		   <if test="OWNRKY != null and OWNRKY != ''">#{OWNRKY},</if>
+		   <if test="WAREKY != null and WAREKY != ''">#{WAREKY},</if>
+		   <if test="CARNUM != null and CARNUM != ''">#{CARNUM},</if>
+		   <if test="PTNRKY != null and PTNRKY != ''">#{PTNRKY},</if>
+		   <if test="SORTSQ != null and SORTSQ != ''">#{SORTSQ},</if>
+		   <if test="DISTGR != null and DISTGR != ''">#{DISTGR},</if>
+		   <if test="CTADSC != null and CTADSC != ''">#{CTADSC},</if>
+		   TO_CHAR(SYSDATE, 'YYYYMMDD'),
+		   TO_CHAR(SYSDATE, 'HH24MISS'),
+		   #{SES_USER_ID},
+		   TO_CHAR(SYSDATE, 'YYYYMMDD'),
+		   TO_CHAR(SYSDATE, 'HH24MISS'),
+		   #{SES_USER_ID}
+		)
+	</insert>
+	
+	<!-- [TC05] 수정쿼리 -->
+	<update id="TC05_UPDATE"  parameterType="hashmap">
+		UPDATE CARFX
+		   SET
+		       <if test="OWNRKY != null and OWNRKY != ''">OWNRKY = #{OWNRKY},</if>
+		       <if test="WAREKY != null and WAREKY != ''">WAREKY = #{WAREKY},</if>
+		       <if test="CARNUM != null and CARNUM != ''">CARNUM = #{CARNUM},</if>
+		       <if test="PTNRKY != null and PTNRKY != ''">PTNRKY = #{PTNRKY},</if>
+		       <if test="SORTSQ != null and SORTSQ != ''">SORTSQ = #{SORTSQ},</if>
+		       DISTGR = DECODE(NVL(#{DISTGR},' '),' ',' ',NVL(#{DISTGR},' ')),
+		       <if test="CTADSC != null and CTADSC != ''">CTADSC = #{CTADSC},</if>
+		       LMODAT = TO_CHAR(SYSDATE, 'YYYYMMDD'),
+		       LMOTIM = TO_CHAR(SYSDATE, 'HH24MISS'),
+		       LMOUSR = #{SES_USER_ID}
+		 WHERE 1 = 1
+		   AND OWNRKY = #{OWNRKY}
+		   AND WAREKY = #{WAREKY}
+		   AND CARNUM = #{CARNUM}
+		   AND PTNRKY = #{PTNRKY}
+	</update>
+	
+	<!-- [TC05] 삭제쿼리 -->
+	<delete id="TC05_DELETE"  parameterType="hashmap">
+		DELETE FROM CARFX
+		 WHERE 1 = 1
+		   AND OWNRKY = #{OWNRKY}
+		   AND WAREKY = #{WAREKY}
+		   AND CARNUM = #{CARNUM}
+		   AND PTNRKY = #{PTNRKY}
+	</delete>
+	<!-- [TC05] 중복체크 -->
+	<select id="TC05_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(*) AS CHK
+		  FROM CARFX
+		 WHERE 1 = 1
+		<if test="OWNRKY != null and OWNRKY != ''">
+		   AND OWNRKY = #{OWNRKY}
+		</if>
+		<if test="WAREKY != null and WAREKY != ''">
+		   AND WAREKY = #{WAREKY}
+		</if>
+		<if test="PTNRKY != null and PTNRKY != ''">
+		   AND PTNRKY = #{PTNRKY}
+		</if>
+	</select>
+	
+		<!-- TC06 헤더 조회-->
+	<select id="TC06_HEAD_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT C.OWNRKY||C.WAREKY||C.CARNUM AS KEY,
+		       C.OWNRKY AS OWNRKY,
+		       C.WAREKY AS WAREKY,
+		       C.CARNUM AS CARNUM,
+		       C.DESC01 AS DESC01,
+		       C.DCMPNM AS DCMPNM,
+		       C.DRIVER AS DRIVER,
+		       C.PERHNO AS PERHNO,
+		       C.CARTYP AS CARTYP,
+		       C.CARORD AS CARORD,
+		       C.CARWHD AS CARWHD,
+		       C.CARHIG AS CARHIG,
+		       C.CARLNG AS CARLNG,
+		       C.CARWEG AS CARWEG,
+		       C.CAROPT AS CAROPT,
+		       C.CARSTS AS CARSTS,
+		       C.CARGBN AS CARGBN,
+		       C.CARTMP AS CARTMP,
+		       C.DELMAK AS DELMAK,
+		       COUNT(CS.REGNKY) AS CNT
+		  FROM CARMA C 
+		       LEFT OUTER JOIN CARSH CS ON C.OWNRKY = CS.OWNRKY
+		                              AND C.CARNUM = CS.CARNUM 
+		                              AND C.WAREKY = CS.WAREKY
+		 WHERE 1 = 1 
+		<if test="OWNRKY != null and OWNRKY != ''">
+		   AND C.OWNRKY = #{OWNRKY}
+		</if>
+		<if test="WAREKY != null and WAREKY != ''">
+		   AND C.WAREKY = #{WAREKY}
+		</if>
+		<if test="CARTYP != null and CARTYP != ''">
+		   AND C.CARTYP = #{CARTYP}
+		</if>
+		<if test="CAROPT != null and CAROPT != ''">
+		   AND C.CAROPT = #{CAROPT}
+		</if>
+		<if test="CARSTS != null and CARSTS != ''">
+		   AND C.CARSTS = #{CARSTS}
+		</if>
+		<if test="CARGBN != null and CARGBN != ''">
+		   AND C.CARGBN = #{CARGBN}
+		</if>
+		<if test="CARTMP != null and CARTMP != ''">
+		   AND C.CARTMP = #{CARTMP}
+		</if>
+		<if test="DELMAK != null and DELMAK != ''">
+		   AND C.DELMAK = #{DELMAK}
+		</if>
+		<if test="DELMAK == null or DELMAK == ''">
+		   AND C.DELMAK &lt;&gt; '1'
+		</if>
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+		GROUP BY C.OWNRKY, C.WAREKY, C.CARNUM, C.DESC01, C.DCMPNM, C.DRIVER, C.PERHNO, C.CARTYP, C.CARORD,
+		         C.CARWHD, C.CARHIG, C.CARLNG, C.CARWEG, C.CAROPT, C.CARSTS, C.CARGBN, C.CARTMP, C.DELMAK 
+		ORDER BY C.CARNUM
+	</select>
+	
+	<!-- TC06 아이템 조회-->
+	<select id="TC06_ITEM_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT CS.OWNRKY||CS.WAREKY||CS.CARNUM AS KEY,
+		       CS.OWNRKY AS OWNRKY,
+		       CS.WAREKY AS WAREKY,
+		       CS.CARNUM AS CARNUM,
+		       CS.REGNKY AS REGNKY,
+		       CS.CTADSC AS CTADSC,
+		       CS.CREDAT AS CREDAT,
+		       CS.CRETIM AS CRETIM,
+		       CS.CREUSR AS CREUSR,
+		       CS.LMODAT AS LMODAT,
+		       CS.LMOTIM AS LMOTIM,
+		       CS.LMOUSR AS LMOUSR
+		  FROM CARSH CS
+		 WHERE 1 = 1
+		   AND CS.OWNRKY = #{OWNRKY}
+		   AND CS.WAREKY = #{WAREKY}
+		   <if test="KEY != null and KEY != ''">
+			   AND CS.OWNRKY||CS.WAREKY||CS.CARNUM = #{KEY}
+			</if>
+		<if test="RANGE_SQL1 != null and RANGE_SQL1 != ''">
+			${RANGE_SQL1}
+		</if>
+		 ORDER BY CS.REGNKY 
+
+	</select>
+	
+		<!-- [TC06] 추가쿼리 -->
+	<insert id="TC06_INSERT"  parameterType="hashmap">
+		INSERT INTO CARSH
+		(
+		   <if test="OWNRKY != null and OWNRKY != ''">OWNRKY,</if>
+		   <if test="WAREKY != null and WAREKY != ''">WAREKY,</if>
+		   <if test="CARNUM != null and CARNUM != ''">CARNUM,</if>
+		   <if test="PTNRKY != null and REGNKY != ''">REGNKY,</if>
+		   <if test="CTADSC != null and CTADSC != ''">CTADSC,</if>
+		   CREDAT,
+		   CRETIM,
+		   CREUSR,
+		   LMODAT,
+		   LMOTIM,
+		   LMOUSR
+		)
+		VALUES(
+		   <if test="OWNRKY != null and OWNRKY != ''">#{OWNRKY},</if>
+		   <if test="WAREKY != null and WAREKY != ''">#{WAREKY},</if>
+		   <if test="CARNUM != null and CARNUM != ''">#{CARNUM},</if>
+		   <if test="PTNRKY != null and REGNKY != ''">#{REGNKY},</if>
+		   <if test="CTADSC != null and CTADSC != ''">#{CTADSC},</if>
+			TO_CHAR(SYSDATE, 'YYYYMMDD'),
+			TO_CHAR(SYSDATE, 'HH24MISS'),
+			#{SES_USER_ID},
+			TO_CHAR(SYSDATE, 'YYYYMMDD'),
+			TO_CHAR(SYSDATE, 'HH24MISS'),
+			#{SES_USER_ID}
+		)
+	</insert>
+	
+	<!-- [TC06] 수정쿼리 -->
+	<update id="TC06_UPDATE"  parameterType="hashmap">
+		UPDATE CARSH
+		   SET
+		       <if test="OWNRKY != null and OWNRKY !=''">OWNRKY = #{OWNRKY},</if>
+		       <if test="WAREKY != null and WAREKY !=''">WAREKY = #{WAREKY},</if>
+		       <if test="CARNUM != null and CARNUM !=''">CARNUM = #{CARNUM},</if>
+		       <if test="REGNKY != null and REGNKY !=''">REGNKY = #{REGNKY},</if>
+		       CTADSC = #{CTADSC},
+		       LMODAT = TO_CHAR(SYSDATE, 'YYYYMMDD'),
+		       LMOTIM = TO_CHAR(SYSDATE, 'HH24MISS'),
+		       LMOUSR = #{SES_USER_ID}
+		 WHERE 1 = 1
+		   AND OWNRKY = #{OWNRKY}
+		   AND WAREKY = #{WAREKY}
+		   AND CARNUM = #{CARNUM}
+		   AND REGNKY = #{REGNKY}
+	</update>
+	
+	<!-- [TC06] 삭제쿼리 -->
+	<delete id="TC06_DELETE"  parameterType="hashmap">
+		DELETE FROM CARSH
+		 WHERE 1 = 1
+		   AND OWNRKY = #{OWNRKY}
+		   AND WAREKY = #{WAREKY}
+		   AND CARNUM = #{CARNUM}
+		   AND REGNKY = #{REGNKY}
+	</delete>
+	
+	<!-- [TC06] 중복체크 -->
+	<select id="TC06_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(*) AS CHK
+		  FROM CARSH
+		 WHERE 1 = 1
+		<if test="OWNRKY != null and OWNRKY != ''">
+		   AND OWNRKY = #{OWNRKY}
+		</if>
+		<if test="WAREKY != null and WAREKY != ''">
+		   AND WAREKY = #{WAREKY}
+		</if>
+		<if test="CARNUM != null and CARNUM != ''">
+		   AND CARNUM = #{CARNUM}
+		</if>
+		<if test="REGNKY != null and REGNKY != ''">
+		   AND REGNKY = #{REGNKY}
+		</if>
+	</select>
+	
+	<!-- TR01 ONCHANGE -->
+	<select id="TR01_PTNRKY_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT PTNRKY AS PTNRKY,
+		       PTNRTY AS PTNRTY,
+		       NAME01 AS NAME01,
+		       PTNRKY AS CUSTMR,
+		       NAME01 AS CUSTMRNM
+		  FROM BZPTN
+		 WHERE PTNRKY = #{PTNRKY}
+		   AND PTNRTY = #{PTNRTY}
+		   AND OWNRKY IN ( #{OWNRKY} )
+	</select>
+	
+	
+	<insert id="TR01_INSERT"  parameterType="hashmap">
+		INSERT INTO ALCUS ( OWNRKY, WAREKY, SEQCUS, CUSTMR, ALSTKY, REGN01 
+		                  , NATNKY, DOCUTY, SLGORT, CREDAT, CRETIM, CREUSR 
+		                  , LMODAT, LMOTIM, LMOUSR, INDBZL, INDARC, UPDCHK 
+		                  , DIRSUP, PTNG02, PTNG03, EXPTNK, DIRDVY 
+		                  ) VALUES 
+		                  ( #{OWNRKY}, #{WAREKY}, LPAD(#{SEQCUS}, 10, '0'), NVL(#{CUSTMR}, ' '), NVL(#{ALSTKY}, ' ')
+		                  , NVL(#{REGN01}, ' '), NVL(#{NATNKY}, ' '), NVL(#{DOCUTY}, ' '), NVL(#{SLGORT}, ' '), TO_CHAR(SYSDATE,'YYYYMMDD')
+		                  , TO_CHAR(SYSDATE,'HH24MISS'), #{SES_USER_ID}, TO_CHAR(SYSDATE,'YYYYMMDD'), TO_CHAR(SYSDATE,'HH24MISS'), #{SES_USER_ID}
+		                  , ' ', ' ', 0, NVL(#{DIRSUP}, ' '), NVL(#{PTNG02}, ' ')
+		                  , NVL(#{PTNG03},' '), NVL(#{EXPTNK}, ' '), NVL(#{DIRDVY}, ' ')
+		                  )
+	</insert>
+	
+	
+	<update id="TR01_UPDATE"  parameterType="hashmap">
+		UPDATE ALCUS
+		   SET CUSTMR = NVL(#{CUSTMR},' ')
+		     , ALSTKY = NVL(#{ALSTKY},' ')
+		     , REGN01 = NVL(#{REGN01},' ')
+		     , NATNKY = NVL(#{NATNKY},' ')
+		     , DOCUTY = NVL(#{DOCUTY},' ')
+		     , SLGORT = NVL(#{SLGORT},' ')
+		     , CREDAT = TO_CHAR(SYSDATE,'YYYYMMDD')
+		     , CRETIM = TO_CHAR(SYSDATE,'HH24MISS')
+		     , CREUSR = #{SES_USER_ID}
+		     , LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD')
+		     , LMOTIM = TO_CHAR(SYSDATE,'HH24MISS')
+		     , LMOUSR = #{SES_USER_ID}
+		     , INDBZL = ' '
+		     , INDARC = ' '
+		     , UPDCHK = 0
+		     , DIRSUP = NVL(#{DIRSUP}, ' ')
+		     , PTNG02 = NVL(#{PTNG02}, ' ')
+		     , PTNG03 = NVL(#{PTNG03}, ' ')
+		     , EXPTNK = NVL(#{EXPTNK}, ' ')
+		     , DIRDVY = NVL(#{DIRDVY}, ' ')
+		 WHERE OWNRKY = #{OWNRKY}
+		   AND WAREKY = #{WAREKY}
+		   AND SEQCUS = #{SEQCUS}	
+	</update>
+	
+	<delete id="TR01_DELETE"  parameterType="hashmap">
+		DELETE
+		FROM ALCUS
+		WHERE OWNRKY = #{OWNRKY}
+		  AND WAREKY = #{WAREKY}
+		  AND SEQCUS = #{SEQCUS}	
+	</delete>
+	
+
+	<select id="TR01_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT COUNT(1) AS CHK
+		FROM ALCUS
+		WHERE OWNRKY = #{OWNRKY}
+		  AND WAREKY = #{WAREKY}
+		  AND SEQCUS = #{SEQCUS}
+	</select>
+	
+
+	<select id="TR01_SEQ_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT SEQCUS.NEXTVAL AS SEQNO FROM DUAL
+	</select>
+	
+
+</mapper>

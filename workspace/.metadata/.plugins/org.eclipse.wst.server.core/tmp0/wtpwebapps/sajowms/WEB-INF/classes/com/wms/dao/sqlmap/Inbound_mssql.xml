@@ -1,0 +1,5167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL MAP 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="WmsInbound">
+	<typeAlias alias="DataMap" type="com.common.bean.DataMap" />
+	<typeAlias alias="StringMap" type="com.common.util.StringMap" />
+
+
+	<select id="DOCUTY103COMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	DOCUTY AS VALUE_COL,
+				SHORTX AS TEXT_COL
+		FROM	DOCTM (NOLOCK)
+		WHERE	1 = 1
+		AND		DOCCAT = '100'
+		AND		DOCUTY = '103'
+	</select>
+	
+
+	<select id="DOCUTY106COMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	DOCUTY AS VALUE_COL,
+				SHORTX AS TEXT_COL
+		FROM	DOCTM (NOLOCK)
+		WHERE	1 = 1
+		AND		DOCCAT = '100'
+		AND		DOCUTY = '106'
+	</select>
+	
+	
+	<select id="DOCUTYGR05COMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : COMBO.DOCUTY -->
+		<!-- 
+		SELECT	DOCUTY AS VALUE_COL,
+				SHORTX AS TEXT_COL
+		FROM	DOCTM
+		WHERE	1 = 1
+		AND		DOCCAT = '100'
+		AND		DOCUTY = '109'
+		-->
+		SELECT	DOCUTY AS VALUE_COL,
+				SHORTX AS TEXT_COL
+		FROM	DOCTM (NOLOCK)
+		WHERE	1 =1
+		AND		DOCCAT = '100'	<!-- Parameter[0] -->
+		AND		DOCUTY IN (  '109','110','111','115','116'  ) 
+		ORDER BY DOCUTY
+	</select>
+	
+
+	
+	<select id="DOCUTY112COMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	DOCUTY AS VALUE_COL,
+				SHORTX AS TEXT_COL
+		FROM	DOCTM (NOLOCK)
+		WHERE	1 = 1
+		AND		DOCCAT = '100'
+		AND		DOCUTY = '112'
+	</select>
+	
+	
+	<select id="DOCUTY116COMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	DOCUTY AS VALUE_COL,
+				SHORTX AS TEXT_COL
+		FROM	DOCTM (NOLOCK)
+		WHERE	1 = 1
+		AND		DOCCAT = '100'
+		AND		DOCUTY IN (  '166'  ) 
+		ORDER BY DOCUTY
+	</select>
+	
+
+	<select id="DOCUTY120COMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	DOCUTY AS VALUE_COL,
+				SHORTX AS TEXT_COL
+		FROM	DOCTM (NOLOCK)
+		WHERE	1 = 1
+		AND		DOCCAT = '100'
+		AND		DOCUTY = '120'
+	</select>
+
+
+	<select id="LOTA05COMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	SUBSTRING(CMCDVL,1,2) AS VALUE_COL,
+				CDESC1 AS TEXT_COL
+		FROM	CMCDV (NOLOCK)
+		WHERE	CMCDKY = 'LOTA05'
+		AND		'WSH1' LIKE USARG1
+	</select>
+	
+	<select id="LOTA02COMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	CMCDVL AS VALUE_COL,
+				CDESC1 AS TEXT_COL
+		FROM	CMCDV (NOLOCK)
+		WHERE	CMCDKY = 'LOTA02'
+		AND		'WSH1' LIKE USARG1
+		<!--
+		<isNotEmpty property="WAREKY">
+		AND		WAREKY = #WAREKY#
+		</isNotEmpty>
+		-->
+	</select>
+	
+	
+	<select id="LOTA06COMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	SUBSTRING(CMCDVL,1,2) AS VALUE_COL,
+				CDESC1 AS TEXT_COL
+		FROM	CMCDV (NOLOCK)
+		WHERE	CMCDKY = 'LOTA06'
+		<isNotEmpty property="CMCDKY">
+		AND		CMCDKY = #CMCDKY#
+		</isNotEmpty>
+	</select>
+	
+	
+	<select id="RSNCODCOMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	RSNCOD AS VALUE_COL,
+				SHORTX AS TEXT_COL
+		FROM	RSNCD (NOLOCK)
+		WHERE	1 = 1
+		<!-- AND		OWNRKY = #SES_OWNER# -->
+		AND		OWNRKY = 'CCHD'
+		AND		DOCCAT = '100'
+		AND		DOCUTY = '120'
+		
+	</select>
+	
+	
+
+	<select id="SKUKEYval_MAP" parameterClass="Map" resultClass="DataMap">
+		
+		SELECT  COUNT(*) CNT
+		FROM	V_SKU_INFO (NOLOCK)
+		WHERE	1 = 1
+		AND		OWNRKY = #SES_OWNER#
+		AND		WAREKY = #WAREKY#
+		<isNotEmpty property="SKUKEY">
+		AND		SKUKEY = #SKUKEY#
+		</isNotEmpty>
+		
+		<!--
+		SELECT	COUNT(*) CNT
+		FROM	SKUMA (NOLOCK)
+		WHERE	1 = 1
+		AND		OWNRKY = #SES_OWNER#
+		<isNotEmpty property="SKUKEY">
+		AND		SKUKEY = #SKUKEY#
+		</isNotEmpty>
+		-->
+	</select>
+	
+	<select id="SKUKEY_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT	SKUKEY,
+				DESC01,
+				DESC02,
+				ASKU01,
+				ASKU02,
+				ASKU03,
+				ASKU04,
+				ASKU05,
+				EANCOD,
+				GTINCD,
+				SKUG01,
+				SKUG02,
+				SKUG03,
+				SKUG04,
+				SKUG05,
+				GRSWGT,
+				NETWGT,
+				WGTUNT,
+				LENGTH,
+				WIDTHW,
+				HEIGHT,
+				CUBICM,
+				CAPACT,
+				DUOMKY,
+				QTDUOM,
+				MEASKY,
+				UOMKEY,
+				QTPUOM
+		FROM	V_SKU_INFO (NOLOCK)
+		WHERE	1 = 1
+		AND		OWNRKY = #SES_OWNER#
+		AND		WAREKY = #WAREKY#
+		<isNotEmpty property="SKUKEY">
+		AND		SKUKEY = #SKUKEY#
+		</isNotEmpty>
+	</select>
+	
+	
+	<select id="LOCAKYval_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT  COUNT(*) CNT
+		<!-- FROM	V_LOCMA_RCVSTR (NOLOCK) -->
+		FROM	LOCMA (NOLOCK)
+		WHERE	1 = 1
+		AND		WAREKY = #WAREKY#
+		<!-- <isNotEmpty property="LOCAKY"> -->
+		AND		LOCAKY = #LOCAKY#
+		<!-- </isNotEmpty> -->
+	</select>
+	
+	<select id="LOCAKY_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT	WAREKY,
+				AREAKY,
+				<!-- AREATY, -->
+				ZONEKY,
+				<!-- ZONETY, -->
+				LOCAKY,
+				SHORTX 
+		<!-- FROM	V_LOCMA_RCVSTR (NOLOCK) -->
+		FROM	LOCMA (NOLOCK)
+		WHERE	1 = 1
+		AND		WAREKY = #WAREKY#
+		<!-- <isNotEmpty property="LOCAKY"> -->
+		AND		LOCAKY = #LOCAKY#
+		<!-- </isNotEmpty> -->
+	</select>
+
+
+
+<!-- AS01 SQL START-->
+
+	<!-- AS01 HEAD GRID SELECT START -->
+	<select id="AS01_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.ADVANCEDSHIPMENTNOTICE.FIND_INTERFACE_TO_CREATE_ASNDH -->
+		SELECT	  IFWMS103.EBELN      AS "SEBELN"
+				, ' '                 AS "ASNDKY"
+				, IFWMS103.WAREKY     AS "WAREKY"
+				, ISNULL(WH.NAME01,' ')  AS "WAREKYNM"
+				, #ASNTTY#            AS "ASNTTY"	<!-- Parameter[0] -->
+				, ISNULL(DT.SHORTX,' ')  AS "ASNTTYNM"
+				, 'NEW'               AS "STATDO"
+				
+				<!-- , TO_CHAR(SYSDATE,'YYYYMMDD') AS "DOCDAT" -->
+				CONVERT( VARCHAR(8), GETDATE(), 112) AS "DOCDAT",
+				
+				, '050'               AS "DOCCAT"
+				, ISNULL(DC.SHORTX,' ')  AS "DOCCATNM"
+				, #OWNRKY#            AS "OWNRKY"	<!-- Parameter[1] -->
+				, IFWMS103.LIFNR      AS "DPTNKY"
+				, ISNULL(VD.NAME01,' ')  AS "DPTNKYNM"
+				, ' '                 AS "DRELIN"
+				
+				<!--
+				, CASE WHEN TRIM(IFWMS103.EINDT) IS NULL OR IFWMS103.EINDT < TO_CHAR(SYSDATE,'YYYYMMDD') 
+		               THEN TO_CHAR(SYSDATE,'YYYYMMDD')
+		               ELSE IFWMS103.EINDT
+		          END AS "PRCPTD" -->
+				-->
+		        <![CDATA[  
+		        , CASE WHEN LTRIM(RTRIM(IFWMS103.EINDT)) IS NULL OR IFWMS103.EINDT < CONVERT( VARCHAR(8), GETDATE(), 112)
+		               THEN CONVERT( VARCHAR(8), GETDATE(), 112)
+		               ELSE IFWMS103.EINDT
+		          END AS "PRCPTD"
+		        ]]>
+		          
+				, ' '                 AS "LRCPTD"
+				, ' '                 AS "INDDCL"
+				, ' '                 AS "RSNCOD"
+				, ' '                 AS "RSNRET"
+				, 0                   AS "QTYASN"
+				, 0                   AS "QTYRCV"
+				, IFWMS103.LGORT      AS "LGORT"
+				
+				
+				, ISNULL(LG.NAME01,' ')  AS "LGORTNM"
+				<!--
+				, NVL(VU.ERPUSR,' ')  AS "USRID1"
+				, NVL(VU.ERPNAM,' ')  AS "UNAME1"
+				, NVL(VU.DEPTID,' ')  AS "DEPTID1"
+				, NVL(VU.DPNAME,' ')  AS "DNAME1"
+				, NVL(VU2.ERPUS2,' ') AS "USRID2"
+				, NVL(VU2.USNAM2,' ') AS "UNAME2"
+				, NVL(VU2.DEPID2,' ') AS "DEPTID2"
+				, NVL(VU2.DPNAM2,' ') AS "DNAME2"
+				, NVL(VU2.ERPUS3,' ') AS "USRID3"
+				, NVL(VU2.USNAM3,' ') AS "UNAME3"
+				, NVL(VU2.DEPID3,' ') AS "DEPTID3"
+				, NVL(VU2.DPNAM3,' ') AS "DNAME3"
+				, NVL(VU2.ERPUS4,' ') AS "USRID4"
+				, NVL(VU2.USNAM4,' ') AS "UNAME4"
+				, NVL(VU2.DEPID4,' ') AS "DEPTID4"
+				, NVL(VU2.DPNAM4,' ') AS "DNAME4"
+				-->
+				, ISNULL(IFWMS103.USRID1,' ')	AS "USRID1"
+				<!-- , ISNULL(IFWMS103.UNAME1,' ')	AS "UNAME1" -->
+				, ISNULL(IFWMS103.DEPTID1,' ')	AS "DEPTID1"
+				<!-- , ISNULL(IFWMS103.DNAME1,' ')	AS "DNAME1" -->
+				, ISNULL(IFWMS103.USRID2,' ')	AS "USRID2"
+				<!-- , ISNULL(IFWMS103.UNAME2,' ')	AS "UNAME2" -->
+				, ISNULL(IFWMS103.DEPTID2,' ')	AS "DEPTID2"
+				<!-- , ISNULL(IFWMS103.DNAME2,' ')	AS "DNAME2" -->
+				, ISNULL(IFWMS103.USRID3,' ')	AS "USRID3"
+				<!-- , ISNULL(IFWMS103.UNAME3,' ')	AS "UNAME3" -->
+				, ISNULL(IFWMS103.DEPTID3,' ')	AS "DEPTID3"
+				<!-- , ISNULL(IFWMS103.DNAME3,' ')	AS "DNAME3" -->
+				, ISNULL(IFWMS103.USRID4,' ')	AS "USRID4"
+				<!-- , ISNULL(IFWMS103.UNAME4,' ')	AS "UNAME4" -->
+				, ISNULL(IFWMS103.DEPTID4,' ')	AS "DEPTID4"
+				<!-- , ISNULL(IFWMS103.DNAME4,' ')	AS "DNAME4" -->
+				
+				, ' '                 AS "DOCTXT"
+				, IFWMS103.EBELN      AS "EBELN"
+		FROM	IFWMS103
+				LEFT OUTER JOIN SKUMA SM	ON SM.OWNRKY		= #OWNRKY#	<!-- Parameter[2] -->
+		   									AND SM.SKUKEY		= IFWMS103.SKUKEY
+				LEFT OUTER JOIN SKUWC SW	ON SW.WAREKY		= #WAREKY#	<!-- Parameter[3] -->
+											AND SW.OWNRKY		= #OWNRKY#	<!-- Parameter[4] -->
+											AND SW.SKUKEY		= IFWMS103.SKUKEY
+				LEFT OUTER JOIN MEASI ITFMS	ON ITFMS.WAREKY		= #WAREKY#	<!-- Parameter[5] -->
+											AND ITFMS.MEASKY	= SW.MEASKY
+											AND ITFMS.UOMKEY	= IFWMS103.MEINS
+				LEFT OUTER JOIN WAHMA WH	ON WH.WAREKY		= IFWMS103.WAREKY
+				LEFT OUTER JOIN DOCCM DC	ON DC.DOCCAT		= '050'
+				LEFT OUTER JOIN DOCTM DT	ON DT.DOCUTY		= #ASNTTY#	<!-- Parameter[6] -->
+				LEFT OUTER JOIN BZPTN VD	ON VD.PTNRKY		= IFWMS103.LIFNR
+		   									AND VD.PTNRTY		= 'VD'
+											AND VD.PTNL05	IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#)	<!-- Parameter[7] -->
+				LEFT OUTER JOIN BZPTN LG	ON LG.PTNRKY		= IFWMS103.LGORT
+											AND LG.PTNRTY		= 'WH'
+				LEFT OUTER JOIN VUSER_WMSERP VU		ON VU.USERID	= #SES_USER_ID#		<!-- Parameter[8] -->
+				LEFT OUTER JOIN VUSER_WAREDOCUSER VU2	ON VU2.WAREKY	= #WAREKY#	<!-- Parameter[9] -->
+														AND VU2.DOCUTY	= #ASNTTY#	<!-- Parameter[10] -->
+		
+		<!-- WHERE IFWMS103.WERKS   = #OWNRKY#  -->	<!-- Parameter[11] -->
+		<!-- WHERE IFWMS103.WERKS   =	(SELECT ADDR05 FROM WAHMA WHERE WAREKY =  #WAREKY#  AND ROWNUM = 1) -->
+		WHERE	 IFWMS103.WERKS   =	(SELECT ADDR05
+									FROM (
+											SELECT	ADDR05, ROW_NUMBER() OVER( ORDER BY ADDR05 DESC) AS NUM
+											FROM	WAHMA
+											WHERE	WAREKY =  #WAREKY#
+										 ) A
+									WHERE A.NUM = '1')
+		
+		
+		AND		IFWMS103.STATUS IN ('A','C')
+		AND		IFWMS103.IFFLG  IN ('N','Y')
+		AND		IFWMS103.BWART   = '102'
+		AND		(IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R) > 0
+		
+		<!-- Parameter[12] -->
+		<!--
+		AND #WAREKY# LIKE (CASE WHEN IFWMS103.WERKS = 'CSHA' AND IFWMS103.WAREKY = 'WSH_' THEN 'WSH%'	
+		                           ELSE IFWMS103.WAREKY END)
+		-->
+		<isNotEmpty property="RANGE_SQL">
+		       $RANGE_SQL$
+		</isNotEmpty>
+		GROUP BY	IFWMS103.EBELN, IFWMS103.WAREKY, IFWMS103.LIFNR, IFWMS103.EINDT, IFWMS103.LGORT,
+					WH.NAME01, DC.SHORTX, DT.SHORTX, VD.NAME01, LG.NAME01,
+					<!--
+					VU.ERPUSR, VU.ERPNAM, VU.DEPTID, VU.DPNAME,
+					VU2.ERPUS2, VU2.USNAM2, VU2.DEPID2, VU2.DPNAM2,
+					VU2.ERPUS3, VU2.USNAM3, VU2.DEPID3, VU2.DPNAM3,
+					VU2.ERPUS4, VU2.USNAM4, VU2.DEPID4, VU2.DPNAM4
+					-->
+					, IFWMS103.USRID1
+					<!-- , IFWMS103.UNAME1 -->
+					, IFWMS103.DEPTID1
+					<!-- , IFWMS103.DNAME1 -->
+					, IFWMS103.USRID2
+					<!-- , IFWMS103.UNAME2 -->
+					, IFWMS103.DEPTID2
+					<!-- , IFWMS103.DNAME2 -->
+					, IFWMS103.USRID3
+					<!-- , IFWMS103.UNAME3 -->
+					, IFWMS103.DEPTID3
+					<!-- , IFWMS103.DNAME3 -->
+					, IFWMS103.USRID4
+					<!-- , IFWMS103.UNAME4 -->
+					, IFWMS103.DEPTID4
+					<!-- , IFWMS103.DNAME4 -->
+	</select>
+	<!-- AS01 HEAD GRID SELECT END -->
+	
+	
+	<!-- AS01 SUB GRID SELECT START -->
+	<select id="AS01Sub_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.ADVANCEDSHIPMENTNOTICE.FIND_INTERFACE_TO_CREATE_ASNDI -->
+		
+		SELECT IFWMS103.EBELN         AS "SEBELN"
+		     , ' '                    AS "ASNDKY"
+		     , ' '                    AS "ASNDIT"
+		     , 'NEW'                  AS "STATIT"
+		     , IFWMS103.SKUKEY        AS "SKUKEY"
+		     , IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R AS "QTYASN"
+		     , 0                      AS "QTYRCV"
+		     , IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R AS "QTYUOM"
+		     , ISNULL(SW.MEASKY,' ')     AS "MEASKY"
+		     , IFWMS103.MEINS         AS "UOMKEY"
+		     , ISNULL(ITFMS.QTPUOM,0)    AS "QTPUOM"
+		     , ISNULL(SM.DUOMKY,' ')     AS "DUOMKY"
+		     , ISNULL(SM.QTDUOM,9999999) AS "QTDUOM"
+		     , TRUNC((IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R) / NVL(SM.QTDUOM,9999999)) AS "BOXQTY"
+		     , MOD((IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R), NVL(SM.QTDUOM,9999999))    AS "REMQTY"
+		     , ' '                AS "RCSTKY"
+		     , ' '                AS "LOCARV"
+		     , ' '                AS "LOTA01"		/* IFWMS103.DEPTID1 AS "LOTA01", */
+		     , ' '                AS "LOTA01NM"		/* L01NM.NAME01 AS "LOTA01NM", */
+		     , ' '                AS "LOTA02"
+		     , IFWMS103.LIFNR     AS "LOTA03"
+		     , IFWMS103.EBELN||IFWMS103.EBELP AS "LOTA04"
+		     , IFWMS103.C00104    AS "LOTA05"
+		     , '00'               AS "LOTA06"
+		     , ' '                AS "LOTA07"
+		     , ' '                AS "LOTA08"
+		     , ' '                AS "LOTA09"
+		     , ' '                AS "LOTA10"
+		     , CONVERT(CHAR(10),GETDATE(),112) AS "LOTA11"
+		     , ' '                AS "LOTA12"
+		     , ' '                AS "LOTA13"
+		     , ' '                AS "LOTA14"
+		     , ' '                AS "LOTA15"
+		     , 0                  AS "LOTA16"
+		     , 0                  AS "LOTA17"
+		     , 0                  AS "LOTA18"
+		     , 0                  AS "LOTA19"
+		     , 0                  AS "LOTA20"
+		     , ' '                AS "LRCPTD"
+		     , IFWMS103.EBELN     AS "REFDKY"
+		     , IFWMS103.EBELP     AS "REFDIT"
+		     , ' '                AS "REFCAT"
+		     , IFWMS103.VGBEL     AS "EASNKY"
+		     , ' '                AS "EASNIT"
+		     , ISNULL(SM.DESC01,' ') AS "DESC01"
+		     , ISNULL(SM.DESC02,' ') AS "DESC02"
+		     , SZF_GETOLDSKUKEY(#WAREKY#, IFWMS103.SKUKEY) AS "ASKU01"	<!-- Parameter[0] -->
+		     , ISNULL(SM.ASKU02,' ') AS "ASKU02"
+		     , ISNULL(SM.ASKU03,' ') AS "ASKU03"
+		     , ISNULL(SM.ASKU04,' ') AS "ASKU04"
+		     , ISNULL(SM.ASKU05,' ') AS "ASKU05"
+		     , ISNULL(SM.EANCOD,' ') AS "EANCOD"
+		     , ISNULL(SM.GTINCD,' ') AS "GTINCD"
+		     , ISNULL(SM.SKUG01,' ') AS "SKUG01"
+		     , ISNULL(SM.SKUG02,' ') AS "SKUG02"
+		     , ISNULL(SM.SKUG03,' ') AS "SKUG03"
+		     , ISNULL(SM.SKUG04,' ') AS "SKUG04"
+		     , ISNULL(SM.SKUG05,' ') AS "SKUG05"
+		     , ISNULL(SM.GRSWGT,0)   AS "GRSWGT"
+		     , ISNULL(SM.NETWGT,0)   AS "NETWGT"
+		     , ISNULL(SM.WGTUNT,' ') AS "WGTUNT"
+		     , ISNULL(SM.LENGTH,0)   AS "LENGTH"
+		     , ISNULL(SM.WIDTHW,0)   AS "WIDTHW"
+		     , ISNULL(SM.HEIGHT,0)   AS "HEIGHT"
+		     , ISNULL(SM.CUBICM,0)   AS "CUBICM"
+		     , ISNULL(SM.CAPACT,0)   AS "CAPACT"
+		     , IFWMS103.MANDT     AS "SMANDT"
+		     , IFWMS103.EBELN     AS "SEBELN"
+		     , IFWMS103.EBELP     AS "SEBELP"
+		     , ' '                AS "SZMBLNO"
+		     , ' '                AS "SZMIPNO"
+		     , IFWMS103.VGBEL     AS "STRAID"
+		     , ' '                AS "SVBELN"
+		     , ' '                AS "SPOSNR"
+		     , ' '                AS "STKNUM"
+		     , ' '                AS "STPNUM"
+		     , ' '                AS "SWERKS"
+		     , IFWMS103.LGORT     AS "SLGORT"
+		     , ' '                AS "SDATBG"
+		     , ' '                AS "STDLNR"
+		     , ' '                AS "SSORNU"
+		     , ' '                AS "SSORIT"
+		     , ' '                AS "SMBLNR"
+		     , ' '                AS "SZEILE"
+		     , ' '                AS "SMJAHR"
+		     , ' '                AS "SXBLNR"
+		     , ' '                AS "SBKTXT"
+		     , ' '                AS "AWMSNO"
+		FROM	IFWMS103
+				LEFT OUTER JOIN SKUMA SM	ON SM.OWNRKY		= #OWNRKY#	<!-- Parameter[1] -->
+											AND SM.SKUKEY		= IFWMS103.SKUKEY
+				LEFT OUTER JOIN SKUWC SW	ON SW.WAREKY		= #WAREKY#	<!-- Parameter[2] -->
+											AND SW.OWNRKY		= #OWNRKY#	<!-- Parameter[3] -->
+											AND SW.SKUKEY		= IFWMS103.SKUKEY
+				LEFT OUTER JOIN MEASI ITFMS	ON ITFMS.WAREKY		= #WAREKY#	<!-- Parameter[4] -->
+											AND ITFMS.MEASKY	= SW.MEASKY
+											AND ITFMS.UOMKEY	= IFWMS103.MEINS
+				LEFT OUTER JOIN BZPTN L01NM	ON L01NM.PTNRKY		= IFWMS103.DEPTID1
+											AND L01NM.PTNRTY	= 'TM'
+											AND L01NM.PTNL05	IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#)	<!-- Parameter[5] -->
+											
+		<!-- WHERE	IFWMS103.WERKS   = #OWNRKY# -->	<!-- Parameter[6] -->
+		WHERE	IFWMS103.WERKS = (SELECT ADDR05 FROM WAHMA WHERE WAREKY =  #WAREKY#  AND ROWNUM = 1)
+		
+		AND		IFWMS103.STATUS IN ('A','C')
+		AND		IFWMS103.IFFLG  IN ('N','Y')
+		AND		IFWMS103.BWART   = '102'
+		AND		#WAREKY#      LIKE (CASE WHEN IFWMS103.WERKS = 'CSHA' AND IFWMS103.WAREKY = 'WSH_' THEN 'WSH%'	<!-- Parameter[7] -->
+			   						ELSE IFWMS103.WAREKY END)
+		AND		(MENGE - MENGE_B - MENGE_R) > 0
+		
+		AND		IFWMS103.EBELN = #SEBELN#	<!-- Parameter[8] -->
+		
+		<isNotEmpty property="RANGE_SQL">
+		       $RANGE_SQL$
+		</isNotEmpty>
+	</select>
+	<!-- AS01 SUB GRID SELECT END -->
+	
+
+	<!-- AS01 HEAD GRID INSERT START -->
+ 	<insert id="AS01_INSERT" parameterClass="Map">
+		INSERT INTO ASNDH
+		(
+			  WAREKY
+			, ASNTTY
+			, STATDO
+			, DOCDAT
+			, DOCCAT
+			
+			, OWNRKY
+			, DPTNKY
+			, DRELIN
+			, PRCPTD
+			, LRCPTD
+			
+			, INDDCL
+			, RSNCOD
+			, RSNRET
+			, QTYASN
+			, QTYRCV
+			
+			, USRID1
+			, UNAME1
+			, DEPTID1
+			, DNAME1
+			
+			, USRID2
+			, UNAME2
+			, DEPTID2
+			, DNAME2
+			
+			, USRID3
+			, UNAME3
+			, DEPTID3
+			, DNAME3
+			
+			, USRID4
+			, UNAME4
+			, DEPTID4
+			, DNAME4
+			
+			, DOCTXT
+			
+			, INDBZL
+			, INDARC
+			, UPDCHK
+			, ASNDKY
+			
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		) VALUES (
+			  #WAREKY#
+			, #ASNTTY#
+			, #STATDO#
+			, #DOCDAT#
+			, #DOCCAT#
+			, #OWNRKY#
+			, #DPTNKY#
+			, #DRELIN#
+			, #PRCPTD#
+			, #LRCPTD#
+			, #INDDCL#
+			, #RSNCOD#
+			, #RSNRET#
+			, TO_NUMBER(ISNULL(TRIM(#QTYASN#), 0))
+			, TO_NUMBER(ISNULL(TRIM(#QTYRCV#), 0))
+			, #USRID1#
+			, #UNAME1#
+			, #DEPTID1#
+			, #DNAME1#
+			, #USRID2#
+			, #UNAME2#
+			, #DEPTID2#
+			, #DNAME2#
+			, #USRID3#
+			, #UNAME3#
+			, #DEPTID3#
+			, #DNAME3#
+			, #USRID4#
+			, #UNAME4#
+			, #DEPTID4#
+			, #DNAME4#
+			, #DOCTXT#
+			, ISNULL(#INDBZL#, ' ')
+			, ISNULL(#INDARC#, ' ')
+			, TO_NUMBER(ISNULL(TRIM(#UPDCHK#), 0))
+			, #ASNDKY#
+			, CONVERT(CHAR(10),GETDATE(),112)
+            , REPLACE(CONVERT(CHAR(10),GETDATE(),24),':','')
+			, #SES_USER_ID#
+			, CONVERT(CHAR(10),GETDATE(),112)
+            , REPLACE(CONVERT(CHAR(10),GETDATE(),24),':','')
+			, #SES_USER_ID# )
+	</insert>
+	<!-- AS01 HEAD GRID INSERT END -->
+
+
+	<!-- AS01 SUB GRID INSERT START -->
+	<insert id="AS01Sub_INSERT" parameterClass="Map">
+
+		INSERT INTO ASNDI
+		(
+			  ASNDKY
+			, ASNDIT
+			, STATIT
+			, SKUKEY
+			, QTYASN
+			, QTYRCV
+			, QTYUOM
+			, MEASKY
+			, UOMKEY
+			, QTPUOM
+			, DUOMKY
+			, QTDUOM
+			, RCSTKY
+			, LOCARV
+			, LOTA01
+			, LOTA02
+			, LOTA03
+			, LOTA04
+			, LOTA05
+			, LOTA06
+			, LOTA07
+			, LOTA08
+			, LOTA09
+			, LOTA10
+			, LOTA11
+			, LOTA12
+			, LOTA13
+			, LOTA14
+			, LOTA15
+			, LOTA16
+			, LOTA17
+			, LOTA18
+			, LOTA19
+			, LOTA20
+			, LRCPTD
+			, REFDKY
+			, REFDIT
+			, REFCAT
+			, EASNKY
+			, EASNIT
+			, DESC01
+			, DESC02
+			, ASKU01
+			, ASKU02
+			, ASKU03
+			, ASKU04
+			, ASKU05
+			, EANCOD
+			, GTINCD
+			, SKUG01
+			, SKUG02
+			, SKUG03
+			, SKUG04
+			, SKUG05
+			, GRSWGT
+			, NETWGT
+			, WGTUNT
+			, LENGTH
+			, WIDTHW
+			, HEIGHT
+			, CUBICM
+			, CAPACT
+			, SMANDT
+			, SEBELN
+			, SEBELP
+			, SZMBLNO
+			, SVBELN
+			, SPOSNR
+			, STKNUM
+			, STPNUM
+			, SWERKS
+			, SLGORT
+			, SDATBG
+			, STDLNR
+			, SSORNU
+			, SSORIT
+			, SMBLNR
+			, SZEILE
+			, SMJAHR
+			, SXBLNR
+			, SBKTXT
+			, AWMSNO
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		) 	SELECT	  #ASNDKY# AS "ASNDKY"
+					, '0000' || ROWNUM * 10  AS "ASNDIT"
+					, 'NEW'                  AS "STATIT"
+					, IFWMS103.SKUKEY        AS "SKUKEY"
+					
+					, #QTYASN# AS "QTYASN"
+					
+					, 0                      AS "QTYRCV"
+					<!-- , IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R AS "QTYUOM" -->
+					, #QTYUOM#
+					
+					, ISNULL(SW.MEASKY,' ')     AS "MEASKY"
+					, IFWMS103.MEINS         AS "UOMKEY"
+					, ISNULL(ITFMS.QTPUOM,0)    AS "QTPUOM"
+					, ISNULL(SM.DUOMKY,' ')     AS "DUOMKY"
+					, ISNULL(SM.QTDUOM,9999999) AS "QTDUOM"
+					, ' '                AS "RCSTKY"
+					, ' '                AS "LOCARV"
+					, ' '                AS "LOTA01"       /* IFWMS103.DEPTID1 AS "LOTA01", */
+					, ' '                AS "LOTA02"
+					, IFWMS103.LIFNR     AS "LOTA03"
+					, IFWMS103.EBELN||IFWMS103.EBELP AS "LOTA04"
+					, IFWMS103.C00104    AS "LOTA05"
+					, '00'               AS "LOTA06"
+					, ' '                AS "LOTA07"
+					, ' '                AS "LOTA08"
+					, ' '                AS "LOTA09"
+					, ' '                AS "LOTA10"
+					, CONVERT(CHAR(10),GETDATE(),112) AS "LOTA11"
+					, ' '                AS "LOTA12"
+					, ' '                AS "LOTA13"
+					, ' '                AS "LOTA14"
+					, ' '                AS "LOTA15"
+					, 0                  AS "LOTA16"
+					, 0                  AS "LOTA17"
+					, 0                  AS "LOTA18"
+					, 0                  AS "LOTA19"
+					, 0                  AS "LOTA20"
+					, ' '                AS "LRCPTD"
+					, IFWMS103.EBELN     AS "REFDKY"
+					, IFWMS103.EBELP     AS "REFDIT"
+					, ' '                AS "REFCAT"
+					, IFWMS103.VGBEL     AS "EASNKY"
+					, ' '                AS "EASNIT"
+					, ISNULL(SM.DESC01,' ') AS "DESC01"
+					, ISNULL(SM.DESC02,' ') AS "DESC02"
+					, SZF_GETOLDSKUKEY(#WAREKY#, IFWMS103.SKUKEY) AS "ASKU01"
+					, ISNULL(SM.ASKU02,' ') AS "ASKU02"
+					, ISNULL(SM.ASKU03,' ') AS "ASKU03"
+					, ISNULL(SM.ASKU04,' ') AS "ASKU04"
+					, ISNULL(SM.ASKU05,' ') AS "ASKU05"
+					, ISNULL(SM.EANCOD,' ') AS "EANCOD"
+					, ISNULL(SM.GTINCD,' ') AS "GTINCD"
+					, ISNULL(SM.SKUG01,' ') AS "SKUG01"
+					, ISNULL(SM.SKUG02,' ') AS "SKUG02"
+					, ISNULL(SM.SKUG03,' ') AS "SKUG03"
+					, ISNULL(SM.SKUG04,' ') AS "SKUG04"
+					, ISNULL(SM.SKUG05,' ') AS "SKUG05"
+					, ISNULL(SM.GRSWGT,0)   AS "GRSWGT"
+					, ISNULL(SM.NETWGT,0)   AS "NETWGT"
+					, ISNULL(SM.WGTUNT,' ') AS "WGTUNT"
+					, ISNULL(SM.LENGTH,0)   AS "LENGTH"
+					, ISNULL(SM.WIDTHW,0)   AS "WIDTHW"
+					, ISNULL(SM.HEIGHT,0)   AS "HEIGHT"
+					, ISNULL(SM.CUBICM,0)   AS "CUBICM"
+					, ISNULL(SM.CAPACT,0)   AS "CAPACT"
+					, IFWMS103.MANDT     AS "SMANDT"
+					, IFWMS103.EBELN     AS "SEBELN"
+					, IFWMS103.EBELP     AS "SEBELP"
+					, IFWMS103.VGBEL     AS "SZMBLNO"
+					, ' '                AS "SVBELN"
+					, ' '                AS "SPOSNR"
+					, ' '                AS "STKNUM"
+					, ' '                AS "STPNUM"
+					, ' '                AS "SWERKS"
+					, IFWMS103.LGORT     AS "SLGORT"
+					, ' '                AS "SDATBG"
+					, ' '                AS "STDLNR"
+					, ' '                AS "SSORNU"
+					, ' '                AS "SSORIT"
+					, ' '                AS "SMBLNR"
+					, ' '                AS "SZEILE"
+					, ' '                AS "SMJAHR"
+					, ' '                AS "SXBLNR"
+					, ' '                AS "SBKTXT"
+					, ' '                AS "AWMSNO"
+					, CONVERT(CHAR(10),GETDATE(),112) AS CREDAT
+					, REPLACE(CONVERT(CHAR(10),GETDATE(),24),':','') AS CRETIM
+					, #SES_USER_ID# AS CREUSR
+					, CONVERT(CHAR(10),GETDATE(),112) AS LMODAT
+					, REPLACE(CONVERT(CHAR(10),GETDATE(),24),':','') AS LMOTIM
+					, #SES_USER_ID# AS LMOUSR
+			FROM	IFWMS103
+					LEFT OUTER JOIN SKUMA SM	ON SM.OWNRKY	= 'CMAS'
+												AND SM.SKUKEY	= IFWMS103.SKUKEY
+					LEFT OUTER JOIN SKUWC SW	ON SW.WAREKY	= #WAREKY#
+												AND SW.OWNRKY	= 'CMAS'
+												AND SW.SKUKEY        = IFWMS103.SKUKEY
+					LEFT OUTER JOIN MEASI ITFMS	ON ITFMS.WAREKY     = #WAREKY#
+												AND ITFMS.MEASKY     = SW.MEASKY
+												AND ITFMS.UOMKEY     = IFWMS103.MEINS
+					LEFT OUTER JOIN BZPTN L01NM	ON L01NM.PTNRKY     = IFWMS103.DEPTID1
+												AND L01NM.PTNRTY     = 'TM'
+												AND L01NM.PTNL05    IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#)
+			WHERE	IFWMS103.WERKS   = (SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#)
+			AND		IFWMS103.STATUS IN ('A','C')
+			AND		IFWMS103.IFFLG  IN ('N','Y')
+			AND		IFWMS103.BWART   = '102'
+			AND		#WAREKY#      LIKE (CASE WHEN IFWMS103.WERKS = 'CSHA' AND IFWMS103.WAREKY = 'WSH_' THEN 'WSH%'
+										ELSE IFWMS103.WAREKY END)
+			AND		(MENGE - MENGE_B - MENGE_R) > 0
+			AND		IFWMS103.EBELN = #SEBELN#
+
+	<!-- 
+		INSERT INTO ASNDI
+		(
+			  ASNDKY
+			, ASNDIT
+			, STATIT
+			, SKUKEY
+			, QTYASN
+			, QTYRCV
+			, QTYUOM
+			, MEASKY
+			, UOMKEY
+			, QTPUOM
+			, DUOMKY
+			, QTDUOM
+			, RCSTKY
+			, LOCARV
+			
+			, LOTA01, LOTA02, LOTA03, LOTA04, LOTA05
+			, LOTA06, LOTA07, LOTA08, LOTA09, LOTA10
+			, LOTA11
+			, LOTA12, LOTA13, LOTA14, LOTA15
+			, LOTA16, LOTA17, LOTA18, LOTA19, LOTA20
+						
+			, LRCPTD
+			, REFDKY
+			, REFDIT
+			, REFCAT
+			, EASNKY
+			, EASNIT
+			, DESC01, DESC02
+			, ASKU01, ASKU02, ASKU03, ASKU04, ASKU05
+			
+			, EANCOD
+			, GTINCD
+			, SKUG01, SKUG02, SKUG03, SKUG04, SKUG05
+			, GRSWGT, NETWGT, WGTUNT, LENGTH, WIDTHW, HEIGHT
+			, CUBICM, CAPACT, SMANDT, SEBELN, SEBELP
+			, SZMBLNO
+			, SZMIPNO
+			, STRAID, SVBELN
+			, SPOSNR, STKNUM
+			, STPNUM, SWERKS, SLGORT, SDATBG, STDLNR, SSORNU, SSORIT, SMBLNR, SZEILE, SMJAHR, SXBLNR, SBKTXT, AWMSNO
+			
+			, CREDAT, CRETIM, CREUSR
+			, LMODAT, LMOTIM, LMOUSR
+
+			, INDBZL, INDARC, UPDCHK
+			
+		) VALUES (
+			  #ASNDKY#
+			, (SELECT '0000' || ROWNUM * 10 FROM DUAL)
+			, #STATIT#									
+			, #SKUKEY#
+			
+			, TO_NUMBER(NVL(TRIM(#QTYASN#), 0))
+			, TO_NUMBER(NVL(TRIM(#QTYRCV#), 0))
+			, TO_NUMBER(NVL(TRIM(#QTYUOM#), 0))
+			
+			, NVL( #MEASKY#, ' ')
+			, #UOMKEY#
+			
+			, TO_NUMBER(NVL(TRIM(#QTPUOM#), 0))
+			, NVL( #DUOMKY#, ' ')
+			, TO_NUMBER(NVL(TRIM(#QTDUOM#), 9999999))
+			
+			, NVL( #RCSTKY#, ' ')
+			, NVL( #LOCARV#, ' ')
+			
+			, NVL( #LOTA01#, ' ')
+			, NVL( #LOTA02#, ' ')
+			
+			, #LOTA03#
+			, #SEBELN#
+			, NVL( #LOTA05#, ' ')
+			
+			, #LOTA06#
+			, NVL( #LOTA07#, ' ')
+			, NVL( #LOTA08#, ' ')
+			, NVL( #LOTA09#, ' ')
+			, NVL( #LOTA10#, ' ')
+			
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, NVL( #LOTA12#, ' ')
+			, NVL( #LOTA13#, ' ')
+			, NVL( #LOTA14#, ' ')
+			, NVL( #LOTA15#, ' ')
+			
+			, TO_NUMBER(NVL(TRIM(#LOTA16#), 0))
+			, TO_NUMBER(NVL(TRIM(#LOTA17#), 0))
+			, TO_NUMBER(NVL(TRIM(#LOTA18#), 0))
+			, TO_NUMBER(NVL(TRIM(#LOTA19#), 0))
+			, TO_NUMBER(NVL(TRIM(#LOTA20#), 0))
+			
+			, #LRCPTD#
+			, #REFDKY#
+			, #REFDIT#
+			, #REFCAT#
+			, #EASNKY#
+			, #EASNIT#
+			, #DESC01#
+			, #DESC02#
+			, #ASKU01#
+			, #ASKU02#
+			, #ASKU03#
+			, #ASKU04#
+			, #ASKU05#
+			
+			, #EANCOD#
+			, #GTINCD#
+			, #SKUG01#
+			, #SKUG02#
+			, #SKUG03#
+			, #SKUG04#
+			, #SKUG05#
+			
+			, #GRSWGT#
+			, #NETWGT#
+			, #WGTUNT#
+			, #LENGTH#
+			, #WIDTHW#
+			, #HEIGHT#
+			
+			, #CUBICM#
+			, #CAPACT#
+			, #SMANDT#
+			, #SEBELN#
+			, #SEBELP#
+			
+			, #SZMBLNO#
+			, #SZMIPNO#
+			
+			, #STRAID#
+			, #SVBELN#
+			
+			, #SPOSNR#
+			, #STKNUM#
+			, #STPNUM#
+			
+			, #SWERKS#
+			, #SLGORT#
+			
+			, NVL( #SDATBG#, ' ')
+			, NVL( #STDLNR#, ' ')
+			, NVL( #SSORNU#, ' ')
+			, NVL( #SSORIT#, ' ')
+			, NVL( #SMBLNR#, ' ')
+			
+			, NVL( #SZEILE#, ' ')
+			, NVL( #SMJAHR#, ' ')
+			, NVL( #SXBLNR#, ' ')
+			, NVL( #SBKTXT#, ' ')
+			, NVL( #AWMSNO#, ' ')
+			
+			, CONVERT(CHAR(10),GETDATE(),112)
+			, REPLACE(CONVERT(CHAR(10),GETDATE(),24),':','')
+			, #SES_USER_ID#
+			, CONVERT(CHAR(10),GETDATE(),112)
+			, REPLACE(CONVERT(CHAR(10),GETDATE(),24),':','')
+			, #SES_USER_ID#
+			
+			, NVL( #INDBZL#, ' ')
+			, NVL( #INDARC#, ' ')
+			, TO_NUMBER(NVL(TRIM(#UPDCHK#), 0))
+		)
+		 -->
+	</insert>
+	
+	
+	<select id="AS01H_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT AH.ASNDKY  AS "KEY"
+		     , AH.ASNDKY  AS "ASNDKY"
+		     , AH.WAREKY  AS "WAREKY"
+		     , ISNULL(WH.NAME01,' ') AS "WAREKYNM"
+		     , AH.ASNTTY  AS "ASNTTY"
+		     , ISNULL(DT.SHORTX,' ') AS "ASNTTYNM"
+		     , AH.STATDO  AS "STATDO"
+		     , AH.DOCDAT  AS "DOCDAT"
+		     , AH.DOCCAT  AS "DOCCAT"
+		     , ISNULL(DC.SHORTX,' ') AS "DOCCATNM"
+		     , AH.OWNRKY  AS "OWNRKY"
+		     , AH.DPTNKY  AS "DPTNKY"
+		     , ISNULL(VD.NAME01,' ') AS "DPTNKYNM"
+		     , AH.DRELIN  AS "DRELIN"
+		     , AH.PRCPTD  AS "PRCPTD"
+		     , AH.LRCPTD  AS "LRCPTD"
+		     , AH.INDDCL  AS "INDDCL"
+		     , AH.RSNCOD  AS "RSNCOD"
+		     , AH.RSNRET  AS "RSNRET"
+		     , AI.SLGORT  AS "LGORT"
+		     , ISNULL(LG.NAME01,' ') AS "LGORTNM"
+		     , AH.QTYASN  AS "QTYASN"
+		     , AH.QTYRCV  AS "QTYRCV"
+		     , AH.USRID1  AS "USRID1"
+		     , AH.UNAME1  AS "UNAME1"
+		     , AH.DEPTID1 AS "DEPTID1"
+		     , AH.DNAME1  AS "DNAME1"
+		     , AH.USRID2  AS "USRID2"
+		     , AH.UNAME2  AS "UNAME2"
+		     , AH.DEPTID2 AS "DEPTID2"
+		     , AH.DNAME2  AS "DNAME2"
+		     , AH.USRID3  AS "USRID3"
+		     , AH.UNAME3  AS "UNAME3"
+		     , AH.DEPTID3 AS "DEPTID3"
+		     , AH.DNAME3  AS "DNAME3"
+		     , AH.USRID4  AS "USRID4"
+		     , AH.UNAME4  AS "UNAME4"
+		     , AH.DEPTID4 AS "DEPTID4"
+		     , AH.DNAME4  AS "DNAME4"
+		     , AH.DOCTXT  AS "DOCTXT"
+		     , AI.SEBELN  AS "SEBELN"
+		     , AH.CREDAT  AS "CREDAT"
+		     , AH.CRETIM  AS "CRETIM"
+		     , AH.CREUSR  AS "CREUSR"
+		     , CU.NMLAST  AS "CUSRNM"
+		     , AH.LMODAT  AS "LMODAT"
+		     , AH.LMOTIM  AS "LMOTIM"
+		     , AH.LMOUSR  AS "LMOUSR"
+		     , LU.NMLAST  AS "LUSRNM"
+		  FROM ASNDH AH
+		       INNER JOIN ASNDI AI
+		    ON AI.ASNDKY = AH.ASNDKY
+		       LEFT OUTER JOIN USRMA CU
+		    ON CU.USERID = AH.CREUSR
+		       LEFT OUTER JOIN USRMA LU
+		    ON LU.USERID = AH.LMOUSR
+		       LEFT OUTER JOIN WAHMA WH
+		    ON WH.WAREKY = AH.WAREKY
+		       LEFT OUTER JOIN DOCCM DC
+		    ON DC.DOCCAT = '050'
+		       LEFT OUTER JOIN DOCTM DT
+		    ON DT.DOCUTY = AH.ASNTTY
+		       LEFT OUTER JOIN BZPTN VD
+		    ON VD.PTNRKY = AH.DPTNKY
+		   AND VD.PTNRTY = 'VD'
+		       LEFT OUTER JOIN BZPTN LG
+		    ON LG.PTNRKY = AI.SLGORT
+		   AND LG.PTNRTY = 'WH'
+		 WHERE AH.STATDO = 'NEW'
+		 
+		<isNotEmpty property="ASNDKY">
+		   AND AH.ASNDKY IN ( $ASNDKY$ )
+		</isNotEmpty>
+		
+		 GROUP BY AH.ASNDKY, AH.WAREKY, AH.ASNTTY, AH.STATDO, AH.DOCDAT, AH.DOCCAT, AH.OWNRKY, AH.DPTNKY,
+		          AH.DRELIN, AH.PRCPTD, AH.LRCPTD, AH.INDDCL, AH.RSNCOD, AH.RSNRET, AH.QTYASN, AH.QTYRCV, AI.SEBELN, AI.SLGORT,
+		          AH.CREDAT, AH.CRETIM, AH.CREUSR, CU.NMLAST, AH.LMODAT, AH.LMOTIM, AH.LMOUSR, LU.NMLAST,
+		          WH.NAME01, DC.SHORTX, DT.SHORTX, VD.NAME01, LG.NAME01,
+		          AH.USRID1, AH.UNAME1, AH.DEPTID1, AH.DNAME1, AH.USRID2, AH.UNAME2, AH.DEPTID2, AH.DNAME2,
+		          AH.USRID3, AH.UNAME3, AH.DEPTID3, AH.DNAME3, AH.USRID4, AH.UNAME4, AH.DEPTID4, AH.DNAME4,
+		          AH.DOCTXT
+	</select>
+	
+	<select id="AS01I_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT AI.ASNDKY  AS "KEY"
+		     , AI.ASNDKY  AS "ASNDKY"
+		     , AI.ASNDIT  AS "ASNDIT"
+		     , AI.STATIT  AS "STATIT"
+		     , AI.SKUKEY  AS "SKUKEY"
+		     , AI.QTYASN  AS "QTYASN"
+		     , AI.QTYRCV  AS "QTYRCV"
+		     , AI.QTYUOM  AS "QTYUOM"
+		     , AI.MEASKY  AS "MEASKY"
+		     , AI.UOMKEY  AS "UOMKEY"
+		     , AI.QTPUOM  AS "QTPUOM"
+		     , AI.DUOMKY  AS "DUOMKY"
+		     , AI.QTDUOM  AS "QTDUOM"
+		     , TRUNC(AI.QTYRCV/AI.QTDUOM)  AS "BOXQTY"
+		     , MOD(AI.QTYRCV,AI.QTDUOM)    AS "REMQTY"
+		     , AI.RCSTKY  AS "RCSTKY"
+		     , AI.LOCARV  AS "LOCARV"
+		     , AI.LOTA01  AS "LOTA01"
+		     , L01NM.NAME01  AS "LOTA01NM"
+		     , AI.LOTA02  AS "LOTA02"
+		     , AI.LOTA03  AS "LOTA03"
+		     , AI.LOTA04  AS "LOTA04"
+		     , AI.LOTA05  AS "LOTA05"
+		     , AI.LOTA06  AS "LOTA06"
+		     , AI.LOTA07  AS "LOTA07"
+		     , AI.LOTA08  AS "LOTA08"
+		     , AI.LOTA09  AS "LOTA09"
+		     , AI.LOTA10  AS "LOTA10"
+		     , AI.LOTA11  AS "LOTA11"
+		     , AI.LOTA12  AS "LOTA12"
+		     , AI.LOTA13  AS "LOTA13"
+		     , AI.LOTA14  AS "LOTA14"
+		     , AI.LOTA15  AS "LOTA15"
+		     , AI.LOTA16  AS "LOTA16"
+		     , AI.LOTA17  AS "LOTA17"
+		     , AI.LOTA18  AS "LOTA18"
+		     , AI.LOTA19  AS "LOTA19"
+		     , AI.LOTA20  AS "LOTA20"
+		     , AI.LRCPTD  AS "LRCPTD"
+		     , AI.REFDKY  AS "REFDKY"
+		     , AI.REFDIT  AS "REFDIT"
+		     , AI.REFCAT  AS "REFCAT"
+		     , AI.EASNKY  AS "EASNKY"
+		     , AI.EASNIT  AS "EASNIT"
+		     , AI.DESC01  AS "DESC01"
+		     , AI.DESC02  AS "DESC02"
+		     , AI.ASKU01  AS "ASKU01"
+		     , AI.ASKU02  AS "ASKU02"
+		     , AI.ASKU03  AS "ASKU03"
+		     , AI.ASKU04  AS "ASKU04"
+		     , AI.ASKU05  AS "ASKU05"
+		     , AI.EANCOD  AS "EANCOD"
+		     , AI.GTINCD  AS "GTINCD"
+		     , AI.SKUG01  AS "SKUG01"
+		     , AI.SKUG02  AS "SKUG02"
+		     , AI.SKUG03  AS "SKUG03"
+		     , AI.SKUG04  AS "SKUG04"
+		     , AI.SKUG05  AS "SKUG05"
+		     , AI.GRSWGT  AS "GRSWGT"
+		     , AI.NETWGT  AS "NETWGT"
+		     , AI.WGTUNT  AS "WGTUNT"
+		     , AI.LENGTH  AS "LENGTH"
+		     , AI.WIDTHW  AS "WIDTHW"
+		     , AI.HEIGHT  AS "HEIGHT"
+		     , AI.CUBICM  AS "CUBICM"
+		     , AI.CAPACT  AS "CAPACT"
+		     , AI.SMANDT  AS "SMANDT"
+		     , AI.SEBELN  AS "SEBELN"
+		     , AI.SEBELP  AS "SEBELP"
+		     , AI.SZMBLNO AS "SZMBLNO"
+		     , AI.SZMIPNO AS "SZMIPNO"
+		     , AI.STRAID  AS "STRAID"
+		     , AI.SVBELN  AS "SVBELN"
+		     , AI.SPOSNR  AS "SPOSNR"
+		     , AI.STKNUM  AS "STKNUM"
+		     , AI.STPNUM  AS "STPNUM"
+		     , AI.SWERKS  AS "SWERKS"
+		     , AI.SLGORT  AS "SLGORT"
+		     , AI.SDATBG  AS "SDATBG"
+		     , AI.STDLNR  AS "STDLNR"
+		     , AI.SSORNU  AS "SSORNU"
+		     , AI.SSORIT  AS "SSORIT"
+		     , AI.SMBLNR  AS "SMBLNR"
+		     , AI.SZEILE  AS "SZEILE"
+		     , AI.SMJAHR  AS "SMJAHR"
+		     , AI.SXBLNR  AS "SXBLNR"
+		     , AI.SBKTXT  AS "SBKTXT"
+		     , AI.AWMSNO  AS "AWMSNO"
+		     , AI.CREDAT  AS "CREDAT"
+		     , AI.CRETIM  AS "CRETIM"
+		     , AI.CREUSR  AS "CREUSR"
+		     , CU.NMLAST  AS "CREUSR"
+		     , AI.LMODAT  AS "LMODAT"
+		     , AI.LMOTIM  AS "LMOTIM"
+		     , AI.LMOUSR  AS "LMOUSR"
+		     , LU.NMLAST  AS "LUSRNM"
+		  FROM ASNDH AH
+		       INNER JOIN ASNDI AI
+		    ON AI.ASNDKY     = AH.ASNDKY
+		       LEFT OUTER JOIN USRMA CU
+		    ON CU.USERID     = AI.CREUSR
+		       LEFT OUTER JOIN USRMA LU
+		    ON LU.USERID     = AI.LMOUSR
+		       LEFT OUTER JOIN BZPTN L01NM
+		    ON L01NM.PTNRKY  = AI.LOTA01
+		   AND L01NM.PTNRTY  = 'TM'
+		 WHERE AH.STATDO     = 'NEW'
+		<isNotEmpty property="ASNDKY">
+		   AND AI.ASNDKY   IN ( #ASNDKY# )
+		</isNotEmpty>
+		<isNotEmpty property="SEBELN">
+		   AND AH.ASNDKY IN ( #SEBELN# )
+		</isNotEmpty>
+	</select>
+	
+	
+	<!-- AS01 VALIDATION START -->
+	<select id="AS01_VALIDATION" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.ADVANCEDSHIPMENTNOTICE.VALIDATE -->
+		
+		SELECT CASE WHEN DC.DOCCAT IS NULL THEN 'DOCCAT' || '/' || STD.DOCCAT
+					WHEN DT.DOCUTY IS NULL THEN 'DOCUTY' || '/' || STD.DOCUTY
+		            WHEN WH.WAREKY IS NULL THEN 'WAREKY' || '/' || STD.WAREKY
+		            WHEN OW.OWNRKY IS NULL THEN 'OWNRKY' || '/' || STD.OWNRKY
+		            WHEN BZ.PTNRKY IS NULL THEN 'DPTNKY' || '/' || STD.DPTNKY
+		            WHEN SM.SKUKEY IS NULL THEN 'SKUKEY' || '/' || STD.SKUKEY
+		            WHEN SW.SKUKEY IS NULL THEN 'SKUKEY' || '/' || STD.SKUKEY
+		            WHEN MH.MEASKY IS NULL THEN 'MEASKY' || '/' || STD.MEASKY
+		            WHEN MI.UOMKEY IS NULL THEN 'UOMKEY' || '/' || STD.UOMKEY
+		            WHEN STD.DOCUTY IN ('101','102','103','104','109','110','111','115')
+             					AND (IF.C00102 IS NULL OR IF.C00102 = ' ') THEN 'RORDCF' || '/' || STD.EBELN
+            		ELSE 'OK'
+        			END AS "resultMsg"
+		FROM	( $VALIDATION_SQL$ ) STD
+       			LEFT OUTER JOIN IFWMS103 IF	ON IF.WERKS = STD.OWNRKY
+											AND IF.EBELN = STD.EBELN
+											AND IF.EBELP = STD.EBELP
+											AND IF.STATUS IN ('A','C')
+											AND IF.IFFLG IN ('N','Y')
+				LEFT OUTER JOIN DOCCM DC	ON DC.DOCCAT = STD.DOCCAT
+				LEFT OUTER JOIN DOCTM DT	ON DT.DOCUTY = STD.DOCUTY
+				LEFT OUTER JOIN WAHMA WH	ON WH.WAREKY = STD.WAREKY
+				LEFT OUTER JOIN OWNER OW	ON OW.OWNRKY = STD.OWNRKY
+				LEFT OUTER JOIN BZPTN BZ	ON BZ.PTNRKY = STD.DPTNKY
+											AND BZ.PTNRTY IN ('VD','TM','CT')
+											AND BZ.PTNL05 = STD.OWNRKY
+				LEFT OUTER JOIN SKUMA SM	ON SM.OWNRKY = STD.OWNRKY
+											AND SM.SKUKEY = STD.SKUKEY
+				LEFT OUTER JOIN SKUWC SW	ON SW.WAREKY = STD.WAREKY
+											AND SW.OWNRKY = STD.OWNRKY
+											AND SW.SKUKEY = STD.SKUKEY
+				LEFT OUTER JOIN MEASH MH	ON MH.WAREKY = STD.WAREKY
+											AND MH.MEASKY = STD.MEASKY
+				LEFT OUTER JOIN MEASI MI	ON MI.WAREKY = STD.WAREKY
+											AND MI.MEASKY = STD.MEASKY
+											AND MI.UOMKEY = STD.UOMKEY
+	</select>
+	<!-- AS01 VALIDATION END -->
+	
+<!-- AS01 SQL End-->		
+
+
+
+
+<!-- AS02 SQL START-->
+
+	<!-- AS02 HEAD GRID SELECT START -->
+	<select id="AS02_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.ADVANCEDSHIPMENTNOTICE.FIND_ASNDH -->
+		
+		SELECT	AH.ASNDKY  AS "KEY"
+			  , AH.ASNDKY  AS "ASNDKY"
+			  , AH.WAREKY  AS "WAREKY"
+			  , ISNULL(WH.NAME01,' ') AS "WAREKYNM"
+			  , AH.ASNTTY  AS "ASNTTY"
+			  , ISNULL(DT.SHORTX,' ') AS "ASNTTYNM"
+			  , AH.STATDO  AS "STATDO"
+			  , AH.DOCDAT  AS "DOCDAT"
+			  , AH.DOCCAT  AS "DOCCAT"
+			  , ISNULL(DC.SHORTX,' ') AS "DOCCATNM"
+			  , AH.OWNRKY  AS "OWNRKY"
+			  , AH.DPTNKY  AS "DPTNKY"
+			  , ISNULL(VD.NAME01,' ') AS "DPTNKYNM"
+			  , AH.DRELIN  AS "DRELIN"
+			  , AH.PRCPTD  AS "PRCPTD"
+			  , AH.LRCPTD  AS "LRCPTD"
+		      , AH.INDDCL  AS "INDDCL"
+		      , AH.RSNCOD  AS "RSNCOD"
+		      , AH.RSNRET  AS "RSNRET"
+		      , AI.SLGORT  AS "LGORT"
+		      , ISNULL(LG.NAME01,' ') AS "LGORTNM"
+		      , AH.QTYASN  AS "QTYASN"
+		      , AH.QTYRCV  AS "QTYRCV"
+		      , AH.USRID1  AS "USRID1"
+		      , AH.UNAME1  AS "UNAME1"
+		      , AH.DEPTID1 AS "DEPTID1"
+		      , AH.DNAME1  AS "DNAME1"
+		      , AH.USRID2  AS "USRID2"
+		      , AH.UNAME2  AS "UNAME2"
+		      , AH.DEPTID2 AS "DEPTID2"
+		      , AH.DNAME2  AS "DNAME2"
+		      , AH.USRID3  AS "USRID3"
+		      , AH.UNAME3  AS "UNAME3"
+		      , AH.DEPTID3 AS "DEPTID3"
+		      , AH.DNAME3  AS "DNAME3"
+		      , AH.USRID4  AS "USRID4"
+		      , AH.UNAME4  AS "UNAME4"
+		      , AH.DEPTID4 AS "DEPTID4"
+		      , AH.DNAME4  AS "DNAME4"
+		      , AH.DOCTXT  AS "DOCTXT"
+		      , AI.SEBELN  AS "EBELN"
+		      <!-- 
+		      , AH.CREDAT AS "COMMON.CREDAT"
+			  , AH.CRETIM AS "COMMON.CRETIM",
+			  , AH.CREUSR AS "COMMON.CREUSR",
+			  , CU.NMLAST AS "COMMON.CUSRNM",
+			  , AH.LMODAT AS "COMMON.LMODAT",
+			  , AH.LMOTIM AS "COMMON.LMOTIM",
+			  , AH.LMOUSR AS "COMMON.LMOUSR",
+			  , LU.NMLAST AS "COMMON.LUSRNM"
+       		  -->
+		      , AH.CREDAT  AS "CREDAT"
+		      , AH.CRETIM  AS "CRETIM"
+		      , AH.CREUSR  AS "CREUSR"
+		      , CU.NMLAST  AS "CUSRNM"
+		      , AH.LMODAT  AS "LMODAT"
+		      , AH.LMOTIM  AS "LMOTIM"
+		      , AH.LMOUSR  AS "LMOUSR"
+		      , LU.NMLAST  AS "LUSRNM"
+		FROM	ASNDH AH
+				INNER JOIN ASNDI AI			ON AI.ASNDKY = AH.ASNDKY
+				LEFT OUTER JOIN USRMA CU	ON CU.USERID = AH.CREUSR
+				LEFT OUTER JOIN USRMA LU	ON LU.USERID = AH.LMOUSR
+				LEFT OUTER JOIN WAHMA WH	ON WH.WAREKY = AH.WAREKY
+				LEFT OUTER JOIN DOCCM DC	ON DC.DOCCAT = '050'
+				LEFT OUTER JOIN DOCTM DT	ON DT.DOCUTY = AH.ASNTTY
+				LEFT OUTER JOIN BZPTN VD	ON VD.PTNRKY = AH.DPTNKY
+											AND VD.PTNRTY = 'VD'
+											AND VD.PTNL05 IN ( SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#)	<!-- Parameter[0] -->
+				LEFT OUTER JOIN BZPTN LG	ON LG.PTNRKY = AI.SLGORT
+											AND LG.PTNRTY = 'WH'
+											AND LG.PTNL05 IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#)		<!-- Parameter[1] -->
+				WHERE AH.WAREKY = #WAREKY#	<!-- Parameter[2] -->
+			<isNotEmpty property="ASNTTY">
+				AND AH.ASNTTY = #ASNTTY#	<!-- Parameter[3] -->
+			</isNotEmpty>
+				<!-- AND ((AH.STATDO = 'NEW')) -->
+				AND AH.STATDO = 'NEW'
+				AND AI.QTYASN != '0'
+			<isNotEmpty property="RANGE_SQL">
+				$RANGE_SQL$
+			</isNotEmpty>
+		GROUP BY AH.ASNDKY, AH.WAREKY, AH.ASNTTY, AH.STATDO, AH.DOCDAT, AH.DOCCAT, AH.OWNRKY, AH.DPTNKY,
+				 AH.DRELIN, AH.PRCPTD, AH.LRCPTD, AH.INDDCL, AH.RSNCOD, AH.RSNRET, AH.QTYASN, AH.QTYRCV, AI.SEBELN, AI.SLGORT,
+				 AH.CREDAT, AH.CRETIM, AH.CREUSR, CU.NMLAST, AH.LMODAT, AH.LMOTIM, AH.LMOUSR, LU.NMLAST,
+				 WH.NAME01, DC.SHORTX, DT.SHORTX, VD.NAME01, LG.NAME01,
+				 AH.USRID1, AH.UNAME1, AH.DEPTID1, AH.DNAME1, AH.USRID2, AH.UNAME2, AH.DEPTID2, AH.DNAME2,
+				 AH.USRID3, AH.UNAME3, AH.DEPTID3, AH.DNAME3, AH.USRID4, AH.UNAME4, AH.DEPTID4, AH.DNAME4,
+				 AH.DOCTXT
+	</select>
+	<!-- AS02 HEAD GRID SELECT END -->
+	
+
+	<!-- AS02 SUB GRID SELECT START -->
+	<select id="AS02Sub_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.ADVANCEDSHIPMENTNOTICE.FIND_ASNDI -->
+	
+		SELECT	AI.ASNDKY  AS "KEY"
+				<!-- , AI.ASNDKY  AS "PK.ASNDKY" -->
+				, AI.ASNDKY  AS "ASNDKY"
+				<!-- , AI.ASNDIT  AS "PK.ASNDIT" -->
+				, AI.ASNDIT  AS "ASNDIT"
+				, AI.STATIT  AS "STATIT"
+				, AI.SKUKEY  AS "SKUKEY"
+				, AI.QTYASN  AS "QTYASN"
+				, AI.QTYRCV  AS "QTYRCV"
+				, AI.QTYUOM  AS "QTYUOM"
+				, AI.MEASKY  AS "MEASKY"
+				, AI.UOMKEY  AS "UOMKEY"
+				
+				, AI.QTPUOM  AS "QTPUOM"
+				, AI.DUOMKY  AS "DUOMKY"
+				, AI.QTDUOM  AS "QTDUOM"
+				, TRUNC(AI.QTYRCV/AI.QTDUOM)  AS "BOXQTY"
+				, MOD(AI.QTYRCV,AI.QTDUOM)    AS "REMQTY"
+				, AI.RCSTKY  AS "RCSTKY"
+				, AI.LOCARV  AS "LOCARV"
+				, AI.LOTA01  AS "LOTA01"
+				, L01NM.NAME01  AS "LOTA01NM"
+				, AI.LOTA02  AS "LOTA02"
+				
+				, AI.LOTA03  AS "LOTA03"
+				, AI.LOTA04  AS "LOTA04"
+				, AI.LOTA05  AS "LOTA05"
+				, AI.LOTA06  AS "LOTA06"
+				, AI.LOTA07  AS "LOTA07"
+				, AI.LOTA08  AS "LOTA08"
+				, AI.LOTA09  AS "LOTA09"
+				, AI.LOTA10  AS "LOTA10"
+				, AI.LOTA11  AS "LOTA11"
+				, AI.LOTA12  AS "LOTA12"
+				
+				, AI.LOTA13  AS "LOTA13"
+				, AI.LOTA14  AS "LOTA14"
+				, AI.LOTA15  AS "LOTA15"
+				, AI.LOTA16  AS "LOTA16"
+				, AI.LOTA17  AS "LOTA17"
+				, AI.LOTA18  AS "LOTA18"
+				, AI.LOTA19  AS "LOTA19"
+				, AI.LOTA20  AS "LOTA20"
+				, AI.LRCPTD  AS "LRCPTD"
+				, AI.REFDKY  AS "REFDKY"
+				
+				, AI.REFDIT  AS "REFDIT"
+				, AI.REFCAT  AS "REFCAT"
+				, AI.EASNKY  AS "EASNKY"
+				, AI.EASNIT  AS "EASNIT"
+				, AI.DESC01  AS "DESC01"
+				, AI.DESC02  AS "DESC02"
+				, AI.ASKU01  AS "ASKU01"
+				, AI.ASKU02  AS "ASKU02"
+				, AI.ASKU03  AS "ASKU03"
+				, AI.ASKU04  AS "ASKU04"
+				
+				, AI.ASKU05  AS "ASKU05"
+				, AI.EANCOD  AS "EANCOD"
+				, AI.GTINCD  AS "GTINCD"
+				, AI.SKUG01  AS "SKUG01"
+				, AI.SKUG02  AS "SKUG02"
+				, AI.SKUG03  AS "SKUG03"
+				, AI.SKUG04  AS "SKUG04"
+				, AI.SKUG05  AS "SKUG05"
+				, AI.GRSWGT  AS "GRSWGT"
+				, AI.NETWGT  AS "NETWGT"
+				
+				, AI.WGTUNT  AS "WGTUNT"
+				, AI.LENGTH  AS "LENGTH"
+				, AI.WIDTHW  AS "WIDTHW"
+				, AI.HEIGHT  AS "HEIGHT"
+				, AI.CUBICM  AS "CUBICM"
+				, AI.CAPACT  AS "CAPACT"
+				, AI.SMANDT  AS "SMANDT"
+				, AI.SEBELN  AS "SEBELN"
+				, AI.SEBELP  AS "SEBELP"
+				, AI.SZMBLNO AS "SZMBLNO"
+				
+				, AI.SZMIPNO AS "SZMIPNO"
+				, AI.STRAID  AS "STRAID"
+				, AI.SVBELN  AS "SVBELN"
+				, AI.SPOSNR  AS "SPOSNR"
+				, AI.STKNUM  AS "STKNUM"
+				, AI.STPNUM  AS "STPNUM"
+				, AI.SWERKS  AS "SWERKS"
+				, AI.SLGORT  AS "SLGORT"
+				, AI.SDATBG  AS "SDATBG"
+				, AI.STDLNR  AS "STDLNR"
+				
+				, AI.SSORNU  AS "SSORNU"
+				, AI.SSORIT  AS "SSORIT"
+				, AI.SMBLNR  AS "SMBLNR"
+				, AI.SZEILE  AS "SZEILE"
+				, AI.SMJAHR  AS "SMJAHR"
+				, AI.SXBLNR  AS "SXBLNR"
+				, AI.SBKTXT  AS "SBKTXT"
+				, AI.AWMSNO  AS "AWMSNO"
+				<!-- 
+				, AI.CREDAT  AS "COMMON.CREDAT"
+				, AI.CRETIM  AS "COMMON.CRETIM"
+				, AI.CREUSR  AS "COMMON.CREUSR"
+				, CU.NMLAST  AS "COMMON.CUSRNM"
+				, AI.LMODAT  AS "COMMON.LMODAT"
+				, AI.LMOTIM  AS "COMMON.LMOTIM"
+				, AI.LMOUSR  AS "COMMON.LMOUSR"
+				, LU.NMLAST  AS "COMMON.LUSRNM"
+				 -->
+				, AI.CREDAT  AS "CREDAT"
+				, AI.CRETIM  AS "CRETIM"
+				, AI.CREUSR  AS "CREUSR"
+				, CU.NMLAST  AS "CUSRNM"
+				, AI.LMODAT  AS "LMODAT"
+				, AI.LMOTIM  AS "LMOTIM"
+				, AI.LMOUSR  AS "LMOUSR"
+				, LU.NMLAST  AS "LUSRNM"
+		FROM	ASNDH AH
+				INNER JOIN ASNDI AI			ON AI.ASNDKY	 = AH.ASNDKY
+				LEFT OUTER JOIN USRMA CU	ON CU.USERID     = AI.CREUSR
+				LEFT OUTER JOIN USRMA LU	ON LU.USERID     = AI.LMOUSR
+				LEFT OUTER JOIN BZPTN L01NM	ON L01NM.PTNRKY  = AI.LOTA01
+											AND L01NM.PTNRTY = 'TM'
+											AND L01NM.PTNL05 IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#)	<!-- Parameter[0] -->
+		WHERE AH.WAREKY     = #WAREKY#
+		<isNotEmpty property="ASNTTY">
+		AND AH.ASNTTY     = #ASNTTY#
+		</isNotEmpty>
+		<!-- AND ((AH.STATDO = 'NEW')) -->
+		AND AH.STATDO     = 'NEW'
+		AND AI.ASNDKY     = #ASNDKY#
+		AND AI.QTYASN    != '0'
+        <isNotEmpty property="RANGE_SQL">
+			$RANGE_SQL$
+		</isNotEmpty>
+	</select>
+	<!-- AS02 SUB GRID SELECT END -->
+	
+	
+	<!-- AS02 HEAD GRID DELETE START -->
+	<delete id="AS02_DELETE" parameterClass="Map">
+		DELETE 
+		FROM	ASNDH 
+		WHERE	ASNDKY = #ASNDKY# 
+	</delete>
+	<!-- AS02 HEAD GRID DELETE END -->
+	
+	
+	<!-- AS02 SUB GRID DELETE START -->
+	<delete id="AS02Sub_DELETE" parameterClass="Map">
+		DELETE 
+		FROM	ASNDI
+		WHERE	ASNDKY = #ASNDKY#
+		<!-- AND		ASNDIT = #ASNDIT# -->
+	</delete>
+	<!-- AS02 SUB GRID DELETE END -->
+
+<!-- AS02 SQL END-->		
+
+
+
+
+<!-- 물류예약입고 -->
+<!-- GR01 SQL START -->
+
+	<!-- GR01 HEAD GRID SELECT START -->
+	<select id="GR01_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.GOODRECEIPT.FIND_ASN_TO_CREATE_RECDH -->
+		SELECT	<!-- IFWMS103.LOTA01				AS KEY, -->
+				' '							AS RECVKY,
+				IFWMS103.WAREKY				AS WAREKY,
+				WH.NAME01					AS WAREKYNM,
+				#RCPTTY#					AS RCPTTY,
+				DT.SHORTX					AS RCPTTYNM,
+				'NEW'						AS STATDO,
+				ISNULL(IFWMS103.BWART,' ')	AS SAPSTS,
+				IFWMS103.EINDT				AS DOCDAT,
+				'100'						AS DOCCAT,
+				DC.SHORTX					AS DOCCATNM,
+				ISNULL(IFWMS103.LIFNR,IFWMS103.LOTA02)	AS DPTNKY,
+				VD.NAME01					AS DPTNKYNM,
+				' '							AS DRELIN,
+				<!-- TO_CHAR(SYSDATE,'YYYYMMDD')	AS ARCPTD, -->
+				CONVERT(VARCHAR(8), GETDATE(), 112)	AS ARCPTD,
+				#SES_OWNER#					AS OWNRKY,
+				' '							AS INDRCN,
+				' '							AS CRECVD,
+				' '							AS RSNCOD,
+				' '							AS PUTSTS,
+				IFWMS103.LOTA08				AS LGORT,
+				' '							AS LGORTNM,
+				' '							AS USRID1,
+				' '							AS UNAME1,
+				' '							AS DEPTID1,
+				' '							AS DNAME1,
+				' '							AS USRID2,
+				' '							AS UNAME2,
+				' '							AS DEPTID2,
+				' '							AS DNAME2,
+				' '							AS USRID3,
+				' '							AS UNAME3,
+				' '							AS DEPTID3,
+				' '							AS DNAME3,
+				' '							AS USRID4,
+				' '							AS UNAME4,
+				' '							AS DEPTID4,
+				' '							AS DNAME4,
+				' '							AS DOCTXT,
+				IFWMS103.EBELN				AS SEBELN,
+				' '							AS CONFIM
+		FROM	IFWMS103
+				LEFT OUTER JOIN SKUMA SM	ON	SM.OWNRKY = #SES_OWNER#
+											AND	SM.SKUKEY = IFWMS103.SKUKEY
+				LEFT OUTER JOIN SKUWC SW	ON	SW.WAREKY = #WAREKY#
+											AND	SW.OWNRKY = #SES_OWNER#
+											AND	SW.SKUKEY = IFWMS103.SKUKEY
+				LEFT OUTER JOIN WAHMA WH	ON	WH.WAREKY = IFWMS103.WAREKY
+				LEFT OUTER JOIN DOCCM DC	ON	DC.DOCCAT = '100'
+				LEFT OUTER JOIN DOCTM DT	ON	DT.DOCUTY = #RCPTTY#
+				LEFT OUTER JOIN BZPTN VD	ON	VD.PTNRKY = IFWMS103.LIFNR
+											AND	VD.PTNRTY IN (CASE WHEN #RCPTTY# IN ('109') THEN 'CT' ELSE 'VD' END)
+											AND	VD.OWNRKY = #SES_OWNER#
+		WHERE	1 = 1   
+		AND		IFWMS103.IFFLG	= 'N'
+		AND		IFWMS103.WAREKY	= #WAREKY# 
+		AND		IFWMS103.DOCUTY	= #RCPTTY#
+		AND		(IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R) > 0
+		<isNotEmpty property="RANGE_SQL">
+			$RANGE_SQL$
+		</isNotEmpty>
+		GROUP BY	<!-- IFWMS103.LOTA01, -->
+					IFWMS103.WAREKY,
+					IFWMS103.BWART,
+					IFWMS103.EINDT,
+					IFWMS103.LIFNR,
+					IFWMS103.LOTA02,
+					IFWMS103.LOTA08,
+					IFWMS103.LGORT,
+					IFWMS103.EBELN,
+					WH.NAME01,
+					DC.SHORTX,
+					DT.SHORTX,
+					VD.NAME01
+		<!-- ORDER BY	IFWMS103.LOTA01 DESC -->
+		ORDER BY	IFWMS103.EBELN DESC
+	</select>
+	<!-- GR01 HEAD GRID SELECT END -->
+	
+	
+	<!-- GR01 ITEM GRID SELECT START -->
+	<select id="GR01Sub_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.GOODRECEIPT.FIND_ASN_TO_CREATE_RECDI -->
+		SELECT	<!-- IFWMS103.LOTA01			AS KEY -->
+				' '					AS RECVKY
+				, ' '					AS RECVIT
+				, 'NEW'					AS STATIT
+				, ISNULL(IFWMS103.BWART,' ')	AS SAPSTS
+				, IFWMS103.SKUKEY		AS SKUKEY
+				, ' '					AS LOTNUM
+				, ' '					AS AREAKY
+				, ISNULL(SW.LOCARV,' ')	AS LOCAKY
+				, ' '					AS SECTID
+				, IFWMS103.TRNUID		AS TRNUID
+				, ' '					AS PACKID
+				, IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R AS ASNQTY
+				, IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R AS QTYRCV
+				, 0						AS QTYDIF
+				, IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R AS QTYUOM
+				, ' '					AS TRUNTY
+				, ISNULL(SW.MEASKY,' ')	AS MEASKY
+				, ISNULL((SELECT UOMKEY FROM UOMMA WHERE UOMKEY = IFWMS103.MEINS), 'EA') AS UOMKEY
+				, ISNULL(ITFMS.QTPUOM,0)	AS QTPUOM
+				, ISNULL(SM.DUOMKY,' ')	AS DUOMKY
+				
+				<!-- , ISNULL(DECODE(SM.QTDUOM,0,9999999,SM.QTDUOM),9999999) AS QTDUOM -->
+				, ISNULL( (CASE WHEN SM.QTDUOM = 0  THEN 9999999 ELSE SM.QTDUOM END),9999999)  AS QTDUOM 
+				
+				<!-- , TRUNC((IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R)/NVL(DECODE(SM.QTDUOM,0,9999999,SM.QTDUOM),9999999)) AS BOXQTY -->
+				<!-- , MOD(IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R,NVL(DECODE(SM.QTDUOM,0,9999999,SM.QTDUOM),9999999)) AS REMQTY -->
+				
+				, ' '					AS INDRCN
+				, ' '					AS CRECVD
+				, ' '					AS RSNCOD
+				
+				, ISNULL(IFWMS103.LOTA01,' ')	AS LOTA01
+				, ' '						AS LOTA01NM
+				, ISNULL(IFWMS103.LOTA02,' ')	AS LOTA02
+				, ISNULL(IFWMS103.LOTA03,' ')	AS LOTA03
+				, ISNULL(IFWMS103.LOTA04,' ')	AS LOTA04
+				, ISNULL(IFWMS103.LOTA05,' ')	AS LOTA05
+				, ISNULL(IFWMS103.LOTA06,'00')	AS LOTA06
+				, ISNULL(IFWMS103.LOTA07,' ')	AS LOTA07
+				, ISNULL(IFWMS103.LOTA08,' ')	AS LOTA08
+				, ISNULL(IFWMS103.LOTA09,' ')	AS LOTA09
+				, ISNULL(IFWMS103.LOTA10,' ')	AS LOTA10
+				, ISNULL(IFWMS103.LOTA11,' ')	AS LOTA11
+				<!-- , TO_CHAR(SYSDATE,'YYYYMMDD')	AS LOTA12 -->
+				, CONVERT(VARCHAR(8), GETDATE(), 112)	AS LOTA12
+				, ' '						AS LOTA13
+				, ' '						AS LOTA14
+				, ' '						AS LOTA15
+				, 0							AS LOTA16
+				, 0							AS LOTA17
+				, 0							AS LOTA18
+				, 0							AS LOTA19
+				, 0							AS LOTA20
+				
+				, ' '						AS AWMSNO
+				, IFWMS103.EBELN			AS REFDKY
+				, IFWMS103.EBELP			AS REFDIT
+				, ' '						AS REFCAT
+				<!-- , TO_CHAR(SYSDATE,'YYYYMMDD')	AS REFDAT -->
+				, CONVERT(VARCHAR(8), GETDATE(), 112)	AS REFDAT
+				, ISNULL(SM.DESC01,' ')		AS DESC01
+				, ISNULL(SM.DESC02,' ')		AS DESC02
+				<!-- , #WAREKY# -->
+				, IFWMS103.SKUKEY			AS ASKU01
+				, ISNULL(SM.ASKU02,' ')		AS ASKU02
+				, ISNULL(SM.ASKU03,' ')		AS ASKU03
+				, ISNULL(SM.ASKU04,' ')		AS ASKU04
+				, ISNULL(SM.ASKU05,' ')		AS ASKU05
+				, ISNULL(SM.EANCOD,' ')		AS EANCOD
+				, ISNULL(SM.GTINCD,' ')		AS GTINCD
+				, ISNULL(SM.SKUG01,' ')		AS SKUG01
+				, ISNULL(SM.SKUG02,' ')		AS SKUG02
+				, ISNULL(SM.SKUG03,' ')		AS SKUG03
+				, ISNULL(SM.SKUG04,' ')		AS SKUG04
+				, ISNULL(SM.SKUG05,' ')		AS SKUG05
+				, ISNULL(SM.GRSWGT,0)		AS GRSWGT
+				, ISNULL(SM.NETWGT,0)		AS NETWGT
+				, ISNULL(SM.WGTUNT,' ')		AS WGTUNT
+				, ISNULL(SM.LENGTH,0)		AS LENGTH
+				, ISNULL(SM.WIDTHW,0)		AS WIDTHW
+				, ISNULL(SM.HEIGHT,0)		AS HEIGHT
+				, ISNULL(SM.CUBICM,0)		AS CUBICM
+				, ISNULL(SM.CAPACT,0)		AS CAPACT
+				, 0							AS QTYORG
+				, IFWMS103.MANDT			AS SMANDT
+				, IFWMS103.EBELN			AS SEBELN
+				, IFWMS103.EBELP			AS SEBELP
+				, IFWMS103.MBLNO			AS SZMBLNO
+				, IFWMS103.MIPNO			AS SZMIPNO
+				, ' '						AS STRAID
+				, ' '						AS SVBELN
+				, ' '						AS SPOSNR
+				, ' '						AS STKNUM
+				, ' '						AS STPNUM
+				, IFWMS103.WERKS			AS SWERKS
+				, IFWMS103.LGORT			AS SLGORT
+				, ' '						AS SDATBG
+				, ' '						AS STDLNR
+				, ' '						AS SSORNU
+				, ' '						AS SSORIT
+				, ' '						AS SMBLNR
+				, ' '						AS SZEILE
+				, ' '						AS SMJAHR
+				, ' '						AS SXBLNR
+				, ' '						AS SBKTXT
+				, ' '						AS RCPRSN
+		FROM	IFWMS103
+				LEFT OUTER JOIN SKUMA SM	ON	SM.OWNRKY	= #SES_OWNER#
+											AND	SM.SKUKEY	= IFWMS103.SKUKEY
+				LEFT OUTER JOIN SKUWC SW	ON	SW.WAREKY	= #WAREKY#
+											AND	SW.OWNRKY	= #SES_OWNER#
+											AND	SW.SKUKEY	= IFWMS103.SKUKEY
+				LEFT OUTER JOIN MEASI ITFMS	ON	ITFMS.WAREKY	= #WAREKY#
+											AND	ITFMS.MEASKY	= SW.MEASKY
+											AND	ITFMS.UOMKEY	= IFWMS103.MEINS
+		WHERE	IFWMS103.WAREKY  = #WAREKY#
+		AND		IFWMS103.IFFLG  IN ('N', 'Y')
+		AND		IFWMS103.STATUS IN ('A', 'C')
+		AND		IFWMS103.DOCUTY  = #RCPTTY#
+		AND		(IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R) > 0 
+		AND		IFWMS103.EBELN = #SEBELN# -- KEY
+		<isNotEmpty property="RANGE_SQL">
+			$RANGE_SQL$
+		</isNotEmpty>
+	</select>
+	<!-- GR01 ITEM GRID SELECT END -->
+	
+	
+	<!-- GR01 HEAD GRID INSERT START -->
+	<insert id="GR01_INSERT" parameterClass="Map">
+		INSERT INTO RECDH
+		(
+			RECVKY,
+			WAREKY,
+			RCPTTY,
+			STATDO,
+			SAPSTS,
+			DOCDAT,
+			DOCCAT,
+			DPTNKY,
+			DRELIN,
+			ARCPTD,
+			
+			OWNRKY,
+			INDRCN,
+			CRECVD,
+			RSNCOD,
+			PUTSTS,
+			USRID1,
+			UNAME1,
+			DEPTID1,
+			DNAME1,
+			USRID2,
+			
+			UNAME2,
+			DEPTID2,
+			DNAME2,
+			USRID3,
+			UNAME3,
+			DEPTID3,
+			DNAME3,
+			USRID4,
+			UNAME4,
+			DEPTID4,
+			
+			DNAME4,
+			DOCTXT,
+			CREDAT,
+			CRETIM,
+			CREUSR,
+			LMODAT,
+			LMOTIM,
+			LMOUSR
+		) VALUES (
+			ISNULL( #RECVKY#, ' '),
+			ISNULL( #WAREKY#, ' '),
+			ISNULL( #RCPTTY#, ' '),
+			ISNULL( #STATDO#, ' '),
+			ISNULL( #SAPSTS#, ' '),
+			ISNULL( #DOCDAT#, ' '),
+			ISNULL( #DOCCAT#, ' '),
+			ISNULL( #DPTNKY#, ' '),
+			ISNULL( #DRELIN#, ' '),
+			<!-- #ARCPTD#, -->
+			CONVERT(VARCHAR(8), GETDATE(), 112),
+			
+			<!-- NVL( #OWNRKY#, ' '), -->
+			(SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#),
+			ISNULL( #INDRCN#, ' '),
+			ISNULL( #CRECVD#, ' '),
+			ISNULL( #RSNCOD#, ' '),
+			ISNULL( #PUTSTS#, ' '),
+			ISNULL( #USRID1#, ' '),
+			ISNULL( #UNAME1#, ' '),
+			ISNULL( #DEPTID1#, ' '),
+			ISNULL( #DNAME1#, ' '),
+			ISNULL( #USRID2#, ' '),
+			
+			ISNULL( #UNAME2#, ' '),
+			ISNULL( #DEPTID2#, ' '),
+			ISNULL( #DNAME2#, ' '),
+			ISNULL( #USRID3#, ' '),
+			ISNULL( #UNAME3#, ' '),
+			ISNULL( #DEPTID3#, ' '),
+			ISNULL( #DNAME3#, ' '),
+			ISNULL( #USRID4#, ' '),
+			ISNULL( #UNAME4#, ' '),
+			ISNULL( #DEPTID4#, ' '),
+			
+			ISNULL( #DNAME4#, ' '),
+			ISNULL( #DOCTXT#, ' '),
+			CONVERT(VARCHAR(8), GETDATE(), 112),
+			REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', ''),
+			#SES_USER_ID#,
+			CONVERT(VARCHAR(8), GETDATE(), 112),
+			REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', ''),
+			#SES_USER_ID#
+		)
+	</insert>
+	<!-- GR01 HEAD GRID INSERT END -->
+	
+	
+	<!-- GR01 ITEM GRID INSERT START -->
+	<insert id="GR01Sub_INSERT" parameterClass="Map">
+		INSERT INTO RECDI
+		(
+			RECVKY,
+			RECVIT,
+			STATIT,
+			SAPSTS,
+			SKUKEY,
+			LOTNUM,
+			AREAKY,
+			LOCAKY,
+			SECTID,
+			TRNUID,
+			
+			PACKID,
+			QTYRCV,
+			QTYDIF,
+			QTYUOM,
+			TRUNTY,
+			MEASKY,
+			UOMKEY,
+			QTPUOM,
+			DUOMKY,
+			QTDUOM,
+			
+			INDRCN,
+			CRECVD,
+			RSNCOD,
+			LOTA01,
+			LOTA02,
+			LOTA03,
+			LOTA04,
+			LOTA05,
+			LOTA06,
+			LOTA07,
+			
+			LOTA08,
+			LOTA09,
+			LOTA10,
+			LOTA11,
+			LOTA12,
+			LOTA13,
+			LOTA14,
+			LOTA15,
+			LOTA16,
+			LOTA17,
+			
+			LOTA18,
+			LOTA19,
+			LOTA20,
+			AWMSNO,
+			REFDKY,
+			REFDIT,
+			REFCAT,
+			REFDAT,
+			DESC01,
+			DESC02,
+			
+			ASKU01,
+			ASKU02,
+			ASKU03,
+			ASKU04,
+			ASKU05,
+			EANCOD,
+			GTINCD,
+			SKUG01,
+			SKUG02,
+			SKUG03,
+			
+			SKUG04,
+			SKUG05,
+			GRSWGT,
+			NETWGT,
+			WGTUNT,
+			LENGTH,
+			WIDTHW,
+			HEIGHT,
+			CUBICM,
+			CAPACT,
+			
+			QTYORG,
+			SMANDT,
+			SEBELN,
+			SEBELP,
+			SZMBLNO,
+			SZMIPNO,
+			STRAID,
+			SVBELN,
+			SPOSNR,
+			STKNUM,
+			
+			STPNUM,
+			SWERKS,
+			SLGORT,
+			SDATBG,
+			STDLNR,
+			SSORNU,
+			SSORIT,
+			SMBLNR,
+			SZEILE,
+			SMJAHR,
+			
+			SXBLNR,
+			RCPRSN,
+			
+			CREDAT,
+			CRETIM,
+			CREUSR,
+			LMODAT,
+			LMOTIM,
+			LMOUSR
+		) VALUES (
+			#RECVKY#,
+			#RECVIT#,
+			
+			( 
+			CASE	WHEN	#STATIT# = ''		THEN	'NEW'
+					WHEN	#STATIT# = ' '		THEN	'NEW'
+					WHEN	#STATIT# IS NULL	THEN	'NEW'
+			ELSE	#STATIT#
+			END
+			),
+			
+			
+			ISNULL( #SAPSTS#, ' '),
+			ISNULL( #SKUKEY#, ' '),
+			
+			ISNULL( #LOTNUM#, ' '),
+						
+			ISNULL( #AREAKY#, ' '),
+			ISNULL( #LOCAKY#, ' '),
+			ISNULL( #SECTID#, ' '),
+			ISNULL( #TRNUID#, ' '),
+			
+			ISNULL( #PACKID#, ' '),
+								
+			CONVERT(NUMERIC(20,3), #QTYRCV#),
+			
+					
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#QTYDIF# = ''	THEN	'0'
+											WHEN	#QTYDIF# = ' '	THEN	'0'
+											WHEN	#QTYDIF# IS NULL THEN	'0'
+											ELSE	#QTYDIF#
+									END
+									)
+					),
+			
+			
+			CONVERT(NUMERIC(20,3), #QTYRCV#),
+			
+			
+			
+			ISNULL( #TRUNTY#, ' '),
+			ISNULL( #MEASKY#, ' '),
+			ISNULL( #UOMKEY#, ' '),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#QTPUOM# = ''	THEN	'1'
+											WHEN	#QTPUOM# = ' '	THEN	'1'
+											WHEN	#QTPUOM# = '0'	THEN	'1'
+											WHEN	#QTPUOM# IS NULL THEN	'1'
+									ELSE	#QTPUOM#
+									END
+									)
+					),
+			
+					
+			
+			ISNULL( #DUOMKY#, ' '),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#QTDUOM# = ''	THEN	'0'
+											WHEN	#QTDUOM# = ' '	THEN	'0'
+											WHEN	#QTDUOM# IS NULL THEN	'0'
+									ELSE	#QTDUOM#
+									END
+									)
+					),
+			
+			
+			ISNULL( #INDRCN#, ' '),
+			ISNULL( #CRECVD#, ' '),
+			ISNULL( #RSNCOD#, ' '),
+			
+			ISNULL( #LOTA01#, ' '),
+			ISNULL( #LOTA02#, ' '),
+			ISNULL( #LOTA03#, ' '),
+			ISNULL( #LOTA04#, ' '),
+			ISNULL( #LOTA05#, ' '),
+			
+			ISNULL( #LOTA06#, '00'),
+			ISNULL( #LOTA07#, ' '),
+			ISNULL( #LOTA08#,'5000'),
+			ISNULL( #LOTA09#, ' '),
+			ISNULL( #LOTA10#, ' '),
+			
+			CONVERT(VARCHAR(8), GETDATE(), 112),
+			CONVERT(VARCHAR(8), GETDATE(), 112),
+			ISNULL( #LOTA13#, ' '),
+			ISNULL( #LOTA14#, ' '),
+			ISNULL( #LOTA15#, ' '),
+			
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#LOTA16# = ''	THEN	'0'
+											WHEN	#LOTA16# = ' '	THEN	'0'
+											WHEN	#LOTA16# IS NULL THEN	'0'
+									ELSE	#LOTA16#
+									END
+									)
+					),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#LOTA17# = ''	THEN	'0'
+											WHEN	#LOTA17# = ' '	THEN	'0'
+											WHEN	#LOTA17# IS NULL THEN	'0'
+									ELSE	#LOTA17#
+									END
+									)
+					),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#LOTA18# = ''	THEN	'0'
+											WHEN	#LOTA18# = ' '	THEN	'0'
+											WHEN	#LOTA18# IS NULL THEN	'0'
+									ELSE	#LOTA18#
+									END
+									)
+					),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#LOTA19# = ''	THEN	'0'
+											WHEN	#LOTA19# = ' '	THEN	'0'
+											WHEN	#LOTA19# IS NULL THEN	'0'
+									ELSE	#LOTA19#
+									END
+									)
+					),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#LOTA20# = ''	THEN	'0'
+											WHEN	#LOTA20# = ' '	THEN	'0'
+											WHEN	#LOTA20# IS NULL THEN	'0'
+									ELSE	#LOTA20#
+									END
+									)
+					),
+			
+						
+			ISNULL( #AWMSNO#, ' '),
+			ISNULL( #REFDKY#, ' '),
+			ISNULL( #REFDIT#, ' '),
+			ISNULL( #REFCAT#, ' '),
+			ISNULL( #REFDAT#, ' '),
+			ISNULL( #DESC01#, ' '),
+			ISNULL( #DESC02#, ' '),
+			
+			ISNULL( #ASKU01#, ' '),
+			ISNULL( #ASKU02#, ' '),
+			ISNULL( #ASKU03#, ' '),
+			ISNULL( #ASKU04#, ' '),
+			ISNULL( #ASKU05#, ' '),
+			ISNULL( #EANCOD#, ' '),
+			ISNULL( #GTINCD#, ' '),
+			ISNULL( #SKUG01#, ' '),
+			ISNULL( #SKUG02#, ' '),
+			ISNULL( #SKUG03#, ' '),
+			
+			ISNULL( #SKUG04#, ' '),
+			ISNULL( #SKUG05#, ' '),
+			
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#GRSWGT# = ''	THEN	'0'
+											WHEN	#GRSWGT# = ' '	THEN	'0'
+											WHEN	#GRSWGT# IS NULL THEN	'0'
+									ELSE	#GRSWGT#
+									END
+									)
+					),
+			
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#NETWGT# = ''	THEN	'0'
+											WHEN	#NETWGT# = ' '	THEN	'0'
+											WHEN	#NETWGT# IS NULL THEN	'0'
+									ELSE	#NETWGT#
+									END
+									)
+					),
+			
+			
+			ISNULL( #WGTUNT#, ' '),
+			
+			ISNULL( #LENGTH#, 0),
+			ISNULL( #WIDTHW#, 0),
+			ISNULL( #HEIGHT#, 0),
+			ISNULL( #CUBICM#, 0),
+			ISNULL( #CAPACT#, 0),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#QTYORG# = ''	THEN	'0'
+											WHEN	#QTYORG# = ' '	THEN	'0'
+											WHEN	#QTYORG# IS NULL THEN	'0'
+									ELSE	#QTYORG#
+									END
+									)
+					),
+			
+			ISNULL( #SMANDT#, ' '),
+			ISNULL( #SEBELN#, ' '),
+			ISNULL( #SEBELP#, ' '),
+			ISNULL( #SZMBLNO#, ' '),
+			ISNULL( #SZMIPNO#, ' '),
+			ISNULL( #STRAID#, ' '),
+			ISNULL( #SVBELN#, ' '),
+			ISNULL( #SPOSNR#, ' '),
+			ISNULL( #STKNUM#, ' '),
+			
+			ISNULL( #STPNUM#, ' '),
+			ISNULL( #SWERKS#, ' '),
+			ISNULL( #SLGORT#, ' '),
+			ISNULL( #SDATBG#, ' '),
+			ISNULL( #STDLNR#, ' '),
+			ISNULL( #SSORNU#, ' '),
+			ISNULL( #SSORIT#, ' '),
+			ISNULL( #SMBLNR#, ' '),
+			
+			ISNULL( #SZEILE#, ' '),
+			
+			
+			ISNULL( #SMJAHR#, ' '),
+			
+			ISNULL( #SXBLNR#, ' '),
+			ISNULL( #RCPRSN#, ' '),
+			
+			CONVERT( VARCHAR(8), GETDATE(), 112),
+			REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', ''),
+			#SES_USER_ID#,
+			CONVERT( VARCHAR(8), GETDATE(), 112),
+			REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', ''),
+			#SES_USER_ID#
+		)
+	</insert>
+	<!-- GR01 ITEM GRID INSERT END -->
+	
+	
+	<!-- GR01 ITEM GRID UPDATE START -->
+	<update id="GR01Sub_UPDATE" parameterClass="Map">
+	<!-- 
+		UPDATE	IFWMS103_MS             
+		SET		MENGE_B = ISNULL(MENGE_B,0) - v_qtyasn,           
+				MENGE_R = ISNULL(MENGE_R,0) + #QTYRCV#,           
+				IFFLG = DECODE(   sign(MENGE - NVL(MENGE_R,0) - #QTYRCV# ),1,'N','Y'  )  /* 입하완료 */           
+		WHERE MANDT = v_mandt            
+		AND SEQNO   = v_seqno             
+		AND EBELN   = :new.sebeln               
+		AND EBELP   = :new.sebelp      
+		AND WERKS   = v_recdh.ownrky      
+                AND IFFLG   IN ('N','1');
+	 -->
+	</update>
+	<!-- GR01 ITEM GRID UPDATE END -->
+	
+<!-- GR01 SQL END -->
+<!-- //물류예약입고 -->
+
+
+
+
+<!-- GR02 SQL START-->
+	<!-- GR02 그리드 시작 -->
+	<select id="GR02_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	IFWMS103.EBELN AS "KEY",
+				' ' AS "RECVKY",
+				IFWMS103.WAREKY AS "WAREKY",
+				WH.NAME01 AS "WAREKYNM",
+				#RCPTTY# AS "RCPTTY",
+				DT.SHORTX AS "RCPTTYNM",
+				'NEW' AS "STATDO",
+				' ' AS "SAPSTS",
+				CONVERT(CHAR(10),GETDATE(),112) AS "DOCDAT",
+				'100' AS "DOCCAT",
+				DC.SHORTX AS "DOCCATNM",
+				IFWMS103.LIFNR AS "DPTNKY",
+				VD.NAME01 AS "DPTNKYNM",
+				' ' AS "DRELIN",
+				' ' AS "ARCPTD",
+				#OWNRKY# AS "OWNRKY",
+				' ' AS "INDRCN",
+				' ' AS "CRECVD",
+				' ' AS "RSNCOD",
+				' ' AS "PUTSTS",
+				IFWMS103.LGORT AS "LGORT",
+				' ' AS "LGORTNM",
+				' ' AS "USRID1",
+				' ' AS "UNAME1",
+				' ' AS "DEPTID1",
+		        ' '  AS "DNAME1",
+		        ' '  AS "USRID2",
+		        ' '  AS "UNAME2",
+		        ' '  AS "DEPTID2",
+		        ' '  AS "DNAME2",
+		        ' '  AS "USRID3",
+		        ' '  AS "UNAME3",
+		        ' '  AS "DEPTID3",
+		        ' '  AS "DNAME3",
+		        ' '  AS "USRID4",
+		        ' '  AS "UNAME4",
+		        ' '  AS "DEPTID4",
+		        ' '  AS "DNAME4",
+				IFWMS103.C00103 AS "DOCTXT",
+				IFWMS103.EBELN AS "SEBELN",
+				IFWMS103.C00102 AS "CONFIM"
+		FROM	IFWMS103
+				LEFT OUTER JOIN SKUMA SM	ON SM.OWNRKY = #SES_OWNER#
+											AND SM.SKUKEY = IFWMS103.SKUKEY
+				LEFT OUTER JOIN SKUWC SW	ON SW.WAREKY = #WAREKY#
+											AND SW.OWNRKY = #SES_OWNER#
+											AND SW.SKUKEY = IFWMS103.SKUKEY
+				LEFT OUTER JOIN WAHMA WH	ON WH.WAREKY = IFWMS103.WAREKY
+				LEFT OUTER JOIN DOCCM DC	ON DC.DOCCAT = '100'
+				LEFT OUTER JOIN DOCTM DT	ON DT.DOCUTY = #RCPTTY#
+				LEFT OUTER JOIN BZPTN VD	ON VD.PTNRKY = IFWMS103.LIFNR
+		              						AND VD.PTNRTY IN (CASE	WHEN #RCPTTY# IN ('108','109','110','111','115','116') THEN 'CT'
+		                                    						WHEN #RCPTTY# IN ('166') THEN 'TM'
+		                                     				  ELSE 'VD' END)
+											AND VD.OWNRKY = #OWNRKY#
+		WHERE	IFWMS103.WERKS = #SES_OWNER#
+		AND		IFWMS103.IFFLG = 'N'
+		AND		IFWMS103.WAREKY = #WAREKY# 
+		AND		IFWMS103.BWART = #RCPTTY#
+		AND		(IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R) > 0
+		<isNotEmpty property="RANGE_SQL">
+		       $RANGE_SQL$
+		</isNotEmpty>
+		 GROUP BY IFWMS103.EBELN, IFWMS103.WAREKY, IFWMS103.LIFNR, IFWMS103.LGORT, IFWMS103.C00102, IFWMS103.C00103,
+		          WH.NAME01, DC.SHORTX, DT.SHORTX, VD.NAME01       
+		 ORDER BY IFWMS103.EBELN DESC
+	</select>
+	
+	<insert id="GR02_INSERT" parameterClass="Map">
+		INSERT INTO RECDH
+		(
+			RECVKY,
+			WAREKY,
+			RCPTTY,
+			STATDO,
+			SAPSTS,
+			DOCDAT,
+			DOCCAT,
+			DPTNKY,
+			DRELIN,
+			ARCPTD,
+			
+			OWNRKY,
+			INDRCN,
+			CRECVD,
+			RSNCOD,
+			PUTSTS,
+			USRID1,
+			UNAME1,
+			DEPTID1,
+			DNAME1,
+			USRID2,
+			
+			UNAME2,
+			DEPTID2,
+			DNAME2,
+			USRID3,
+			UNAME3,
+			DEPTID3,
+			DNAME3,
+			USRID4,
+			UNAME4,
+			DEPTID4,
+			
+			DNAME4,
+			DOCTXT,
+			CREDAT,
+			CRETIM,
+			CREUSR,
+			LMODAT,
+			LMOTIM,
+			LMOUSR
+		) VALUES (
+			ISNULL( #RECVKY#, ' '),
+			ISNULL( #WAREKY#, ' '),
+			ISNULL( #RCPTTY#, ' '),
+			ISNULL( #STATDO#, ' '),
+			ISNULL( #SAPSTS#, ' '),
+			ISNULL( #DOCDAT#, ' '),
+			ISNULL( #DOCCAT#, ' '),
+			ISNULL( #DPTNKY#, ' '),
+			ISNULL( #DRELIN#, ' '),
+			<!-- #ARCPTD#, -->
+			CONVERT(CHAR(10),GETDATE(),112),
+			
+			<!-- NVL( #OWNRKY#, ' '), -->
+			(SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#),
+			ISNULL( #INDRCN#, ' '),
+			ISNULL( #CRECVD#, ' '),
+			ISNULL( #RSNCOD#, ' '),
+			ISNULL( #PUTSTS#, ' '),
+			ISNULL( #USRID1#, ' '),
+			ISNULL( #UNAME1#, ' '),
+			ISNULL( #DEPTID1#, ' '),
+			ISNULL( #DNAME1#, ' '),
+			ISNULL( #USRID2#, ' '),
+			
+			ISNULL( #UNAME2#, ' '),
+			ISNULL( #DEPTID2#, ' '),
+			ISNULL( #DNAME2#, ' '),
+			ISNULL( #USRID3#, ' '),
+			ISNULL( #UNAME3#, ' '),
+			ISNULL( #DEPTID3#, ' '),
+			ISNULL( #DNAME3#, ' '),
+			ISNULL( #USRID4#, ' '),
+			ISNULL( #UNAME4#, ' '),
+			ISNULL( #DEPTID4#, ' '),
+			
+			ISNULL( #DNAME4#, ' '),
+			ISNULL( #DOCTXT#, ' '),
+			CONVERT(CHAR(10),GETDATE(),112),
+            REPLACE(CONVERT(CHAR(10),GETDATE(),24),':',''),
+			#SES_USER_ID#,
+			CONVERT(CHAR(10),GETDATE(),112),
+            REPLACE(CONVERT(CHAR(10),GETDATE(),24),':',''),
+			#SES_USER_ID#
+		)
+	</insert>
+	<!-- GR02 그리드 끝 -->
+	
+	<!-- GR02Sub 그리드 시작 -->
+	<select id="GR02Sub_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT IFWMS103.EBELN      AS "KEY"
+		     , ' '                 AS "RECVKY"
+		     , ' '                 AS "RECVIT"
+		     <!-- , NVL(RECVIT, ' ')                 AS "RECVIT" -->
+		     , 'NEW'               AS "STATIT"
+		     , ' '                 AS "SAPSTS"
+		     , IFWMS103.SKUKEY     AS "SKUKEY"
+		     , ' '                 AS "LOTNUM"
+		     , ' '                 AS "AREAKY"
+		     , CASE WHEN IFWMS103.BWART IN ('108','109','110','111', '115', '116') THEN 'RTNLOC'
+		            WHEN IFWMS103.BWART IN ('101','102','103','104') AND IFWMS103.C00104 = 'DS' THEN 'DIRLOC'
+		            ELSE ISNULL(SW.LOCARV,' ') END AS "LOCAKY"
+		     , ' '                 AS "SECTID"
+		     , ' '                 AS "TRNUID"
+		     , ' '                 AS "PACKID"
+		     , IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R AS "ASNQTY"
+		     , IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R AS "QTYRCV"
+		     , 0                   AS "QTYDIF"
+		     , IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R AS "QTYUOM"
+		     , ' '                 AS "TRUNTY"
+		     , ISNULL(SW.MEASKY,' ')  AS "MEASKY"
+		     , ISNULL((SELECT UOMKEY FROM UOMMA WHERE UOMKEY = IFWMS103.MEINS), 'EA') AS "UOMKEY"
+		     , ISNULL(ITFMS.QTPUOM,0) AS "QTPUOM"
+		     , ISNULL(SM.DUOMKY,' ')  AS "DUOMKY"
+		     , ISNULL(DECODE(SM.QTDUOM,0,9999999,SM.QTDUOM),9999999) AS "QTDUOM"
+		     , TRUNC((IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R)/NVL(DECODE(SM.QTDUOM,0,9999999,SM.QTDUOM),9999999)) AS "BOXQTY"
+		     , MOD(IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R,NVL(DECODE(SM.QTDUOM,0,9999999,SM.QTDUOM),9999999)) AS "REMQTY"
+		     , ' '                 AS "INDRCN"
+		     , ' '                 AS "CRECVD"
+		     , ' '                 AS "RSNCOD"
+		     , DECODE(SM.LOTL08,'V','*',' ')  AS "LOTA01"
+		     , ISNULL(L01NM.NAME01,' ') AS "LOTA01NM"
+		     , ' '                 AS "LOTA02"
+		     , IFWMS103.LIFNR      AS "LOTA03"
+		     , IFWMS103.EBELN||IFWMS103.EBELP AS "LOTA04"
+		     , IFWMS103.C00104     AS "LOTA05"
+		     , '00'                AS "LOTA06"
+		     , ' '                 AS "LOTA07"
+		     , ' '                 AS "LOTA08"
+		     , ' '                 AS "LOTA09"
+		     , ' '                 AS "LOTA10"
+		     , CONVERT(CHAR(10),GETDATE(),112)    AS "LOTA11"
+		     , ' '                 AS "LOTA12"
+		     , ' '                 AS "LOTA13"
+		     , ' '                 AS "LOTA14"
+		     , ' '                 AS "LOTA15"
+		     , 0                   AS "LOTA16"
+		     , 0                   AS "LOTA17"
+		     , 0                   AS "LOTA18"
+		     , 0                   AS "LOTA19"
+		     , 0                   AS "LOTA20"
+		     , ' '                 AS "AWMSNO"
+		     , IFWMS103.EBELN      AS "REFDKY"
+		     , IFWMS103.EBELP      AS "REFDIT"
+		     , ' '                 AS "REFCAT"
+		     , CONVERT(CHAR(10),GETDATE(),112)    AS "REFDAT"
+		     , ISNULL(SM.DESC01,' ')  AS "DESC01"
+		     , ISNULL(SM.DESC02,' ')  AS "DESC02"
+		     , #WAREKY#, IFWMS103.SKUKEY AS "ASKU01"
+		     , ISNULL(SM.ASKU02,' ')  AS "ASKU02"
+		     , ISNULL(SM.ASKU03,' ')  AS "ASKU03"
+		     , ISNULL(SM.ASKU04,' ')  AS "ASKU04"
+		     , ISNULL(SM.ASKU05,' ')  AS "ASKU05"
+		     , ISNULL(SM.EANCOD,' ')  AS "EANCOD"
+		     , ISNULL(SM.GTINCD,' ')  AS "GTINCD"
+		     , ISNULL(SM.SKUG01,' ')  AS "SKUG01"
+		     , ISNULL(SM.SKUG02,' ')  AS "SKUG02"
+		     , ISNULL(SM.SKUG03,' ')  AS "SKUG03"
+		     , ISNULL(SM.SKUG04,' ')  AS "SKUG04"
+		     , ISNULL(SM.SKUG05,' ')  AS "SKUG05"
+		     , ISNULL(SM.GRSWGT,0)    AS "GRSWGT"
+		     , ISNULL(SM.NETWGT,0)    AS "NETWGT"
+		     , ISNULL(SM.WGTUNT,' ')  AS "WGTUNT"
+		     , ISNULL(SM.LENGTH,0)    AS "LENGTH"
+		     , ISNULL(SM.WIDTHW,0)    AS "WIDTHW"
+		     , ISNULL(SM.HEIGHT,0)    AS "HEIGHT"
+		     , ISNULL(SM.CUBICM,0)    AS "CUBICM"
+		     , ISNULL(SM.CAPACT,0)    AS "CAPACT"
+		     , 0                   AS "QTYORG"
+		     , IFWMS103.MANDT      AS "SMANDT"
+		     , IFWMS103.EBELN      AS "SEBELN"
+		     , IFWMS103.EBELP      AS "SEBELP"
+		     , IFWMS103.MBLNO      AS "SZMBLNO"
+		     , IFWMS103.MIPNO      AS "SZMIPNO"
+		     , IFWMS103.VGBEL      AS "STRAID"
+		     , ' '                 AS "SVBELN"
+		     , ' '                 AS "SPOSNR"
+		     , ' '                 AS "STKNUM"
+		     , ' '                 AS "STPNUM"
+		     , ' '                 AS "SWERKS"
+		     , IFWMS103.LGORT      AS "SLGORT"
+		     , ' '                 AS "SDATBG"
+		     , ' '                 AS "STDLNR"
+		     , ' '                 AS "SSORNU"
+		     , ' '                 AS "SSORIT"
+		     , ' '                 AS "SMBLNR"
+		     , ' '                 AS "SZEILE"
+		     , ' '                 AS "SMJAHR"
+		     , ' '                 AS "SXBLNR"
+		     , ' '                 AS "SBKTXT"
+		     , ' '                 AS "RCPRSN"
+		  FROM IFWMS103
+		       LEFT OUTER JOIN SKUMA SM
+		    ON SM.OWNRKY        = #OWNRKY#
+		   AND SM.SKUKEY        = IFWMS103.SKUKEY
+		       LEFT OUTER JOIN SKUWC SW
+		    ON SW.WAREKY        = #WAREKY#
+		   AND SW.OWNRKY        = #OWNRKY#
+		   AND SW.SKUKEY        = IFWMS103.SKUKEY
+		       LEFT OUTER JOIN MEASI ITFMS
+		    ON ITFMS.WAREKY     = #WAREKY#
+		   AND ITFMS.MEASKY     = SW.MEASKY
+		   AND ITFMS.UOMKEY     = IFWMS103.MEINS
+		       LEFT OUTER JOIN BZPTN L01NM
+		    ON L01NM.PTNRKY     = IFWMS103.DEPTID1
+		   AND L01NM.PTNRTY     = 'TM'
+		   AND L01NM.PTNL05    IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#)
+		 WHERE IFWMS103.WERKS   = (SELECT ADDR05 FROM WAHMA WHERE WAREKY =  #WAREKY#  AND ROWNUM = 1)
+		   AND IFWMS103.IFFLG  IN ('N', 'Y')
+		   AND IFWMS103.STATUS IN ('A', 'C')
+		   AND #WAREKY#      LIKE (CASE WHEN IFWMS103.WERKS = 'CSHA' AND IFWMS103.WAREKY = 'WSH_' THEN 'WSH%'
+		                                WHEN IFWMS103.WERKS = 'CMAS' AND IFWMS103.WAREKY = 'WSH_' THEN 'PMS%'
+		                                ELSE IFWMS103.WAREKY END)
+		   AND IFWMS103.BWART   = #RCPTTY#
+		   AND (IFWMS103.MENGE - IFWMS103.MENGE_B - IFWMS103.MENGE_R) > 0 
+		   AND IFWMS103.EBELN = #SEBELN#
+		<isNotEmpty property="RANGE_SQL">
+		       $RANGE_SQL$
+		</isNotEmpty>
+	</select>
+	
+	<insert id="GR02Sub_INSERT" parameterClass="Map">
+		INSERT INTO RECDI
+		(
+			RECVKY,
+			RECVIT,
+			STATIT,
+			SAPSTS,
+			SKUKEY,
+			LOTNUM,
+			AREAKY,
+			LOCAKY,
+			SECTID,
+			TRNUID,
+			PACKID,
+			QTYRCV,
+			QTYDIF,
+			QTYUOM,
+			TRUNTY,
+			MEASKY,
+			UOMKEY,
+			QTPUOM,
+			DUOMKY,
+			QTDUOM,
+			INDRCN,
+			CRECVD,
+			RSNCOD,
+			LOTA01,
+			LOTA02,
+			LOTA03,
+			LOTA04,
+			LOTA05,
+			LOTA06,
+			LOTA07,
+			LOTA08,
+			LOTA09,
+			LOTA10,
+			LOTA11,
+			LOTA12,
+			LOTA13,
+			LOTA14,
+			LOTA15,
+			LOTA16,
+			LOTA17,
+			LOTA18,
+			LOTA19,
+			LOTA20,
+			AWMSNO,
+			REFDKY,
+			REFDIT,
+			REFCAT,
+			REFDAT,
+			DESC01,
+			DESC02,
+			ASKU01,
+			ASKU02,
+			ASKU03,
+			ASKU04,
+			ASKU05,
+			EANCOD,
+			GTINCD,
+			SKUG01,
+			SKUG02,
+			SKUG03,
+			SKUG04,
+			SKUG05,
+			GRSWGT,
+			NETWGT,
+			WGTUNT,
+			LENGTH,
+			WIDTHW,
+			HEIGHT,
+			CUBICM,
+			CAPACT,
+			QTYORG,
+			SMANDT,
+			SEBELN,
+			SEBELP,
+			SZMBLNO,
+			SZMIPNO,
+			STRAID,
+			SVBELN,
+			SPOSNR,
+			STKNUM,
+			STPNUM,
+			SWERKS,
+			SLGORT,
+			SDATBG,
+			STDLNR,
+			SSORNU,
+			SSORIT,
+			SMBLNR,
+			SZEILE,
+			SMJAHR,
+			SXBLNR,
+			RCPRSN,
+			CREDAT,
+			CRETIM,
+			CREUSR,
+			LMODAT,
+			LMOTIM,
+			LMOUSR
+		)
+		VALUES(
+			#RECVKY#,
+			#RECVIT#,
+			#STATIT#,
+			#SAPSTS#,
+			#SKUKEY#,
+			#LOTNUM#,
+			#AREAKY#,
+			#LOCAKY#,
+			#SECTID#,
+			#TRNUID#,
+			#PACKID#,
+			#QTYRCV#,
+			#QTYDIF#,
+			#QTYUOM#,
+			#TRUNTY#,
+			#MEASKY#,
+			#UOMKEY#,
+			#QTPUOM#,
+			#DUOMKY#,
+			#QTDUOM#,
+			#INDRCN#,
+			#CRECVD#,
+			#RSNCOD#,
+			#LOTA01#,
+			#LOTA02#,
+			#LOTA03#,
+			#LOTA04#,
+			#LOTA05#,
+			#LOTA06#,
+			#LOTA07#,
+			#LOTA08#,
+			#LOTA09#,
+			#LOTA10#,
+			#LOTA11#,
+			#LOTA12#,
+			#LOTA13#,
+			#LOTA14#,
+			#LOTA15#,
+			#LOTA16#,
+			#LOTA17#,
+			#LOTA18#,
+			#LOTA19#,
+			#LOTA20#,
+			#AWMSNO#,
+			#REFDKY#,
+			#REFDIT#,
+			#REFCAT#,
+			#REFDAT#,
+			#DESC01#,
+			#DESC02#,
+			#ASKU01#,
+			#ASKU02#,
+			#ASKU03#,
+			#ASKU04#,
+			#ASKU05#,
+			#EANCOD#,
+			#GTINCD#,
+			#SKUG01#,
+			#SKUG02#,
+			#SKUG03#,
+			#SKUG04#,
+			#SKUG05#,
+			#GRSWGT#,
+			#NETWGT#,
+			#WGTUNT#,
+			#LENGTH#,
+			#WIDTHW#,
+			#HEIGHT#,
+			#CUBICM#,
+			#CAPACT#,
+			#QTYORG#,
+			#SMANDT#,
+			#SEBELN#,
+			#SEBELP#,
+			#SZMBLNO#,
+			#SZMIPNO#,
+			#STRAID#,
+			#SVBELN#,
+			#SPOSNR#,
+			#STKNUM#,
+			#STPNUM#,
+			#SWERKS#,
+			#SLGORT#,
+			#SDATBG#,
+			#STDLNR#,
+			#SSORNU#,
+			#SSORIT#,
+			#SMBLNR#,
+			#SZEILE#,
+			#SMJAHR#,
+			#SXBLNR#,
+			#RCPRSN#,
+			CONVERT(CHAR(10),GETDATE(),112),
+            REPLACE(CONVERT(CHAR(10),GETDATE(),24),':',''), 
+			#SES_USER_ID#,
+			CONVERT(CHAR(10),GETDATE(),112),
+            REPLACE(CONVERT(CHAR(10),GETDATE(),24),':',''), 
+			#SES_USER_ID#
+		)
+	</insert>
+	<!-- GR02Sub 그리드 끝 -->
+
+		
+	<!-- GR02, GR01, GR20 VALIDATION START -->
+	<select id="GR02_VALIDATION" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.GOODRECEIPT.VALIDATE_RC -->
+		SELECT	CASE	WHEN DC.DOCCAT IS NULL THEN 'DOCCAT' + '/' + STD.DOCCAT 
+						WHEN DT.DOCUTY IS NULL THEN 'DOCUTY' + '/' + STD.DOCUTY 
+						WHEN WH.WAREKY IS NULL THEN 'WAREKY' + '/' + STD.WAREKY 
+						WHEN LM.LOCAKY IS NULL THEN 'LOCAKY' + '/' + STD.LOCAKY 
+						WHEN OW.OWNRKY IS NULL THEN 'OWNRKY' + '/' + STD.OWNRKY 
+						WHEN BZ.PTNRKY IS NULL THEN 'DPTNKY' + '/' + STD.DPTNKY 
+						WHEN SM.SKUKEY IS NULL THEN 'SKUKEY' + '/' + STD.SKUKEY 
+						WHEN SW.SKUKEY IS NULL THEN 'SKUKEY' + '/' + STD.SKUKEY 
+						WHEN MH.MEASKY IS NULL THEN 'MEASKY' + '/' + STD.MEASKY 
+						WHEN MI.UOMKEY IS NULL THEN 'UOMKEY' + '/' + STD.UOMKEY 
+						/* WHEN STD.DOCUTY IN ('101','102','103','104','109','110','115') 
+							AND (IF.C00102 IS NULL OR IF.C00102 = ' ') THEN 'RORDCF' || '/' || STD.EBELN   */
+						ELSE 'OK' 
+				END AS "resultMsg" 
+		FROM	( $VALIDATION_SQL$ ) STD
+				LEFT OUTER JOIN IFWMS103 IFW	ON IFW.WERKS = STD.OWNRKY 
+		         								AND IFW.EBELN = STD.EBELN 
+		            							AND IFW.EBELP = STD.EBELP 
+		            							AND IFW.STATUS IN ('A','C') 
+		            							AND IFW.IFFLG IN ('Y','N')
+       			LEFT OUTER JOIN DOCCM DC	ON DC.DOCCAT = STD.DOCCAT 
+       			LEFT OUTER JOIN DOCTM DT	ON DT.DOCUTY = STD.DOCUTY 
+       			LEFT OUTER JOIN WAHMA WH	ON WH.WAREKY = STD.WAREKY 
+       			LEFT OUTER JOIN LOCMA LM	ON LM.WAREKY = STD.WAREKY 
+              								AND LM.LOCAKY = STD.LOCAKY 
+       			LEFT OUTER JOIN OWNER OW	ON OW.OWNRKY = STD.OWNRKY 
+       			LEFT OUTER JOIN BZPTN BZ	ON BZ.PTNRKY = STD.DPTNKY 
+              								AND BZ.PTNRTY IN (CASE	WHEN STD.DOCUTY IN ('108','109','110','111','115','116') THEN 'CT' 
+                                     								WHEN STD.DOCUTY IN ('166') THEN 'TM' 
+                                     						  ELSE 'VD'
+                                     						  END) 
+											AND BZ.PTNL05 IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = STD.WAREKY) 
+				LEFT OUTER JOIN SKUMA SM	ON SM.OWNRKY = STD.OWNRKY 
+											AND SM.SKUKEY = STD.SKUKEY 
+				LEFT OUTER JOIN SKUWC SW	ON SW.WAREKY = STD.WAREKY 
+              								AND SW.OWNRKY = STD.OWNRKY 
+              								AND SW.SKUKEY = STD.SKUKEY 
+				LEFT OUTER JOIN MEASH MH	ON MH.WAREKY = STD.WAREKY 
+              								AND MH.MEASKY = STD.MEASKY 
+       			LEFT OUTER JOIN MEASI MI	ON MI.WAREKY = STD.WAREKY 
+              								AND MI.MEASKY = STD.MEASKY 
+              								AND MI.UOMKEY = STD.UOMKEY 
+	</select>
+	<!-- GR02, GR01, GR20 VALIDATION END -->
+	
+<!-- GR02 SQL End-->
+
+
+
+
+<!-- 반품통지입하 -->
+<!-- GR05 SQL START -->
+
+	<!-- GR05 HEAD GRID SELECT START -->
+	<select id="GR05_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.GOODRECEIPT.FIND_INTERFACE_TO_CREATE_RECDH -->
+		SELECT	IFWMS103.WAREKY	AS WAREKY,
+				WH.NAME01		AS WAREKYNM,
+				#RCPTTY#		AS RCPTTY,
+				DT.SHORTX		AS RCPTTYNM,
+				'NEW'			AS STATDO,
+				ISNULL(IFWMS103.LFART,' ')	AS SAPSTS,
+				IFWMS103.LFDAT	AS DOCDAT,
+				'100'			AS DOCCAT,
+				DC.SHORTX		AS DOCCATNM,
+				IFWMS103.KUNNR	AS DPTNKY,
+				VD.NAME01		AS DPTNKYNM,
+				' '				AS DRELIN,
+				CONVERT(VARCHAR(8), GETDATE(), 112) AS ARCPTD,
+				#SES_OWNER#		AS OWNRKY,
+				' '				AS INDRCN,
+				' '				AS CRECVD,
+				' '				AS RSNCOD,
+				' '				AS PUTSTS,
+				' '    	        AS LGORT,
+				' '				AS LGORTNM,
+				' '				AS USRID1,
+				' '				AS UNAME1,
+				' '				AS DEPTID1,
+				' '				AS DNAME1,
+				' '				AS USRID2,
+				' '				AS UNAME2,
+				' '				AS DEPTID2,
+				' '				AS DNAME2,
+				' '				AS USRID3,
+				' '				AS UNAME3,
+				' '				AS DEPTID3,
+				' '				AS DNAME3,
+				' '				AS USRID4,
+				' '				AS UNAME4,
+				' '				AS DEPTID4,
+				' '				AS DNAME4,
+				' '				AS DOCTXT,
+				IFWMS103.VBELN	AS SEBELN,
+				' '				AS CONFIM,
+				IFWMS103.VBELN	AS SVBELN
+		FROM	IFWMS113      AS IFWMS103 (NOLOCK)
+				LEFT OUTER JOIN SKUMA SM	ON SM.OWNRKY	= #SES_OWNER#
+											AND SM.SKUKEY	= IFWMS103.MATNR
+				LEFT OUTER JOIN SKUWC SW	ON SW.WAREKY	= #WAREKY#
+											AND SW.OWNRKY	= #SES_OWNER#
+											AND SW.SKUKEY	= IFWMS103.MATNR
+				LEFT OUTER JOIN WAHMA WH	ON WH.WAREKY	= IFWMS103.WAREKY
+				LEFT OUTER JOIN DOCCM DC	ON DC.DOCCAT	= '100'
+				LEFT OUTER JOIN DOCTM DT	ON DT.DOCUTY	= #RCPTTY#
+				LEFT OUTER JOIN BZPTN VD	ON VD.PTNRKY	= IFWMS103.KUNNR
+											AND VD.PTNRTY IN (CASE WHEN #RCPTTY# IN ('109') THEN 'CT' ELSE 'VD' END)
+											AND VD.OWNRKY	= #SES_OWNER#
+		WHERE	1 = 1
+		AND		IFWMS103.IFFLG	= 'N'
+		AND		IFWMS103.WAREKY	= #WAREKY# 
+		AND		IFWMS103.DOCUTY	= #RCPTTY#
+		AND		(IFWMS103.LFIMG - IFWMS103.QTSHP) > 0
+		<isNotEmpty property="RANGE_SQL">
+			$RANGE_SQL$
+		</isNotEmpty>
+		GROUP BY	IFWMS103.WAREKY, WH.NAME01, DT.SHORTX, IFWMS103.LFART, IFWMS103.LFDAT,
+					DC.SHORTX, IFWMS103.KUNNR, VD.NAME01,  IFWMS103.VBELN
+		ORDER BY	IFWMS103.VBELN DESC
+	</select>
+	<!-- GR05 HEAD GRID SELECT END -->
+	
+	
+	<!-- GR05 ITEM GRID SELECT START -->
+	<select id="GR05Sub_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL KEY : INBOUND.GOODRECEIPT.FIND_INTERFACE_TO_CREATE_RECDI -->
+		SELECT	<!-- IFWMS103.LOTA01			AS KEY -->
+				  ' '					AS RECVKY
+				, ' '					AS RECVIT
+				, 'NEW'					AS STATIT
+				, ISNULL(IFWMS103.LFART,' ')	AS SAPSTS
+				, IFWMS103.MATNR    	AS SKUKEY
+				, ' '					AS LOTNUM
+				, ' '					AS AREAKY
+				, ISNULL(SW.LOCARV,' ')	AS LOCAKY
+				, ' '					AS SECTID
+				, ' '           		AS TRNUID
+				, ' '					AS PACKID
+				, IFWMS103.LFIMG - IFWMS103.QTSHP AS ASNQTY
+				, IFWMS103.LFIMG - IFWMS103.QTSHP AS QTYRCV
+				, 0						AS QTYDIF
+				, IFWMS103.LFIMG - IFWMS103.QTSHP AS QTYUOM
+				, ' '					AS TRUNTY
+				, ISNULL(SW.MEASKY,' ')	AS MEASKY
+				, ISNULL((SELECT UOMKEY FROM UOMMA WHERE UOMKEY = IFWMS103.MEINS), 'EA') AS UOMKEY
+				, ISNULL(ITFMS.QTPUOM,0)	AS QTPUOM
+				, ISNULL(SM.DUOMKY,' ')		AS DUOMKY
+				
+				, ISNULL( (CASE WHEN SM.QTDUOM = 0 THEN 9999999
+								ELSE SM.QTDUOM
+								END), 9999999) AS QTDUOM
+				
+				, ROUND(    (IFWMS103.LFIMG - IFWMS103.QTSHP ) / ISNULL( (CASE WHEN SM.QTDUOM = 0 THEN 9999999
+				                  																ELSE SM.QTDUOM
+				                  																END ), 9999999), 0, 1 ) AS BOXQTY
+				
+				, (  (IFWMS103.LFIMG - IFWMS103.QTSHP ) %  ISNULL( (CASE WHEN SM.QTDUOM = 0 THEN 9999999
+																							ELSE  SM.QTDUOM
+																							END) ,9999999)    ) AS REMQTY
+																						
+				
+				, ' '					AS INDRCN
+				, ' '					AS CRECVD
+				, ' '					AS RSNCOD
+				
+				, ' '	                        AS LOTA01
+				, ' '							AS LOTA01NM
+				, ISNULL(IFWMS103.WERKS,' ')	AS LOTA02
+				, ' '	                        AS LOTA03
+				, ' '	                        AS LOTA04
+				, ' '	                        AS LOTA05
+				, '10'                      	AS LOTA06
+				, ' '	                        AS LOTA07
+				, ISNULL(IFWMS103.LGORT,' ')	AS LOTA08
+				, ' '                       	AS LOTA09
+				, ' '                       	AS LOTA10
+				, CONVERT(VARCHAR(8), GETDATE(), 112) AS LOTA11
+				, CONVERT(VARCHAR(8), GETDATE(), 112) AS LOTA12
+				, ' '							AS LOTA13
+				, ' '							AS LOTA14
+				, ' '							AS LOTA15
+				, 0								AS LOTA16
+				, 0								AS LOTA17
+				, 0								AS LOTA18
+				, 0								AS LOTA19
+				, 0								AS LOTA20
+				
+				, ' '					AS AWMSNO
+				, IFWMS103.VBELN		AS REFDKY
+				, IFWMS103.POSNR		AS REFDIT
+				, ' '					AS REFCAT
+				, CONVERT(VARCHAR(8), GETDATE(), 112) AS REFDAT
+				
+				, ISNULL(SM.DESC01,' ')	AS DESC01
+				, ISNULL(SM.DESC02,' ')	AS DESC02
+				
+				, ISNULL(SM.ASKU01,' ') AS ASKU01
+				, ISNULL(SM.ASKU02,' ')	AS ASKU02
+				, ISNULL(SM.ASKU03,' ')	AS ASKU03
+				, ISNULL(SM.ASKU04,' ')	AS ASKU04
+				, ISNULL(SM.ASKU05,' ')	AS ASKU05
+				
+				, ISNULL(SM.EANCOD,' ')	AS EANCOD
+				, ISNULL(SM.GTINCD,' ')	AS GTINCD
+				
+				, ISNULL(SM.SKUG01,' ')	AS SKUG01
+				, ISNULL(SM.SKUG02,' ')	AS SKUG02
+				, ISNULL(SM.SKUG03,' ')	AS SKUG03
+				, ISNULL(SM.SKUG04,' ')	AS SKUG04
+				, ISNULL(SM.SKUG05,' ')	AS SKUG05
+				
+				, ISNULL(SM.GRSWGT,0)	AS GRSWGT
+				, ISNULL(SM.NETWGT,0)	AS NETWGT
+				, ISNULL(SM.WGTUNT,' ')	AS WGTUNT
+				, ISNULL(SM.LENGTH,0)	AS LENGTH
+				, ISNULL(SM.WIDTHW,0)	AS WIDTHW
+				, ISNULL(SM.HEIGHT,0)	AS HEIGHT
+				, ISNULL(SM.CUBICM,0)	AS CUBICM
+				, ISNULL(SM.CAPACT,0)	AS CAPACT
+				, 0						AS QTYORG
+				, IFWMS103.MANDT		AS SMANDT
+				, ' '					AS SEBELN
+				, ' '					AS SEBELP
+				, ' '					AS SZMBLNO
+				, ' '					AS SZMIPNO
+				, ' '					AS STRAID
+				, IFWMS103.VBELN		AS SVBELN
+				, IFWMS103.POSNR		AS SPOSNR
+				, ' '					AS STKNUM
+				, ' '					AS STPNUM
+				, IFWMS103.WERKS		AS SWERKS
+				, IFWMS103.LGORT		AS SLGORT
+				, ' '					AS SDATBG
+				, ' '					AS STDLNR
+				, ' '					AS SSORNU
+				, ' '					AS SSORIT
+				, ' '					AS SMBLNR
+				, ' '					AS SZEILE
+				, ' '					AS SMJAHR
+				, ' '					AS SXBLNR
+				, ' '					AS SBKTXT
+				, ' '					AS RCPRSN
+		FROM	IFWMS113 AS IFWMS103
+				LEFT OUTER JOIN SKUMA SM	ON	SM.OWNRKY	= #SES_OWNER#
+											AND	SM.SKUKEY	= IFWMS103.MATNR
+				LEFT OUTER JOIN SKUWC SW	ON	SW.WAREKY	= #WAREKY#
+											AND	SW.OWNRKY	= #SES_OWNER#
+											AND	SW.SKUKEY	= IFWMS103.MATNR
+				LEFT OUTER JOIN MEASI ITFMS	ON	ITFMS.WAREKY	= #WAREKY#
+											AND	ITFMS.MEASKY	= SW.MEASKY
+											AND	ITFMS.UOMKEY	= IFWMS103.MEINS
+		WHERE	IFWMS103.WAREKY	=  #WAREKY#
+		AND		IFWMS103.IFFLG	= 'N'
+		AND		IFWMS103.STATUS IN ('A', 'C')
+		AND		IFWMS103.DOCUTY	= #RCPTTY#
+		AND		(IFWMS103.LFIMG - IFWMS103.QTSHP) > 0 
+		AND		IFWMS103.VBELN	= #SEBELN#
+		<isNotEmpty property="RANGE_SQL">
+			$RANGE_SQL$
+		</isNotEmpty>
+	</select>
+	<!-- GR05 ITEM GRID SELECT END -->
+
+
+<!-- GR05 SQL END -->
+<!-- //반품통지입하 -->
+
+
+
+
+<!-- 입하조회 -->
+<!-- GR09 SQL START -->
+
+	<!-- GR09 HEAD GRID SELECT START -->
+	<select id="GR09_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	RH.RECVKY AS "KEY",
+				RH.RECVKY AS "RECVKY",
+				RH.WAREKY AS "WAREKY",
+				WH.NAME01 AS "WAREKYNM",
+				RH.RCPTTY AS "RCPTTY",
+				DT.SHORTX AS "RCPTTYNM",
+				RH.STATDO AS "STATDO",
+				ISNULL(STH.CDESC1,' ') AS "STATDONM",
+				<!-- DECODE(RH.SAPSTS,' ',' ','V') AS "SAPSTS", -->
+				(
+				CASE	WHEN RH.SAPSTS = ' ' THEN ' '
+						ELSE 'Y'
+				END
+				)  AS SAPSTS,
+				
+				RH.DOCDAT AS "DOCDAT",
+				RH.DOCCAT AS "DOCCAT",
+				DC.SHORTX AS "DOCCATNM",
+				RH.DPTNKY AS "DPTNKY",
+				MAX(VD.NAME01) AS "DPTNKYNM",
+				RH.DRELIN AS "DRELIN",
+				RH.ARCPTD AS "ARCPTD",
+				RH.OWNRKY AS "OWNRKY",
+				RH.INDRCN AS "INDRCN",
+				RH.CRECVD AS "CRECVD",
+				RH.RSNCOD AS "RSNCOD",
+				RH.PUTSTS AS "PUTSTS",
+				<!--
+				DECODE(RH.USRID1, ' ', NVL(VU.ERPUSR ,' '), RH.USRID1 ) AS "USRID1",
+				DECODE(RH.USRID1, ' ', NVL(VU.ERPNAM ,' '), RH.UNAME1 ) AS "UNAME1",
+				DECODE(RH.USRID1, ' ', NVL(VU.DEPTID ,' '), RH.DEPTID1) AS "DEPTID1",
+				DECODE(RH.USRID1, ' ', NVL(VU.DPNAME ,' '), RH.DNAME1 ) AS "DNAME1",
+				DECODE(RH.USRID2, ' ', NVL(VU2.ERPUS2,' '), RH.USRID2 ) AS "USRID2",
+				DECODE(RH.USRID2, ' ', NVL(VU2.USNAM2,' '), RH.UNAME2 ) AS "UNAME2",
+				DECODE(RH.USRID2, ' ', NVL(VU2.DEPID2,' '), RH.DEPTID2) AS "DEPTID2",
+				DECODE(RH.USRID2, ' ', NVL(VU2.DPNAM2,' '), RH.DNAME2 ) AS "DNAME2",
+				DECODE(RH.USRID3, ' ', NVL(VU2.ERPUS3,' '), RH.USRID3 ) AS "USRID3",
+				DECODE(RH.USRID3, ' ', NVL(VU2.USNAM3,' '), RH.UNAME3 ) AS "UNAME3",
+				DECODE(RH.USRID3, ' ', NVL(VU2.DEPID3,' '), RH.DEPTID3) AS "DEPTID3",
+				DECODE(RH.USRID3, ' ', NVL(VU2.DPNAM3,' '), RH.DNAME3 ) AS "DNAME3",
+				DECODE(RH.USRID4, ' ', NVL(VU2.ERPUS4,' '), RH.USRID4 ) AS "USRID4",
+				DECODE(RH.USRID4, ' ', NVL(VU2.USNAM4,' '), RH.UNAME4 ) AS "UNAME4",
+				DECODE(RH.USRID4, ' ', NVL(VU2.DEPID4,' '), RH.DEPTID4) AS "DEPTID4",
+				DECODE(RH.USRID4, ' ', NVL(VU2.DPNAM4,' '), RH.DNAME4 ) AS "DNAME4",
+				-->
+				RH.DOCTXT AS "DOCTXT",
+				MAX(RI.SEBELN) AS "SEBELN",
+				MAX(RI.STRAID) AS "VGBEL",
+				MAX(CASE WHEN RH.RCPTTY IN ('111', '112', '114') THEN RI.REFDKY
+					ELSE ' '
+					END) AS "ASNDKY",
+				MAX(CASE WHEN RH.RCPTTY IN ('108') THEN RI.REFDKY
+					ELSE ' '
+					END) AS "SHPOKY",
+				RH.CREDAT AS "CREDAT",
+				RH.CRETIM AS "CRETIM",
+				RH.CREUSR AS "CREUSR",
+				CU.NMLAST AS "CUSRNM",
+				RH.LMODAT AS "LMODAT",
+				RH.LMOTIM AS "LMOTIM",
+				RH.LMOUSR AS "LMOUSR",
+				LU.NMLAST AS "LUSRNM",
+				
+				<!-- F_GET_LGORT_IFWMS103(RH.WAREKY, MAX(RI.SEBELN)) AS ERPWHF, -->
+				<!-- SZF_GET_BZPTN_NM('WH', F_GET_LGORT_IFWMS103(RH.WAREKY, MAX(RI.SEBELN))) AS ERPFNM, -->
+				
+				' ' AS "ERPWHT",
+				' ' AS "ERPTNM"
+		FROM	RECDH RH
+				INNER JOIN RECDI RI	ON RI.RECVKY = RH.RECVKY
+				LEFT OUTER JOIN CMCDV STH	ON STH.CMCDKY = 'STATDO'
+											AND STH.CMCDVL = RH.STATDO
+				LEFT OUTER JOIN USRMA CU	ON CU.USERID = RH.CREUSR
+				LEFT OUTER JOIN USRMA LU	ON LU.USERID = RH.LMOUSR
+				LEFT OUTER JOIN WAHMA WH	ON WH.WAREKY = RH.WAREKY
+				LEFT OUTER JOIN DOCCM DC	ON DC.DOCCAT = '100'
+				LEFT OUTER JOIN DOCTM DT	ON DT.DOCUTY = RH.RCPTTY
+				LEFT OUTER JOIN BZPTN VD	ON VD.PTNRKY = RH.DPTNKY
+											AND VD.PTNRTY IN (CASE WHEN RH.RCPTTY IN ('108','109','110','111','115') THEN 'CT'
+																	WHEN RH.RCPTTY IN ('166') THEN 'TM'
+																ELSE 'VD' END)
+											AND VD.PTNL05 IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#)
+				LEFT OUTER JOIN VUSER_WMSERP VU	ON VU.USERID = RH.CREUSR
+				LEFT OUTER JOIN VUSER_WAREDOCUSER VU2	ON VU2.WAREKY = RH.WAREKY
+														AND VU2.DOCUTY = RH.RCPTTY
+		WHERE	RH.WAREKY = #WAREKY#
+		<isNotEmpty property="RANGE_SQL">
+			$RANGE_SQL$
+		</isNotEmpty>
+		GROUP BY	RH.RECVKY,RH.WAREKY,RH.RCPTTY,RH.STATDO,RH.SAPSTS, ISNULL(STH.CDESC1,' '),
+					RH.DOCDAT,RH.DOCCAT,RH.DPTNKY,RH.DRELIN,RH.ARCPTD,
+					RH.OWNRKY,RH.INDRCN,RH.CRECVD,RH.RSNCOD,RH.PUTSTS,
+					RH.CREDAT,RH.CRETIM,RH.CREUSR,CU.NMLAST,
+					RH.LMODAT,RH.LMOTIM,RH.LMOUSR,LU.NMLAST,
+					WH.NAME01, DC.SHORTX, DT.SHORTX, VD.NAME01,
+					<!--
+					DECODE(RH.USRID1, ' ', NVL(VU.ERPUSR ,' '), RH.USRID1 ),
+					DECODE(RH.USRID1, ' ', NVL(VU.ERPNAM ,' '), RH.UNAME1 ), 
+					DECODE(RH.USRID1, ' ', NVL(VU.DEPTID ,' '), RH.DEPTID1),
+					DECODE(RH.USRID1, ' ', NVL(VU.DPNAME ,' '), RH.DNAME1 ), 
+					DECODE(RH.USRID2, ' ', NVL(VU2.ERPUS2,' '), RH.USRID2 ),
+					DECODE(RH.USRID2, ' ', NVL(VU2.USNAM2,' '), RH.UNAME2 ),
+					DECODE(RH.USRID2, ' ', NVL(VU2.DEPID2,' '), RH.DEPTID2),
+					DECODE(RH.USRID2, ' ', NVL(VU2.DPNAM2,' '), RH.DNAME2 ),
+					DECODE(RH.USRID3, ' ', NVL(VU2.ERPUS3,' '), RH.USRID3 ),
+					DECODE(RH.USRID3, ' ', NVL(VU2.USNAM3,' '), RH.UNAME3 ),
+					DECODE(RH.USRID3, ' ', NVL(VU2.DEPID3,' '), RH.DEPTID3),
+					DECODE(RH.USRID3, ' ', NVL(VU2.DPNAM3,' '), RH.DNAME3 ),
+					DECODE(RH.USRID4, ' ', NVL(VU2.ERPUS4,' '), RH.USRID4 ),
+					DECODE(RH.USRID4, ' ', NVL(VU2.USNAM4,' '), RH.UNAME4 ),
+					DECODE(RH.USRID4, ' ', NVL(VU2.DEPID4,' '), RH.DEPTID4),
+					DECODE(RH.USRID4, ' ', NVL(VU2.DPNAM4,' '), RH.DNAME4 ),
+					-->
+					RH.DOCTXT
+		ORDER BY	RH.RECVKY DESC
+	</select>
+	<!-- GR09 HEAD GRID SELECT END -->
+	
+	
+	<!-- GR09 ITEM GRID SELECT START -->
+	<select id="GR09Sub_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT RI.RECVKY  AS "KEY",
+		       RI.RECVKY  AS "RECVKY",
+		       RI.RECVIT  AS "RECVIT",
+		       RI.STATIT  AS "STATIT",
+		       DECODE(RI.SAPSTS,' ',' ','V') AS "SAPSTS",
+		       RI.SKUKEY  AS "SKUKEY",
+		       RI.LOTNUM  AS "LOTNUM",
+		       RI.AREAKY  AS "AREAKY",
+		       RI.LOCAKY  AS "LOCAKY",
+		       RI.SECTID  AS "SECTID",
+		       RI.TRNUID  AS "TRNUID",
+		       RI.PACKID  AS "PACKID",
+		       RI.QTYRCV  AS "QTYRCV",
+		       RI.QTYRCV  AS "SNDQTY",
+		       RI.QTYDIF  AS "QTYDIF",
+		       RI.QTYUOM  AS "QTYUOM",
+		       RI.TRUNTY  AS "TRUNTY",
+		       RI.MEASKY  AS "MEASKY",
+		       RI.UOMKEY  AS "UOMKEY",
+		       RI.QTPUOM  AS "QTPUOM",
+		       RI.DUOMKY  AS "DUOMKY",
+		       RI.QTDUOM  AS "QTDUOM",
+		       TRUNC(RI.QTYRCV/RI.QTDUOM) AS "BOXQTY",
+		       MOD(RI.QTYRCV,RI.QTDUOM) AS "REMQTY",
+		       RI.INDRCN  AS "INDRCN",
+		       RI.CRECVD  AS "CRECVD",
+		       RI.RSNCOD  AS "RSNCOD",
+		       RI.LOTA01  AS "LOTA01",
+		       L01NM.NAME01 AS "LOTA01NM",
+		       RI.LOTA02  AS "LOTA02",
+		       RI.LOTA03  AS "LOTA03",
+		       RI.LOTA04  AS "LOTA04",
+		       RI.LOTA05  AS "LOTA05",
+		       RI.LOTA06  AS "LOTA06",
+		       RI.LOTA07  AS "LOTA07",
+		       RI.LOTA08  AS "LOTA08",
+		       RI.LOTA09  AS "LOTA09",
+		       RI.LOTA10  AS "LOTA10",
+		       RI.LOTA11  AS "LOTA11",
+		       RI.LOTA12  AS "LOTA12",
+		       RI.LOTA13  AS "LOTA13",
+		       RI.LOTA14  AS "LOTA14",
+		       RI.LOTA15  AS "LOTA15",
+		       RI.LOTA16  AS "LOTA16",
+		       RI.LOTA17  AS "LOTA17",
+		       RI.LOTA18  AS "LOTA18",
+		       RI.LOTA19  AS "LOTA19",
+		       RI.LOTA20  AS "LOTA20",
+		       RI.AWMSNO  AS "AWMSNO",
+		       RI.REFDKY  AS "REFDKY",
+		       RI.REFDIT  AS "REFDIT",
+		       RI.REFCAT  AS "REFCAT",
+		       RI.REFDAT  AS "REFDAT",
+		       RI.DESC01  AS "DESC01",
+		       RI.DESC02  AS "DESC02",
+		       RI.ASKU01  AS "ASKU01",
+		       RI.ASKU02  AS "ASKU02",
+		       RI.ASKU03  AS "ASKU03",
+		       RI.ASKU04  AS "ASKU04",
+		       RI.ASKU05  AS "ASKU05",
+		       RI.EANCOD  AS "EANCOD",
+		       RI.GTINCD  AS "GTINCD",
+		       RI.SKUG01  AS "SKUG01",
+		       RI.SKUG02  AS "SKUG02",
+		       RI.SKUG03  AS "SKUG03",
+		       RI.SKUG04  AS "SKUG04",
+		       RI.SKUG05  AS "SKUG05",
+		       RI.GRSWGT  AS "GRSWGT",
+		       RI.NETWGT  AS "NETWGT",
+		       RI.WGTUNT  AS "WGTUNT",
+		       RI.LENGTH  AS "LENGTH",
+		       RI.WIDTHW  AS "WIDTHW",
+		       RI.HEIGHT  AS "HEIGHT",
+		       RI.CUBICM  AS "CUBICM",
+		       RI.CAPACT  AS "CAPACT",
+		       RI.QTYORG  AS "QTYORG",
+		       RI.SMANDT  AS "SMANDT",
+		       RI.SEBELN  AS "SEBELN",
+		       RI.SEBELP  AS "SEBELP",
+		       RI.SZMBLNO AS "SZMBLNO",
+		       RI.SZMIPNO AS "SZMIPNO",
+		       RI.STRAID  AS "STRAID",
+		       RI.SVBELN  AS "SVBELN",
+		       RI.SPOSNR  AS "SPOSNR",
+		       RI.STKNUM  AS "STKNUM",
+		       RI.STPNUM  AS "STPNUM",
+		       RI.SWERKS  AS "SWERKS",
+		       RI.SLGORT  AS "SLGORT",
+		       RI.SDATBG  AS "SDATBG",
+		       RI.STDLNR  AS "STDLNR",
+		       RI.SSORNU  AS "SSORNU",
+		       RI.SSORIT  AS "SSORIT",
+		       RI.SMBLNR  AS "SMBLNR",
+		       RI.SZEILE  AS "SZEILE",
+		       RI.SMJAHR  AS "SMJAHR",
+		       RI.SXBLNR  AS "SXBLNR",
+		       RI.SBKTXT  AS "SBKTXT",
+		       RI.RCPRSN  AS "RCPRSN",
+		       RI.CREDAT AS "CREDAT",
+		       RI.CRETIM AS "CRETIM",
+		       RI.CREUSR AS "CREUSR",
+		       CU.NMLAST AS "CUSRNM",
+		       RI.LMODAT AS "LMODAT",
+		       RI.LMOTIM AS "LMOTIM",
+		       RI.LMOUSR AS "LMOUSR",
+		       LU.NMLAST AS "LUSRNM"
+		  FROM RECDH RH
+		       INNER JOIN RECDI RI
+		               ON RI.RECVKY = RH.RECVKY
+		       LEFT OUTER JOIN USRMA CU
+		               ON CU.USERID = RI.CREUSR
+		       LEFT OUTER JOIN USRMA LU
+		               ON LU.USERID = RI.LMOUSR
+		       LEFT OUTER JOIN BZPTN L01NM
+		               ON L01NM.PTNRKY = RI.LOTA01
+		              AND L01NM.PTNRTY = 'TM'
+		              AND L01NM.PTNL05 IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = WAREKY)
+		 WHERE RH.WAREKY = #WAREKY#
+		 
+		<isNotEmpty property="RECVKY">
+			AND RI.RECVKY = #RECVKY#
+		</isNotEmpty>
+		
+		<!--
+		docunum = "'"+docunum+"'";
+		싱긍 쿼테이션을 걸어주면 $ 표시로 받아댜 된다.
+		itbatic는 # 이면 '(싱글쿼테이션)을 붙여서 넘어오고,
+		$ 면은 그냥 넘겨준다.
+		<isNotEmpty property="RECVKY">
+		   AND RI.RECVKY = $RECVKY$
+		</isNotEmpty>
+		 -->
+		<isNotEmpty property="RANGE_SQL">
+		       $RANGE_SQL$
+		</isNotEmpty>
+		
+		 ORDER BY RI.RECVKY, RI.RECVIT
+	</select>
+	<!-- GR09 ITEM GRID SELECT END -->
+
+
+	<!-- GR01, GR02, GR15, GR20 HEAD GRID RESELECT START -->
+	<select id="GR09H_LIST" parameterClass="Map" resultClass="DataMap">
+	<!-- SQL Key : INBOUND.GOODRECEIPT.FIND_RECDH -->
+		SELECT	RH.RECVKY AS "KEY",
+				RH.RECVKY AS "RECVKY",
+				RH.WAREKY AS "WAREKY",
+				WH.NAME01 AS "WAREKYNM",
+				RH.RCPTTY AS "RCPTTY",
+				DT.SHORTX AS "RCPTTYNM",
+				RH.STATDO AS "STATDO",
+				ISNULL(STH.CDESC1,' ') AS "STATDONM",
+				
+				<!-- DECODE(RH.SAPSTS,' ',' ','V') AS "SAPSTS", -->
+				(
+				CASE	WHEN RH.SAPSTS = ' ' THEN ' '
+						ELSE 'Y'
+				END
+				)  AS "SAPSTS",
+				
+				RH.DOCDAT AS "DOCDAT",
+				RH.DOCCAT AS "DOCCAT",
+				DC.SHORTX AS "DOCCATNM",
+				RH.DPTNKY AS "DPTNKY",
+				MAX(VD.NAME01) AS "DPTNKYNM",
+				RH.DRELIN AS "DRELIN",
+				RH.ARCPTD AS "ARCPTD",
+				RH.OWNRKY AS "OWNRKY",
+				RH.INDRCN AS "INDRCN",
+				RH.CRECVD AS "CRECVD",
+				RH.RSNCOD AS "RSNCOD",
+				RH.PUTSTS AS "PUTSTS",
+				
+				<!-- DECODE(RH.USRID1, ' ', NVL(VU.ERPUSR ,' '), RH.USRID1 ) AS "USRID1", -->
+				<!-- (
+				CASE	WHEN	RH.USRID1 = ' '	THEN	ISNULL(VU.ERPUSR ,' ')
+						ELSE	RH.USRID1
+				END
+				) AS "USRID1", -->
+				ISNULL(RH.USRID1, ' ') AS "USRID1",
+								
+				<!-- DECODE(RH.USRID1, ' ', NVL(VU.ERPNAM ,' '), RH.UNAME1 ) AS "UNAME1", -->
+				ISNULL(RH.UNAME1, ' ') AS "UNAME1",
+				
+				<!-- DECODE(RH.USRID1, ' ', NVL(VU.DEPTID ,' '), RH.DEPTID1) AS "DEPTID1", -->
+				ISNULL(RH.DEPTID1, ' ') AS "DEPTID1",
+				
+				<!-- DECODE(RH.USRID1, ' ', NVL(VU.DPNAME ,' '), RH.DNAME1 ) AS "DNAME1", -->
+				ISNULL(RH.DNAME1, ' ') AS "DNAME1",
+				
+				<!-- DECODE(RH.USRID2, ' ', NVL(VU2.ERPUS2,' '), RH.USRID2 ) AS "USRID2", -->
+				ISNULL(RH.USRID2, ' ') AS "USRID2",
+				
+				<!-- DECODE(RH.USRID2, ' ', NVL(VU2.USNAM2,' '), RH.UNAME2 ) AS "UNAME2", -->
+				ISNULL(RH.UNAME2, ' ') AS "UNAME2",
+				
+				<!-- DECODE(RH.USRID2, ' ', NVL(VU2.DEPID2,' '), RH.DEPTID2) AS "DEPTID2", -->
+				ISNULL(RH.DEPTID2, ' ') AS "DEPTID2",
+				
+				<!-- DECODE(RH.USRID2, ' ', NVL(VU2.DPNAM2,' '), RH.DNAME2 ) AS "DNAME2", -->
+				ISNULL(RH.DNAME2, ' ') AS "DNAME2",
+				
+				<!-- DECODE(RH.USRID3, ' ', NVL(VU2.ERPUS3,' '), RH.USRID3 ) AS "USRID3", -->
+				ISNULL(RH.USRID3, ' ') AS "USRID3",
+				
+				<!-- DECODE(RH.USRID3, ' ', NVL(VU2.USNAM3,' '), RH.UNAME3 ) AS "UNAME3", -->
+				ISNULL(RH.UNAME3, ' ') AS "UNAME3",
+				
+				<!-- DECODE(RH.USRID3, ' ', NVL(VU2.DEPID3,' '), RH.DEPTID3) AS "DEPTID3", -->
+				ISNULL(RH.DEPTID3, ' ') AS "DEPTID3",
+				
+				<!-- DECODE(RH.USRID3, ' ', NVL(VU2.DPNAM3,' '), RH.DNAME3 ) AS "DNAME3", -->
+				ISNULL(RH.DNAME3, ' ') AS "DNAME3",
+				
+				<!-- DECODE(RH.USRID4, ' ', NVL(VU2.ERPUS4,' '), RH.USRID4 ) AS "USRID4", -->
+				ISNULL(RH.USRID4, ' ') AS "USRID4",
+				
+				<!-- DECODE(RH.USRID4, ' ', NVL(VU2.USNAM4,' '), RH.UNAME4 ) AS "UNAME4", -->
+				ISNULL(RH.UNAME4, ' ') AS "UNAME4",
+				
+				<!-- DECODE(RH.USRID4, ' ', NVL(VU2.DEPID4,' '), RH.DEPTID4) AS "DEPTID4", -->
+				ISNULL(RH.DEPTID4, ' ') AS "DEPTID4",
+				
+				<!-- DECODE(RH.USRID4, ' ', NVL(VU2.DPNAM4,' '), RH.DNAME4 ) AS "DNAME4", -->
+				ISNULL(RH.DNAME4, ' ') AS "DNAME4",
+				
+				
+				RH.DOCTXT AS "DOCTXT",
+				MAX(RI.SEBELN) AS "SEBELN",
+				MAX(RI.STRAID) AS "VGBEL",
+				MAX(CASE WHEN RH.RCPTTY IN ('111', '112', '114') THEN RI.REFDKY
+	                ELSE ' '
+	            	END) AS "ASNDKY",
+				MAX(CASE WHEN RH.RCPTTY IN ('108') THEN RI.REFDKY
+	                ELSE ' '
+	            	END) AS "SHPOKY",
+				RH.CREDAT AS "CREDAT",
+				RH.CRETIM AS "CRETIM",
+				RH.CREUSR AS "CREUSR",
+				CU.NMLAST AS "CUSRNM",
+				RH.LMODAT AS "LMODAT",
+				RH.LMOTIM AS "LMOTIM",
+				RH.LMOUSR AS "LMOUSR",
+				LU.NMLAST AS "LUSRNM",
+				
+				<!-- F_GET_LGORT_IFWMS103(RH.WAREKY, MAX(RI.SEBELN)) AS "ERPWHF", -->
+				<!-- LOTOS.DBO.F_GET_LGORT_IFWMS103(RH.WAREKY, MAX(RI.SEBELN)) AS "ERPWHF", -->
+				
+				<!-- SZF_GET_BZPTN_NM('WH', F_GET_LGORT_IFWMS103(RH.WAREKY, MAX(RI.SEBELN))) AS "ERPFNM", -->
+				<!-- LOTOS.DBO.SZF_GET_BZPTN_NM('WH', LOTOS.DBO.F_GET_LGORT_IFWMS103(RH.WAREKY, MAX(RI.SEBELN))) AS "ERPFNM", -->
+				
+				' ' AS "ERPWHT",
+				' ' AS "ERPTNM"
+		FROM	RECDH RH WITH (NOLOCK)
+				INNER JOIN RECDI RI WITH (NOLOCK)	ON RI.RECVKY = RH.RECVKY
+				LEFT OUTER JOIN CMCDV STH WITH (NOLOCK)	ON STH.CMCDKY = 'STATDO'
+														AND STH.CMCDVL = RH.STATDO
+				LEFT OUTER JOIN USRMA CU WITH (NOLOCK)	ON CU.USERID = RH.CREUSR
+				LEFT OUTER JOIN USRMA LU WITH (NOLOCK)	ON LU.USERID = RH.LMOUSR
+				LEFT OUTER JOIN WAHMA WH WITH (NOLOCK)	ON WH.WAREKY = RH.WAREKY
+				LEFT OUTER JOIN DOCCM DC WITH (NOLOCK)	ON DC.DOCCAT = '100'
+				LEFT OUTER JOIN DOCTM DT WITH (NOLOCK)	ON DT.DOCUTY = RH.RCPTTY
+				LEFT OUTER JOIN BZPTN VD WITH (NOLOCK)	ON VD.PTNRKY = RH.DPTNKY
+														AND VD.PTNRTY IN (CASE	WHEN RH.RCPTTY IN ('108','109','110','111','115') THEN 'CT'
+																				WHEN RH.RCPTTY IN ('166') THEN 'TM'
+																				ELSE 'VD'
+																		  END)
+													<!-- AND VD.PTNL05 IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#) -->
+				<!-- LEFT OUTER JOIN VUSER_WMSERP VU (NOLOCK)	ON VU.USERID = RH.CREUSR
+				LEFT OUTER JOIN VUSER_WAREDOCUSER VU2 (NOLOCK)	ON VU2.WAREKY = RH.WAREKY
+																AND VU2.DOCUTY = RH.RCPTTY -->
+		WHERE	RH.WAREKY = #WAREKY#
+		<isNotEmpty property="RECVKY">
+			AND RH.RECVKY IN ( #RECVKY# )
+		</isNotEmpty>
+		GROUP BY	RH.RECVKY,RH.WAREKY,RH.RCPTTY,RH.STATDO,RH.SAPSTS, ISNULL(STH.CDESC1,' '),
+					RH.DOCDAT,RH.DOCCAT,RH.DPTNKY,RH.DRELIN,RH.ARCPTD,
+					RH.OWNRKY,RH.INDRCN,RH.CRECVD,RH.RSNCOD,RH.PUTSTS,
+					RH.CREDAT,RH.CRETIM,RH.CREUSR,CU.NMLAST,
+					RH.LMODAT,RH.LMOTIM,RH.LMOUSR,LU.NMLAST,
+					WH.NAME01, DC.SHORTX, DT.SHORTX, VD.NAME01,
+					
+					<!-- DECODE(RH.USRID1, ' ', NVL(VU.ERPUSR ,' '), RH.USRID1 ), -->
+					ISNULL(RH.USRID1, ' '),
+					<!-- DECODE(RH.USRID1, ' ', NVL(VU.ERPNAM ,' '), RH.UNAME1 ), -->
+					ISNULL(RH.UNAME1, ' '),
+					<!-- DECODE(RH.USRID1, ' ', NVL(VU.DEPTID ,' '), RH.DEPTID1), -->
+					ISNULL(RH.DEPTID1, ' '),
+					<!-- DECODE(RH.USRID1, ' ', NVL(VU.DPNAME ,' '), RH.DNAME1 ), -->
+					ISNULL(RH.DNAME1, ' '),
+					<!-- DECODE(RH.USRID2, ' ', NVL(VU2.ERPUS2,' '), RH.USRID2 ), -->
+					ISNULL(RH.USRID2, ' '),
+					<!-- DECODE(RH.USRID2, ' ', NVL(VU2.USNAM2,' '), RH.UNAME2 ), -->
+					ISNULL(RH.UNAME2, ' '),
+					<!-- DECODE(RH.USRID2, ' ', NVL(VU2.DEPID2,' '), RH.DEPTID2), -->
+					ISNULL(RH.DEPTID2, ' '),
+					<!-- DECODE(RH.USRID2, ' ', NVL(VU2.DPNAM2,' '), RH.DNAME2 ), -->
+					ISNULL(RH.DNAME2, ' '),
+					<!-- DECODE(RH.USRID3, ' ', NVL(VU2.ERPUS3,' '), RH.USRID3 ), -->
+					ISNULL(RH.USRID3, ' '),
+					<!-- DECODE(RH.USRID3, ' ', NVL(VU2.USNAM3,' '), RH.UNAME3 ), -->
+					ISNULL(RH.UNAME3, ' '),
+					<!-- DECODE(RH.USRID3, ' ', NVL(VU2.DEPID3,' '), RH.DEPTID3), -->
+					ISNULL(RH.DEPTID3, ' '),
+					<!-- DECODE(RH.USRID3, ' ', NVL(VU2.DPNAM3,' '), RH.DNAME3 ), -->
+					ISNULL(RH.DNAME3, ' '),
+					<!-- DECODE(RH.USRID4, ' ', NVL(VU2.ERPUS4,' '), RH.USRID4 ), -->
+					ISNULL(RH.USRID4, ' '),
+					<!-- DECODE(RH.USRID4, ' ', NVL(VU2.USNAM4,' '), RH.UNAME4 ), -->
+					ISNULL(RH.UNAME4, ' '),
+					<!-- DECODE(RH.USRID4, ' ', NVL(VU2.DEPID4,' '), RH.DEPTID4), -->
+					ISNULL(RH.DEPTID4, ' '),
+					<!-- DECODE(RH.USRID4, ' ', NVL(VU2.DPNAM4,' '), RH.DNAME4 ), -->
+					ISNULL(RH.DNAME4, ' '),
+					
+					RH.DOCTXT
+		ORDER BY	RH.RECVKY DESC
+	</select>
+	<!-- GR01, GR02, GR15, GR20 HEAD GRID RESELECT END -->
+	
+	
+	<!-- GR01, GR02, GR15, GR20 ITEM GRID RESELECT START -->	
+	<select id="GR09I_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	RI.RECVKY  AS "KEY",
+				RI.RECVKY  AS "RECVKY",
+				RI.RECVIT  AS "RECVIT",
+				RI.STATIT  AS "STATIT",
+				
+				<!-- DECODE(RI.SAPSTS,' ',' ','V') AS "SAPSTS", -->
+				(
+				CASE	WHEN RI.SAPSTS = ' ' THEN ' '
+						ELSE 'Y'
+				END
+				)  AS "SAPSTS",
+				
+				RI.SKUKEY  AS "SKUKEY",
+				RI.LOTNUM  AS "LOTNUM",
+				RI.AREAKY  AS "AREAKY",
+				RI.LOCAKY  AS "LOCAKY",
+				RI.SECTID  AS "SECTID",
+				RI.TRNUID  AS "TRNUID",
+				RI.PACKID  AS "PACKID",
+				RI.QTYRCV  AS "QTYRCV",
+				RI.QTYRCV  AS "ASNQTY",
+				RI.QTYDIF  AS "QTYDIF",
+				RI.QTYUOM  AS "QTYUOM",
+				RI.TRUNTY  AS "TRUNTY",
+				RI.MEASKY  AS "MEASKY",
+				RI.UOMKEY  AS "UOMKEY",
+				RI.QTPUOM  AS "QTPUOM",
+				RI.DUOMKY  AS "DUOMKY",
+				RI.QTDUOM  AS "QTDUOM",
+				<!-- TRUNC(RI.QTYRCV/RI.QTDUOM) AS "BOXQTY", -->
+				ROUND( RI.QTYRCV / RI.QTDUOM, 0, 1 ) AS "BOXQTY",
+				
+				<!-- MOD(RI.QTYRCV,RI.QTDUOM) AS "REMQTY", -->
+				( RI.QTYRCV % RI.QTDUOM ) AS "REMQTY",
+				
+				RI.INDRCN	AS INDRCN,
+				RI.CRECVD	AS CRECVD,
+				RI.RSNCOD	AS RSNCOD,
+				RI.LOTA01	AS LOTA01,
+				L01NM.NAME01 AS LOTA01NM,
+				RI.LOTA02	AS LOTA02,
+				RI.LOTA03	AS LOTA03,
+				RI.LOTA04	AS LOTA04,
+				RI.LOTA05	AS LOTA05,
+				RI.LOTA06	AS LOTA06,
+				RI.LOTA07	AS LOTA07,
+				RI.LOTA08	AS LOTA08,
+				RI.LOTA09	AS LOTA09,
+				RI.LOTA10	AS LOTA10,
+				RI.LOTA11	AS LOTA11,
+				RI.LOTA12	AS LOTA12,
+				RI.LOTA13	AS LOTA13,
+				RI.LOTA14	AS LOTA14,
+				RI.LOTA15	AS LOTA15,
+				RI.LOTA16	AS LOTA16,
+				RI.LOTA17	AS LOTA17,
+				RI.LOTA18	AS LOTA18,
+				RI.LOTA19	AS LOTA19,
+				RI.LOTA20	AS LOTA20,
+				RI.AWMSNO	AS AWMSNO,
+				RI.REFDKY	AS REFDKY,
+				RI.REFDIT	AS REFDIT,
+				RI.REFCAT	AS REFCAT,
+				RI.REFDAT	AS REFDAT,
+				RI.DESC01	AS DESC01,
+				RI.DESC02	AS DESC02,
+				RI.ASKU01	AS ASKU01,
+				RI.ASKU02	AS ASKU02,
+				RI.ASKU03	AS ASKU03,
+				RI.ASKU04	AS ASKU04,
+				RI.ASKU05	AS ASKU05,
+				RI.EANCOD	AS EANCOD,
+				RI.GTINCD	AS GTINCD,
+				RI.SKUG01	AS SKUG01,
+				RI.SKUG02	AS SKUG02,
+				RI.SKUG03	AS SKUG03,
+				RI.SKUG04	AS SKUG04,
+				RI.SKUG05	AS SKUG05,
+				RI.GRSWGT	AS GRSWGT,
+				RI.NETWGT	AS NETWGT,
+				RI.WGTUNT	AS WGTUNT,
+				RI.LENGTH	AS LENGTH,
+				RI.WIDTHW	AS WIDTHW,
+				RI.HEIGHT	AS HEIGHT,
+				RI.CUBICM	AS CUBICM,
+				RI.CAPACT	AS CAPACT,
+				RI.QTYORG	AS QTYORG,
+				RI.SMANDT	AS SMANDT,
+				RI.SEBELN	AS SEBELN,
+				RI.SEBELP	AS SEBELP,
+				RI.SZMBLNO	AS SZMBLNO,
+				RI.SZMIPNO	AS SZMIPNO,
+				RI.STRAID	AS STRAID,
+				RI.SVBELN	AS SVBELN,
+				RI.SPOSNR	AS SPOSNR,
+				RI.STKNUM	AS STKNUM,
+				RI.STPNUM	AS STPNUM,
+				RI.SWERKS	AS SWERKS,
+				RI.SLGORT	AS SLGORT,
+				RI.SDATBG	AS SDATBG,
+				RI.STDLNR	AS STDLNR,
+				RI.SSORNU	AS SSORNU,
+				RI.SSORIT	AS SSORIT,
+				RI.SMBLNR	AS SMBLNR,
+				RI.SZEILE	AS SZEILE,
+				RI.SMJAHR	AS SMJAHR,
+				RI.SXBLNR	AS SXBLNR,
+				RI.SBKTXT	AS SBKTXT,
+				RI.RCPRSN	AS RCPRSN,
+				RI.CREDAT	AS CREDAT,
+				RI.CRETIM	AS CRETIM,
+				RI.CREUSR	AS CREUSR,
+				CU.NMLAST	AS CUSRNM,
+				RI.LMODAT	AS LMODAT,
+				RI.LMOTIM	AS LMOTIM,
+				RI.LMOUSR	AS LMOUSR,
+				LU.NMLAST	AS LUSRNM
+		FROM	RECDH RH	WITH (NOLOCK)	
+				INNER JOIN RECDI RI	WITH (NOLOCK)	ON RI.RECVKY = RH.RECVKY
+				LEFT OUTER JOIN USRMA CU	WITH (NOLOCK)	ON CU.USERID = RI.CREUSR
+				LEFT OUTER JOIN USRMA LU	WITH (NOLOCK)	ON LU.USERID = RI.LMOUSR
+				LEFT OUTER JOIN BZPTN L01NM	WITH (NOLOCK)	ON L01NM.PTNRKY = RI.LOTA01
+															AND L01NM.PTNRTY = 'TM'
+															AND L01NM.PTNL05 IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#)
+		WHERE	RH.WAREKY = #WAREKY#
+		AND		RI.RECVKY IN ( #RECVKY# )
+		ORDER	BY RI.RECVKY, RI.RECVIT
+	</select>
+	<!-- GR01, GR02, GR15, GR20 ITEM GRID RESELECT END -->
+	
+<!-- GR09 SQL END -->
+<!-- //입하조회 -->
+
+
+
+
+<!-- 입하취소 -->
+<!-- GR10 SQL START -->
+
+	<!-- GR10 HEAD GRID SELECT START -->
+	<select id="GR10_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.GOODRECEIPT.FIND_RECDH -->
+		SELECT	<!-- RH.RECVKY AS KEY, -->
+				RH.RECVKY AS RECVKY,
+				RH.WAREKY AS WAREKY,
+				WH.NAME01 AS WAREKYNM,
+				RH.RCPTTY AS RCPTTY,
+				DT.SHORTX AS RCPTTYNM,
+				RH.STATDO AS STATDO,
+				ISNULL(STH.CDESC1,' ') AS STATDONM,
+				<!-- DECODE(RH.SAPSTS,' ',' ','V') AS SAPSTS, -->
+				(
+				CASE	WHEN RH.SAPSTS = ' ' THEN ' '
+						ELSE 'Y'
+				END
+				)  AS SAPSTS,
+				RH.DOCDAT AS DOCDAT,
+				RH.DOCCAT AS DOCCAT,
+				DC.SHORTX AS DOCCATNM,
+				RH.DPTNKY AS DPTNKY,
+				MAX(VD.NAME01) AS DPTNKYNM,
+				RH.DRELIN AS DRELIN,
+				RH.ARCPTD AS ARCPTD,
+				RH.OWNRKY AS OWNRKY,
+				RH.INDRCN AS INDRCN,
+				RH.CRECVD AS CRECVD,
+				RH.RSNCOD AS RSNCOD,
+				RH.PUTSTS AS PUTSTS,
+				
+				ISNULL(RH.USRID1,  ' ') AS USRID1,
+				ISNULL(RH.UNAME1,  ' ') AS UNAME1,
+				ISNULL(RH.DEPTID1, ' ') AS DEPTID1,
+				ISNULL(RH.DNAME1,  ' ') AS DNAME1,
+				ISNULL(RH.USRID2,  ' ') AS USRID2,
+				ISNULL(RH.UNAME2,  ' ') AS UNAME2,
+				ISNULL(RH.DEPTID2, ' ') AS DEPTID2,
+				ISNULL(RH.DNAME2,  ' ') AS DNAME2,
+				ISNULL(RH.USRID3,  ' ') AS USRID3,
+				ISNULL(RH.UNAME3,  ' ') AS UNAME3,
+				ISNULL(RH.DEPTID3, ' ') AS DEPTID3,
+				ISNULL(RH.DNAME3,  ' ') AS DNAME3,
+				ISNULL(RH.USRID4,  ' ') AS USRID4,
+				ISNULL(RH.UNAME4,  ' ') AS UNAME4,
+				ISNULL(RH.DEPTID4, ' ') AS DEPTID4,
+				ISNULL(RH.DNAME4,  ' ') AS DNAME4,
+       
+				RH.DOCTXT AS DOCTXT,
+				MAX(RI.SEBELN) AS SEBELN,
+				MAX(RI.STRAID) AS VGBEL,
+				MAX(CASE WHEN RH.RCPTTY IN ('111', '112', '114') THEN RI.REFDKY
+				         ELSE ' '
+				     END) AS ASNDKY,
+				MAX(CASE WHEN RH.RCPTTY IN ('108') THEN RI.REFDKY
+				         ELSE ' '
+				     END) AS SHPOKY,
+				RH.CREDAT AS CREDAT,
+				RH.CRETIM AS CRETIM,
+				RH.CREUSR AS CREUSR,
+				CU.NMLAST AS CUSRNM,
+				RH.LMODAT AS LMODAT,
+				RH.LMOTIM AS LMOTIM,
+				RH.LMOUSR AS LMOUSR,
+				LU.NMLAST AS LUSRNM,
+				<!-- LOTOS.DBO.F_GET_LGORT_IFWMS103(RH.WAREKY, MAX(RI.SEBELN)) AS ERPWHF, -->
+				<!-- LOTOS.DBO.SZF_GET_BZPTN_NM('WH', F_GET_LGORT_IFWMS103(RH.WAREKY, MAX(RI.SEBELN))) AS ERPFNM, -->
+				' ' AS ERPWHT,
+				' ' AS ERPTNM
+				
+		FROM	RECDH RH
+				INNER JOIN RECDI RI	ON RI.RECVKY = RH.RECVKY
+				LEFT OUTER JOIN CMCDV STH	ON STH.CMCDKY = 'STATDO'
+											AND STH.CMCDVL = RH.STATDO
+				LEFT OUTER JOIN USRMA CU	ON CU.USERID = RH.CREUSR
+				LEFT OUTER JOIN USRMA LU	ON LU.USERID = RH.LMOUSR
+				LEFT OUTER JOIN WAHMA WH	ON WH.WAREKY = RH.WAREKY
+				LEFT OUTER JOIN DOCCM DC	ON DC.DOCCAT = '100'
+				LEFT OUTER JOIN DOCTM DT	ON DT.DOCUTY = RH.RCPTTY
+				LEFT OUTER JOIN BZPTN VD	ON VD.PTNRKY = RH.DPTNKY
+											AND VD.PTNRTY IN (CASE	WHEN RH.RCPTTY IN ('108','109','110','111','115') THEN 'CT'
+																	WHEN RH.RCPTTY IN ('166') THEN 'TM'
+																	ELSE 'VD' END)
+											
+											<!-- AND VD.PTNL05 IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#) --><!-- Parameter[0] -->
+											
+				<!--
+				LEFT OUTER JOIN VUSER_WMSERP VU	ON VU.USERID = RH.CREUSR
+				LEFT OUTER JOIN VUSER_WAREDOCUSER VU2	ON VU2.WAREKY = RH.WAREKY
+														AND VU2.DOCUTY = RH.RCPTTY
+				-->
+		WHERE	RH.WAREKY = #WAREKY#	<!-- PARAMETER[1] -->
+		AND		RI.INDRCN <![CDATA[ <> ]]> 'V'
+		AND		RH.RCPTTY <![CDATA[ <> ]]> '166' 
+		AND		RH.SAPSTS = ' ' 
+		<isNotEmpty property="RANGE_SQL">
+			$RANGE_SQL$
+		</isNotEmpty>
+		GROUP BY	RH.RECVKY,RH.WAREKY,RH.RCPTTY,RH.STATDO,RH.SAPSTS, ISNULL(STH.CDESC1,' '),
+					RH.DOCDAT,RH.DOCCAT,RH.DPTNKY,RH.DRELIN,RH.ARCPTD,
+					RH.OWNRKY,RH.INDRCN,RH.CRECVD,RH.RSNCOD,RH.PUTSTS,
+					RH.CREDAT,RH.CRETIM,RH.CREUSR,CU.NMLAST,
+					RH.LMODAT,RH.LMOTIM,RH.LMOUSR,LU.NMLAST,
+					WH.NAME01, DC.SHORTX, DT.SHORTX, VD.NAME01,
+					ISNULL(RH.USRID1,  ' '),
+					ISNULL(RH.UNAME1,  ' '),
+					ISNULL(RH.DEPTID1, ' '),
+					ISNULL(RH.DNAME1,  ' '),
+					ISNULL(RH.USRID2,  ' '),
+					ISNULL(RH.UNAME2,  ' '),
+					ISNULL(RH.DEPTID2, ' '),
+					ISNULL(RH.DNAME2,  ' '),
+					ISNULL(RH.USRID3,  ' '),
+					ISNULL(RH.UNAME3,  ' '),
+					ISNULL(RH.DEPTID3, ' '),
+					ISNULL(RH.DNAME3,  ' '),
+					ISNULL(RH.USRID4,  ' '),
+					ISNULL(RH.UNAME4,  ' '),
+					ISNULL(RH.DEPTID4, ' '),
+					ISNULL(RH.DNAME4,  ' '),
+					RH.DOCTXT
+		ORDER BY	RH.RECVKY DESC
+	</select>
+	<!-- GR10 HEAD GRID SELECT END -->
+	
+	
+	<!-- GR10 ITEM GRID SELECT START -->
+	<select id="GR10Sub_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.GOODRECEIPT.FIND_RECDI -->
+		SELECT	<!-- RI.RECVKY  AS KEY", -->
+				RI.RECVKY	AS RECVKY,
+				RI.RECVIT	AS RECVIT,
+				RI.STATIT	AS STATIT,
+				<!-- DECODE(RI.SAPSTS,' ',' ','V') AS "SAPSTS", -->
+				(
+				CASE	WHEN RI.SAPSTS = ' ' THEN ' '
+						ELSE 'Y'
+				END
+				)	AS SAPSTS,
+				RI.SKUKEY	AS SKUKEY,
+				RI.LOTNUM	AS LOTNUM,
+				RI.AREAKY	AS AREAKY,
+				RI.LOCAKY	AS LOCAKY,
+				RI.SECTID	AS SECTID,
+				RI.TRNUID	AS TRNUID,
+				RI.PACKID	AS PACKID,
+				RI.QTYRCV	AS QTYRCV,
+				RI.QTYRCV	AS SNDQTY,
+				RI.QTYDIF	AS QTYDIF,
+				RI.QTYUOM	AS QTYUOM,
+				RI.TRUNTY	AS TRUNTY,
+				RI.MEASKY	AS MEASKY,
+				RI.UOMKEY	AS UOMKEY,
+				RI.QTPUOM	AS QTPUOM,
+				RI.DUOMKY	AS DUOMKY,
+				RI.QTDUOM	AS QTDUOM,
+				
+				<!-- TRUNC(RI.QTYRCV/RI.QTDUOM) AS "BOXQTY", -->
+				ROUND( RI.QTYRCV / RI.QTDUOM, 0, 1 ) AS BOXQTY,
+				
+				<!-- MOD(RI.QTYRCV,RI.QTDUOM) AS "REMQTY", -->
+				(RI.QTYRCV % RI.QTDUOM) AS REMQTY,
+				
+				RI.INDRCN	AS INDRCN,
+				RI.CRECVD	AS CRECVD,
+				RI.RSNCOD	AS RSNCOD,
+				RI.LOTA01	AS LOTA01,
+				L01NM.NAME01 AS LOTA01NM,
+				RI.LOTA02	AS LOTA02,
+				RI.LOTA03	AS LOTA03,
+				RI.LOTA04	AS LOTA04,
+				RI.LOTA05	AS LOTA05,
+				RI.LOTA06	AS LOTA06,
+				RI.LOTA07	AS LOTA07,
+				RI.LOTA08	AS LOTA08,
+				RI.LOTA09	AS LOTA09,
+				RI.LOTA10	AS LOTA10,
+				RI.LOTA11	AS LOTA11,
+				RI.LOTA12	AS LOTA12,
+				RI.LOTA13	AS LOTA13,
+				RI.LOTA14	AS LOTA14,
+				RI.LOTA15	AS LOTA15,
+				RI.LOTA16	AS LOTA16,
+				RI.LOTA17	AS LOTA17,
+				RI.LOTA18	AS LOTA18,
+				RI.LOTA19	AS LOTA19,
+				RI.LOTA20	AS LOTA20,
+				RI.AWMSNO	AS AWMSNO,
+				RI.REFDKY	AS REFDKY,
+				RI.REFDIT	AS REFDIT,
+				RI.REFCAT	AS REFCAT,
+				RI.REFDAT	AS REFDAT,
+				RI.DESC01	AS DESC01,
+				RI.DESC02	AS DESC02,
+				RI.ASKU01	AS ASKU01,
+				RI.ASKU02	AS ASKU02,
+				RI.ASKU03	AS ASKU03,
+				RI.ASKU04	AS ASKU04,
+				RI.ASKU05	AS ASKU05,
+				RI.EANCOD	AS EANCOD,
+				RI.GTINCD	AS GTINCD,
+				RI.SKUG01	AS SKUG01,
+				RI.SKUG02	AS SKUG02,
+				RI.SKUG03	AS SKUG03,
+				RI.SKUG04	AS SKUG04,
+				RI.SKUG05	AS SKUG05,
+				RI.GRSWGT	AS GRSWGT,
+				RI.NETWGT	AS NETWGT,
+				RI.WGTUNT	AS WGTUNT,
+				RI.LENGTH	AS LENGTH,
+				RI.WIDTHW	AS WIDTHW,
+				RI.HEIGHT	AS HEIGHT,
+				RI.CUBICM	AS CUBICM,
+				RI.CAPACT	AS CAPACT,
+				RI.QTYORG	AS QTYORG,
+				RI.SMANDT	AS SMANDT,
+				RI.SEBELN	AS SEBELN,
+				RI.SEBELP	AS SEBELP,
+				RI.SZMBLNO	AS SZMBLNO,
+				RI.SZMIPNO	AS SZMIPNO,
+				RI.STRAID	AS STRAID,
+				RI.SVBELN	AS SVBELN,
+				RI.SPOSNR	AS SPOSNR,
+				RI.STKNUM	AS STKNUM,
+				RI.STPNUM	AS STPNUM,
+				RI.SWERKS	AS SWERKS,
+				RI.SLGORT	AS SLGORT,
+				RI.SDATBG	AS SDATBG,
+				RI.STDLNR	AS STDLNR,
+				RI.SSORNU	AS SSORNU,
+				RI.SSORIT	AS SSORIT,
+				RI.SMBLNR	AS SMBLNR,
+				RI.SZEILE	AS SZEILE,
+				RI.SMJAHR	AS SMJAHR,
+				RI.SXBLNR	AS SXBLNR,
+				RI.SBKTXT	AS SBKTXT,
+				RI.RCPRSN	AS RCPRSN,
+				RI.CREDAT	AS CREDAT,
+				RI.CRETIM	AS CRETIM,
+				RI.CREUSR	AS CREUSR,
+				CU.NMLAST	AS CUSRNM,
+				RI.LMODAT	AS LMODAT,
+				RI.LMOTIM	AS LMOTIM,
+				RI.LMOUSR	AS LMOUSR,
+				LU.NMLAST	AS LUSRNM
+		FROM	RECDH RH
+				INNER JOIN RECDI RI	ON RI.RECVKY = RH.RECVKY
+				LEFT OUTER JOIN USRMA CU	ON CU.USERID = RI.CREUSR
+				LEFT OUTER JOIN USRMA LU	ON LU.USERID = RI.LMOUSR
+				LEFT OUTER JOIN BZPTN L01NM	ON L01NM.PTNRKY = RI.LOTA01
+											AND L01NM.PTNRTY = 'TM'
+											AND L01NM.PTNL05 IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#)	<!-- PARAMETER[0] -->
+		WHERE	RH.WAREKY = #WAREKY#	<!-- PARAMETER[1] -->
+		AND		RH.RCPTTY <![CDATA[ <> ]]> '166' 
+		AND		RH.SAPSTS = ' '
+		<isNotEmpty property="RECVKY">
+			AND RI.RECVKY = #RECVKY#
+		</isNotEmpty>
+		<isNotEmpty property="RANGE_SQL">
+			$RANGE_SQL$
+		</isNotEmpty>
+		ORDER	BY RI.RECVKY, RI.RECVIT
+	</select>
+	<!-- GR10 ITEM GRID SELECT END -->
+	
+	
+	<!-- GR10 VALIDATION START -->
+	<select id="GR10_VALIDATION" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.RECEIPT.VALIDATE_CANCEL -->
+		SELECT	A.OWNRKY	AS	OWNRKY,
+				A.WAREKY	AS WAREKY,
+				A.SKUKEY	AS SKUKEY,
+				A.QTYRCV	AS QTYRCV,
+				ISNULL(S.QTSIWH,0) AS QTYDIF
+		FROM	( $VALIDATION_SQL$ ) A
+				LEFT OUTER JOIN (SELECT OWNRKY,
+										WAREKY,
+										SKUKEY,
+										RECVKY,
+										RECVIT,
+										<!-- NVL(SUM(QTSIWH - GREATEST(QTSALO,QTSPMO) - QTSBLK),0) AS QTSIWH -->
+										ISNULL( SUM(QTSIWH - (CASE WHEN QTSALO > QTSPMO THEN QTSALO ELSE QTSPMO END) - QTSBLK),0 ) AS QTSIWH
+								FROM	STKKY
+								WHERE	QTSIWH > 0
+								<!-- AND		QTSIWH - GREATEST(QTSALO,QTSPMO) - QTSBLK > 0 -->
+								AND		QTSIWH - (CASE WHEN QTSALO > QTSPMO THEN QTSALO ELSE QTSPMO END) - QTSBLK > 0
+								GROUP BY OWNRKY, WAREKY, SKUKEY, RECVKY, RECVIT
+								) S
+										ON	S.OWNRKY = A.OWNRKY
+										AND	S.WAREKY = A.WAREKY
+										AND	S.SKUKEY = A.SKUKEY
+										AND	S.RECVKY = A.RECVKY
+										AND	S.RECVIT = A.RECVIT
+										AND	S.QTSIWH > 0
+	</select>
+	<!-- GR10 VALIDATION END -->
+	
+	
+	<!-- GR10 HEAD GRID UPDATE START -->
+	<update id="GR10_UPDATE" parameterClass="Map">
+		<!-- SQL Key : INBOUND.RECEIPT.CANCEL_UPDATE_FLAG_RECDH -->
+		UPDATE	RECDH
+				SET STATDO = 'FCN',
+				INDRCN = 'V',
+				<!-- LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD'), -->
+				LMODAT = CONVERT(VARCHAR(8), GETDATE(), 112),
+				<!-- LMOTIM = TO_CHAR(SYSDATE,'HH24MISS'), -->
+				LMOTIM = REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', ''),
+				LMOUSR = #SES_USER_ID#	<!-- Parameter[0] -->
+		WHERE	RECVKY = #RECVKY#		<!-- Parameter[1] -->
+	</update>
+	<!-- GR10 HEAD GRID UPDATE END -->
+	
+	
+	<!-- GR10 ITEM GRID UPDATE START -->
+	<update id="GR10Sub_UPDATE" parameterClass="Map">
+		<!-- SQL Key : INBOUND.RECEIPT.CANCEL_UPDATE_FLAG_RECDI -->
+		UPDATE	RECDI
+		SET		STATIT = 'FCN',
+				INDRCN = 'V',
+				<!-- LMODAT = TO_CHAR(SYSDATE,'YYYYMMDD'), -->
+				LMODAT = CONVERT(VARCHAR(8), GETDATE(), 112),
+				<!-- LMOTIM = TO_CHAR(SYSDATE,'HH24MISS'), -->
+				LMOTIM = REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', ''),
+				LMOUSR = #SES_USER_ID#	<!-- Parameter[0] -->
+		WHERE	RECVKY = #RECVKY#		<!-- Parameter[1] -->
+	</update>
+	<!-- GR10 ITEM GRID UPDATE END -->
+	
+	
+<!-- GR10 SQL END -->
+<!-- //입하취소 -->
+
+
+
+
+<!-- GR15화면 SQL 시작 -->
+	<!-- GR15 그리드 시작 -->
+	<select id="GR15_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.GOODRECEIPT.FIND_TRF_TO_CREATE_RECDH -->
+		SELECT	<!-- TRF.SHPOKY AS "key", -->
+				' '			AS RECVKY,
+				TRF.WARETG	AS WAREKY,
+				WH.NAME01	AS WAREKYNM,
+				#RCPTTY#	AS RCPTTY,
+				DT.SHORTX	AS RCPTTYNM,
+				'NEW'		AS STATDO,
+				' '			AS SAPSTS,
+				CONVERT(VARCHAR(8), GETDATE(), 112) AS DOCDAT,
+				'100'		AS DOCCAT,
+				DC.SHORTX	AS DOCCATNM,
+				TRF.WARESR	AS DPTNKY,
+				VD.NAME01	AS DPTNKYNM,
+				' '			AS DRELIN,
+				'00000000'	AS ARCPTD,
+				#OWNRKY#	AS OWNRKY,
+				' '			AS INDRCN,
+				' '			AS CRECVD,
+				' '			AS RSNCOD,
+				' '			AS PUTSTS,
+				TRF.SHPOKY	AS SHPOKY,
+				<!--
+				NVL(VU.ERPUSR,' ') AS "USRID1",
+				NVL(VU.ERPNAM,' ') AS "UNAME1",
+				NVL(VU.DEPTID,' ') AS "DEPTID1",
+				NVL(VU.DPNAME,' ') AS "DNAME1",
+				NVL(VU2.ERPUS2,' ') AS "USRID2",
+				NVL(VU2.USNAM2,' ') AS "UNAME2",
+				NVL(VU2.DEPID2,' ') AS "DEPTID2",
+				NVL(VU2.DPNAM2,' ') AS "DNAME2",
+				NVL(VU2.ERPUS3,' ') AS "USRID3",
+				NVL(VU2.USNAM3,' ') AS "UNAME3",
+				NVL(VU2.DEPID3,' ') AS "DEPTID3",
+				NVL(VU2.DPNAM3,' ') AS "DNAME3",
+				NVL(VU2.ERPUS4,' ') AS "USRID4",
+				NVL(VU2.USNAM4,' ') AS "UNAME4",
+				NVL(VU2.DEPID4,' ') AS "DEPTID4",
+				NVL(VU2.DPNAM4,' ') AS "DNAME4",
+				-->
+				' '	AS USRID1,
+				' ' AS UNAME1,
+				' ' AS DEPTID1,
+				' ' AS DNAME1,
+				' ' AS USRID2,
+				' ' AS UNAME2,
+				' ' AS DEPTID2,
+				' ' AS DNAME2,
+				' ' AS USRID3,
+				' ' AS UNAME3,
+				' ' AS DEPTID3,
+				' ' AS DNAME3,
+				' ' AS USRID4,
+				' ' AS UNAME4,
+				' ' AS DEPTID4,
+				' ' AS DNAME4,
+				
+				' ' AS DOCTXT
+				
+		FROM	TRFIT TRF
+				LEFT OUTER JOIN SKUMA SM	ON SM.OWNRKY = #OWNRKY#
+											AND SM.SKUKEY = TRF.SKUKEY
+				LEFT OUTER JOIN SKUWC SW	ON SW.WAREKY = TRF.WARETG
+											AND SW.OWNRKY = #OWNRKY#
+											AND SW.SKUKEY = TRF.SKUKEY
+				LEFT OUTER JOIN WAHMA WH	ON WH.WAREKY = TRF.WARETG
+				LEFT OUTER JOIN WAHMA VD	ON VD.WAREKY = TRF.WARESR
+				LEFT OUTER JOIN DOCCM DC	ON DC.DOCCAT = '100'
+				LEFT OUTER JOIN DOCTM DT	ON DT.DOCUTY = #RCPTTY#
+				
+				<!--
+				LEFT OUTER JOIN VUSER_WMSERP VU			ON VU.OWNRKY = #OWNRKY#
+														AND VU.USERID = #SES_USER_ID#
+				LEFT OUTER JOIN VUSER_WAREDOCUSER VU2	ON VU2.WAREKY = #WAREKY#
+														AND VU2.DOCUTY = #RCPTTY#
+				-->
+				
+		WHERE	TRF.WARETG = #WAREKY#
+		AND		TRF.STATIT = 'NEW'
+		AND		TRF.QTYTRF > 0
+		<isNotEmpty property="RANGE_SQL">
+			$RANGE_SQL$
+		</isNotEmpty>
+		 GROUP BY TRF.TASKKY, TRF.WARETG, WH.NAME01, DT.SHORTX,
+		          DC.SHORTX, TRF.WARESR, VD.NAME01,
+		          <!--
+		          VU.ERPUSR, VU.ERPNAM, VU.DEPTID, VU.DPNAME,
+		          VU2.ERPUS2, VU2.USNAM2, VU2.DEPID2, VU2.DPNAM2,
+		          VU2.ERPUS3, VU2.USNAM3, VU2.DEPID3, VU2.DPNAM3,
+		          VU2.ERPUS4, VU2.USNAM4, VU2.DEPID4, VU2.DPNAM4,
+		          -->
+		          TRF.SHPOKY
+		 ORDER BY TRF.TASKKY DESC
+	</select>
+	<!-- GR15 그리드 끝 -->
+	
+	
+	<!-- GR15Sub 그리드 시작 -->
+	<select id="GR15Sub_LIST" parameterClass="Map" resultClass="DataMap">
+		<!-- SQL Key : INBOUND.GOODRECEIPT.FIND_TRF_TO_CREATE_RECDI -->
+		SELECT	<!-- TRF.SHPOKY AS "key" -->
+				' ' AS RECVKY,
+				' ' AS RECVIT,
+				'NEW' AS STATIT,
+				' ' AS SAPSTS,
+				TRF.SKUKEY AS SKUKEY,
+				' ' AS LOTNUM,
+				' ' AS AREAKY,
+				'DOCLOC'  AS LOCAKY,     /* -- NVL(SW.LOCARV,' ') AS "LOCAKY",*/ 
+				' ' AS SECTID,
+				' ' AS TRNUID,
+				' ' AS PACKID,
+				TRF.QTYTRF AS QTYRCV,
+				0 AS QTYDIF,
+				TRF.QTYTRF AS QTYUOM,
+				' ' AS TRUNTY,
+				TRF.MEASKY AS MEASKY,
+				ISNULL(SM.DUOMKY,' ') AS UOMKEY,
+				ISNULL(MS.QTPUOM,0) AS QTPUOM,
+				ISNULL(SM.DUOMKY,' ') AS DUOMKY,
+				
+				
+				<!-- ISNULL(DECODE(SM.QTDUOM,0,9999999,SM.QTDUOM),9999999) AS "QTDUOM", -->
+				ISNULL( (CASE WHEN SM.QTDUOM = 0 THEN 9999999
+								ELSE SM.QTDUOM
+								END), 9999999
+				) AS QTDUOM,
+				
+				<!-- TRUNC(TRF.QTYTRF/NVL(DECODE(SM.QTDUOM,0,9999999,SM.QTDUOM),9999999)) AS "BOXQTY", -->
+				ROUND( TRF.QTYTRF / ISNULL( (CASE	WHEN SM.QTDUOM = 0 THEN 9999999
+				                					ELSE SM.QTDUOM
+				                  			END ), 9999999), 0, 1 
+				) AS BOXQTY,
+				
+				<!-- MOD(TRF.QTYTRF,NVL(DECODE(SM.QTDUOM,0,9999999,SM.QTDUOM),9999999)) AS "REMQTY", -->
+				( TRF.QTYTRF %  ISNULL( (CASE WHEN SM.QTDUOM = 0 THEN 9999999
+																							ELSE  SM.QTDUOM
+																							END) ,9999999)
+				) AS REMQTY,
+				
+				' ' AS INDRCN,
+				' ' AS CRECVD,
+				' ' AS RSNCOD,
+				TRF.LOTA01 AS LOTA01,
+				L01NM.NAME01 AS LOTA01NM,
+				TRF.LOTA02 AS LOTA02,
+				TRF.LOTA03 AS LOTA03,
+				TRF.LOTA04 AS LOTA04,
+				TRF.LOTA05 AS LOTA05,
+				'00' AS LOTA06,
+				TRF.LOTA07 AS LOTA07,
+				TRF.LOTA08 AS LOTA08,
+				TRF.LOTA09 AS LOTA09,
+				TRF.LOTA10 AS LOTA10,
+				TRF.LOTA11 AS LOTA11,
+				TRF.LOTA12 AS LOTA12,
+				TRF.LOTA13 AS LOTA13,
+				TRF.LOTA14 AS LOTA14,
+				TRF.LOTA15 AS LOTA15,
+				TRF.LOTA16 AS LOTA16,
+				TRF.LOTA17 AS LOTA17,
+				TRF.LOTA18 AS LOTA18,
+				TRF.LOTA19 AS LOTA19,
+				TRF.LOTA20 AS LOTA20,
+				
+				TRF.TRFKEY AS AWMSNO,
+				TRF.REFDKY AS "REFDKY",
+				TRF.REFDIT AS "REFDIT",
+				' ' AS "REFCAT",
+				
+				<!-- TO_CHAR(SYSDATE,'YYYYMMDD') AS "REFDAT", -->
+				CONVERT(VARCHAR(8), GETDATE(), 112) AS REFDAT,
+				
+				ISNULL(SM.DESC01,' ') AS "DESC01",
+				ISNULL(SM.DESC02,' ') AS "DESC02",
+				TRF.ASKU01 AS "ASKU01",
+				TRF.ASKU02 AS "ASKU02",
+				TRF.ASKU03 AS "ASKU03",
+				TRF.ASKU04 AS "ASKU04",
+				TRF.ASKU05 AS "ASKU05",
+				' ' AS "EANCOD",
+				' ' AS "GTINCD",
+				TRF.SKUG01 AS "SKUG01",
+				TRF.SKUG02 AS "SKUG02",
+				TRF.SKUG03 AS "SKUG03",
+				TRF.SKUG04 AS "SKUG04",
+				TRF.SKUG05 AS "SKUG05",
+				TRF.GRSWGT AS "GRSWGT",
+				TRF.NETWGT AS "NETWGT",
+				TRF.WGTUNT AS "WGTUNT",
+				TRF.LENGTH AS "LENGTH",
+				TRF.WIDTHW AS "WIDTHW",
+				TRF.HEIGHT AS "HEIGHT",
+				TRF.CUBICM AS "CUBICM",
+				TRF.CAPACT AS "CAPACT",
+				0 AS "QTYORG",
+				' ' AS "SMANDT",
+				( SELECT ISNULL(MAX(VGBEL),' ') FROM IFWMS113 WHERE VBELN = TRF.REFDKY AND POSNR = TRF.REFDIT   ) AS "SEBELN",
+				' ' AS "SEBELP",
+				' ' AS "SZMBLNO",
+				' ' AS "SZMIPNO",
+				' ' AS "STRAID",
+				' ' AS "SVBELN",
+				' ' AS "SPOSNR",
+				' ' AS "STKNUM",
+				' ' AS "STPNUM",
+				' ' AS "SWERKS",
+				' ' AS "SLGORT",
+				' ' AS "SDATBG",
+				' ' AS "STDLNR",
+				' ' AS "SSORNU",
+				' ' AS "SSORIT",
+				' ' AS "SMBLNR",
+				' ' AS "SZEILE",
+				' ' AS "SMJAHR",
+				' ' AS "SXBLNR",
+				' ' AS "SBKTXT",
+				' ' AS "RCPRSN"
+				
+		FROM	TRFIT TRF
+				LEFT OUTER JOIN SKUMA SM	ON SM.OWNRKY = #OWNRKY#
+											AND SM.SKUKEY = TRF.SKUKEY
+				LEFT OUTER JOIN SKUWC SW	ON SW.WAREKY = TRF.WARETG
+											AND SW.OWNRKY = #OWNRKY#
+											AND SW.SKUKEY = TRF.SKUKEY
+				LEFT OUTER JOIN MEASI MS	ON MS.WAREKY = TRF.WARETG
+											AND MS.MEASKY = TRF.MEASKY
+											AND MS.UOMKEY = TRF.UOMKEY
+				LEFT OUTER JOIN BZPTN L01NM	ON L01NM.PTNRKY = TRF.LOTA01
+											AND L01NM.PTNRTY = 'TM'
+											AND L01NM.PTNL05 IN (SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#)
+		WHERE	TRF.WARETG = #WAREKY#
+		AND		TRF.STATIT = 'NEW'
+		AND		TRF.QTYTRF > 0
+		<isNotEmpty property="RECVKY">
+			AND		TRF.RECVKY = #RECVKY#
+		</isNotEmpty>
+		<isNotEmpty property="RANGE_SQL">
+			$RANGE_SQL$
+		</isNotEmpty>
+				   
+	</select>
+	<!-- GR15Sub 그리드 끝 -->
+	
+	
+	<!-- GR15 INSERT START -->
+	<insert id="GR15_INSERT" parameterClass="Map">
+		INSERT INTO RECDH
+		(
+			RECVKY,
+			WAREKY,
+			RCPTTY,
+			STATDO,
+			SAPSTS,
+			DOCDAT,
+			DOCCAT,
+			DPTNKY,
+			DRELIN,
+			ARCPTD,
+			
+			OWNRKY,
+			INDRCN,
+			CRECVD,
+			RSNCOD,
+			PUTSTS,
+			USRID1,
+			UNAME1,
+			DEPTID1,
+			DNAME1,
+			USRID2,
+			
+			UNAME2,
+			DEPTID2,
+			DNAME2,
+			USRID3,
+			UNAME3,
+			DEPTID3,
+			DNAME3,
+			USRID4,
+			UNAME4,
+			DEPTID4,
+			
+			DNAME4,
+			DOCTXT,
+			CREDAT,
+			CRETIM,
+			CREUSR,
+			LMODAT,
+			LMOTIM,
+			LMOUSR
+		) VALUES (
+			ISNULL( #RECVKY#, ' '),
+			ISNULL( #WAREKY#, ' '),
+			ISNULL( #RCPTTY#, ' '),
+			ISNULL( #STATDO#, ' '),
+			ISNULL( #SAPSTS#, ' '),
+			ISNULL( #DOCDAT#, ' '),
+			ISNULL( #DOCCAT#, ' '),
+			ISNULL( #DPTNKY#, ' '),
+			ISNULL( #DRELIN#, ' '),
+			<!-- #ARCPTD#, -->
+			CONVERT(CHAR(10),GETDATE(),112),
+			
+			<!-- NVL( #OWNRKY#, ' '), -->
+			(SELECT ADDR05 FROM WAHMA WHERE WAREKY = #WAREKY#),
+			ISNULL( #INDRCN#, ' '),
+			ISNULL( #CRECVD#, ' '),
+			ISNULL( #RSNCOD#, ' '),
+			ISNULL( #PUTSTS#, ' '),
+			ISNULL( #USRID1#, ' '),
+			ISNULL( #UNAME1#, ' '),
+			ISNULL( #DEPTID1#, ' '),
+			ISNULL( #DNAME1#, ' '),
+			ISNULL( #USRID2#, ' '),
+			
+			ISNULL( #UNAME2#, ' '),
+			ISNULL( #DEPTID2#, ' '),
+			ISNULL( #DNAME2#, ' '),
+			ISNULL( #USRID3#, ' '),
+			ISNULL( #UNAME3#, ' '),
+			ISNULL( #DEPTID3#, ' '),
+			ISNULL( #DNAME3#, ' '),
+			ISNULL( #USRID4#, ' '),
+			ISNULL( #UNAME4#, ' '),
+			ISNULL( #DEPTID4#, ' '),
+			
+			ISNULL( #DNAME4#, ' '),
+			ISNULL( #DOCTXT#, ' '),
+			CONVERT(CHAR(10),GETDATE(),112),
+            REPLACE(CONVERT(CHAR(10),GETDATE(),24),':',''),
+			#SES_USER_ID#,
+			CONVERT(CHAR(10),GETDATE(),112),
+            REPLACE(CONVERT(CHAR(10),GETDATE(),24),':',''),
+			#SES_USER_ID#
+		)
+	</insert>
+	<!-- GR15 INSERT END -->
+
+
+	<!-- GR15Sub INSERT START -->
+	<insert id="GR15Sub_INSERT" parameterClass="Map">
+		INSERT INTO RECDI
+		(
+			RECVKY,
+			RECVIT,
+			STATIT,
+			SAPSTS,
+			SKUKEY,
+			LOTNUM,
+			AREAKY,
+			LOCAKY,
+			SECTID,
+			TRNUID,
+			
+			PACKID,
+			QTYRCV,
+			QTYDIF,
+			QTYUOM,
+			TRUNTY,
+			MEASKY,
+			UOMKEY,
+			QTPUOM,
+			DUOMKY,
+			QTDUOM,
+			
+			INDRCN,
+			CRECVD,
+			RSNCOD,
+			LOTA01,
+			LOTA02,
+			LOTA03,
+			LOTA04,
+			LOTA05,
+			LOTA06,
+			LOTA07,
+			
+			LOTA08,
+			LOTA09,
+			LOTA10,
+			LOTA11,
+			LOTA12,
+			LOTA13,
+			LOTA14,
+			LOTA15,
+			LOTA16,
+			LOTA17,
+			
+			LOTA18,
+			LOTA19,
+			LOTA20,
+			AWMSNO,
+			REFDKY,
+			REFDIT,
+			REFCAT,
+			REFDAT,
+			DESC01,
+			DESC02,
+			
+			ASKU01,
+			ASKU02,
+			ASKU03,
+			ASKU04,
+			ASKU05,
+			EANCOD,
+			GTINCD,
+			SKUG01,
+			SKUG02,
+			SKUG03,
+			
+			SKUG04,
+			SKUG05,
+			GRSWGT,
+			NETWGT,
+			WGTUNT,
+			LENGTH,
+			WIDTHW,
+			HEIGHT,
+			CUBICM,
+			CAPACT,
+			
+			QTYORG,
+			SMANDT,
+			SEBELN,
+			SEBELP,
+			SZMBLNO,
+			SZMIPNO,
+			STRAID,
+			SVBELN,
+			SPOSNR,
+			STKNUM,
+			
+			STPNUM,
+			SWERKS,
+			SLGORT,
+			SDATBG,
+			STDLNR,
+			SSORNU,
+			SSORIT,
+			SMBLNR,
+			SZEILE,
+			SMJAHR,
+			SXBLNR,
+			
+			RCPRSN,
+			CREDAT,
+			CRETIM,
+			CREUSR,
+			LMODAT,
+			LMOTIM,
+			LMOUSR
+		)
+		VALUES(
+			#RECVKY#,
+			#RECVIT#,
+			#STATIT#,
+			#SAPSTS#,
+			#SKUKEY#,
+			#LOTNUM#,
+			#AREAKY#,
+			#LOCAKY#,
+			#SECTID#,
+			#TRNUID#,
+			#PACKID#,
+			#QTYRCV#,
+			#QTYDIF#,
+			#QTYUOM#,
+			#TRUNTY#,
+			#MEASKY#,
+			#UOMKEY#,
+			#QTPUOM#,
+			#DUOMKY#,
+			#QTDUOM#,
+			#INDRCN#,
+			#CRECVD#,
+			#RSNCOD#,
+			#LOTA01#,
+			#LOTA02#,
+			#LOTA03#,
+			#LOTA04#,
+			#LOTA05#,
+			#LOTA06#,
+			#LOTA07#,
+			#LOTA08#,
+			#LOTA09#,
+			#LOTA10#,
+			#LOTA11#,
+			#LOTA12#,
+			#LOTA13#,
+			#LOTA14#,
+			#LOTA15#,
+			#LOTA16#,
+			#LOTA17#,
+			#LOTA18#,
+			#LOTA19#,
+			#LOTA20#,
+			#AWMSNO#,
+			#REFDKY#,
+			#REFDIT#,
+			#REFCAT#,
+			#REFDAT#,
+			#DESC01#,
+			#DESC02#,
+			#ASKU01#,
+			#ASKU02#,
+			#ASKU03#,
+			#ASKU04#,
+			#ASKU05#,
+			#EANCOD#,
+			#GTINCD#,
+			#SKUG01#,
+			#SKUG02#,
+			#SKUG03#,
+			#SKUG04#,
+			#SKUG05#,
+			#GRSWGT#,
+			#NETWGT#,
+			#WGTUNT#,
+			#LENGTH#,
+			#WIDTHW#,
+			#HEIGHT#,
+			#CUBICM#,
+			#CAPACT#,
+			#QTYORG#,
+			#SMANDT#,
+			#SEBELN#,
+			#SEBELP#,
+			#SZMBLNO#,
+			#SZMIPNO#,
+			#STRAID#,
+			#SVBELN#,
+			#SPOSNR#,
+			#STKNUM#,
+			#STPNUM#,
+			#SWERKS#,
+			#SLGORT#,
+			#SDATBG#,
+			#STDLNR#,
+			#SSORNU#,
+			#SSORIT#,
+			#SMBLNR#,
+			#SZEILE#,
+			#SMJAHR#,
+			#SXBLNR#,
+			#RCPRSN#,
+			CONVERT(CHAR(10),GETDATE(),112),
+            REPLACE(CONVERT(CHAR(10),GETDATE(),24),':',''), 
+			#SES_USER_ID#,
+			CONVERT(CHAR(10),GETDATE(),112),
+            REPLACE(CONVERT(CHAR(10),GETDATE(),24),':',''), 
+			#SES_USER_ID#
+		)
+	</insert>
+	<!-- GR15Sub INSERT END -->
+	
+<!-- GR15화면 SQL 끝 -->	
+
+
+
+
+<!-- 기타입고 -->
+<!-- GR20 SQL START-->
+
+	<!-- GR20 HEAD GRID SELECT START -->
+	<select id="GR20_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	  '' AS RECVKY	<!-- 입하문서번호 -->
+					
+				, #RCPTTY# AS RCPTTY	<!-- 입하유형 -->
+				, (SELECT SHORTX FROM DOCTM WHERE DOCUTY = #RCPTTY#) AS RCPTTYNM	<!-- 입하유형명 -->
+				
+				, #WAREKY# AS WAREKY
+				, (SELECT NAME01 FROM WAHMA WHERE WAREKY = #WAREKY#) AS WAREKYNM
+				
+				, (	SELECT	DOCCAT 
+					FROM	DOCTM
+					WHERE	DOCUTY = #RCPTTY#
+				)  AS DOCCAT		<!-- 문서유형 -->
+				
+        		, (	SELECT	SHORTX
+        			FROM	DOCCM
+        			WHERE	DOCCAT = (SELECT DOCCAT FROM DOCTM WHERE DOCUTY = #RCPTTY# )
+        		) AS DOCCATNM	<!-- 문서유형명 -->
+        		
+				, CONVERT(VARCHAR(8), GETDATE(), 112) AS DOCDAT	<!-- 문서일자 -->
+        		, CONVERT(VARCHAR(8), GETDATE(), 112) AS ARCPTD	<!-- 입하일자 -->
+        		, '' AS DOCTXT	<!-- 비고 -->
+        
+        		, 'NEW' AS STATDO	<!-- 문서상태 -->
+		    	
+		    	<!--
+        		,(	SELECT  ISNULL(EU.ERPUSR,' ')
+			        FROM    USRMA U
+							LEFT OUTER JOIN VUSER_WMSERP EU ON EU.OWNRKY = #OWNRKY#
+                            			                    AND EU.USERID = U.USERID
+        			WHERE   U.USERID = #SES_USER_ID#
+        		) AS USRID1
+        		,(	SELECT	ISNULL(EU.ERPNAM,' ')
+					FROM    USRMA U
+							LEFT OUTER JOIN VUSER_WMSERP EU ON EU.OWNRKY = #OWNRKY#
+															AND EU.USERID = U.USERID
+					WHERE   U.USERID = #SES_USER_ID#
+				) AS UNAME1
+				,(	SELECT	ISNULL(EU.DEPTID,' ')
+					FROM    USRMA U
+							LEFT OUTER JOIN VUSER_WMSERP EU ON EU.OWNRKY = #OWNRKY#
+															AND EU.USERID = U.USERID
+					WHERE   U.USERID = #SES_USER_ID#
+				) AS DEPTID1
+				,(	SELECT	ISNULL(EU.DPNAME,' ')
+					FROM    USRMA U
+							LEFT OUTER JOIN VUSER_WMSERP EU ON EU.OWNRKY = #OWNRKY#
+															AND EU.USERID = U.USERID
+					WHERE   U.USERID = #SES_USER_ID#
+				) AS DNAME1
+       			-->
+       			, '' AS USRID1
+       			, '' AS UNAME1
+       			, '' AS DEPTID1
+       			, '' AS DNAME1
+       			<!--
+				, ERPUS2 AS USRID2
+				, USNAM2 AS UNAME2
+				, DEPID2 AS DEPTID2
+				, DPNAM2 AS DNAME2
+				, ERPUS3 AS USRID3
+				, USNAM3 AS UNAME3
+				, DEPID3 AS DEPTID3
+				, DPNAM3 AS DNAME3
+				, ERPUS4 AS USRID4
+				, USNAM4 AS UNAME4
+				, DEPID4 AS DEPTID4
+				, DPNAM4 AS DNAME4
+				-->
+				, '' AS USRID2
+				, '' AS UNAME2
+				, '' AS DEPTID2
+				, '' AS DNAME2
+				, '' AS USRID3
+				, '' AS UNAME3
+				, '' AS DEPTID3
+				, '' AS DNAME3
+				, '' AS USRID4
+				, '' AS UNAME4
+				, '' AS DEPTID4
+				, '' AS DNAME4
+				
+				, CONVERT(VARCHAR(8), GETDATE(), 112) AS CREDAT
+				, REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', '') AS CRETIM
+				, #SES_USER_ID# AS CREUSR
+				, (select NMLAST+ NMFIRS from USRMA WHERE USERID = #SES_USER_ID# ) AS CUSRNM
+				
+				, CONVERT(VARCHAR(8), GETDATE(), 112) AS LMODAT
+				, REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', '') AS LMOTIM
+				, #SES_USER_ID# AS LMOUSR
+				, (select NMLAST+ NMFIRS from USRMA WHERE USERID = #SES_USER_ID# ) AS LUSRNM
+		<!--		
+		FROM	VUSER_WAREDOCUSER (NOLOCK)
+		WHERE	1 = 1
+		AND     WAREKY = #WAREKY#
+		AND     DOCUTY = #RCPTTY#
+		-->
+	</select>
+	<!-- GR20 HEAD GRID SELECT END -->
+
+
+	<!-- GR20 ITEM GRID SELECT START -->
+	<select id="GR20Sub_LIST" parameterClass="Map" resultClass="DataMap" remapResults="true">
+
+		SELECT    '' AS RECVIT
+				, '' AS SKUKEY
+				, '' AS DESC01	<!-- 품명 -->
+				, '' AS DESC02	<!-- 규격 -->
+				
+				, '' AS LOCAKY	<!-- 지번 -->
+				, '' AS QTYRCV	<!-- 입고수량 -->
+				
+				, ' ' AS LOTA05	<!-- 포장상태 -->
+				
+				, 'A010' AS LOTA02	<!-- ERP플랜트 -->
+				
+				, '' AS LOTA11	<!-- 제조일자 -->
+				, ' ' AS RSNCOD	<!-- 사유코드 -->
+												
+				, '' AS AREAKY	<!-- 창고 -->
+				, '' AS MEASKY	<!-- 단위구성 -->
+				, '' AS UOMKEY	<!-- 단위 -->
+				, '' AS DUOMKY	<!-- 단위 -->
+				, '' AS QTDUOM	<!-- 입수 -->
+				, '' AS BOXQTY	<!-- 박스수 -->
+				, '' AS REMQTY	<!-- 잔량 -->
+												
+				, '' AS LOTA01	<!-- S/N번호 -->
+				, '' AS LOTA01NM	<!-- 영업부문명 -->
+				, '' AS LOTA03	<!-- 벤더 -->
+				, '' AS LOTA04	<!-- 문서번호 -->
+				, '00' AS LOTA06	<!-- 재고상태 -->
+				, CONVERT(VARCHAR(8), GETDATE(), 112) AS LOTA12	<!-- 입고일자 -->
+				, '' AS LOTA13	<!-- 유효기간 -->
+												
+				, '' AS ASKU01	<!-- WMS 통합코드 -->
+				, '' AS ASKU02	<!-- 수출(E)/내수(D) -->
+				, '' AS ASKU03	<!-- ERP 오더유형 -->
+				, '' AS ASKU04	<!-- 거래처 입고빈 -->
+				, '' AS ASKU05	<!-- 재질 -->
+												
+				, '' AS EANCOD	<!-- EAN -->
+				, '' AS GTINCD	<!-- UPC -->
+												
+				, '' AS SKUG01	<!-- 품목유형1 -->
+				, '' AS SKUG02	<!-- 품목유형2 -->
+				, '' AS SKUG03	<!-- 품목유형3 -->
+												
+				, '' AS SKUG04	<!-- 품종 -->
+				, '' AS SKUG05	<!-- 모업체품번 -->
+				, '' AS GRSWGT	<!-- 총중량  -->
+				, '' AS NETWGT	<!-- KIT순중량 -->
+				, '' AS WGTUNT	<!-- 중량단위 -->
+				, '' AS LENGTH	<!-- 길이 -->
+				, '' AS WIDTHW	<!-- 가로 -->
+				, '' AS HEIGHT	<!-- 높이 -->
+				, '' AS CUBICM	<!-- CBM -->
+				, '' AS CAPACT	<!-- CAPA -->
+												
+				, CONVERT(VARCHAR(8), GETDATE(), 112) AS CREDAT
+				, REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', '') AS CRETIM
+				, #SES_USER_ID# AS CREUSR
+				<!-- , '' AS CUSRNM -->
+				, (SELECT NMLAST+ NMFIRS FROM USRMA WHERE USERID = #SES_USER_ID# ) AS CUSRNM
+				
+				, CONVERT(VARCHAR(8), GETDATE(), 112) AS LMODAT
+				, REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', '') AS LMOTIM
+				, #SES_USER_ID# AS LMOUSR
+				<!-- , '' AS LUSRNM -->
+				, (SELECT NMLAST+ NMFIRS FROM USRMA WHERE USERID = #SES_USER_ID# ) AS LUSRNM
+
+		
+	</select>
+	<!-- GR20 ITEM GRID SELECT END -->
+		
+	
+	<!-- GR20 HEAD GRID INSERT START -->
+	<insert id="GR20_INSERT" parameterClass="Map">
+		<!-- SQL Key : RECDH.INSERT -->
+		INSERT INTO RECDH
+		(
+			RECVKY,
+			WAREKY,
+			RCPTTY,
+			STATDO,
+			SAPSTS,
+			DOCDAT,
+			DOCCAT,
+			DPTNKY,
+			DRELIN,
+			ARCPTD,
+			
+			OWNRKY,
+			INDRCN,
+			CRECVD,
+			RSNCOD,
+			PUTSTS,
+			USRID1,
+			UNAME1,
+			DEPTID1,
+			DNAME1,
+			USRID2,
+			
+			UNAME2,
+			DEPTID2,
+			DNAME2,
+			USRID3,
+			UNAME3,
+			DEPTID3,
+			DNAME3,
+			USRID4,
+			UNAME4,
+			DEPTID4,
+			
+			DNAME4,
+			DOCTXT,
+			
+			CREDAT,
+			CRETIM,
+			CREUSR,
+			LMODAT,
+			LMOTIM,
+			LMOUSR
+		) VALUES (
+			ISNULL( #RECVKY#, ' '),
+			ISNULL( #WAREKY#, ' '),
+			ISNULL( #RCPTTY#, ' '),
+			ISNULL( #STATDO#, ' '),
+			ISNULL( #SAPSTS#, ' '),
+			ISNULL( #DOCDAT#, ' '),
+			ISNULL( #DOCCAT#, ' '),
+			ISNULL( #DPTNKY#, ' '),
+			ISNULL( #DRELIN#, ' '),
+			
+			<!-- #ARCPTD#, -->
+			CONVERT(VARCHAR(8), GETDATE(), 112),
+			
+			<!-- NVL( #OWNRKY#, ' '), -->
+			#SES_OWNER#,
+			
+			ISNULL( #INDRCN#, ' '),
+			ISNULL( #CRECVD#, ' '),
+			ISNULL( #RSNCOD#, ' '),
+			ISNULL( #PUTSTS#, ' '),
+			
+			ISNULL( #USRID1#, ' '),
+			ISNULL( #UNAME1#, ' '),
+			ISNULL( #DEPTID1#, ' '),
+			ISNULL( #DNAME1#, ' '),
+			
+			ISNULL( #USRID2#, ' '),
+			ISNULL( #UNAME2#, ' '),
+			ISNULL( #DEPTID2#, ' '),
+			ISNULL( #DNAME2#, ' '),
+			
+			ISNULL( #USRID3#, ' '),
+			ISNULL( #UNAME3#, ' '),
+			ISNULL( #DEPTID3#, ' '),
+			ISNULL( #DNAME3#, ' '),
+			
+			ISNULL( #USRID4#, ' '),
+			ISNULL( #UNAME4#, ' '),
+			ISNULL( #DEPTID4#, ' '),
+			ISNULL( #DNAME4#, ' '),
+			
+			ISNULL( #DOCTXT#, ' '),
+			
+			CONVERT(VARCHAR(8), GETDATE(), 112),
+			REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', ''),
+			#SES_USER_ID#,
+			CONVERT(VARCHAR(8), GETDATE(), 112),
+			REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', ''),
+			#SES_USER_ID#
+		)
+	</insert>
+	<!-- GR20 HEAD GRID INSERT END -->
+	
+	
+	<!-- GR20 ITEM GRID INSERT START -->
+	<insert id="GR20Sub_INSERT" parameterClass="Map">
+		INSERT INTO RECDI
+		(
+			RECVKY,
+			RECVIT,
+			STATIT,
+			SAPSTS,
+			SKUKEY,
+			LOTNUM,
+			AREAKY,
+			LOCAKY,
+			SECTID,
+			TRNUID,
+			
+			PACKID,
+			QTYRCV,
+			QTYDIF,
+			QTYUOM,
+			TRUNTY,
+			MEASKY,
+			UOMKEY,
+			QTPUOM,
+			DUOMKY,
+			QTDUOM,
+			
+			INDRCN,
+			CRECVD,
+			RSNCOD,
+			LOTA01,
+			LOTA02,
+			LOTA03,
+			LOTA04,
+			LOTA05,
+			LOTA06,
+			LOTA07,
+			
+			LOTA08,
+			LOTA09,
+			LOTA10,
+			LOTA11,
+			LOTA12,
+			LOTA13,
+			LOTA14,
+			LOTA15,
+			LOTA16,
+			LOTA17,
+			
+			LOTA18,
+			LOTA19,
+			LOTA20,
+			
+			AWMSNO,
+			REFDKY,
+			REFDIT,
+			REFCAT,
+			REFDAT,
+			
+			DESC01,
+			DESC02,
+			
+			ASKU01,
+			ASKU02,
+			ASKU03,
+			ASKU04,
+			ASKU05,
+			
+			EANCOD,
+			GTINCD,
+			
+			SKUG01,
+			SKUG02,
+			SKUG03,
+			SKUG04,
+			SKUG05,
+			
+			GRSWGT,
+			NETWGT,
+			WGTUNT,
+			LENGTH,
+			WIDTHW,
+			HEIGHT,
+			CUBICM,
+			CAPACT,
+			
+			QTYORG,
+			SMANDT,
+			SEBELN,
+			SEBELP,
+			SZMBLNO,
+			SZMIPNO,
+			STRAID,
+			SVBELN,
+			SPOSNR,
+			STKNUM,
+			
+			STPNUM,
+			SWERKS,
+			SLGORT,
+			SDATBG,
+			STDLNR,
+			SSORNU,
+			SSORIT,
+			SMBLNR,
+			SZEILE,
+			SMJAHR,
+			
+			SXBLNR,
+			RCPRSN,
+			
+			CREDAT,
+			CRETIM,
+			CREUSR,
+			LMODAT,
+			LMOTIM,
+			LMOUSR
+			
+		) VALUES (
+		
+			#RECVKY#,
+			#RECVIT#,
+			
+			( 
+			CASE	WHEN	#STATIT# = ''		THEN	'NEW'
+					WHEN	#STATIT# = ' '		THEN	'NEW'
+					WHEN	#STATIT# IS NULL	THEN	'NEW'
+			ELSE	#STATIT#
+			END
+			),
+			
+			
+			ISNULL( #SAPSTS#, ' '),
+			ISNULL( #SKUKEY#, ' '),
+			
+			ISNULL( #LOTNUM#, ' '),
+						
+			ISNULL( #AREAKY#, ' '),
+			<!-- ' ', -->
+			
+			ISNULL( #LOCAKY#, ' '),
+			ISNULL( #SECTID#, ' '),
+			ISNULL( #TRNUID#, ' '),
+			
+			ISNULL( #PACKID#, ' '),
+								
+			CONVERT(NUMERIC(20,3), #QTYRCV#),
+					
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#QTYDIF# = ''	THEN	'0'
+											WHEN	#QTYDIF# = ' '	THEN	'0'
+											WHEN	#QTYDIF# IS NULL THEN	'0'
+											ELSE	#QTYDIF#
+									END
+									)
+					),
+			
+			CONVERT(NUMERIC(20,3), #QTYRCV#),
+			
+			ISNULL( #TRUNTY#, ' '),
+			ISNULL( #MEASKY#, ' '),
+			ISNULL( #UOMKEY#, ' '),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#QTPUOM# = ''	THEN	'1'
+											WHEN	#QTPUOM# = ' '	THEN	'1'
+											WHEN	#QTPUOM# = '0'	THEN	'1'
+											WHEN	#QTPUOM# IS NULL THEN	'1'
+									ELSE	#QTPUOM#
+									END
+									)
+					),
+			
+			ISNULL( #DUOMKY#, ' '),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#QTDUOM# = ''	THEN	'0'
+											WHEN	#QTDUOM# = ' '	THEN	'0'
+											WHEN	#QTDUOM# IS NULL THEN	'0'
+									ELSE	#QTDUOM#
+									END
+									)
+					),
+			
+			ISNULL( #INDRCN#, ' '),
+			ISNULL( #CRECVD#, ' '),
+			
+			ISNULL( #RSNCOD#, ' '),
+			
+			ISNULL( #LOTA01#, ' '),
+			
+			<!-- ISNULL( #LOTA02#, ' '), -->	<!-- ERP플랜트 -->
+			CASE WHEN #LOTA02# = ''  THEN 'A010'
+				 WHEN #LOTA02# = ' ' THEN 'A010'
+				 WHEN #LOTA02# IS NULL	THEN 'A010'
+				 ELSE #LOTA02# 
+			END,
+			
+			ISNULL( #LOTA03#, ' '),	<!-- 출하LOT No. -->
+			ISNULL( #LOTA04#, ' '),	<!-- 등급 -->
+			ISNULL( #LOTA05#, ' '),	<!-- 포장상태 -->
+			
+			<!-- 재고상태 -->
+			<!-- ISNULL( #LOTA06#, ' '), -->
+			CASE WHEN #LOTA06# = ''  THEN '00'
+				 WHEN #LOTA06# = ' ' THEN '00'
+				 WHEN #LOTA06# IS NULL	THEN '00'
+				 ELSE #LOTA06# 
+			END,
+			
+			
+			ISNULL( #LOTA07#, ' '),
+			
+			<!-- ISNULL( #LOTA08#,'5000'), -->
+			CASE WHEN #LOTA08# = ''		THEN '5000'
+				 WHEN #LOTA08# = ' '	THEN '5000'
+				 WHEN #LOTA08# IS NULL	THEN '5000'
+				 ELSE #LOTA08#
+			END,	 
+			
+			ISNULL( #LOTA09#, ' '),
+			ISNULL( #LOTA10#, ' '),
+			
+			<!-- 제조일자 -->
+			<!--
+			CASE WHEN #LOTA11# = ''		THEN CONVERT(VARCHAR(8), GETDATE(), 112)
+				 WHEN #LOTA11# = ' '	THEN CONVERT(VARCHAR(8), GETDATE(), 112)
+				 WHEN #LOTA11# IS NULL	THEN CONVERT(VARCHAR(8), GETDATE(), 112)
+				 ELSE #LOTA11#
+			END,
+			-->
+			CASE WHEN #LOTA11# = ''		THEN CONVERT(VARCHAR, GETDATE(), 112)
+				 WHEN #LOTA11# = ' '	THEN CONVERT(VARCHAR, GETDATE(), 112)
+				 WHEN #LOTA11# IS NULL	THEN CONVERT(VARCHAR, GETDATE(), 112)
+				 ELSE #LOTA11#
+			END,
+			
+			<!-- 입고일자 -->
+			CASE WHEN #LOTA12# = ''		THEN CONVERT(VARCHAR(8), GETDATE(), 112)
+				 WHEN #LOTA12# = ' '	THEN CONVERT(VARCHAR(8), GETDATE(), 112)
+				 WHEN #LOTA12# IS NULL	THEN CONVERT(VARCHAR(8), GETDATE(), 112)
+				 ELSE #LOTA12#
+			END,
+			
+			ISNULL( #LOTA13#, ' '),
+			ISNULL( #LOTA14#, ' '),
+			ISNULL( #LOTA15#, ' '),
+			
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#LOTA16# = ''	THEN	'0'
+											WHEN	#LOTA16# = ' '	THEN	'0'
+											WHEN	#LOTA16# IS NULL THEN	'0'
+									ELSE	#LOTA16#
+									END
+									)
+					),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#LOTA17# = ''	THEN	'0'
+											WHEN	#LOTA17# = ' '	THEN	'0'
+											WHEN	#LOTA17# IS NULL THEN	'0'
+									ELSE	#LOTA17#
+									END
+									)
+					),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#LOTA18# = ''	THEN	'0'
+											WHEN	#LOTA18# = ' '	THEN	'0'
+											WHEN	#LOTA18# IS NULL THEN	'0'
+									ELSE	#LOTA18#
+									END
+									)
+					),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#LOTA19# = ''	THEN	'0'
+											WHEN	#LOTA19# = ' '	THEN	'0'
+											WHEN	#LOTA19# IS NULL THEN	'0'
+									ELSE	#LOTA19#
+									END
+									)
+					),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#LOTA20# = ''	THEN	'0'
+											WHEN	#LOTA20# = ' '	THEN	'0'
+											WHEN	#LOTA20# IS NULL THEN	'0'
+									ELSE	#LOTA20#
+									END
+									)
+					),
+			
+			
+			ISNULL( #AWMSNO#, ' '),
+			ISNULL( #REFDKY#, ' '),
+			ISNULL( #REFDIT#, ' '),
+			ISNULL( #REFCAT#, ' '),
+			ISNULL( #REFDAT#, ' '),
+			
+			ISNULL( #DESC01#, ' '),
+			ISNULL( #DESC02#, ' '),
+			
+			ISNULL( #ASKU01#, ' '),
+			ISNULL( #ASKU02#, ' '),
+			ISNULL( #ASKU03#, ' '),
+			ISNULL( #ASKU04#, ' '),
+			ISNULL( #ASKU05#, ' '),
+			
+			ISNULL( #EANCOD#, ' '),
+			ISNULL( #GTINCD#, ' '),
+			
+			ISNULL( #SKUG01#, ' '),
+			ISNULL( #SKUG02#, ' '),
+			ISNULL( #SKUG03#, ' '),
+			
+			ISNULL( #SKUG04#, ' '),
+			ISNULL( #SKUG05#, ' '),
+			
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#GRSWGT# = ''	THEN	'0'
+											WHEN	#GRSWGT# = ' '	THEN	'0'
+											WHEN	#GRSWGT# IS NULL THEN	'0'
+									ELSE	#GRSWGT#
+									END
+									)
+					),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#NETWGT# = ''	THEN	'0'
+											WHEN	#NETWGT# = ' '	THEN	'0'
+											WHEN	#NETWGT# IS NULL THEN	'0'
+									ELSE	#NETWGT#
+									END
+									)
+					),
+			
+			ISNULL( #WGTUNT#, ' '),
+			
+			ISNULL( #LENGTH#, 0),
+			ISNULL( #WIDTHW#, 0),
+			ISNULL( #HEIGHT#, 0),
+			ISNULL( #CUBICM#, 0),
+			ISNULL( #CAPACT#, 0),
+			
+			CONVERT(NUMERIC(20,3),	(
+									CASE	WHEN	#QTYORG# = ''	THEN	'0'
+											WHEN	#QTYORG# = ' '	THEN	'0'
+											WHEN	#QTYORG# IS NULL THEN	'0'
+									ELSE	#QTYORG#
+									END
+									)
+					),
+			
+			ISNULL( #SMANDT#, ' '),
+			ISNULL( #SEBELN#, ' '),
+			ISNULL( #SEBELP#, ' '),
+			ISNULL( #SZMBLNO#, ' '),
+			ISNULL( #SZMIPNO#, ' '),
+			ISNULL( #STRAID#, ' '),
+			ISNULL( #SVBELN#, ' '),
+			ISNULL( #SPOSNR#, ' '),
+			ISNULL( #STKNUM#, ' '),
+			
+			ISNULL( #STPNUM#, ' '),
+			ISNULL( #SWERKS#, ' '),
+			ISNULL( #SLGORT#, ' '),
+			ISNULL( #SDATBG#, ' '),
+			ISNULL( #STDLNR#, ' '),
+			ISNULL( #SSORNU#, ' '),
+			ISNULL( #SSORIT#, ' '),
+			ISNULL( #SMBLNR#, ' '),
+			ISNULL( #SZEILE#, ' '),
+			ISNULL( #SMJAHR#, ' '),
+			
+			ISNULL( #SXBLNR#, ' '),
+			ISNULL( #RCPRSN#, ' '),
+			
+			CONVERT(VARCHAR(8), GETDATE(), 112),
+			REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', ''),
+			#SES_USER_ID#,
+			CONVERT(VARCHAR(8), GETDATE(), 112),
+			REPLACE( CONVERT(VARCHAR(8), GETDATE(), 108), ':', ''),
+			#SES_USER_ID#
+			
+			<!--
+			#CREDAT#,
+			#CRETIM#,
+			#CREUSR#,
+			#LMODAT#,
+			#LMOTIM#,
+			#LMOUSR#
+			-->
+		)
+	</insert>
+	<!-- GR20 ITEM GRID INSERT END -->
+	
+<!-- GR20 SQL END-->
+<!-- //기타입고 -->
+	
+	
+	<select id="RECDTYPE_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT DOCUTY AS VALUE_COL
+			 , SHORTX AS TEXT_COL
+		FROM DOCTM
+		WHERE 1 = 1
+		AND DOCCAT = '100'
+		<isEqual property="RCPTTY" compareValue="GR02">
+			AND DOCUTY IN ('101','102','103','104','105','106','107')
+		</isEqual>
+		<isEqual property="RCPTTY" compareValue="GR12">
+			AND DOCUTY IN ('113','114')
+		</isEqual>
+	</select>
+	
+	<select id="RECDTYPEGR15_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT DOCUTY AS VALUE_COL
+			 , SHORTX AS TEXT_COL
+		FROM DOCTM
+		WHERE 1 = 1
+		AND DOCCAT = '100'
+		AND DOCUTY IN ('111','112')
+	</select>	
+	
+	<select id="DOCUTY180COMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	DOCUTY AS VALUE_COL,
+				SHORTX AS TEXT_COL
+		FROM	DOCTM
+		WHERE	1 = 1
+		AND		DOCCAT = '100'
+		AND		DOCUTY = '180'
+	</select>	
+	
+	<select id="DOCUTY107COMBO_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT	DOCUTY AS VALUE_COL,
+				SHORTX AS TEXT_COL
+		FROM	DOCTM
+		WHERE	1 = 1
+		AND		DOCCAT = '100'
+		AND		DOCUTY = '107'
+	</select>	
+	
+	<select id="AREAKYval_MAP" parameterClass="Map" resultClass="DataMap">
+		SELECT COUNT(*)CNT
+        FROM   
+        	AREMA 
+		WHERE  
+			AREAKY = #AREA#
+	</select>	
+</sqlMap>

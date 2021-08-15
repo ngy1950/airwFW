@@ -1,0 +1,16 @@
+{
+  "short_name": "WMS PDA",
+  "name": "WMS PDA",
+  "icons": [
+    {
+      "src": "/common/theme/webdek/images/main_webdek_wms.png",
+      "sizes": "216x216",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/pda/index.page?isFullScreen=Y",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#444",
+  "background_color": "#444"
+}

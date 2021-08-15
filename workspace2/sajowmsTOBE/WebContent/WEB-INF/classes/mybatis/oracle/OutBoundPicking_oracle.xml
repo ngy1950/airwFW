@@ -1,0 +1,1988 @@
+<?xml version="1.0" encoding="UTF-8" ?>                                                                                                                                               
+                                                                                                                                                                                      
+<!DOCTYPE mapper                                                                                                                                                                      
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"                                                                                                                                         
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+ 
+<mapper namespace="OutBoundPicking"> 
+ 
+ 
+	<!-- **[DL42] 품목별피킹리스트 헤드 조회쿼리 --> 
+	<select id="DL42_HEAD_LIST" parameterType="hashmap" resultType="DataMap"> 
+	 
+		SELECT S.SKUKEY||S.GRPOKY||SR.CARDAT AS SEARCHKEY, 
+		       S.GRPOKY  AS GRPOKY,  
+		       TASDH.WAREKY AS WAREKY,  
+		       WH.NAME01 AS WAREKYNM,  
+		       SR.CARDAT AS CARDAT, 
+		       S.SKUKEY  AS SKUKEY,  
+		       SM.DESC01 AS DESC01,                  
+		       SM.DESC02 AS DESC02, 
+		       SM.ASKU01 AS ASKU01, 
+		       SM.ASKU02 AS ASKU02, 
+		       SM.ASKU03 AS ASKU03, 
+		       SM.ASKU04 AS ASKU04, 
+		       SM.ASKU05 AS ASKU05, 
+		       SM.EANCOD AS EANCOD, 
+		       SM.GTINCD AS GTINCD, 
+		       SM.SKUG01 AS SKUG01, 
+		       SM.SKUG02 AS SKUG02, 
+		       SM.SKUG03 AS SKUG03, 
+		       SM.SKUG04 AS SKUG04, 
+		       SM.SKUG05 AS SKUG05,  
+		       (SELECT COUNT(*) 
+		          FROM TASDH SH 
+		               INNER JOIN TASDI SS 
+		                       ON SH.TASKKY = SS.TASKKY 
+		                LEFT OUTER JOIN (SELECT DISTINCT SHPOKY, SHPOIT,   
+		                                                 CARDAT, CARNUM,  
+		                                                 SHIPSQ,  
+		                                                 RECAYN, TASKKY 
+		                                  FROM SHPDR  
+		                                 WHERE RECAYN = 'N'  
+		                                   AND TASKKY != ' ' 
+		                                   AND SHIPSQ != 0 
+		                                   AND CARNUM != ' ')  SSR 
+		                       ON SSR.SHPOKY = SS.SHPOKY  
+		                      AND SSR.SHPOIT = SS.SHPOIT         
+		         WHERE 1=1 
+		           AND SSR.TASKKY != ' ' 
+		           AND SS.STATIT = 'NEW' 
+		           AND SS.LOCASR != 'DOCLOC' 
+		 
+		        AND SS.SKUKEY||SS.GRPOKY||SSR.CARDAT = S.SKUKEY||S.GRPOKY||SR.CARDAT  
+		           AND SS.SKUKEY = S.SKUKEY 
+		           AND SS.GRPOKY = S.GRPOKY 
+		           AND SSR.CARDAT = SR.CARDAT  
+		           AND SS.OWNRKY = S.OWNRKY 
+		           AND SH.WAREKY = TASDH.WAREKY) AS COMPLETECNT, 
+		       DECODE(SUM(S.QTTAOR-S.QTCOMP) , 0 , 'FPC',  'NEW') 
+		 
+		  FROM TASDH 
+		       INNER JOIN WAHMA WH 
+		               ON WH.WAREKY = TASDH.WAREKY 
+		       INNER JOIN TASDI S 
+		               ON TASDH.TASKKY = S.TASKKY 
+		       INNER JOIN SKUMA SM 
+		               ON SM.OWNRKY = S.OWNRKY 
+		              AND SM.SKUKEY = S.SKUKEY 
+		        LEFT OUTER JOIN (SELECT DISTINCT SHPOKY, SHPOIT, ARRIVA,  
+		                                         CARDAT, CARNUM,  
+		                                         SHIPSQ, SORTSQ, DRIVER,  
+		                                         RECAYN, TASKKY 
+		                          FROM SHPDR  
+		                         WHERE RECAYN = 'N'  
+		                           AND TASKKY != ' ' 
+		                           AND CARNUM != ' ')  SR 
+		               ON SR.SHPOKY = S.SHPOKY  
+		              AND SR.SHPOIT = S.SHPOIT               
+		       LEFT OUTER JOIN SHPDI 
+		               ON SHPDI.SHPOKY = S.SHPOKY  
+		              AND SHPDI.SHPOIT = S.SHPOIT 
+		       LEFT OUTER JOIN SHPDH  
+		               ON SHPDH.SHPOKY = S.SHPOKY 
+		 
+		 WHERE 1=1 
+		   AND SR.TASKKY != ' ' 
+		   AND  S.LOCASR != 'DOCLOC' 
+		   AND  SHPDH.DRELIN = 'V' 
+		    
+		   AND TASDH.WAREKY = #{WAREKY} 
+		   AND SHPDH.OWNRKY = #{OWNRKY} 
+		 
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">                                                                                       
+		${RANGE_SQL}                                                                                                                          
+		</if> 
+		    
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("ERPSO")'> 
+		   AND SHPDH.SHPMTY IN ('211','212','213','214','216','267') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("TOTAL")'> 
+		   AND SHPDH.SHPMTY IN ('299') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("MOVE")'> 
+		   AND SHPDH.SHPMTY IN ('266') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("RTNPUR")'> 
+		   AND SHPDH.SHPMTY IN ('270') 
+		</if> 
+		<if test="RANGE != null and RANGE != ''"> 
+		   AND <if test="RANGE_SQL != null and RANGE_SQL != ''"> 
+		           ${RANGE_SQL} 
+		       </if> 
+		</if> 
+		   
+		 GROUP BY S.SKUKEY||S.GRPOKY||SR.CARDAT, S.GRPOKY, TASDH.WAREKY, WH.NAME01,  
+		          SR.CARDAT, S.SKUKEY, SM.DESC01, SM.DESC02, 
+		          SM.ASKU01,SM.ASKU02,SM.ASKU03,SM.ASKU04,SM.ASKU05, 
+		          SM.ASKL01,SM.ASKL02,SM.ASKL03,SM.ASKL04,SM.ASKL05, 
+		          SM.EANCOD,SM.GTINCD,SM.SKUG01,SM.SKUG02,SM.SKUG03, 
+		          SM.SKUG04,SM.SKUG05, S.OWNRKY, SHPDH.OWNRKY 
+		 ORDER BY S.GRPOKY DESC, S.SKUKEY 
+	 
+	 
+	</select> 
+	<!-- **[DL42] 품목별피킹리스트 아이템 조회쿼리 --> 
+	<select id="DL42_ITEM_LIST" parameterType="hashmap" resultType="DataMap"> 
+	 
+		SELECT S.SKUKEY||S.GRPOKY||SR.CARDAT AS SEARCHKEY, 
+		       S.LOCASR AS LOCASR ,  
+		       SR.CARNUM AS CARNUM,  
+		       S.LOTA13  AS LOTA13,  
+		       DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP) , SUM(S.QTTAOR) ) QTTAOR, 
+		       SUM(S.QTTAOR) AS QTCOMP, 
+		       GRPOIT AS GRPOIT,  
+		       GRPOKY AS GRPOKY, 
+		       NVL(SM.QTYSTD,0) AS PLIQTY, 
+		       NVL(SM.QTDUOM,0) AS BXIQTY, 
+		       NVL(  TRUNC( DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP),SUM(S.QTCOMP)) / DECODE(SM.QTDUOM, 0, NULL,SM.QTDUOM) ) ,0) AS BOXQTY,        
+		       NVL(  TRUNC( DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP),SUM(S.QTCOMP)) / DECODE(SM.QTYSTD, 0, NULL,SM.QTYSTD) ) ,0) AS PLTQTY,        
+		       NVL(MOD( DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP),SUM(S.QTCOMP)) , DECODE(SM.QTDUOM, 0,NULL, SM.QTDUOM)),0) AS REMQTY, 
+		       NVL(SM.GRSWGT,0) * (SUM(S.QTTAOR-S.QTCOMP))  AS GRSWGT, 
+		       NVL(SM.GRSWGT,0)   AS GRSWGTCNT, 
+		       DECODE(SUM(S.QTTAOR-S.QTCOMP) , 0 , 'FPC',  'NEW') STATIT, 
+		       DECODE(DECODE(SUM(S.QTTAOR-S.QTCOMP) , 0 , 'FPC',  'NEW') , 'NEW', 'NO','YES') AS BTNPOPUP, 
+		       SR.CARNUM ||  '-'|| CM.DESC01 || '-' || SR.SHIPSQ CARNUMNM, 
+		       SR.CARDAT 
+		  FROM TASDH 
+		       INNER JOIN TASDI S 
+		               ON TASDH.TASKKY = S.TASKKY 
+		       INNER JOIN SKUMA SM 
+		               ON SM.OWNRKY = S.OWNRKY 
+		              AND SM.SKUKEY = S.SKUKEY 
+		        LEFT OUTER JOIN (SELECT DISTINCT SHPOKY, SHPOIT, ARRIVA,  
+		                                         CARDAT, CARNUM,  
+		                                         SHIPSQ, SORTSQ, DRIVER,  
+		                                         RECAYN, TASKKY 
+		                           FROM SHPDR  
+		                          WHERE RECAYN = 'N'  
+		                            AND TASKKY != ' ' 
+		                            AND CARNUM != ' ')  SR 
+		               ON SR.SHPOKY = S.SHPOKY  
+		              AND SR.SHPOIT = S.SHPOIT               
+		       LEFT OUTER  JOIN SHPDI 
+		               ON SHPDI.SHPOKY = S.SHPOKY  
+		              AND SHPDI.SHPOIT = S.SHPOIT 
+		       LEFT OUTER JOIN SHPDH  
+		               ON SHPDH.SHPOKY = S.SHPOKY 
+		       LEFT OUTER JOIN CARMA CM 
+		               ON CM.OWNRKY = S.OWNRKY 
+		              AND CM.WAREKY = TASDH.WAREKY  
+		              AND CM.CARNUM = SR.CARNUM 
+		 WHERE 1=1 
+		   AND SR.TASKKY != ' ' 
+		   AND S.LOCASR  != 'DOCLOC' 
+		   AND SHPDH.DRELIN = 'V' 
+		   AND S.SKUKEY||S.GRPOKY||SR.CARDAT = #{SEARCHKEY} 
+		       
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("ERPSO")'> 
+		   AND SHPDH.SHPMTY IN ('211','212','213','214','216','267') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("TOTAL")'> 
+		   AND SHPDH.SHPMTY IN ('299') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("MOVE")'> 
+		   AND SHPDH.SHPMTY IN ('266') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("RTNPUR")'> 
+		   AND SHPDH.SHPMTY IN ('270') 
+		</if> 
+		<if test="RANGE_SQL != null and RANGE_SQL != ''"> 
+		      ${RANGE_SQL} 
+		</if> 
+		   
+		GROUP BY S.SKUKEY||S.GRPOKY||SR.CARDAT, S.LOCASR, SR.CARNUM,  
+		     S.LOTA13, SM.QTYSTD, SM.QTDUOM, SM.GRSWGT, GRPOIT, GRPOKY,  
+		     S.OWNRKY, TASDH.WAREKY, CM.DESC01, SR.SHIPSQ,SR.CARDAT 
+		 
+		 ORDER BY SR.CARNUM 
+	 
+	</select> 
+	
+	<!-- **[DL42] 품목별피킹리스트 그룹핑 조회쿼리 --> 
+	<select id="DL42_PICKINGLIST_LIST" parameterType="hashmap" resultType="DataMap"> 
+		SELECT  
+		       S.SKUKEY||S.GRPOKY AS SEARCHKEY, 
+		       S.LOCASR AS LOCASR ,  
+		       SR.CARNUM AS CARNUM,  
+		       S.LOTA13  AS LOTA13,  
+		 
+		       DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP) , SUM(S.QTTAOR) ) QTTAOR, 
+		       SUM(S.QTTAOR-S.QTCOMP) AS QTCOMP, 
+		       NVL(TRIM(S.GRPOIT),'EMPTY')  AS GRPOIT,  
+		       S.GRPOKY AS GRPOKY, 
+		       S.TASKKY AS TASKKY, 
+		       S.TASKIT AS TASKIT 
+		  FROM TASDH 
+		       INNER JOIN TASDI S 
+		               ON TASDH.TASKKY = S.TASKKY 
+		       INNER JOIN SKUMA SM 
+		               ON SM.OWNRKY = S.OWNRKY 
+		              AND SM.SKUKEY = S.SKUKEY 
+		        LEFT OUTER JOIN (SELECT DISTINCT SHPOKY, SHPOIT, ARRIVA,  
+		                                         CARDAT, CARNUM,  
+		                                         SHIPSQ, SORTSQ, DRIVER,  
+		                                         RECAYN, TASKKY 
+		                          FROM SHPDR  
+		                         WHERE RECAYN = 'N'  
+		                           AND TASKKY != ' ' 
+		                           AND CARNUM != ' ')  SR 
+		               ON SR.SHPOKY = S.SHPOKY  
+		              AND SR.SHPOIT = S.SHPOIT               
+		       LEFT OUTER  JOIN SHPDI 
+		               ON SHPDI.SHPOKY = S.SHPOKY  
+		               AND SHPDI.SHPOIT = S.SHPOIT 
+		       LEFT OUTER JOIN SHPDH  
+		               ON SHPDH.SHPOKY = S.SHPOKY 
+		       LEFT OUTER JOIN CARMA CM 
+		               ON CM.OWNRKY = S.OWNRKY 
+		              AND CM.CARNUM = SR.CARNUM 
+		 WHERE 1=1 
+		 
+		 
+		AND SR.TASKKY != ' ' 
+		AND S.LOCASR != 'DOCLOC' 
+		AND  SHPDH.DRELIN = 'V' 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("ERPSO")'> 
+		   AND SHPDH.SHPMTY IN ('211','212','213','214','267') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("TOTAL")'> 
+		   AND SHPDH.SHPMTY IN ('299') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("MOVE")'> 
+		   AND SHPDH.SHPMTY IN ('266') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("RTNPUR")'> 
+		   AND SHPDH.SHPMTY IN ('270') 
+		</if> 
+		<if test="RANGE_SQL != null and RANGE_SQL != ''"> 
+		      ${RANGE_SQL} 
+		</if> 
+		 
+		   AND S.GRPOKY = NVL(#{GRPOKY}, ' ') 
+		   AND S.GRPOIT = NVL(#{GRPOIT}, ' ') 
+		   AND S.LOCASR = #{LOCASR} 
+		   AND S.LOTA13 = #{LOTA13} 
+		 
+		   AND SR.CARNUM ||  '-'|| CM.DESC01 || '-' || SR.SHIPSQ = #{CARNUMNM} 
+		 
+		   AND S.SKUKEY||S.GRPOKY||SR.CARDAT =  #{SEARCHKEY} 
+		   AND TASDH.DOCDAT > TO_CHAR(SYSDATE - 60, 'YYYYMMDD') 
+		   AND SHPDH.DOCDAT > TO_CHAR(SYSDATE - 60, 'YYYYMMDD') 
+		  
+		 GROUP BY S.SKUKEY||S.GRPOKY, S.LOCASR, SR.CARNUM, S.LOTA13, SM.QTYSTD, SM.QTDUOM, SM.GRSWGT, GRPOIT, GRPOKY, S.TASKKY, S.TASKIT, CM.DESC01, SR.SHIPSQ  
+		 
+		 ORDER BY SR.CARNUM 
+	</select> 
+	 
+	<!-- **[DL42] 품목별피킹리스트 GRPOIT_MAP 쿼리 --> 
+	<select id="DL42_GRPOIT_MAP" parameterType="hashmap" resultType="DataMap"> 
+		SELECT NVL(TRIM(MAX(GRPOIT)),'FAIL') AS GRPOIT FROM TASDI WHERE GRPOKY = #{GRPOKY} 
+	 
+	</select> 
+	 
+	<!-- **[DL42] 품목별피킹리스트 그룹핑 GRPOKY_MAP 쿼리 --> 
+	<select id="DL42_GRPOKY_MAP" parameterType="hashmap" resultType="DataMap"> 
+		SELECT SEQ_PICKINGLIST_SKU.nextval AS GROUPKY FROM DUAL 
+	</select> 
+	 
+	<!-- **[DL42] 품목별피킹리스트 그룹핑 업데이트 쿼리 --> 
+	<update id="DL42_GROUPING_UPDATE" parameterType="hashmap"> 
+	 
+		UPDATE TASDI 
+		      SET GRPOKY = #{GRPOKY}, 
+		          GRPOIT = #{GRPOIT} 
+		  WHERE TASKKY = #{TASKKY} 
+		      AND TASKIT = #{TASKIT} 
+	 
+	</update> 
+	 
+	<!-- **[DL42] 품목별피킹리스트 그룹핑 삭제 쿼리 --> 
+	<update id="DL42_DELGROUP_UPDATE" parameterType="hashmap"> 
+	 
+		UPDATE TASDI 
+		   SET GRPOKY = ' ', 
+		       GRPOIT = ' ' 
+		 WHERE GRPOKY = #{GRPOKY} 
+		   AND GRPOIT = #{GRPOIT} 
+	 
+	</update> 
+	 
+	<!-- [DL43] DAS FILE 기반데이터 생성  안산 --> 
+	<update id="P_SAJO_PICKING_CMP_UPDATE" parameterType="hashmap"> 
+		{ call P_SAJO_PICKING_CMP(#{GRPOKY}, #{GRPOIT}, #{SDIFKY}, #{SDIFIT}, #{QTCOMP}, #{SES_USER_ID}, #{WRKFLG}, #{ERRNUM}, #{ERRMSG})} 
+	</update> 
+	  
+	  
+	 <!-- **[DL43] 담당자별 피킹리스트 조회쿼리 --> 
+	<select id="DL43_HEAD_LIST" parameterType="hashmap" resultType="DataMap"> 
+	 
+		SELECT  /*+ ORDERED FIRST_ROWS */TOTAL.WORKNM||TOTAL.CARNUM||TOTAL.SDIFKY||TOTAL.SHIPSQ||TOTAL.CARDAT AS SEARCHKEY, 
+		TOTAL.SDIFKY  AS SDIFKY,  
+		TOTAL.WAREKY AS WAREKY,  
+		TOTAL.NAME01 AS WAREKYNM,  
+		TOTAL.WORKNM  AS WORKNM, 
+		TOTAL.CARDAT AS CARDAT,  
+		TOTAL.CARNUM AS CARNUM,  
+		MAX(TOTAL.DRIVER) AS DRIVER,  
+		TOTAL.SHIPSQ AS SHIPSQ, 
+		 
+		DECODE(SUM(TOTAL.QTTAOR-TOTAL.QTCOMP) , 0 , 'FPC',  'NEW'), 
+		TOTAL.CARNUM ||  '-'|| 
+		TOTAL.DESC01 
+		|| '-' || TOTAL.SHIPSQ CARNUMNM 
+		,SUM(TOTAL.BOXQTY) BOXQTY 
+		,SUM(TOTAL.COMPLETECNT) COMPLETECNT 
+		,SUM(TOTAL.COMPLETECNT) COMPLETECNT 
+		     , CASE
+                   WHEN DECODE(SUM(TOTAL.QTTAOR-TOTAL.QTCOMP) , 0 , 'FPC',  'NEW') = 'FPC' THEN 'V'
+                     ELSE ' '
+               END PICKED
+		  ,TOTAL.DNAME3 AS DNAME3
+		  
+		 FROM 
+		 (SELECT 
+		       (SELECT COUNT(*) 
+		          FROM TASDH SH 
+		               INNER JOIN TASDI SS 
+		               ON SH.TASKKY = SS.TASKKY 
+		               LEFT OUTER JOIN (SELECT DISTINCT SHPOKY, SHPOIT, CARDAT, CARNUM, SHIPSQ, RECAYN, TASKKY 
+		                              FROM SHPDR  
+		                                 WHERE RECAYN = 'N'  
+		                                   AND TASKKY != ' ' 
+		                                   AND SHIPSQ != 0 
+		                                   AND CARNUM != ' ' 
+		                                   AND CARDAT BETWEEN TO_CHAR(SYSDATE-7, 'YYYYMMDD') AND TO_CHAR(SYSDATE+7, 'YYYYMMDD'))  SSR 
+
+		                ON SSR.SHPOKY = SS.SHPOKY  
+		               AND SSR.SHPOIT = SS.SHPOIT         
+		         WHERE 1=1 
+		          
+		        AND SSR.TASKKY != ' ' 
+		        AND SS.STATIT = 'NEW' 
+		        AND SS.LOCASR !='DOCLOC' 
+		        AND S.WORKNM = SS.WORKNM 
+		        AND SR.CARNUM = SSR.CARNUM 
+		        AND S.SDIFKY = SS.SDIFKY 
+		        AND SR.SHIPSQ = SSR.SHIPSQ 
+		        AND SR.CARDAT = SSR.CARDAT 
+		        AND SS.OWNRKY = S.OWNRKY 
+		        AND SH.WAREKY = TASDH.WAREKY    
+		       ) AS COMPLETECNT 
+		     ,TRUNC((S.QTTAOR-S.QTCOMP) / DECODE(SM.QTDUOM, 0,NULL, SM.QTDUOM),1) AS BOXQTY  
+		     ,S.WORKNM 
+		     ,SR.CARNUM 
+		     ,S.SDIFKY 
+		     ,SR.SHIPSQ 
+		     ,SR.CARDAT 
+		     ,TASDH.WAREKY 
+		     ,WH.NAME01 
+		     ,S.QTTAOR 
+		     ,S.QTCOMP 
+		     ,CM.DESC01 
+		     ,SR.DRIVER 
+		     ,SHPDH.OWNRKY 
+		     ,SM.QTDUOM 
+		     ,TASDH.DNAME3 AS DNAME3
+		 FROM WAHMA WH 
+		       INNER JOIN TASDH  
+		               ON WH.WAREKY = TASDH.WAREKY 
+		       INNER JOIN TASDI S 
+		               ON TASDH.TASKKY = S.TASKKY 
+		       INNER JOIN SKUMA SM 
+		               ON SM.OWNRKY = S.OWNRKY 
+		              AND SM.SKUKEY = S.SKUKEY 
+		        LEFT OUTER JOIN SHPDR SR 
+		               ON SR.SHPOKY = S.SHPOKY  
+		              AND SR.SHPOIT = S.SHPOIT  
+		        LEFT OUTER JOIN CARMA CM 
+		                    ON CM.OWNRKY = S.OWNRKY  
+		                   AND CM.WAREKY = TASDH.WAREKY  
+		                   AND CM.CARNUM = SR.CARNUM  
+		        INNER JOIN V_SHPDH_DL43 SHPDH 
+		                ON SHPDH.SHPOKY = S.SHPOKY    
+		       LEFT OUTER  JOIN SHPDI 
+		               ON SHPDI.SHPOKY = S.SHPOKY  
+		              AND SHPDI.SHPOIT = S.SHPOIT 
+		        
+			 WHERE 1=1 
+			AND SR.TASKKY != ' ' 
+			AND S.LOCASR != 'DOCLOC' 
+			AND SHPDH.DRELIN = 'V' 
+			AND SR.RECAYN = 'N'  
+			AND SR.TASKKY != ' ' 
+			AND SR.SHIPSQ != 0 
+			AND SR.CARNUM != ' ' 
+			
+			AND SR.CARDAT BETWEEN TO_CHAR(SYSDATE-7, 'YYYYMMDD') AND TO_CHAR(SYSDATE+7, 'YYYYMMDD') 
+			
+			<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("ERPSO")'> 
+			AND SHPDH.SHPMTY IN ('211','212','213','214','215','216','267') 
+			</if> 
+			<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("TOTAL")'> 
+			AND SHPDH.SHPMTY IN ('299') 
+			</if> 
+			<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("MOVE")'> 
+			AND SHPDH.SHPMTY IN ('266') 
+			</if> 
+			<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("RTNPUR")'> 
+			AND SHPDH.SHPMTY IN ('270') 
+			</if> 
+			<if test="RANGE_SQL != null and RANGE_SQL != ''"> 
+			${RANGE_SQL} 
+			</if> 
+			AND SHPDH.OWNRKY = #{OWNRKY} 
+			AND SHPDH.WAREKY = #{WAREKY} 
+			 
+			) TOTAL 
+			 
+			GROUP BY  
+			  TOTAL.WORKNM||TOTAL.CARNUM||TOTAL.SDIFKY||TOTAL.SHIPSQ||TOTAL.CARDAT, 
+			  TOTAL.SDIFKY, 
+			  TOTAL.WAREKY, 
+			  TOTAL.NAME01,  
+			  TOTAL.WORKNM, 
+			  TOTAL.CARDAT,  
+			  TOTAL.CARNUM, 
+			  TOTAL.SHIPSQ, 
+			  TOTAL.OWNRKY, 
+			  TOTAL.DESC01,TOTAL.DNAME3 
+			ORDER BY TOTAL.SDIFKY DESC, TOTAL.WORKNM 
+		 
+		</select> 
+		 
+		<!-- **[DL43] 품목별피킹리스트 아이템 조회쿼리 --> 
+		<select id="DL43_ITEM_LIST" parameterType="hashmap" resultType="DataMap"> 
+			SELECT  
+			       S.WORKNM || SR.CARNUM || S.SDIFKY || SR.SHIPSQ || SR.CARDAT AS SEARCHKEY, 
+			       SDIFKY AS SDIFKY,  
+			       SDIFIT AS SDIFIT,        
+			       S.LOCASR AS LOCASR ,  
+			       LM.SHORTX AS LOCAKYNM, 
+			       S.SKUKEY AS SKUKEY, 
+			       SM.DESC01 AS DESC01, 
+			       SM.DESC02 AS DESC02, 
+			       DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP) , SUM(S.QTTAOR) ) QTCOMP, 
+			       SUM(S.QTTAOR) AS QTTAOR, 
+			       NVL(SM.QTYSTD,0) AS PLIQTY, 
+			       NVL(SM.QTDUOM,0) AS BXIQTY, 
+			       NVL(  TRUNC( DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP),SUM(S.QTCOMP)) / DECODE(SM.QTDUOM, 0,NULL,SM.QTDUOM) ) ,0) AS BOXQTY,        
+			       NVL(  TRUNC( DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP),SUM(S.QTCOMP)) / DECODE(SM.QTYSTD, 0,NULL,SM.QTYSTD) ) ,0) AS PLTQTY,        
+			       NVL(MOD( DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP),SUM(S.QTCOMP)) , DECODE(SM.QTDUOM, NULL,0,SM.QTDUOM)),0) AS REMQTY, 
+			       NVL(SM.GRSWGT,0) * (SUM(S.QTTAOR-S.QTCOMP))  AS GRSWGT, 
+			       NVL(SM.GRSWGT,0)   AS GRSWGTCNT, 
+			   DECODE(SUM(S.QTTAOR-S.QTCOMP) , 0 , 'FPC',  'NEW') STATIT 
+			    
+			FROM TASDH 
+			     INNER JOIN TASDI S 
+			             ON TASDH.TASKKY = S.TASKKY 
+			     LEFT OUTER JOIN (SELECT DISTINCT L.LOCAKY, Z.SHORTX, L.WAREKY 
+			                   FROM ZONMA Z 
+			                  INNER JOIN LOCMA L 
+			                          ON L.WAREKY = Z.WAREKY 
+			                         AND L.TKZONE = Z.ZONEKY) LM 
+			              ON LM.LOCAKY = S.LOCASR 
+			             AND LM.WAREKY = TASDH.WAREKY 
+			     INNER JOIN SKUMA SM 
+			             ON SM.OWNRKY = S.OWNRKY 
+			            AND SM.SKUKEY = S.SKUKEY 
+			      LEFT OUTER JOIN SHPDR SR 
+			             ON SR.SHPOKY = S.SHPOKY  
+			            AND SR.SHPOIT = S.SHPOIT 
+			            AND SR.RECAYN = 'N'  
+			            AND SR.TASKKY != ' ' 
+			            AND SR.SHIPSQ != 0 
+			            AND SR.CARNUM != ' ' 
+			     LEFT OUTER JOIN SHPDH  
+			             ON SHPDH.SHPOKY = S.SHPOKY 
+			     LEFT OUTER  JOIN SHPDI 
+			             ON SHPDI.SHPOKY = S.SHPOKY  
+			             AND SHPDI.SHPOIT = S.SHPOIT 
+			                
+			 WHERE 1=1 
+			  
+			AND SR.TASKKY != ' ' 
+			AND S.LOCASR  != 'DOCLOC' 
+			AND SHPDH.DRELIN = 'V' 
+			 
+			AND S.WORKNM || SR.CARNUM || S.SDIFKY || SR.SHIPSQ || SR.CARDAT = #{SEARCHKEY} 
+			 
+			<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("ERPSO")'> 
+			AND SHPDH.SHPMTY IN ('211','212','213','214','215','216','267') 
+			</if> 
+			<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("TOTAL")'> 
+			AND SHPDH.SHPMTY IN ('299') 
+			</if> 
+			<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("MOVE")'> 
+			AND SHPDH.SHPMTY IN ('266') 
+			</if> 
+			<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("RTNPUR")'> 
+			AND SHPDH.SHPMTY IN ('270') 
+			</if> 
+			<if test="RANGE_SQL != null and RANGE_SQL != ''"> 
+			${RANGE_SQL} 
+			</if> 
+			 
+			 GROUP BY  
+				S.WORKNM||SR.CARNUM||S.SDIFKY||SR.SHIPSQ||SR.CARDAT, 
+				S.WORKNM, SR.CARNUM, S.SDIFKY, SR.SHIPSQ, 
+				SR.CARDAT, 
+				S.LOCASR,  
+				SDIFKY, 
+				SDIFIT, 
+				S.SKUKEY, 
+				NVL(SM.QTYSTD,0), 
+				NVL(SM.QTDUOM,0), 
+				NVL(SM.GRSWGT,0), 
+				SM.QTYSTD, 
+				SM.QTDUOM, 
+				SM.GRSWGT, 
+				LM.SHORTX, 
+				SM.DESC01, 
+				SM.DESC02 
+			 ORDER BY S.SKUKEY 
+	 
+	</select> 
+	
+		 
+		<!-- **[DL43] 품목별피킹리스트 아이템 조회쿼리 --> 
+		<select id="DL43_ITEM_SAVE_LIST" parameterType="hashmap" resultType="DataMap"> 
+			SELECT   /*+ INDEX(SR IDX_SHPDR_NEW02) */
+				   S.WORKNM || SR.CARNUM || S.SDIFKY || SR.SHIPSQ || SR.CARDAT AS SEARCHKEY, 
+			       S.SDIFKY AS SDIFKY,  
+			       S.SDIFIT AS SDIFIT,        
+			       S.LOCASR AS LOCASR ,  
+			       LM.SHORTX AS LOCAKYNM, 
+			       S.SKUKEY AS SKUKEY, 
+			       SM.DESC01 AS DESC01, 
+			       SM.DESC02 AS DESC02, 
+			       DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP) , SUM(S.QTTAOR) ) QTCOMP, 
+			       SUM(S.QTTAOR) AS QTTAOR, 
+			       NVL(SM.QTYSTD,0) AS PLIQTY, 
+			       NVL(SM.QTDUOM,0) AS BXIQTY, 
+			       NVL(  TRUNC( DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP),SUM(S.QTCOMP)) / DECODE(SM.QTDUOM, 0,NULL,SM.QTDUOM) ) ,0) AS BOXQTY,        
+			       NVL(  TRUNC( DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP),SUM(S.QTCOMP)) / DECODE(SM.QTYSTD, 0,NULL,SM.QTYSTD) ) ,0) AS PLTQTY,        
+			       NVL(MOD( DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP),SUM(S.QTCOMP)) , DECODE(SM.QTDUOM, NULL,0,SM.QTDUOM)),0) AS REMQTY, 
+			       NVL(SM.GRSWGT,0) * (SUM(S.QTTAOR-S.QTCOMP))  AS GRSWGT, 
+			       NVL(SM.GRSWGT,0)   AS GRSWGTCNT, 
+			   DECODE(SUM(S.QTTAOR-S.QTCOMP) , 0 , 'FPC',  'NEW') STATIT 
+			    
+			FROM SHPDR SR 
+            	INNER JOIN TASDI S ON S.SHPOKY = SR.SHPOKY AND S.SHPOIT = SR.SHPOIT
+            	INNER JOIN TASDH ON TASDH.TASKKY = S.TASKKY
+			     
+			     LEFT OUTER JOIN (SELECT DISTINCT L.LOCAKY, Z.SHORTX, L.WAREKY 
+			                   FROM ZONMA Z 
+			                  INNER JOIN LOCMA L 
+			                          ON L.WAREKY = Z.WAREKY 
+			                         AND L.TKZONE = Z.ZONEKY) LM 
+			              ON LM.LOCAKY = S.LOCASR 
+			             AND LM.WAREKY = TASDH.WAREKY 
+			     INNER JOIN SKUMA SM 
+			             ON SM.OWNRKY = S.OWNRKY 
+			            AND SM.SKUKEY = S.SKUKEY 
+			     LEFT OUTER JOIN SHPDH  
+			             ON SHPDH.SHPOKY = S.SHPOKY 
+			     LEFT OUTER  JOIN SHPDI 
+			             ON SHPDI.SHPOKY = S.SHPOKY  
+			             AND SHPDI.SHPOIT = S.SHPOIT 
+			                
+			 WHERE 1=1 
+			   AND SR.CARNUM = #{CARNUM}
+               AND SR.CARDAT = #{CARDAT}
+               AND SR.SHIPSQ = #{SHIPSQ}
+               AND S.WORKNM = #{WORKNM}
+               AND S.SDIFKY = #{SDIFKY}
+			   AND SR.TASKKY != ' ' 
+			   AND S.LOCASR  != 'DOCLOC' 
+			   AND SHPDH.DRELIN = 'V' 
+			   AND SR.RECAYN = 'N'  
+			   AND SR.TASKKY != ' ' 
+			   AND SR.SHIPSQ != 0 
+			   AND SR.CARNUM != ' ' 
+		
+			 GROUP BY  
+				S.WORKNM||SR.CARNUM||S.SDIFKY||SR.SHIPSQ||SR.CARDAT, 
+				S.WORKNM, SR.CARNUM, S.SDIFKY, SR.SHIPSQ, 
+				SR.CARDAT, 
+				S.LOCASR,  
+				SDIFKY, 
+				SDIFIT, 
+				S.SKUKEY, 
+				NVL(SM.QTYSTD,0), 
+				NVL(SM.QTDUOM,0), 
+				NVL(SM.GRSWGT,0), 
+				SM.QTYSTD, 
+				SM.QTDUOM, 
+				SM.GRSWGT, 
+				LM.SHORTX, 
+				SM.DESC01, 
+				SM.DESC02 
+			 ORDER BY S.SKUKEY 
+	 
+	</select> 
+	 
+	 
+	<!-- **[DL43] 담당자별 피킹리스트 그룹핑 업데이트 쿼리 --> 
+	<update id="DL43_GROUPING_UPDATE" parameterType="hashmap"> 
+		UPDATE TASDI 
+			SET SDIFKY = #{SDIFKY}, 
+			    SDIFIT = #{SDIFIT} 
+		  WHERE TASKKY = #{TASKKY} 
+		    AND TASKIT = #{TASKIT} 
+	</update> 
+	 
+	<!-- **[DL43] 담당자별피킹리스트 그룹핑 조회쿼리 --> 
+	<select id="DL43_PICKINGLIST_LIST" parameterType="hashmap" resultType="DataMap"> 
+		SELECT  
+		       S.WORKNM||SR.CARNUM||S.SDIFKY||SR.SHIPSQ  AS SEARCHKEY, 
+		       SDIFKY AS SDIFKY,  
+		       SDIFIT AS SDIFIT,        
+		       S.LOCASR AS LOCASR ,  
+		       LM.SHORTX AS LOCAKYNM, 
+		       S.SKUKEY AS SKUKEY, 
+		       SM.DESC01 AS DESC01, 
+		       SM.DESC02 AS DESC02, 
+		       DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP) , SUM(S.QTTAOR) ) QTTAOR, 
+		       SUM(S.QTTAOR-S.QTCOMP) AS QTCOMP, 
+		       NVL(SM.QTYSTD,0) AS PLIQTY, 
+		       NVL(SM.QTDUOM,0) AS BXIQTY, 
+		       NVL(  TRUNC( SUM(S.QTTAOR-S.QTCOMP) / DECODE(SM.QTDUOM, 0, NULL,SM.QTDUOM) ) ,0) AS BOXQTY,        
+		       NVL(  TRUNC( SUM(S.QTTAOR-S.QTCOMP) / DECODE(SM.QTYSTD, 0, NULL,SM.QTYSTD) ) ,0) AS PLTQTY,        
+		       NVL(MOD( SUM(S.QTTAOR) , DECODE(SM.QTDUOM, NULL,0,SM.QTDUOM)),0) AS REMQTY, 
+		       NVL(SM.GRSWGT,0) * (SUM(S.QTTAOR-S.QTCOMP))  AS GRSWGT, 
+		       NVL(SM.GRSWGT,0)   AS GRSWGTCNT, 
+		       DECODE(SUM(S.QTTAOR-S.QTCOMP) , 0 , 'FPC',  'NEW') STATIT, 
+		       S.TASKKY  AS TASKKY, 
+		       S.TASKIT  AS TASKIT 
+		  FROM TASDH 
+		       INNER JOIN TASDI S 
+		               ON TASDH.TASKKY = S.TASKKY 
+		       LEFT OUTER JOIN (SELECT L.LOCAKY, Z.SHORTX 
+		                     FROM ZONMA Z 
+		                    INNER JOIN LOCMA L 
+		                            ON L.WAREKY = Z.WAREKY 
+		                           AND L.TKZONE = Z.ZONEKY) LM 
+		                ON LM.LOCAKY = S.LOCASR 
+		       INNER JOIN SKUMA SM 
+		               ON SM.OWNRKY = S.OWNRKY 
+		              AND SM.SKUKEY = S.SKUKEY 
+		        LEFT OUTER JOIN (SELECT DISTINCT SHPOKY, SHPOIT, ARRIVA,  
+		                                         CARDAT, CARNUM,  
+		                                         SHIPSQ, SORTSQ, DRIVER,  
+		                                         RECAYN, TASKKY 
+		                          FROM SHPDR  
+		                         WHERE RECAYN = 'N'  
+		                           AND TASKKY != ' ' 
+		                           AND CARNUM != ' ')  SR 
+		               ON SR.SHPOKY = S.SHPOKY  
+		              AND SR.SHPOIT = S.SHPOIT               
+		       LEFT OUTER  JOIN SHPDI 
+		               ON SHPDI.SHPOKY = S.SHPOKY  
+		               AND SHPDI.SHPOIT = S.SHPOIT 
+		       LEFT OUTER JOIN SHPDH  
+		               ON SHPDH.SHPOKY = S.SHPOKY 
+		 WHERE 1=1 
+		AND SR.TASKKY != ' ' 
+		 
+		AND  S.LOCASR != 'DOCLOC' 
+		AND  SHPDH.DRELIN = 'V' 
+		 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("ERPSO")'> 
+		AND SHPDH.SHPMTY IN ('211','212','213','214','267') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("TOTAL")'> 
+		AND SHPDH.SHPMTY IN ('299') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("MOVE")'> 
+		AND SHPDH.SHPMTY IN ('266') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("RTNPUR")'> 
+		AND SHPDH.SHPMTY IN ('270') 
+		</if> 
+		<if test="RANGE_SQL != null and RANGE_SQL != ''"> 
+		${RANGE_SQL} 
+		</if> 
+		   AND SDIFKY = NVL(#{SDIFKY}, ' ') 
+		   AND SDIFIT = NVL(#{SDIFIT}, ' ') 
+		   AND LOCASR = #{LOCASR} 
+		   AND S.SKUKEY = #{SKUKEY} 
+		   AND S.WORKNM||SR.CARNUM||S.SDIFKY||SR.SHIPSQ||SR.CARDAT = #{SEARCHKEY} 
+		   AND TASDH.DOCDAT > TO_CHAR(SYSDATE - 60, 'YYYYMMDD') 
+		   AND SHPDH.DOCDAT > TO_CHAR(SYSDATE - 60, 'YYYYMMDD') 
+		 
+		 GROUP BY  
+		       S.WORKNM||SR.CARNUM||S.SDIFKY||SR.SHIPSQ, 
+		       S.LOCASR,  
+		       SDIFKY, 
+		       SDIFIT, 
+		       S.SKUKEY, 
+		       NVL(SM.QTYSTD,0), 
+		       NVL(SM.QTDUOM,0), 
+		       NVL(SM.GRSWGT,0), 
+		       SM.QTYSTD, 
+		       SM.QTDUOM, 
+		       SM.GRSWGT, 
+		       LM.SHORTX, 
+		       SM.DESC01, 
+		       SM.DESC02, 
+		       S.TASKKY, 
+		       S.TASKIT 
+		 ORDER BY S.SKUKEY 
+	 
+	</select> 
+	 
+	<!-- **[DL43] 작업자별피킹리스트 SDIFIT_MAP 쿼리 --> <!-- SDIFIT 작업자별피킹아이템--> 
+	<select id="DL43_SDIFIT_MAP" parameterType="hashmap" resultType="DataMap"> 
+		SELECT NVL(TRIM(MAX(SDIFIT)),'FAIL') AS SDIFIT FROM TASDI WHERE SDIFKY = #{SDIFKY} 
+	</select> 
+	 
+	<!-- **[DL43] 작업자별피킹리스트 그룹핑 SDIFKY_MAP 쿼리 --> 
+	<select id="DL43_SDIFKY_MAP" parameterType="hashmap" resultType="DataMap"> 
+		SELECT SEQ_PICKINGLIST_WORKER.NEXTVAL AS GROUPKY FROM DUAL 
+	</select> 
+	 
+	<!-- **[DL43] 담당자별 피킹리스트 그룹핑 삭제 쿼리 --> 
+	<update id="DL43_DELGROUP_UPDATE" parameterType="hashmap"> 
+		UPDATE TASDI 
+		   SET SDIFKY = ' ', 
+		       SDIFIT = ' ' 
+		 WHERE SDIFKY = #{SDIFKY} 
+		   AND SDIFIT = #{SDIFIT} 
+	</update> 
+	 
+	 
+	<!-- **[DL44] 차량별 피킹리스트 헤드 조회쿼리 --> 
+	<select id="DL44_HEAD_LIST" parameterType="hashmap" resultType="DataMap"> 
+		SELECT /*+ INDEX(SR PK_SHPDR_NEW) INDEX(SHPDH PK_SHPDH_NEW)*/  SR.CARNUM||S.SSORNU||SR.SHIPSQ||SR.CARDAT AS SEARCHKEY, 
+		       S.SSORNU  AS SSORNU,  
+		       TASDH.WAREKY AS WAREKY,  
+		       WH.NAME01 AS WAREKYNM,  
+		       SR.CARDAT AS CARDAT,  
+		       SR.CARNUM AS CARNUM, 
+		       SUM(TRUNC(S.QTTAOR / SM.QTDUOM)) AS TOTBOX,  
+		       MAX(SR.DRIVER) AS DRIVER, 
+		       SR.SHIPSQ AS SHIPSQ, 
+		       TASDH.DNAME3 AS DNAME3,
+		       (SELECT /*+ INDEX(SR PK_SHPDR_NEW)*/ COUNT(*) 
+		          FROM TASDH SH INNER JOIN TASDI SS ON SH.TASKKY = SS.TASKKY 
+		                        LEFT OUTER JOIN (SELECT DISTINCT SHPOKY, SHPOIT, CARDAT, CARNUM, SHIPSQ 
+		                                           FROM SHPDR  
+		                                          WHERE SHIPSQ != 0 
+		                                            AND CARNUM != ' ' 
+		                                            AND CARDAT BETWEEN TO_CHAR(SYSDATE-7, 'YYYYMMDD') AND TO_CHAR(SYSDATE+7, 'YYYYMMDD')) SSR ON SSR.SHPOKY = SS.SHPOKY AND SSR.SHPOIT = SS.SHPOIT 
+		         WHERE SS.STATIT = 'NEW'  
+		           AND SS.LOCASR !='DOCLOC' 
+		           AND SR.CARNUM = SSR.CARNUM 
+		           AND S.SSORNU = SS.SSORNU 
+		           AND SR.SHIPSQ = SSR.SHIPSQ 
+		           AND SR.CARDAT = SSR.CARDAT 
+		           AND SS.OWNRKY = S.OWNRKY 
+		           AND SH.WAREKY = TASDH.WAREKY ) AS COMPLETECNT, 
+		       CASE
+                    WHEN DECODE(SUM(S.QTTAOR-S.QTCOMP) , 0 , 'FPC',  'NEW') = 'FPC' THEN 'V'
+                     ELSE ' '
+               END PICKED,
+		       SR.CARNUM ||  '-'|| CM.DESC01 || '-' || SR.SHIPSQ CARNUMNM, 
+		       TRUNC(SUM(S.QTTAOR-S.QTCOMP) / DECODE(MAX(SM.QTDUOM), 0,NULL, MAX(SM.QTDUOM)),1) BOXQTY, 
+		       NVL((SELECT /*+ INDEX(SR PK_SHPDR_NEW)*/ SUM(TRUNC(SS.QTTAOR/SM.QTDUOM)) 
+		              FROM TASDH SH INNER JOIN TASDI SS ON SH.TASKKY = SS.TASKKY 
+		                            LEFT OUTER JOIN (SELECT DISTINCT SHPOKY, SHPOIT, CARDAT, CARNUM, SHIPSQ 
+		                                               FROM SHPDR  
+		                                              WHERE SHIPSQ != 0 
+		                                                AND CARNUM != ' ' 
+		                                                AND CARDAT BETWEEN TO_CHAR(SYSDATE-7, 'YYYYMMDD') AND TO_CHAR(SYSDATE+7, 'YYYYMMDD')) SSR ON SSR.SHPOKY = SS.SHPOKY AND SSR.SHPOIT = SS.SHPOIT  
+		                            INNER JOIN SKUMA SM ON SM.OWNRKY = SS.OWNRKY AND SM.SKUKEY = SS.SKUKEY 
+		             WHERE 1=1 
+		               AND SS.LOCASR ='DOCLOC' 
+		               AND SR.CARNUM = SSR.CARNUM 
+		               AND SR.SHIPSQ = SSR.SHIPSQ 
+		               AND SR.CARDAT = SSR.CARDAT 
+		               AND SS.OWNRKY = S.OWNRKY 
+		               AND SH.WAREKY = TASDH.WAREKY), 0) AS PRETOT 
+		  FROM TASDH INNER JOIN WAHMA WH ON WH.WAREKY = TASDH.WAREKY 
+		             INNER JOIN TASDI S ON TASDH.TASKKY = S.TASKKY 
+		             INNER JOIN SKUMA SM ON SM.OWNRKY = S.OWNRKY AND SM.SKUKEY = S.SKUKEY 
+		             LEFT OUTER JOIN SHPDR SR ON SR.SHPOKY = S.SHPOKY AND SR.SHPOIT = S.SHPOIT               
+		             LEFT OUTER JOIN CARMA CM ON CM.OWNRKY = S.OWNRKY AND CM.WAREKY = TASDH.WAREKY AND CM.CARNUM = SR.CARNUM 
+		             LEFT OUTER JOIN SHPDI ON SHPDI.SHPOKY = S.SHPOKY AND SHPDI.SHPOIT = S.SHPOIT 
+		             LEFT OUTER JOIN SHPDH ON SHPDH.SHPOKY = S.SHPOKY 
+		 WHERE 1=1 
+		   AND S.LOCASR != 'DOCLOC' 
+		   AND SHPDH.DRELIN = 'V' 
+		   AND SR.SHIPSQ != 0 
+		   AND SR.CARNUM != ' '                                  
+		   AND SR.CARDAT BETWEEN TO_CHAR(SYSDATE-7, 'YYYYMMDD') AND TO_CHAR(SYSDATE+7, 'YYYYMMDD') 
+		    
+		   AND SHPDH.WAREKY = #{WAREKY} 
+		   AND SHPDH.OWNRKY = #{OWNRKY} 
+		 
+		<if test="RANGE_SQL != null and RANGE_SQL != ''"> 
+		${RANGE_SQL} 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("ERPSO")'> 
+		AND SHPDH.SHPMTY IN ('211','212','213','214','215','216','267') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("TOTAL")'> 
+		AND SHPDH.SHPMTY IN ('299') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("MOVE")'> 
+		AND SHPDH.SHPMTY IN ('266') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("RTNPUR")'> 
+		AND SHPDH.SHPMTY IN ('270') 
+		</if> 
+		 
+		 GROUP BY SR.CARNUM||S.SSORNU||SR.SHIPSQ||SR.CARDAT, S.SSORNU, TASDH.WAREKY, WH.NAME01, 
+		 		  SR.CARDAT, SR.CARNUM, SR.SHIPSQ, S.OWNRKY, CM.DESC01, TASDH.DNAME3
+		 ORDER BY S.SSORNU DESC 
+	 
+	</select> 
+	 
+	<!-- **[DL44] 차량별 피킹리스트 아이템 조회쿼리 --> 
+	<select id="DL44_ITEM_LIST" parameterType="hashmap" resultType="DataMap"> 
+		SELECT  /*+ INDEX(SR IDX_SHPDR_NEW02) INDEX(SHPDH PK_SHPDH_NEW)*/ 
+		       SR.CARNUM||S.SSORNU||SR.SHIPSQ||SR.CARDAT AS SEARCHKEY, 
+		       S.SSORNU AS SSORNU,  
+		       S.SSORIT AS SSORIT,        
+		       S.LOCASR AS LOCASR ,  
+		       LM.SHORTX AS LOCAKYNM, 
+		       S.SKUKEY AS SKUKEY, 
+		       SM.DESC01 AS DESC01, 
+		       SM.DESC02 AS DESC02, 
+		       DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP) , SUM(S.QTTAOR) ) QTCOMP, 
+		       SUM(S.QTTAOR) AS QTTAOR, 
+		       NVL(SM.QTYSTD,0) AS PLIQTY, 
+		       NVL(SM.QTDUOM,0) AS BXIQTY, 
+		       NVL(  TRUNC( DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP),SUM(S.QTCOMP)) / DECODE(SM.QTDUOM, 0,NULL,SM.QTDUOM) ) ,0) AS BOXQTY,        
+		       NVL(  TRUNC( DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP),SUM(S.QTCOMP)) / DECODE(SM.QTYSTD, 0,NULL,SM.QTYSTD) ) ,0) AS PLTQTY,        
+		       NVL(MOD( DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP),SUM(S.QTCOMP)) , DECODE(SM.QTDUOM, NULL,0,SM.QTDUOM)),0) AS REMQTY, 
+		       NVL(SM.GRSWGT,0) * (SUM(S.QTTAOR-S.QTCOMP))  AS GRSWGT, 
+		       NVL(SM.GRSWGT,0)   AS GRSWGTCNT, 
+		DECODE(SUM(S.QTTAOR-S.QTCOMP) , 0 , 'FPC',  'NEW') STATIT 
+		  FROM SHPDR SR 
+		       INNER JOIN  TASDI S  
+		               ON SR.SHPOKY = S.SHPOKY  
+		              AND SR.SHPOIT = S.SHPOIT 
+		       INNER JOIN TASDH  
+		               ON TASDH.TASKKY = S.TASKKY 
+		       LEFT OUTER JOIN (SELECT DISTINCT L.LOCAKY, Z.SHORTX, L.WAREKY 
+		                     FROM ZONMA Z 
+		                    INNER JOIN LOCMA L 
+		                            ON L.WAREKY = Z.WAREKY 
+		                           AND L.TKZONE = Z.ZONEKY) LM 
+		                ON LM.LOCAKY = S.LOCASR 
+		               AND LM.WAREKY = TASDH.WAREKY 
+		       INNER JOIN SKUMA SM 
+		               ON SM.OWNRKY = S.OWNRKY 
+		              AND SM.SKUKEY = S.SKUKEY  
+		       LEFT OUTER  JOIN SHPDI 
+		               ON SHPDI.SHPOKY = S.SHPOKY  
+		               AND SHPDI.SHPOIT = S.SHPOIT 
+		       LEFT OUTER JOIN SHPDH  
+		               ON SHPDH.SHPOKY = S.SHPOKY 
+		 WHERE 1=1 
+			 AND TASDH.WAREKY = #{WAREKY}
+			<!-- AND SR.TASKKY != ' ' --> 
+			AND S.LOCASR  != 'DOCLOC' 
+			AND SHPDH.DRELIN = 'V' 
+			AND S.SSORNU = #{SSORNU} 
+			AND SR.SHIPSQ = #{SHIPSQ} 
+			AND SR.CARNUM = #{CARNUM} 
+			AND SR.CARDAT = #{CARDAT} 
+			 
+			<if test="RANGE_SQL != null and RANGE_SQL != ''"> 
+			${RANGE_SQL} 
+			</if> 
+			<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("ERPSO")'> 
+			AND SHPDH.SHPMTY IN ('211','212','213','214','215','216','267') 
+			</if> 
+			<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("TOTAL")'> 
+			AND SHPDH.SHPMTY IN ('299') 
+			</if> 
+			<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("MOVE")'> 
+			AND SHPDH.SHPMTY IN ('266') 
+			</if> 
+			<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("RTNPUR")'> 
+			AND SHPDH.SHPMTY IN ('270') 
+			</if> 
+			   
+				GROUP BY  
+				SR.CARNUM||S.SSORNU||SR.SHIPSQ||SR.CARDAT, 
+				SR.CARNUM, S.SSORNU, SR.SHIPSQ, 
+				SR.CARDAT, 
+				S.LOCASR,  
+				S.SSORNU, 
+				S.SSORIT, 
+				S.SKUKEY, 
+				NVL(SM.QTYSTD,0), 
+				NVL(SM.QTDUOM,0), 
+				NVL(SM.GRSWGT,0), 
+				SM.QTYSTD, 
+				SM.QTDUOM, 
+				SM.GRSWGT, 
+				LM.SHORTX, 
+				SM.DESC01, 
+				SM.DESC02 
+						 
+			 ORDER BY S.SKUKEY 
+	 
+	</select> 
+	 
+	<!-- **[DL44] 차량별 피킹리스트 그룹핑 업데이트 쿼리 --> 
+	<update id="DL44_GROUPING_UPDATE" parameterType="hashmap"> 
+		UPDATE TASDI 
+		      SET SSORNU = #{SSORNU}, 
+		          SSORIT = #{SSORIT} 
+			WHERE TASKKY = #{TASKKY} 
+			  AND TASKIT = #{TASKIT} 
+	</update> 
+	 
+	<!-- **[DL44] 차량별 피킹리스트 그룹핑 업데이트 쿼리 NEW --> 
+	<update id="DL44_GROUPING_NEW_UPDATE" parameterType="hashmap"> 
+		UPDATE TASDI 
+		      SET SSORNU = #{SSORNU}, 
+		          SSORIT = #{SSORIT} 
+			WHERE (TASKKY, TASKIT) IN (SELECT TI.TASKKY,TI.TASKIT 
+			                             FROM SHPDR SR 
+			                                  INNER JOIN TASDI TI ON TI.SHPOKY = SR.SHPOKY AND TI.SHPOIT = SR.SHPOIT
+			                            WHERE SR.CARDAT = #{CARDAT}
+			                              AND SR.CARNUM = #{CARNUM}
+			                              AND SR.SHIPSQ = #{SHIPSQ}
+			                              AND TI.SKUKEY = #{SKUKEY}
+			                              AND TI.LOCASR = #{LOCASR}
+                                       )
+	</update> 
+	 
+	<!-- **[DL44] 차량별 피킹리스트 그룹핑 조회쿼리 --> 
+	<select id="DL44_PICKINGLIST_LIST" parameterType="hashmap" resultType="DataMap"> 
+		SELECT  /*+ INDEX(S,IDX_TASDI14) */
+		       SR.CARNUM||S.SSORNU||SR.SHIPSQ||SR.CARDAT  AS SEARCHKEY, 
+		       SSORNU AS SSORNU,  
+		       SSORIT AS SSORIT,        
+		       S.LOCASR AS LOCASR ,  
+		       LM.SHORTX AS LOCAKYNM, 
+		       S.SKUKEY AS SKUKEY, 
+		       SM.DESC01 AS DESC01, 
+		       SM.DESC02 AS DESC02, 
+		       DECODE(SUM(S.QTCOMP), 0, SUM(S.QTTAOR-S.QTCOMP) , SUM(S.QTTAOR) ) QTTAOR, 
+		       SUM(S.QTTAOR-S.QTCOMP) AS QTCOMP, 
+		       NVL(SM.QTYSTD,0) AS PLIQTY, 
+		       NVL(SM.QTDUOM,0) AS BXIQTY, 
+		       NVL(  TRUNC( SUM(S.QTTAOR-S.QTCOMP) / DECODE(SM.QTDUOM, 0, NULL,SM.QTDUOM) ) ,0) AS BOXQTY,        
+		       NVL(  TRUNC( SUM(S.QTTAOR-S.QTCOMP) / DECODE(SM.QTYSTD, 0, NULL,SM.QTYSTD) ) ,0) AS PLTQTY,        
+		       NVL(MOD( SUM(S.QTTAOR) , DECODE(SM.QTDUOM, NULL,0,SM.QTDUOM)),0) AS REMQTY, 
+		       NVL(SM.GRSWGT,0) * (SUM(S.QTTAOR-S.QTCOMP))  AS GRSWGT, 
+		       NVL(SM.GRSWGT,0)   AS GRSWGTCNT, 
+		       DECODE(SUM(S.QTTAOR-S.QTCOMP) , 0 , 'FPC',  'NEW') STATIT, 
+		       S.TASKKY  AS TASKKY, 
+		       S.TASKIT  AS TASKIT 
+		  FROM TASDI S
+		       INNER JOIN TASDH
+		               ON TASDH.TASKKY = S.TASKKY 
+		       LEFT OUTER JOIN (SELECT L.LOCAKY, Z.SHORTX 
+		                     FROM ZONMA Z 
+		                    INNER JOIN LOCMA L 
+		                            ON L.WAREKY = Z.WAREKY 
+		                           AND L.TKZONE = Z.ZONEKY) LM 
+		                ON LM.LOCAKY = S.LOCASR 
+		       INNER JOIN SKUMA SM 
+		               ON SM.OWNRKY = S.OWNRKY 
+		              AND SM.SKUKEY = S.SKUKEY 
+		        LEFT OUTER JOIN (SELECT DISTINCT SHPOKY, SHPOIT, ARRIVA,  
+		                                         CARDAT, CARNUM,  
+		                                         SHIPSQ, SORTSQ, DRIVER,  
+		                                         RECAYN, TASKKY 
+		                          FROM SHPDR  
+		                         WHERE  <!-- AND TASKKY != ' ' --> 
+		                               CARNUM != ' ' 
+		                           AND CARDAT > TO_CHAR(SYSDATE - 100, 'YYYYMMDD'))  SR 
+		               ON SR.SHPOKY = S.SHPOKY  
+		              AND SR.SHPOIT = S.SHPOIT               
+		       LEFT OUTER  JOIN SHPDI 
+		               ON SHPDI.SHPOKY = S.SHPOKY  
+		               AND SHPDI.SHPOIT = S.SHPOIT 
+		       LEFT OUTER JOIN SHPDH  
+		               ON SHPDH.SHPOKY = S.SHPOKY 
+		 WHERE 1=1 
+		 
+		AND TASDH.WAREKY = #{WAREKY}
+		  
+		<!-- AND SR.TASKKY != ' ' --> 
+		AND  S.LOCASR != 'DOCLOC' 
+		AND  SHPDH.DRELIN = 'V' 
+		 
+		<if test="RANGE_SQL != null and RANGE_SQL != ''"> 
+		${RANGE_SQL} 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("ERPSO")'> 
+		AND SHPDH.SHPMTY IN ('211','212','213','214','267') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("TOTAL")'> 
+		AND SHPDH.SHPMTY IN ('299') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("MOVE")'> 
+		AND SHPDH.SHPMTY IN ('266') 
+		</if> 
+		<if test='GRPRL !=null  and GRPRL.equalsIgnoreCase("RTNPUR")'> 
+		AND SHPDH.SHPMTY IN ('270') 
+		</if> 
+		 
+		   AND SSORNU = NVL(#{SSORNU}, ' ') 
+		   AND SSORIT = NVL(#{SSORIT}, ' ') 
+		   AND S.SKUKEY = #{SKUKEY} 
+		   AND S.LOCASR = #{LOCASR} 
+		   AND SR.CARNUM = #{CARNUM}
+		   AND S.SSORNU = #{SSORNU}
+		   AND SR.SHIPSQ = #{SHIPSQ}
+		   AND SR.CARDAT = #{CARDAT} 
+		   AND TASDH.DOCDAT > TO_CHAR(SYSDATE - 100, 'YYYYMMDD') 
+		   AND SHPDH.DOCDAT > TO_CHAR(SYSDATE - 100, 'YYYYMMDD') 
+		 
+		 GROUP BY  
+		       SR.CARNUM||S.SSORNU||SR.SHIPSQ||SR.CARDAT, 
+		       S.LOCASR,  
+		       SSORNU, 
+		       SSORIT, 
+		       S.SKUKEY, 
+		       NVL(SM.QTYSTD,0), 
+		       NVL(SM.QTDUOM,0), 
+		       NVL(SM.GRSWGT,0), 
+		       SM.QTYSTD, 
+		       SM.QTDUOM, 
+		       SM.GRSWGT, 
+		       LM.SHORTX, 
+		       SM.DESC01, 
+		       SM.DESC02, 
+		       S.TASKKY, 
+		       S.TASKIT 
+		 ORDER BY S.SKUKEY 
+	 
+	</select> 
+	 
+	<!-- **[DL44] 차량별 피킹리스트 SSORIT_MAP 쿼리 --> <!-- SSORIT 차량별아이템피킹번호 --> 
+	<select id="DL44_SSORIT_MAP" parameterType="hashmap" resultType="DataMap"> 
+		SELECT /*+ INDEX(TASDI,IDX_TASDI25) */ NVL(TRIM(MAX(SSORIT)),'FAIL') AS SSORIT FROM TASDI WHERE SSORIT = #{SSORIT} 
+	</select> 
+	 
+	<!-- **[DL44] 차량별피킹리스트 그룹핑 SSORNU_MAP 쿼리 --> 
+	<select id="DL44_SSORNU_MAP" parameterType="hashmap" resultType="DataMap"> 
+		SELECT SEQ_PICKINGLIST_CAR.NEXTVAL AS GROUPKY FROM DUAL 
+	</select> 
+	 
+	<!-- **[DL44] 차량별피킹리스트 그룹핑 삭제 쿼리 --> 
+	<update id="DL44_DELGROUP_UPDATE" parameterType="hashmap"> 
+		UPDATE TASDI 
+			SET SSORNU = ' ', 
+			    SSORIT = ' ' 
+		  WHERE SSORNU = #{SSORNU} 
+		    AND SSORIT = #{SSORIT} 
+	</update> 
+	 
+	<!-- **[DL44] 차량별피킹리스트 그룹핑 삭제 쿼리 --> 
+	<update id="DL44_DELGROUP_NEW_UPDATE" parameterType="hashmap"> 
+		UPDATE TASDI 
+			SET SSORNU = ' ', 
+			    SSORIT = ' ' 
+		  WHERE SSORNU = #{SSORNU} 
+	</update> 
+	 
+	<!-- [DL44] DAS FILE 기반데이터 생성  안산 --> 
+	<update id="P_SAJO_PICKING_CMP_NEW_UPDATE" parameterType="hashmap"> 
+	   { call P_SAJO_PICKING_CMP_NEW(#{GRPOKY}, #{GRPOIT}, #{SDIFKY}, #{SDIFIT}, #{SSORNU}, #{SSORIT}, #{QTCOMP}, #{SES_USER_ID}, #{WRKFLG}, #{ERRNUM}, #{ERRMSG})} 
+	</update> 
+	
+	<!-- **[DL43] 출고조회 프린트 쿼리 -->
+	<update id="DNAME3_DL43_PRINT_UPDATE"  parameterType="hashmap">
+		UPDATE TASDH
+        SET
+            DNAME3 = 'V',
+            LMODAT = TO_CHAR(SYSDATE, 'YYYYMMDD'),
+			LMOTIM = TO_CHAR(SYSDATE, 'HH24MISS'),
+			LMOUSR = #{SES_USER_ID}
+         WHERE TASKKY IN (SELECT /*+ INDEX(IT IDX_TASDI_NEW23) */ DISTINCT TASKKY FROM TASDI IT  WHERE SDIFKY = #{SDIFKY})
+	</update>
+
+	<!-- **[DL44] 출고조회 프린트 쿼리 -->
+	<update id="DNAME3_PRINT_UPDATE"  parameterType="hashmap">
+		UPDATE TASDH
+        SET
+            DNAME3 = 'V',
+            LMODAT = TO_CHAR(SYSDATE, 'YYYYMMDD'),
+			LMOTIM = TO_CHAR(SYSDATE, 'HH24MISS'),
+			LMOUSR = #{SES_USER_ID}
+         WHERE TASKKY IN (SELECT /*+ INDEX(IT IDX_TASDI_NEW14) */ DISTINCT TASKKY FROM TASDI IT  WHERE SSORNU = #{SSORNU})
+	</update>
+	
+	<!-- **[DL45] 선입고피킹리스트 프린트 체크-->
+	<update id="DNAME3_PRINT2_UPDATE"  parameterType="hashmap">
+		UPDATE RECDH
+        SET
+            DNAME3 = 'V',
+            LMODAT = TO_CHAR(SYSDATE, 'YYYYMMDD'),
+			LMOTIM = TO_CHAR(SYSDATE, 'HH24MISS'),
+			LMOUSR = #{SES_USER_ID}
+         WHERE
+                WAREKY = #{WAREKY}
+            AND RECVKY = #{RECVKY}
+	</update>
+	  
+	 <!-- [RCPTTY] DL45 입고유형 콤보 --> 
+	<select id="COMBO_RCPTTY_LIST" parameterType="hashmap" resultType="DataMap"> 
+		SELECT DOCUTY AS VALUE_COL 
+		 	  ,SHORTX AS TEXT_COL 
+		  FROM DOCTM 
+		  WHERE DOCCAT = '100' 
+				AND DOCUTY IN('102','111','123') 
+		ORDER BY DOCUTY 
+	</select> 
+	 
+	 <!-- **[DL45] 선입고 피킹리스트 헤드 조회  TASK.CONFIRM.FIND_PRERECDPICKINGLIST_HEADER --> 
+	<select id="DL45_HEAD_LIST" parameterType="hashmap" resultType="DataMap"> 
+		SELECT /*+ ordered first_rows */ 
+			RH.RECVKY AS SEARCHKEY, 
+			RH.RECVKY AS RECVKY, 
+			RH.WAREKY AS WAREKY, 
+			NVL(WH.NAME01,' ') AS WAREKYNM, 
+			RH.RCPTTY AS RCPTTY, 
+			NVL(DT.SHORTX,' ') AS RCPTTYNM, 
+			RH.STATDO AS STATDO, 
+			NVL(STH.CDESC1,' ') AS STATDONM, 
+			RH.SAPSTS AS SAPSTS, 
+			RH.DOCDAT AS DOCDAT, 
+			RH.DOCCAT AS DOCCAT, 
+			NVL(DC.SHORTX,' ') AS DOCCATNM, 
+			RH.DPTNKY AS DPTNKY, 
+			NVL(BZ.NAME01,' ') AS DPTNKYNM, 
+			RH.DRELIN AS DRELIN, 
+			RH.ARCPTD AS ARCPTD, 
+			RH.OWNRKY AS OWNRKY, 
+			RH.RSNCOD AS RSNCOD, 
+			RH.DOCTXT AS DOCTXT, 
+			S.SEBELN AS SEBELN, 
+			RH.CREDAT AS CREDAT, 
+			RH.CRETIM AS CRETIM, 
+			RH.CREUSR AS CREUSR, 
+			NVL(CU.NMLAST,' ') AS CUSRNM, 
+			RH.LMODAT AS LMODAT, 
+			RH.LMOTIM AS LMOTIM, 
+			RH.LMOUSR AS LMOUSR, 
+			NVL(LU.NMLAST,' ') AS LUSRNM , 
+			NVL(SUM(TSS.QTTAOR),0) AS QTTAOR, 
+			NVL(SUM(TSS.QTCOMP),0) AS QTCOMP, 
+			NVL(SUM(TCT.COMPLETECNT),0) AS COMPLETECNT, 
+			SUM(S.QTYRCV) AS QTYRCV,
+			RH.DNAME3 AS DNAME3		 	
+            
+		  FROM RECDH RH 
+		       INNER JOIN RECDI S 
+		               ON S.RECVKY = RH.RECVKY 
+		       INNER JOIN WAHMA WH 
+		               ON WH.WAREKY = RH.WAREKY 
+		       INNER JOIN SKUMA SM 
+		               ON SM.OWNRKY = RH.OWNRKY 
+		              AND SM.SKUKEY = S.SKUKEY 
+		       INNER JOIN DOCTM DT 
+		               ON DT.DOCUTY = RH.RCPTTY 
+		       INNER JOIN DOCCM DC 
+		               ON DC.DOCCAT = RH.DOCCAT 
+		       INNER JOIN (SELECT 
+		                               B.RECVKY , 
+		                               B.RECVIT , 
+		                               SUM(B.QTTAOR) QTTAOR, 
+		                               SUM(B.QTCOMP) QTCOMP, 
+		                               MAX(SR.CARNUM) CARNUM, 
+		                               MAX(SR.CARDAT) CARDAT, 
+		                               MAX(SR.SHIPSQ) SHIPSQ 
+		                          FROM TASDH A 
+		                          INNER JOIN TASDI B 
+		                                  ON A.TASKKY = B.TASKKY 
+		                          INNER JOIN LOCMA C 
+		                                  ON A.WAREKY = C.WAREKY 
+		                                 AND B.LOCASR = C.LOCAKY 
+		                          INNER JOIN (SELECT DISTINCT SHPOKY, SHPOIT, 
+		                                                                CARDAT, CARNUM, 
+		                                                                SHIPSQ, TASKKY, RECAYN  
+		                                                  FROM SHPDR WHERE 1=1  
+		                                                   
+		<if test="RANGERS_SQL != null and RANGERS_SQL != ''"> 
+			${RANGERS_SQL} 
+		</if> 
+		
+		<if test="TASKKYS != null and TASKKYS != ''"> 
+		B.TASKKY IN ( ${TASKKYS} ) 
+		</if> 
+		                                     )  SR 
+		                                  ON SR.SHPOKY = B.SHPOKY  
+		                                 AND SR.SHPOIT = B.SHPOIT               
+		                          LEFT OUTER JOIN SHPDI SI 
+		                                  ON SI.SHPOKY = B.SHPOKY  
+		                                 AND SI.SHPOIT = B.SHPOIT 
+		                          LEFT OUTER JOIN SHPDH SH 
+		                                  ON SH.SHPOKY = B.SHPOKY                                       
+		                         WHERE A.TASKKY = B.TASKKY 
+		                           AND SR.TASKKY !=  ' ' 
+		                           AND B.LOCASR  = 'DOCLOC' 
+		                           AND SH.DRELIN = 'V' 
+		 
+		                          GROUP BY B.RECVKY, B.RECVIT 
+		                         ORDER BY B.TASKKY, B.TASKIT ) TSS 
+		                     ON TSS.RECVKY = S.RECVKY 
+		                    AND TSS.RECVIT = S.RECVIT 
+		       LEFT OUTER JOIN ( SELECT RECVKY, RECVIT, 
+		                                COUNT(RECVKY) COMPLETECNT FROM TASDI  
+		                                WHERE STATIT = 'NEW'  
+		                               GROUP BY RECVKY, RECVIT 
+		                                ) TCT 
+		                    ON TCT.RECVKY = S.RECVKY 
+		                   AND TCT.RECVIT = S.RECVIT 
+		       LEFT OUTER JOIN CMCDV STH 
+		               ON STH.CMCDKY = 'STATDO' 
+		              AND STH.CMCDVL = RH.STATDO 
+		       LEFT OUTER JOIN CMCDV STI 
+		               ON STI.CMCDKY = 'STATIT' 
+		              AND STI.CMCDVL = S.STATIT 
+		       LEFT OUTER JOIN BZPTN BZ 
+		               ON BZ.PTNRKY = RH.DPTNKY 
+		              AND BZ.OWNRKY = RH.OWNRKY 
+		              AND BZ.PTNRTY = '0002' 
+		       LEFT OUTER JOIN USRMA CU 
+		               ON CU.USERID = S.CREUSR 
+		       LEFT OUTER JOIN USRMA LU 
+		               ON LU.USERID = S.LMOUSR                
+		 WHERE 1=1 
+		AND RH.OWNRKY = #{OWNRKY}
+		AND RH.WAREKY = #{WAREKY}
+		<if test="RANGE_SQL != null and RANGE_SQL != ''"> 
+		${RANGE_SQL} 
+		</if> 
+		<if test="RANGELOT_SQL != null and RANGELOT_SQL != ''"> 
+		${RANGELOT_SQL} 
+		</if> 
+		GROUP BY 
+		       S.RECVKY, 
+		       RH.RECVKY, 
+		       RH.WAREKY, 
+		       NVL(WH.NAME01,' '), 
+		       RH.RCPTTY, 
+		       NVL(DT.SHORTX,' '), 
+		       RH.STATDO, 
+		       NVL(STH.CDESC1,' '), 
+		       RH.SAPSTS, 
+		       RH.DOCDAT, 
+		       RH.DOCCAT, 
+		       NVL(DC.SHORTX,' '), 
+		       RH.DPTNKY, 
+		       NVL(BZ.NAME01,' '), 
+		       RH.DRELIN, 
+		       RH.ARCPTD, 
+		       RH.OWNRKY, 
+		       RH.RSNCOD, 
+		       RH.DOCTXT, 
+		       S.SEBELN, 
+		       RH.CREDAT, 
+		       RH.CRETIM, 
+		       RH.CREUSR, 
+		       NVL(CU.NMLAST,' '), 
+		       RH.LMODAT, 
+		       RH.LMOTIM, 
+		       RH.LMOUSR, 
+		       NVL(LU.NMLAST,' '),
+		       RH.DNAME3
+		 ORDER BY RH.RECVKY 
+	</select> 
+	 
+	<!-- **[DL45] 선입고 피킹리스트 아이템 조회  TASK.CONFIRM.FIND_PRERECDPICKINGLIST_ITEM --> 
+	<select id="DL45_ITEM_LIST" parameterType="hashmap" resultType="DataMap"> 
+		SELECT /*+ INDEX(B IDX_TASDI_NEW06)  */
+		       B.RECVKY AS SEARCHKEY, 
+		       B.RECVKY AS RECVKY, 
+		       B.RECVIT AS RECVIT, 
+		       A.WAREKY AS WAREKY, 
+		       B.TASKKY AS TASKKY, 
+		       B.TASKIT AS TASKIT, 
+		       B.TASKTY AS TASKTY, 
+		       B.RSNCOD AS RSNCOD, 
+		       B.TASRSN AS TASRSN, 
+		       B.STATIT AS STATIT, 
+		       (SELECT X.CDESC1 FROM CMCDV X WHERE X.CMCDKY = 'STATIT' AND X.CMCDVL = B.STATIT) AS STATITNM, 
+		       B.QTTAOR AS QTTAOR, 
+		       (CASE 
+		          WHEN B.ACTCDT = '00000000' THEN B.QTTAOR 
+		          ELSE B.QTCOMP END) AS QTCOMP, 
+		       B.OWNRKY AS OWNRKY, 
+		       B.SKUKEY AS SKUKEY, 
+		       B.LOTNUM AS LOTNUM, 
+		       B.ACTCDT AS ACTCDT, 
+		       B.ACTCTI AS ACTCTI, 
+		       B.QTYUOM AS QTYUOM, 
+		       B.TKFLKY AS TKFLKY, 
+		       B.STEPNO AS STEPNO, 
+		       B.LSTTFL AS LSTTFL, 
+		       B.LOCASR AS LOCASR, 
+		       B.SECTSR AS SECTSR, 
+		       B.PAIDSR AS PAIDSR, 
+		       B.TRNUSR AS TRNUSR, 
+		       B.STRUTY AS STRUTY, 
+		       B.SMEAKY AS SMEAKY, 
+		       B.SUOMKY AS SUOMKY, 
+		       B.QTSPUM AS QTSPUM, 
+		       B.SDUOKY AS SDUOKY, 
+		       B.QTSDUM AS QTSDUM, 
+		       B.LOCATG AS LOCATG, 
+		       B.SECTTG AS SECTTG, 
+		       B.PAIDTG AS PAIDTG, 
+		       B.TRNUTG AS TRNUTG, 
+		       B.TTRUTY AS TTRUTY, 
+		       B.TMEAKY AS TMEAKY, 
+		       B.TUOMKY AS TUOMKY, 
+		       B.QTTPUM AS QTTPUM, 
+		       B.TDUOKY AS TDUOKY, 
+		       B.QTTDUM AS QTTDUM, 
+		       (CASE 
+		          WHEN B.ACTCDT = '00000000' THEN B.LOCATG 
+		          ELSE B.LOCAAC END) AS LOCAAC, 
+		       (CASE 
+		          WHEN B.ACTCDT = '00000000' THEN B.SECTTG 
+		          ELSE B.SECTAC END) AS SECTAC, 
+		       (CASE 
+		          WHEN B.ACTCDT = '00000000' THEN B.PAIDTG 
+		          ELSE B.PAIDAC END) AS PAIDAC, 
+		       (CASE 
+		          WHEN B.ACTCDT = '00000000' THEN B.TRNUTG 
+		          ELSE B.TRNUAC END) AS TRNUAC, 
+		       (CASE 
+		          WHEN B.ACTCDT = '00000000' THEN B.TTRUTY 
+		          ELSE B.ATRUTY END) AS ATRUTY, 
+		       DECODE(B.ACTCDT, '00000000', B.TMEAKY, B.AMEAKY) AS AMEAKY, 
+		       DECODE(B.ACTCDT, '00000000', DECODE(B.TASKTY, 'PT', B.SUOMKY, B.TUOMKY), B.AUOMKY) AS AUOMKY, 
+		       DECODE(B.ACTCDT, '00000000', B.QTTPUM, B.QTAPUM) AS QTAPUM, 
+		       DECODE(B.ACTCDT, '00000000', B.TDUOKY, B.ADUOKY) AS ADUOKY, 
+		       DECODE(B.ACTCDT, '00000000', B.QTTDUM, B.QTADUM) AS QTADUM, 
+		       B.REFDKY AS REFDKY, 
+		       B.REFDIT AS REFDIT, 
+		       B.REFCAT AS REFCAT, 
+		       B.REFDAT AS REFDAT, 
+		       B.PURCKY AS PURCKY, 
+		       B.PURCIT AS PURCIT, 
+		       B.ASNDKY AS ASNDKY, 
+		       B.ASNDIT AS ASNDIT, 
+		       B.RECVKY AS RECVKY, 
+		       B.RECVIT AS RECVIT, 
+		       B.SHPOKY AS SHPOKY, 
+		       B.SHPOIT AS SHPOIT, 
+		       B.GRPOKY AS GRPOKY, 
+		       B.GRPOIT AS GRPOIT, 
+		       B.SADJKY AS SADJKY, 
+		       B.SADJIT AS SADJIT, 
+		       B.SDIFKY AS SDIFKY, 
+		       B.SDIFIT AS SDIFIT, 
+		       B.PHYIKY AS PHYIKY, 
+		       B.PHYIIT AS PHYIIT, 
+		       B.DROPID AS DROPID, 
+		       B.DESC01 AS DESC01, 
+		       B.DESC02 AS DESC02, 
+		       B.ASKU01 AS ASKU01, 
+		       B.ASKU02 AS ASKU02, 
+		       B.ASKU03 AS ASKU03, 
+		       B.ASKU04 AS ASKU04, 
+		       B.ASKU05 AS ASKU05, 
+		       B.EANCOD AS EANCOD, 
+		       B.GTINCD AS GTINCD, 
+		       B.SKUG01 AS SKUG01, 
+		       B.SKUG02 AS SKUG02, 
+		       B.SKUG03 AS SKUG03, 
+		       B.SKUG04 AS SKUG04, 
+		       B.SKUG05 AS SKUG05, 
+		       B.GRSWGT AS GRSWGT, 
+		       B.NETWGT AS NETWGT, 
+		       B.WGTUNT AS WGTUNT, 
+		       B.LENGTH AS LENGTH, 
+		       B.WIDTHW AS WIDTHW, 
+		       B.HEIGHT AS HEIGHT, 
+		       B.CUBICM AS CUBICM, 
+		       B.CAPACT AS CAPACT, 
+		       B.WORKID AS WORKID, 
+		       B.WORKNM AS WORKNM, 
+		       B.HHTTID AS HHTTID, 
+		       B.AREAKY AS AREAKY, 
+		       B.LOTA01 AS LOTA01, 
+		       B.LOTA02 AS LOTA02, 
+		       B.LOTA03 AS LOTA03, 
+		       B.LOTA04 AS LOTA04, 
+		       B.LOTA05 AS LOTA05, 
+		       B.LOTA06 AS LOTA06, 
+		       B.LOTA07 AS LOTA07, 
+		       B.LOTA08 AS LOTA08, 
+		       B.LOTA09 AS LOTA09, 
+		       B.LOTA10 AS LOTA10, 
+		       B.LOTA11 AS LOTA11, 
+		       B.LOTA12 AS LOTA12, 
+		       B.LOTA13 AS LOTA13, 
+		       B.LOTA14 AS LOTA14, 
+		       B.LOTA15 AS LOTA15, 
+		       B.LOTA16 AS LOTA16, 
+		       B.LOTA17 AS LOTA17, 
+		       B.LOTA18 AS LOTA18, 
+		       B.LOTA19 AS LOTA19, 
+		       B.LOTA20 AS LOTA20, 
+		       B.AWMSNO AS AWMSNO, 
+		       B.AWMSTS AS AWMSTS, 
+		       B.SMANDT AS SMANDT, 
+		       B.SEBELN AS SEBELN, 
+		       B.SEBELP AS SEBELP, 
+		       B.SZMBLNO AS SZMBLNO, 
+		       B.SZMIPNO AS SZMIPNO, 
+		       B.STRAID AS STRAID, 
+		       B.SVBELN AS SVBELN, 
+		       B.SPOSNR AS SPOSNR, 
+		       B.STKNUM AS STKNUM, 
+		       B.STPNUM AS STPNUM, 
+		       B.SWERKS AS SWERKS, 
+		       B.SLGORT AS SLGORT, 
+		       B.SDATBG AS SDATBG, 
+		       B.STDLNR AS STDLNR, 
+		       B.SSORNU AS SSORNU, 
+		       B.SSORIT AS SSORIT, 
+		       B.SMBLNR AS SMBLNR, 
+		       B.SZEILE AS SZEILE, 
+		       B.SMJAHR AS SMJAHR, 
+		       B.SXBLNR AS SXBLNR, 
+		       B.SAPSTS AS SAPSTS, 
+		       B.DOORKY AS DOORKY, 
+		       B.PTLT01 AS PTLT01, 
+		       B.PTLT02 AS PTLT02, 
+		       B.PTLT03 AS PTLT03, 
+		       B.PTLT04 AS PTLT04, 
+		       B.PTLT05 AS PTLT05, 
+		       B.PTLT06 AS PTLT06, 
+		       B.PTLT07 AS PTLT07, 
+		       B.PTLT08 AS PTLT08, 
+		       B.PTLT09 AS PTLT09, 
+		       B.PTLT10 AS PTLT10, 
+		       B.PTLT11 AS PTLT11, 
+		       B.PTLT12 AS PTLT12, 
+		       B.PTLT13 AS PTLT13, 
+		       B.PTLT14 AS PTLT14, 
+		       B.PTLT15 AS PTLT15, 
+		       B.PTLT16 AS PTLT16, 
+		       B.PTLT17 AS PTLT17, 
+		       B.PTLT18 AS PTLT18, 
+		       B.PTLT19 AS PTLT19, 
+		       B.PTLT20 AS PTLT20, 
+		       C.AUTLOC AS AUTLOC, 
+		       B.CREDAT AS CREDAT, 
+		       B.CRETIM AS CRETIM, 
+		       B.CREUSR AS CREUSR, 
+		       (SELECT X.NMLAST FROM USRMA X WHERE X.USERID = B.CREUSR) AS CUSRNM, 
+		       B.LMODAT AS LMODAT, 
+		       B.LMOTIM AS LMOTIM, 
+		       B.LMOUSR AS LMOUSR, 
+		       (SELECT X.NMLAST FROM USRMA X WHERE X.USERID = B.LMOUSR) AS LUSRNM, 
+		       B.INDBZL AS INDBZL, 
+		       B.INDARC AS INDARC, 
+		       B.UPDCHK AS UPDCHK, 
+		       SR.ARRIVA AS ARRIVA, 
+		       SR.CARDAT AS CARDAT, 
+		       SR.CARNUM AS CARNUM, 
+		       SR.SHIPSQ AS SHIPSQ, 
+		       SR.SORTSQ AS SORTSQ, 
+		       SR.DRIVER AS DRIVER, 
+		       SR.RECAYN AS RECAYN, 
+		       SH.DPTNKY AS DPTNKY, 
+		       DECODE(SH.SHPMTY,'266', (SELECT NAME01 FROM WAHMA WHERE WAREKY = SH.DPTNKY), BZ.NAME01) AS DPTNKYNM 
+		  FROM TASDI B 
+		  INNER JOIN TASDH A 
+		          ON A.TASKKY = B.TASKKY 
+		  INNER JOIN LOCMA C 
+		          ON A.WAREKY = C.WAREKY 
+		         AND B.LOCASR = C.LOCAKY 
+		  INNER JOIN (SELECT DISTINCT SHPOKY, SHPOIT, 
+		                                        CARDAT, DRIVER, CARNUM, ARRIVA , 
+		                                        SHIPSQ, TASKKY,RECAYN,SORTSQ 
+		                          FROM SHPDR 
+	WHERE RECAYN = 'N' 
+	
+		<if test="RANGERS_SQL != null and RANGERS_SQL != ''"> 
+		${RANGERS_SQL}
+		</if> 
+		)  SR 
+		          ON SR.SHPOKY = B.SHPOKY  
+		         AND SR.SHPOIT = B.SHPOIT               
+		  LEFT OUTER JOIN SHPDI SI 
+		          ON SI.SHPOKY = B.SHPOKY  
+		         AND SI.SHPOIT = B.SHPOIT 
+		  LEFT OUTER JOIN SHPDH SH 
+		          ON SH.SHPOKY = B.SHPOKY 
+		  LEFT OUTER JOIN BZPTN BZ 
+		          ON BZ.OWNRKY = SH.OWNRKY 
+		         AND BZ.PTNRKY = SH.DPTNKY 
+		         AND BZ.PTNRTY = '0001' 
+		 WHERE A.TASKKY = B.TASKKY 
+			AND B.LOCASR  = 'DOCLOC' 
+			AND SH.SHPMTY IN ('211','212','213','214','216','267','266','270') 
+			AND A.TASOTY  = '210' 
+			AND B.OWNRKY = #{OWNRKY}
+			AND A.WAREKY = #{WAREKY}
+		    AND B.RECVKY = #{RECVKY}
+		 ORDER BY B.TASKKY, B.TASKIT 
+	</select> 
+	 	 
+	<!-- [DL45] 오더피킹 저장 : 아이템 조회 :   --> 
+	<select id="DL45_VALIDATE_MAP" parameterType="hashmap" resultType="DataMap"> 
+		SELECT DRELIN AS RESULTMSG 
+		  FROM SHPDH 
+		 WHERE SHPOKY = NVL((SELECT SHPOKY FROM TASDI WHERE TASKKY = #{TASKKY} AND ROWNUM = 1),' ') 
+	</select> 
+	 
+	<!-- [DL45] 아이템 입력 대상  조회 :  : TASK.SO02.STKKY_TASDR.FINDLIST   --> 
+	<select id="DL45_ITEM_TASDR_LIST" parameterType="hashmap" resultType="DataMap"> 
+		SELECT  A.TASKKY AS TASKKY, 
+				A.TASKIT AS TASKIT, 
+				A.TASKIR AS TASKIR, 
+				A.STOKKY AS STOKKY, 
+				A.QTSTKM AS QTSTKM, 
+				A.QTSTKC AS QTSTKC, 
+				A.CREDAT AS CREDAT, 
+				A.CRETIM AS CRETIM, 
+				A.CREUSR AS CREUSR, 
+				A.LMODAT AS LMODAT, 
+				A.LMOTIM AS LMOTIM, 
+				A.LMOUSR AS LMOUSR, 
+				A.INDBZL AS INDBZL, 
+				A.INDARC AS INDARC, 
+				A.UPDCHK AS UPDCHK,
+				B.STOKKY AS STOKKY, 
+				B.QTSIWH AS QTSIWH, 
+				B.QTSALO AS QTSALO, 
+				B.QTSPMO AS QTSPMO, 
+				B.QTSPMI AS QTSPMI, 
+				B.QTSBLK AS QTSBLK, 
+				B.SRCSKY AS SRCSKY 
+		FROM    TASDR A, 
+		        STKKY B 
+		WHERE   A.STOKKY = B.STOKKY 
+		AND     A.TASKKY = #{TASKKY} 
+		AND     A.TASKIT = #{TASKIT} 
+		ORDER BY A.TASKIR  
+	</select> 
+	 
+	<!-- [DL45] STKKY : 상세 조회   --> 
+	<select id="DL45_STKKY_MAP" parameterType="hashmap" resultType="DataMap"> 
+		SELECT  
+		        LOTNUM 
+		      , LOCAKY 
+		      , TRNUID 
+		      , SECTID 
+		      , PACKID 
+		      , QTSIWH 
+		      , QTSALO 
+		      , QTSPMO 
+		      , QTSPMI 
+		      , QTSBLK 
+		      , QTYUOM 
+		      , TRUNTY 
+		      , MEASKY 
+		      , UOMKEY 
+		      , QTPUOM 
+		      , DUOMKY 
+		      , QTDUOM 
+		      , TKFLKY 
+		      , STEPNO 
+		      , LSTTFL 
+		      , SRCSKY 
+		      , UOMDOC 
+		      , CNTBSK 
+		      , NUPDPS 
+		      , REFDKY 
+		      , REFDIT 
+		      , REFCAT 
+		      , REFDAT 
+		      , PURCKY 
+		      , PURCIT 
+		      , ASNDKY 
+		      , ASNDIT 
+		      , RECVKY 
+		      , RECVIT 
+		      , SHPOKY 
+		      , SHPOIT 
+		      , GRPOKY 
+		      , GRPOIT 
+		      , TASKKY 
+		      , TASKIT 
+		      , SADJKY 
+		      , SADJIT 
+		      , SDIFKY 
+		      , SDIFIT 
+		      , PHYIKY 
+		      , PHYIIT 
+		      , OWNRKY 
+		      , SKUKEY 
+		      , LOTA01 
+		      , LOTA02 
+		      , LOTA03 
+		      , LOTA04 
+		      , LOTA05 
+		      , LOTA06 
+		      , LOTA07 
+		      , LOTA08 
+		      , LOTA09 
+		      , LOTA10 
+		      , LOTA11 
+		      , LOTA12 
+		      , LOTA13 
+		      , LOTA14 
+		      , LOTA15 
+		      , LOTA16 
+		      , LOTA17 
+		      , LOTA18 
+		      , LOTA19 
+		      , LOTA20 
+		      , AWMSNO 
+		      , DESC01 
+		      , DESC02 
+		      , ASKU01 
+		      , ASKU02 
+		      , ASKU03 
+		      , ASKU04 
+		      , ASKU05 
+		      , EANCOD 
+		      , GTINCD 
+		      , SKUG01 
+		      , SKUG02 
+		      , SKUG03 
+		      , SKUG04 
+		      , SKUG05 
+		      , GRSWGT 
+		      , NETWGT 
+		      , WGTUNT 
+		      , LENGTH 
+		      , WIDTHW 
+		      , HEIGHT 
+		      , CUBICM 
+		      , CAPACT 
+		      , ZONEKY 
+		      , TKZONE 
+		      , AREAKY 
+		      , SMANDT 
+		      , SEBELN 
+		      , SEBELP 
+		      , SZMBLNO 
+		      , SZMIPNO 
+		      , STRAID 
+		      , SVBELN 
+		      , SPOSNR 
+		      , STKNUM 
+		      , STPNUM 
+		      , SWERKS 
+		      , SLGORT 
+		      , SDATBG 
+		      , STDLNR 
+		      , SSORNU 
+		      , SSORIT 
+		      , SMBLNR 
+		      , SZEILE 
+		      , SMJAHR 
+		      , SXBLNR 
+		      , SAPSTS 
+		      , SBKTXT 
+		      , CREDAT 
+		      , CRETIM 
+		      , CREUSR 
+		      , LMODAT 
+		      , LMOTIM 
+		      , LMOUSR 
+		      , INDBZL 
+		      , INDARC 
+		      , UPDCHK 
+		      , KEEPTS 
+		      FROM STKKY 
+		      WHERE 1=1 
+		 
+		      AND STOKKY = #{STOKKY} 
+		      AND WAREKY = #{WAREKY} 
+	</select> 
+	 
+	<!-- [DL45] TASDI : 삭제   --> 
+	<delete id="DL45_TASDI_DELETE"  parameterType="hashmap"> 
+		DELETE FROM TASDI 
+		    WHERE 1=1 
+		      AND TASKKY = #{TASKKY}  
+		      AND TASKIT = #{TASKIT} 
+	</delete> 
+	 
+	<!-- [DL45] TASDI : 아이템 생성 : TASDI Insert 입력 --> 
+	<insert id="DL45_TASDI_INSERT"  parameterType="hashmap"> 
+	    INSERT INTO TASDI 
+	       (TASKKY, TASKIT, TASKTY, RSNCOD, STATIT, QTTAOR, QTCOMP, QTYFCN, OWNRKY, SKUKEY, LOTNUM, ACTCDT, ACTCTI, QTYUOM, TKFLKY, STEPNO, LSTTFL, LOCASR, SECTSR, PAIDSR, TRNUSR, STRUTY, SMEAKY, SUOMKY, QTSPUM, SDUOKY, QTSDUM, LOCATG, SECTTG, PAIDTG, TRNUTG, TTRUTY, TMEAKY, TUOMKY, QTTPUM, TDUOKY, QTTDUM, LOCAAC, SECTAC, PAIDAC, TRNUAC, ATRUTY, AMEAKY, AUOMKY, QTAPUM, ADUOKY, QTADUM, REFDKY, REFDIT, REFCAT, REFDAT, PURCKY, PURCIT, ASNDKY, ASNDIT, RECVKY, RECVIT, SHPOKY, SHPOIT, GRPOKY, GRPOIT, SADJKY, SADJIT, SDIFKY, SDIFIT, PHYIKY, PHYIIT, DROPID, DESC01, DESC02, ASKU01, ASKU02, ASKU03, ASKU04, ASKU05, EANCOD, GTINCD, SKUG01, SKUG02, SKUG03, SKUG04, SKUG05, GRSWGT, NETWGT, WGTUNT, "LENGTH", WIDTHW, HEIGHT, CUBICM, CAPACT, WORKID, WORKNM, HHTTID, AREAKY, LOTA01, LOTA02, LOTA03, LOTA04, LOTA05, LOTA06, LOTA07, LOTA08, LOTA09, LOTA10, LOTA11, LOTA12, LOTA13, LOTA14, LOTA15, LOTA16, LOTA17, LOTA18, LOTA19, LOTA20, AWMSNO, AWMSTS, SMANDT, SEBELN, SEBELP, SZMBLNO, SZMIPNO, STRAID, SVBELN, SPOSNR, STKNUM, STPNUM, SWERKS, SLGORT, SDATBG, STDLNR, SSORNU, SSORIT, SMBLNR, SZEILE, SMJAHR, SXBLNR, SAPSTS, DOORKY, PTLT01, PTLT02, PTLT03, PTLT04, PTLT05, PTLT06, PTLT07, PTLT08, PTLT09, PTLT10, PTLT11, PTLT12, PTLT13, PTLT14, PTLT15, PTLT16, PTLT17, PTLT18, PTLT19, PTLT20, PASTKY, ALSTKY, SBKTXT, TASRSN, CREDAT, CRETIM, CREUSR, LMODAT, LMOTIM, LMOUSR, INDBZL, INDARC, UPDCHK) 
+	      VALUES  
+	      ( 
+			  NVL(#{TASKKY },' ') 
+			, NVL(#{TASKIT },' ') 
+			, NVL(#{TASKTY },' ') 
+			, NVL(#{RSNCOD },' ') 
+			, NVL(#{STATIT },' ') 
+			, NVL(#{QTTAOR },0) 
+			, NVL(#{QTCOMP },0) 
+			, NVL(#{QTYFCN },0) 
+			, NVL(#{OWNRKY },' ') 
+			, NVL(#{SKUKEY },' ') 
+			, NVL(#{LOTNUM },' ') 
+			, TO_CHAR(SYSDATE,'YYYYMMDD') 
+			, NVL(#{ACTCTI },' ') 
+			, NVL(#{QTYUOM },0) 
+			, NVL(#{TKFLKY },' ') 
+			, NVL(#{STEPNO },' ') 
+			, NVL(#{LSTTFL },' ') 
+			, NVL(#{LOCASR },' ') 
+			, NVL(#{SECTSR },' ') 
+			, NVL(#{PAIDSR },' ') 
+			, NVL(#{TRNUSR },' ') 
+			, NVL(#{STRUTY },' ') 
+			, NVL(#{SMEAKY },' ') 
+			, NVL(#{SUOMKY },' ') 
+			, NVL(#{QTSPUM },0) 
+			, NVL(#{SDUOKY },' ') 
+			, NVL(#{QTSDUM },0) 
+			, NVL(#{LOCATG },' ') 
+			, NVL(#{SECTTG },' ') 
+			, NVL(#{PAIDTG },' ') 
+			, NVL(#{TRNUTG },' ') 
+			, NVL(#{TTRUTY },' ') 
+			, NVL(#{TMEAKY },' ') 
+			, NVL(#{TUOMKY },' ') 
+			, NVL(#{QTTPUM },0) 
+			, NVL(#{TDUOKY },' ') 
+			, NVL(#{QTTDUM },0) 
+			, NVL(#{LOCAAC },' ') 
+			, NVL(#{SECTAC },' ') 
+			, NVL(#{PAIDAC },' ') 
+			, NVL(#{TRNUAC },' ') 
+			, NVL(#{ATRUTY },' ') 
+			, NVL(#{AMEAKY },' ') 
+			, NVL(#{AUOMKY },' ') 
+			, NVL(#{QTAPUM },0) 
+			, NVL(#{ADUOKY },' ') 
+			, NVL(#{QTADUM },0) 
+			, NVL(#{REFDKY },' ') 
+			, NVL(#{REFDIT },' ') 
+			, NVL(#{REFCAT },' ') 
+			, NVL(#{REFDAT },' ') 
+			, NVL(#{PURCKY },' ') 
+			, NVL(#{PURCIT },' ') 
+			, NVL(#{ASNDKY },' ') 
+			, NVL(#{ASNDIT },' ') 
+			, NVL(#{RECVKY },' ') 
+			, NVL(#{RECVIT },' ') 
+			, NVL(#{SHPOKY },' ') 
+			, NVL(#{SHPOIT },' ') 
+			, NVL(#{GRPOKY },' ') 
+			, NVL(#{GRPOIT },' ') 
+			, NVL(#{SADJKY },' ') 
+			, NVL(#{SADJIT },' ') 
+			, NVL(#{SDIFKY },' ') 
+			, NVL(#{SDIFIT },' ') 
+			, NVL(#{PHYIKY },' ') 
+			, NVL(#{PHYIIT },' ') 
+			, NVL(#{DROPID },' ') 
+			, NVL(#{DESC01 },' ') 
+			, NVL(#{DESC02 },' ') 
+			, NVL(#{ASKU01 },' ') 
+			, NVL(#{ASKU02 },' ') 
+			, NVL(#{ASKU03 },' ') 
+			, NVL(#{ASKU04 },' ') 
+			, NVL(#{ASKU05 },' ') 
+			, NVL(#{EANCOD },' ') 
+			, NVL(#{GTINCD },' ') 
+			, NVL(#{SKUG01 },' ') 
+			, NVL(#{SKUG02 },' ') 
+			, NVL(#{SKUG03 },' ') 
+			, NVL(#{SKUG04 },' ') 
+			, NVL(#{SKUG05 },' ') 
+			, NVL(#{GRSWGT },0) 
+			, NVL(#{NETWGT },0) 
+			, NVL(#{WGTUNT },' ') 
+			, NVL(#{LENGTH },0) 
+			, NVL(#{WIDTHW },0) 
+			, NVL(#{HEIGHT },0) 
+			, NVL(#{CUBICM },0) 
+			, NVL(#{CAPACT },0) 
+			, NVL(#{WORKID },' ') 
+			, NVL(#{WORKNM },' ') 
+			, NVL(#{HHTTID },' ') 
+			, NVL(#{AREAKY },' ') 
+			, NVL(#{LOTA01 },' ') 
+			, NVL(#{LOTA02 },' ') 
+			, NVL(#{LOTA03 },' ') 
+			, NVL(#{LOTA04 },' ') 
+			, NVL(#{LOTA05 },' ') 
+			, NVL(#{LOTA06 },' ') 
+			, NVL(#{LOTA07 },' ') 
+			, NVL(#{LOTA08 },' ') 
+			, NVL(#{LOTA09 },' ') 
+			, NVL(#{LOTA10 },' ') 
+			, NVL(#{LOTA11 },' ') 
+			, NVL(#{LOTA12 },' ') 
+			, NVL(#{LOTA13 },' ') 
+			, NVL(#{LOTA14 },' ') 
+			, NVL(#{LOTA15 },' ') 
+			, NVL(#{LOTA16 },0) 
+			, NVL(#{LOTA17 },0) 
+			, NVL(#{LOTA18 },0) 
+			, NVL(#{LOTA19 },0) 
+			, NVL(#{LOTA20 },0) 
+			, NVL(#{AWMSNO },' ') 
+			, NVL(#{AWMSTS },' ') 
+			, NVL(#{SMANDT },' ') 
+			, NVL(#{SEBELN },' ') 
+			, NVL(#{SEBELP },' ') 
+			, NVL(#{SZMBLNO},' ') 
+			, NVL(#{SZMIPNO},' ') 
+			, NVL(#{STRAID },' ') 
+			, NVL(#{SVBELN },' ') 
+			, NVL(#{SPOSNR },' ') 
+			, NVL(#{STKNUM },' ') 
+			, NVL(#{STPNUM },' ') 
+			, NVL(#{SWERKS },' ') 
+			, NVL(#{SLGORT },' ') 
+			, NVL(#{SDATBG },' ') 
+			, NVL(#{STDLNR },' ') 
+			, NVL(#{SSORNU },' ') 
+			, NVL(#{SSORIT },' ') 
+			, NVL(#{SMBLNR },' ') 
+			, NVL(#{SZEILE },' ') 
+			, NVL(#{SMJAHR },' ') 
+			, NVL(#{SXBLNR },' ') 
+			, NVL(#{SAPSTS },' ') 
+			, NVL(#{DOORKY },' ') 
+			, NVL(#{PTLT01 },' ') 
+			, NVL(#{PTLT02 },' ') 
+			, NVL(#{PTLT03 },' ') 
+			, NVL(#{PTLT04 },' ') 
+			, NVL(#{PTLT05 },' ') 
+			, NVL(#{PTLT06 },' ') 
+			, NVL(#{PTLT07 },' ') 
+			, NVL(#{PTLT08 },' ') 
+			, NVL(#{PTLT09 },' ') 
+			, NVL(#{PTLT10 },' ') 
+			, NVL(#{PTLT11 },' ') 
+			, NVL(#{PTLT12 },' ') 
+			, NVL(#{PTLT13 },' ') 
+			, NVL(#{PTLT14 },' ') 
+			, NVL(#{PTLT15 },' ') 
+			, NVL(#{PTLT16 },0) 
+			, NVL(#{PTLT17 },0) 
+			, NVL(#{PTLT18 },0) 
+			, NVL(#{PTLT19 },0) 
+			, NVL(#{PTLT20 },0) 
+			, NVL(#{PASTKY },' ') 
+			, NVL(#{ALSTKY },' ') 
+			, NVL(#{SBKTXT },' ') 
+			, NVL(#{TASRSN },' ') 
+			, TO_CHAR(SYSDATE,'YYYYMMDD') 
+			, TO_CHAR(SYSDATE,'HH24MISS') 
+			, #{SES_USER_ID} 
+			, TO_CHAR(SYSDATE,'YYYYMMDD') 
+			, TO_CHAR(SYSDATE,'HH24MISS') 
+			, #{SES_USER_ID} 
+			, NVL(#{INDBZL },' ') 
+			, NVL(#{INDARC },' ') 
+			, NVL(#{UPDCHK },0)  
+	      ) 
+	    </insert> 
+ 
+	<select id="DL45_TASDR_MAP" parameterType="hashmap" resultType="DataMap">
+			
+		SELECT A.TASKKY AS TASKKY,
+		       A.TASKIT AS TASKIT,
+		       A.TASKIR AS TASKIR,
+		       A.STOKKY AS STOKKY,
+		       A.QTSTKM AS QTSTKM,
+		       A.QTSTKC AS QTSTKC,
+		       A.CREDAT AS CREDAT,
+		       A.CRETIM AS CRETIM,
+		       A.CREUSR AS CREUSR,
+		       A.LMODAT AS LMODAT,
+		       A.LMOTIM AS LMOTIM,
+		       A.LMOUSR AS LMOUSR,
+		       A.INDBZL AS INDBZL,
+		       A.INDARC AS INDARC,
+		       A.UPDCHK AS UPDCHK,
+		       B.STOKKY AS STOKKY,
+		       B.QTSIWH AS QTSIWH,
+		       B.QTSALO AS QTSALO,
+		       B.QTSPMO AS QTSPMO,
+		       B.QTSPMI AS QTSPMI,
+		       B.QTSBLK AS QTSBLK,
+		       B.SRCSKY AS SRCSKY
+		FROM   TASDR A,
+		       STKKY B
+		WHERE  A.STOKKY = B.STOKKY
+		AND    A.TASKKY = #{TASKKY}
+		AND    A.TASKIT = #{TASKIT}
+		ORDER BY A.TASKIR 	 
+	</select>
+	
+	<!-- **[DL44] 차량별 피킹리스트 그룹핑 조회쿼리_new --> 
+	<select id="DL44_PICKINGLIST_NEW_LIST" parameterType="hashmap" resultType="DataMap"> 
+		SELECT /*+ ORDERED */ SR.CARNUM
+             , TI.SSORNU
+             , SR.SHIPSQ
+             , SR.CARDAT 
+			 , TI.LOCASR  
+			 , TI.SSORNU
+			 , TI.SSORIT 
+			 , TI.SKUKEY 
+			 , SM.QTYSTD 
+			 , SM.QTDUOM 
+			 , SM.GRSWGT 
+			 , SM.QTYSTD 
+			 , SM.QTDUOM 
+			 , SM.GRSWGT 
+			 , LM.SHORTX 
+			 , SM.DESC01 
+			 , SM.DESC02 
+		  FROM SHPDR SR 
+		       INNER JOIN TASDI TI ON TI.SHPOKY = SR.SHPOKY AND TI.SHPOIT = SR.SHPOIT
+		       INNER JOIN TASDH TH ON TH.TASKKY = TI.TASKKY 
+		       INNER JOIN SHPDI SI ON SI.SHPOKY = TI.SHPOKY AND SI.SHPOIT = TI.SHPOIT
+		       INNER JOIN SHPDH SH ON SH.SHPOKY = SI.SHPOKY
+		       INNER JOIN SKUMA SM ON SM.OWNRKY = TI.OWNRKY AND SM.SKUKEY = TI.SKUKEY  
+		       LEFT OUTER JOIN LOCMA LM ON LM.WAREKY = TH.WAREKY AND LM.LOCAKY = TI.LOCASR
+		       LEFT OUTER JOIN ZONMA ZM ON ZM.WAREKY = LM.WAREKY AND ZM.ZONEKY = LM.TKZONE
+		 WHERE TI.LOCASR != 'DOCLOC' 
+		   AND SH.DRELIN = 'V' 
+		   AND SR.CARNUM != ' ' 
+		   AND TH.DOCDAT > TO_CHAR(SYSDATE - 100, 'YYYYMMDD') 
+		   AND SH.DOCDAT > TO_CHAR(SYSDATE - 100, 'YYYYMMDD') 
+		   AND SR.CARDAT > TO_CHAR(SYSDATE - 100, 'YYYYMMDD')
+		   AND TI.SSORNU = NVL(#{SSORNU}, ' ') 
+		   AND SR.SHIPSQ = #{SHIPSQ}
+		   AND SR.CARDAT = #{CARDAT}
+		   AND SR.CARNUM = #{CARNUM}
+		   AND TH.WAREKY = #{WAREKY}
+		 GROUP BY SR.CARNUM
+                , TI.SSORNU
+                , SR.SHIPSQ
+                , SR.CARDAT 
+				, TI.LOCASR  
+				, TI.SSORNU
+				, TI.SSORIT 
+				, TI.SKUKEY 
+				, SM.QTYSTD 
+				, SM.QTDUOM 
+				, SM.GRSWGT 
+				, SM.QTYSTD 
+				, SM.QTDUOM 
+				, SM.GRSWGT 
+				, LM.SHORTX 
+				, SM.DESC01 
+				, SM.DESC02 
+		 ORDER BY CASE WHEN TRIM(TI.SSORNU) IS NULL THEN '99999999999' ELSE TI.SSORNU END , CASE WHEN TRIM(TI.SSORIT) IS NULL THEN '999999' ELSE TI.SSORIT END, TI.SKUKEY 	
+	</select>
+	
+	<!-- **[DL44] 차량별 피킹리스트 그룹핑 조회쿼리_new --> 
+	<select id="DL44_PICKINGLIST_VALID_NEW_MAP" parameterType="hashmap" resultType="DataMap"> 
+		SELECT COUNT(1) AS CNT FROM TASDI WHERE SSORNU = #{SSORNU} AND SSORIT = #{SSORIT}
+	</select>
+</mapper>

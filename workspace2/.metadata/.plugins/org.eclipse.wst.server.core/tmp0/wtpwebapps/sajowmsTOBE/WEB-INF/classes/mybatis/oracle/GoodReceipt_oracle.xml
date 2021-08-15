@@ -1,0 +1,1608 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="GoodReceipt">
+	
+	<!-- **[GR42] 출고반품입고 조회 , 헤더 조회쿼리 -->
+	<!-- **[GR48] 반품입고조회, 헤더 쿼리 동일 -->
+	<select id="GR42_HEAD_LIST"  parameterType="hashmap" resultType="DataMap">
+	
+		SELECT IFWMS113.KEY KEY,
+		       IFWMS113.RECVKY RECVKY ,
+		       IFWMS113.WAREKY WAREKY ,
+		       IFWMS113.WAREKYNM WAREKYNM ,
+		       IFWMS113.RCPTTY RCPTTY ,
+		       IFWMS113.RCPTTYNM RCPTTYNM ,
+		       IFWMS113.STATDO STATDO ,
+		       IFWMS113.SAPSTS SAPSTS ,
+		       IFWMS113.DOCDAT DOCDAT ,
+		       IFWMS113.DOCCAT DOCCAT ,
+		       IFWMS113.DOCCATNM DOCCATNM ,
+		       IFWMS113.DPTNKY DPTNKY ,
+		       IFWMS113.DPTNKYNM DPTNKYNM ,
+		       IFWMS113.PTNROD PTNROD ,
+		       IFWMS113.PTNRODNM PTNRODNM ,
+		       IFWMS113.DRELIN DRELIN ,
+		       IFWMS113.ARCPTD ARCPTD ,
+		       IFWMS113.OWNRKY OWNRKY ,
+		       IFWMS113.INDRCN INDRCN ,
+		       IFWMS113.CRECVD CRECVD ,
+		       IFWMS113.RSNCOD RSNCOD ,
+		       IFWMS113.PUTSTS PUTSTS ,
+		       IFWMS113.LGORT LGORT ,
+		       IFWMS113.LGORTNM LGORTNM ,
+		       IFWMS113.USRID1 USRID1 ,
+		       IFWMS113.UNAME1 UNAME1 ,
+		       IFWMS113.DEPTID1 DEPTID1 ,
+		       IFWMS113.DNAME1 DNAME1 ,
+		       IFWMS113.USRID2 USRID2 ,
+		       IFWMS113.UNAME2 UNAME2 ,
+		       IFWMS113.DEPTID2 DEPTID2 ,
+		       IFWMS113.DNAME2 DNAME2 ,
+		       IFWMS113.USRID3 USRID3 ,
+		       IFWMS113.UNAME3 UNAME3 ,
+		       IFWMS113.DEPTID3 DEPTID3 ,
+		       IFWMS113.DNAME3 DNAME3 ,
+		       IFWMS113.USRID4 USRID4 ,
+		       IFWMS113.UNAME4 UNAME4 ,
+		       IFWMS113.DEPTID4 DEPTID4 ,
+		       IFWMS113.DNAME4 DNAME4 ,
+		       IFWMS113.CUADDR CUADDR ,
+		       IFWMS113.SVBELN SVBELN ,
+		       IFWMS113.CUNAME CUNAME ,
+		       IFWMS113.SDATBG SDATBG ,
+		       MAX(IFWMS113.DOCTXT) DOCTXT ,
+		       MAX(IFWMS113.TEXT02)  TEXT02,
+		       IFWMS113.PRINTCHK PRINTCHK ,
+		       IFWMS113.LGORTNM LGORTNM ,
+		       IFWMS113.SHPOKYMV SHPOKYMV ,
+		       IFWMS113.CARNUM CARNUM ,
+		       IFWMS113.DPHONE DPHONE ,
+		       IFWMS113.ERDAT ERDAT ,
+		       IFWMS113.RECALLDAT RECALLDAT ,
+		       IFWMS113.BOXQTY BOXQTY ,
+		       MAX(IFWMS113.SKUG05) SKUG05 ,
+		       SUBSTR(MAX(IFWMS113.CREDAT), 1, 4)||'-'||SUBSTR(MAX(IFWMS113.CREDAT), 5, 2)||'-'||SUBSTR(MAX(IFWMS113.CREDAT), 7, 8) WMSCREDAT ,
+		       SUBSTR(MAX(IFWMS113.CRETIM), 1, 2)||':'||SUBSTR(MAX(IFWMS113.CRETIM), 3, 2)||':'||SUBSTR(MAX(IFWMS113.CRETIM), 5, 2) WMSCRETIM
+		  FROM (
+		        SELECT IFWMS113.SVBELN AS KEY,
+		        (SELECT MAX(RECVKY) FROM RECDI WHERE SVBELN = IFWMS113.SVBELN)  AS RECVKY,
+		        IFWMS113.WAREKY AS WAREKY,
+		        WH.NAME01 AS WAREKYNM,
+		        IFWMS113.DOCUTY  AS RCPTTY,
+		        DT.SHORTX AS RCPTTYNM,
+		        'NEW' AS STATDO,
+		        ' '   AS SAPSTS,
+		        IFWMS113.DOCUTY AS DOCUTY,
+		        IFWMS113.OTRQDT AS OTRQDT,
+		        IFWMS113.CUADDR AS CUADDR,
+		        IFWMS113.PTNRTO AS PTNRTO,
+		        NVL(TRIM((SELECT MAX(H.DOCDAT) FROM RECDH H, RECDI I WHERE H.RECVKY = I.RECVKY AND I.SVBELN = IFWMS113.SVBELN)) ,TO_CHAR(SYSDATE,'YYYYMMDD'))  AS DOCDAT,
+		        '100' AS DOCCAT,
+		        DC.SHORTX AS DOCCATNM,
+		        IFWMS113.PTNRTO AS DPTNKY,
+		        VD.NAME01 AS DPTNKYNM,
+		        IFWMS113.PTNROD AS PTNROD,
+		        VD2.NAME01 AS PTNRODNM,
+		        ' ' AS DRELIN,
+		        '00000000' AS ARCPTD,
+		        IFWMS113.OWNRKY AS OWNRKY,
+		        ' ' AS INDRCN,
+		        ' ' AS CRECVD,
+		        ' ' AS RSNCOD,
+		        ' ' AS PUTSTS,
+		        ' ' AS LGORT,
+		        ' ' AS USRID1,
+		        IFWMS113.CTNAME AS UNAME1,
+		        ' ' AS DEPTID1,
+		        IFWMS113.WARESR AS DNAME1,
+		        ' ' AS USRID2,
+		        IFWMS113.CTTEL1 AS UNAME2,
+		        ' ' AS DEPTID2,
+		        ' ' AS DNAME2,
+		        ' ' AS USRID3,
+		        IFWMS113.SALENM AS UNAME3,
+		        ' ' AS DEPTID3,
+		        ' ' AS DNAME3,
+		        ' ' AS USRID4,
+		        IFWMS113.SALTEL AS UNAME4,
+		        ' ' AS DEPTID4,
+		        IFWMS113.CUADDR AS DNAME4,
+		        IFWMS113.SVBELN AS SVBELN,
+		        NVL(MAX(BZ.NAME01), NVL(MAX(BZ2.NAME01),MAX(BZ3.NAME01))) AS CUNAME,
+		        IFWMS113.OTRQDT AS SDATBG,
+		        IFWMS113.TEXT01 AS DOCTXT,
+		        MAX(IFWMS113.TEXT02) AS TEXT02,
+		        IFWMS113.C00106 AS CARNUM,
+		        IFWMS113.C00107 AS DPHONE,
+		        IFWMS113.C00108 AS ERDAT,
+		        IFWMS113.C00109 AS RECALLDAT,
+		        (SELECT SUM(TRUNC((QTYREQ-QTSHPD) / DECODE(SK.QTDUOM,0, NULL,SK.QTDUOM),1)) 
+		           FROM IFWMS113 ITEM, SKUMA SK 
+		          WHERE ITEM.OWNRKY = SK.OWNRKY AND ITEM.SKUKEY = SK.SKUKEY AND SVBELN = IFWMS113.SVBELN AND XSTAT = 'R') AS BOXQTY,
+		        DECODE(MAX(C00105),'V','YES','NO') AS PRINTCHK,
+		        IFWMS113.OTRQDT AS LGORTNM,
+		        IFWMS113.XSTAT AS SHPOKYMV,
+		        IFWMS113.SKUKEY AS SKUKEY,
+		        SM.DESC01 AS DESC01,
+		        SM.DESC02 AS DESC02,
+		        SM.ASKU02 AS SKUG05,
+		        IFWMS113.XDATS AS CREDAT,
+		        IFWMS113.XTIMS AS CRETIM
+		   FROM ( SELECT * 
+		            FROM IFWMS113 
+		           WHERE DOCUTY IN ('131','133','134','135','136','137', '171')) IFWMS113 INNER JOIN SKUMA SM ON SM.OWNRKY = IFWMS113.OWNRKY AND SM.SKUKEY = IFWMS113.SKUKEY
+		                                                   INNER JOIN SKUWC SW ON SW.WAREKY = IFWMS113.WAREKY AND SW.OWNRKY = IFWMS113.OWNRKY 
+		                                                                      AND SW.SKUKEY = IFWMS113.SKUKEY
+		                                                   LEFT OUTER JOIN BZPTN BZ ON BZ.PTNRKY = IFWMS113.WARESR AND BZ.OWNRKY = IFWMS113.OWNRKY
+		                                                                           AND BZ.PTNRTY = '0001' AND BZ.DELMAK != 'V'
+		                                                   LEFT OUTER JOIN BZPTN BZ2 ON BZ2.PTNRKY = IFWMS113.WARESR AND BZ2.OWNRKY = IFWMS113.OWNRKY
+		                                                                            AND BZ2.PTNRTY = '0003' AND BZ2.DELMAK != 'V'
+		                                                   LEFT OUTER JOIN BZPTN BZ3 ON BZ3.PTNRKY = IFWMS113.WARESR AND BZ3.OWNRKY = IFWMS113.OWNRKY
+		                                                                            AND BZ3.PTNRTY = '0004' AND BZ3.DELMAK != 'V'              
+		                                                   LEFT OUTER JOIN WAHMA WH ON WH.WAREKY = IFWMS113.WAREKY
+		                                                   LEFT OUTER JOIN DOCCM DC ON DC.DOCCAT = '100'
+		                                                   LEFT OUTER JOIN DOCTM DT ON DT.DOCUTY = IFWMS113.DOCUTY 
+		                                                   LEFT OUTER JOIN BZPTN VD ON VD.PTNRKY = IFWMS113.PTNRTO AND VD.OWNRKY = IFWMS113.OWNRKY
+		                                                                           AND VD.PTNRTY = '0007'
+		                                                   LEFT OUTER JOIN BZPTN VD2 ON VD2.PTNRKY = IFWMS113.PTNROD AND VD2.OWNRKY = IFWMS113.OWNRKY
+		                                                                            AND VD2.PTNRTY = '0001'
+			   WHERE 1 = 1
+			        AND IFWMS113.MANDT = 'SAP'
+			        AND IFWMS113.C00102 IN ('N','Y') 
+			        AND IFWMS113.XSTAT = 'D'
+			        
+<!-- 					<if test="PRINTCHK != null and PRINTCHK != '' and PRINTCHK !='ALL'"> -->
+<!-- 						AND IFWMS113.C00105 = DECODE(#{PRINTCHK} , 'Y','V','N','NO') -->
+<!-- 					</if> -->
+					
+					<if test="PRINTCHK != 'ALL' ">
+						AND IFWMS113.C00105 = DECODE(#{PRINTCHK},'Y','V', ' ')
+					</if>
+			         GROUP BY IFWMS113.WAREKY, IFWMS113.PTNRTO, IFWMS113.OWNRKY, IFWMS113.SVBELN, WH.NAME01, DC.SHORTX, DT.SHORTX, 
+			                  VD.NAME01,IFWMS113.PTNROD, VD2.NAME01, IFWMS113.CTNAME, IFWMS113.WARESR, IFWMS113.CTTEL1, IFWMS113.SALENM, 
+			                  IFWMS113.SALTEL, IFWMS113.CUADDR, IFWMS113.OTRQDT , IFWMS113.TEXT01, IFWMS113.XSTAT, IFWMS113.DOCUTY,
+			                  IFWMS113.SKUKEY, SM.DESC01, SM.DESC02, SM.ASKU02, IFWMS113.C00106, IFWMS113.C00107, IFWMS113.C00108, 
+			                  IFWMS113.C00109, IFWMS113.XDATS, IFWMS113.XTIMS
+			
+			        ) IFWMS113
+				WHERE 1= 1
+				
+					AND IFWMS113.OWNRKY = #{OWNRKY}
+					AND IFWMS113.WAREKY = #{WAREKY}
+										
+					<if test="RANGE_SQL != null and RANGE_SQL != ''">
+						${RANGE_SQL}
+					</if>
+					
+				GROUP BY KEY, RECVKY, WAREKY, WAREKYNM, RCPTTY, RCPTTYNM, STATDO, SAPSTS, ARCPTD, DOCDAT, DOCCAT, DOCCATNM,
+				         DPTNKY, DPTNKYNM, DRELIN, OWNRKY, INDRCN, DNAME1, CRECVD, RSNCOD, PUTSTS, LGORTNM, USRID1, UNAME1,
+				         DEPTID1, USRID2, UNAME2, DEPTID2, DNAME2, USRID3, UNAME3, DEPTID3, DNAME3, USRID4, UNAME4, DEPTID4,
+				         DNAME4, SVBELN, CUNAME, SDATBG, PRINTCHK, LGORTNM, SHPOKYMV, CARNUM, DPHONE, ERDAT, RECALLDAT,
+				         BOXQTY, IFWMS113.PTNROD, IFWMS113.PTNRODNM
+				         
+		
+	</select>
+		
+	<!-- **[GR42] 출고반품입고 조회 , 아이템 조회쿼리 -->
+	<!-- **[GR48] 반품입고조회, 아이템 쿼리 동일 -->
+	<select id="GR42_ITEM_LIST"  parameterType="hashmap" resultType="DataMap">
+	
+		SELECT IF.SVBELN AS KEY,
+		       RI.RECVKY AS RECVKY,
+		       RI.RECVIT AS RECVIT,
+		       'NEW' AS STATIT,
+		       ' ' AS SAPSTS,
+		       IF.SKUKEY AS SKUKEY,
+		       RI.LOTNUM AS LOTNUM,
+		       RI.AREAKY AS AREAKY,
+		       NVL(SW.LOCARV,' ') AS LOCAKY,
+		       ' ' AS SECTID,
+		       RI.TRNUID AS TRNUID,
+		       ' ' AS PACKID,
+		       
+		       IF.QTYREQ AS ORDQTY,
+		       RI.QTYRCV AS QTYRCV,
+		       NVL(IF2.QTSHPD,0) AS QTSHPD,
+		       0 AS QTYDIF,
+		       IF.QTYREQ AS QTYUOM,
+		       ' ' AS TRUNTY,
+		       IF.SKUKEY AS MEASKY,
+		       IF.DUOMKY AS UOMKEY,       
+		       
+		       0 AS ASNQTY,
+		       0 AS QTYASN, 
+		       NVL(  TRUNC(RI.QTYRCV / DECODE(MI.QTPUOM,0, NULL,MI.QTPUOM)) ,0) AS BOXQTY,
+		       NVL(MI.QTPUOM,0) AS BXIQTY,
+		       NVL(MOD(RI.QTYRCV, NVL(MI.QTPUOM,0)),0) AS REMQTY, 
+		       
+		       NVL(  TRUNC(RI.QTYRCV/ DECODE(MIP.QTPUOM, 0,NULL,MIP.QTPUOM) ) ,0) AS PLTQTY,
+		       NVL( MIP.QTPUOM, 0)  AS PLTQTYCAL,
+		       
+		       NVL(ITFMS.QTPUOM,9999999)   AS QTPUOM,
+		       NVL(SM.DUOMKY,' ') AS DUOMKY,
+		       NVL(MI.QTPUOM,9999999) AS QTDUOM,
+		       ' ' AS INDRCN,
+		       ' ' AS CRECVD,
+		       RI.RSNCOD AS RSNCOD,
+		       RI.LOTA01 AS LOTA01,
+		       ' ' AS LOTA01NM,
+		       ' ' AS LOTA02,
+		       RI.LOTA03 AS LOTA03,
+		       ' ' AS LOTA04,
+		       RI.LOTA05 AS LOTA05,
+		       RI.LOTA06 AS LOTA06,
+		       ' ' AS LOTA07,
+		       ' ' AS LOTA08,
+		       ' ' AS LOTA09,
+		       ' ' AS LOTA10,
+		       RI.LOTA11 AS LOTA11,
+		       RI.LOTA12 AS LOTA12,
+		       RI.LOTA03 AS LOTA13,
+		       ' ' AS LOTA14,
+		       ' ' AS LOTA15,
+		       0 AS LOTA16,
+		       0 AS LOTA17,
+		       0 AS LOTA18,
+		       0 AS LOTA19,
+		       0 AS LOTA20,
+		       ' ' AS AWMSNO,
+		       IF.SVBELN AS REFDKY,
+		       IF.SPOSNR AS REFDIT,
+		       '100' AS REFCAT,
+		       TO_CHAR(SYSDATE,'YYYYMMDD') AS REFDAT,
+		       NVL(SM.DESC01,' ') AS DESC01,
+		       NVL(SM.DESC02,' ') AS DESC02,
+		       SM.ASKU01 AS ASKU01,
+		       SM.ASKU02 AS ASKU02,
+		       SM.ASKU03 AS ASKU03,
+		       SM.ASKU04 AS ASKU04,
+		       SM.ASKU05 AS ASKU05,
+		       SM.EANCOD AS EANCOD,
+		       SM.GTINCD AS GTINCD,
+		       SM.SKUG01 AS SKUG01,
+		       SM.SKUG02 AS SKUG02,
+		       SM.SKUG03 AS SKUG03,
+		       SM.SKUG04 AS SKUG04,
+		       SM.SKUG05 AS SKUG05,
+		       NVL(SM.GRSWGT,0) * NVL(RI.QTYRCV,0)  AS GRSWGT,
+		       NVL(SM.GRSWGT,0)   AS GRSWGTCNT,
+		       NVL(SM.NETWGT,0) * NVL(RI.QTYRCV,0)  AS NETWGT,
+		       NVL(SM.NETWGT,0)   AS NETWGTCNT,     
+		       SM.WGTUNT AS WGTUNT,
+		       SM.LENGTH AS LENGTH,
+		       SM.WIDTHW AS WIDTHW,
+		       SM.HEIGHT AS HEIGHT,
+		       SM.CUBICM AS CUBICM,
+		       SM.CAPACT AS CAPACT,
+		       0 AS QTYORG,
+		       ' ' AS SMANDT,
+		       ' ' AS SEBELN,
+		       ' ' AS SEBELP,
+		       ' ' AS SZMBLNO,
+		       ' ' AS SZMIPNO,
+		       ' ' AS STRAID,
+		       IF.SVBELN AS SVBELN,
+		       IF.SPOSNR AS SPOSNR,
+		       ' ' AS STKNUM,
+		       ' ' AS STPNUM,
+		       ' ' AS SWERKS,
+		       ' ' AS SLGORT,
+		       ' ' AS SDATBG,
+		       ' ' AS STDLNR,
+		       ' ' AS SSORNU,
+		       ' ' AS SSORIT,
+		       ' ' AS SMBLNR,
+		       ' ' AS SZEILE,
+		       ' ' AS SMJAHR,
+		       ' ' AS SXBLNR,
+		       ' ' AS SBKTXT,
+		       ' ' AS RCPRSN,
+		       NVL(SM.OUTDMT,0) AS OUTDMT,
+		       SUBSTR(IF.XDATS, 1, 4)||'-'||SUBSTR(IF.XDATS, 5, 2)||'-'||SUBSTR(IF.XDATS, 7, 8) WMSCREDAT ,
+		       SUBSTR(IF.XTIMS, 1, 2)||':'||SUBSTR(IF.XTIMS, 3, 2)||':'||SUBSTR(IF.XTIMS, 5, 2) WMSCRETIM,
+		       SUBSTR(IF.OTRQDT, 1, 4)||'-'||SUBSTR(IF.OTRQDT, 5, 2)||'-'||SUBSTR(IF.OTRQDT, 7, 8) ORDDAT
+		  FROM (SELECT * FROM IFWMS113 WHERE DOCUTY IN ( '131', '133', '134', '135', '136','137', '171' ) ) IF
+		       INNER JOIN RECDI RI
+		               ON RI.SVBELN = IF.SVBELN
+		              AND RI.SPOSNR = IF.SPOSNR
+		       LEFT OUTER JOIN IFWMS113 IF2
+		                    ON RI.REFDKY = IF2.SVBELN
+		                   AND RI.SKUKEY = IF2.SKUKEY
+		                   AND IF2.SVBELN = #{SVBELN}
+		       INNER JOIN SKUMA SM
+		               ON SM.OWNRKY = IF.OWNRKY
+		              AND SM.SKUKEY = IF.SKUKEY
+		       INNER JOIN SKUWC SW
+		               ON SW.WAREKY = IF.WAREKY
+		              AND SW.OWNRKY = IF.OWNRKY
+		              AND SW.SKUKEY = IF.SKUKEY
+		       LEFT OUTER JOIN MEASI ITFMS
+		               ON ITFMS.OWNRKY = IF.OWNRKY
+		              AND ITFMS.WAREKY = IF.WAREKY
+		              AND ITFMS.MEASKY = IF.SKUKEY
+		              AND ITFMS.UOMKEY = IF.DUOMKY
+		       LEFT OUTER JOIN MEASI MI
+		               ON MI.WAREKY = IF.WAREKY
+		              AND MI.OWNRKY = IF.OWNRKY
+		              AND MI.MEASKY = IF.SKUKEY
+		              AND MI.UOMKEY = 'BOX'
+		       LEFT OUTER JOIN MEASI MIP
+		               ON MIP.WAREKY = IF.WAREKY
+		              AND MIP.OWNRKY = IF.OWNRKY
+		              AND MIP.MEASKY = IF.SKUKEY
+		              AND MIP.UOMKEY = 'PL'              
+		       LEFT OUTER JOIN BZPTN L01NM
+		               ON L01NM.PTNRKY = IF.PTNROD
+		              AND L01NM.OWNRKY = IF.OWNRKY
+		              AND L01NM.PTNRTY = '0001'
+		 WHERE  IF.XSTAT = 'D'
+			AND IF.SVBELN = #{SVBELN}
+		 ORDER BY IF.SKUKEY
+	</select>
+	
+	<!--GR42 print -->
+	<update id="GR42_UPDATE"  parameterType="hashmap">
+		UPDATE IFWMS113
+		SET C00105 = 'V',
+			LMODAT = TO_CHAR(SYSDATE, 'YYYYMMDD'),
+			LMOTIM = TO_CHAR(SYSDATE, 'HH24MISS')
+		WHERE XSTAT IN ('D','R')
+			AND SVBELN = #{SVBELN}
+			AND C00105 = DECODE(#{PRINTCHK},'YES','V',' ')
+	</update>
+	
+	<!-- [RCPTTY] GR44, GR45 입고유형 콤보 -->
+	<select id="COMBO_RCPTTY_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT DOCUTY AS VALUE_COL
+			 , SHORTX AS TEXT_COL
+		  FROM DOCTM
+		  WHERE
+				DOCCAT = '100'			
+		<choose>
+			<when test='PROGID != null and PROGID.equals("GR45") '>
+				AND DOCUTY IN('134','135')
+			</when>
+			<when test='PROGID != null and PROGID.equals("GR44") '>
+				AND DOCUTY IN('134','135','138','139','171')
+			</when>
+			<when test='PROGID != null and PROGID.equals("GR42") '>
+				AND DOCUTY IN('131','133','134','135','136')
+			</when>
+		</choose>
+		ORDER BY DOCUTY
+	</select>
+			
+	<!-- GR44 회송반품입고 헤드 조회쿼리 -->
+	<select id="GR44_HEAD_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT IFWMS113.KEY KEY,
+		       IFWMS113.RECVKY RECVKY ,
+		       IFWMS113.WAREKY WAREKY ,
+		       IFWMS113.WAREKYNM WAREKYNM ,
+		       IFWMS113.RCPTTY RCPTTY ,
+		       IFWMS113.RCPTTYNM RCPTTYNM ,
+		       IFWMS113.STATDO STATDO ,
+		       IFWMS113.SAPSTS SAPSTS ,
+		       IFWMS113.DOCDAT DOCDAT ,
+		       IFWMS113.DOCCAT DOCCAT ,
+		       IFWMS113.DOCCATNM DOCCATNM ,
+		       IFWMS113.DPTNKY DPTNKY ,
+		       IFWMS113.DPTNKYNM DPTNKYNM ,
+		       IFWMS113.PTNROD PTNROD ,
+		       IFWMS113.PTNRODNM PTNRODNM ,
+		       IFWMS113.DRELIN DRELIN ,
+		       IFWMS113.ARCPTD ARCPTD ,
+		       IFWMS113.OWNRKY OWNRKY ,
+		       IFWMS113.INDRCN INDRCN ,
+		       IFWMS113.CRECVD CRECVD ,
+		       IFWMS113.RSNCOD RSNCOD ,
+		       IFWMS113.PUTSTS PUTSTS ,
+		       IFWMS113.LGORT LGORT ,
+		       IFWMS113.LGORTNM LGORTNM ,
+		       IFWMS113.USRID1 USRID1 ,
+		       IFWMS113.UNAME1 UNAME1 ,
+		       IFWMS113.DEPTID1 DEPTID1 ,
+		       IFWMS113.DNAME1 DNAME1 ,
+		       IFWMS113.USRID2 USRID2 ,
+		       IFWMS113.UNAME2 UNAME2 ,
+		       IFWMS113.DEPTID2 DEPTID2 ,
+		       IFWMS113.DNAME2 DNAME2 ,
+		       IFWMS113.USRID3 USRID3 ,
+		       IFWMS113.UNAME3 UNAME3 ,
+		       IFWMS113.DEPTID3 DEPTID3 ,
+		       IFWMS113.DNAME3 DNAME3 ,
+		       IFWMS113.USRID4 USRID4 ,
+		       IFWMS113.UNAME4 UNAME4 ,
+		       IFWMS113.DEPTID4 DEPTID4 ,
+		       IFWMS113.DNAME4 DNAME4 ,
+		       IFWMS113.SVBELN SVBELN ,
+		       NVL(IFWMS113.CUNAME,' ') CUNAME ,
+		       IFWMS113.SDATBG SDATBG ,
+		       IFWMS113.DOCTXT DOCTXT ,
+		       IFWMS113.PRINTCHK PRINTCHK ,
+		       IFWMS113.LGORTNM LGORTNM ,
+		       IFWMS113.SHPOKYMV SHPOKYMV ,
+		       IFWMS113.CARNUM CARNUM ,
+		       IFWMS113.DPHONE DPHONE ,
+		       IFWMS113.ERDAT ERDAT ,
+		       IFWMS113.RECALLDAT RECALLDAT ,
+		       IFWMS113.BOXQTY BOXQTY ,
+		       MAX(IFWMS113.SKUG05) SKUG05 ,
+		       SUBSTR(MAX(IFWMS113.CREDAT), 1, 4)||'-'||SUBSTR(MAX(IFWMS113.CREDAT), 5, 2)||'-'||SUBSTR(MAX(IFWMS113.CREDAT), 7, 8) WMSCREDAT ,
+		       SUBSTR(MAX(IFWMS113.CRETIM), 1, 2)||':'||SUBSTR(MAX(IFWMS113.CRETIM), 3, 2)||':'||SUBSTR(MAX(IFWMS113.CRETIM), 5, 2) WMSCRETIM ,
+		       IFWMS113.ORDDAT AS ORDDAT
+		  FROM (
+		        SELECT IFWMS113.SVBELN AS KEY,
+		        (SELECT NVL(MAX(RECVKY),' ') FROM RECDI WHERE SVBELN = IFWMS113.SVBELN)  AS RECVKY,
+		        IFWMS113.WAREKY AS WAREKY,
+		        WH.NAME01 AS WAREKYNM,
+		        IFWMS113.DOCUTY  AS RCPTTY,
+		        DT.SHORTX AS RCPTTYNM,
+		        'NEW' AS STATDO,
+		        ' '   AS SAPSTS,
+		        IFWMS113.DOCUTY AS DOCUTY,
+		        IFWMS113.OTRQDT AS OTRQDT,
+		        IFWMS113.CUADDR AS CUADDR,
+		        IFWMS113.PTNRTO AS PTNRTO,
+		        NVL(TRIM((SELECT MAX(H.DOCDAT) FROM RECDH H, RECDI I WHERE H.RECVKY = I.RECVKY AND I.SVBELN = IFWMS113.SVBELN)) ,TO_CHAR(SYSDATE,'YYYYMMDD'))  AS DOCDAT,
+		        '100' AS DOCCAT,
+		        DC.SHORTX AS DOCCATNM,
+		        IFWMS113.PTNRTO AS DPTNKY,
+		        VD.NAME01 AS DPTNKYNM,
+		        IFWMS113.PTNROD AS PTNROD,
+		        VD2.NAME01 AS PTNRODNM,
+		        ' ' AS DRELIN,
+		        '00000000' AS ARCPTD,
+		        IFWMS113.OWNRKY AS OWNRKY,
+		        ' ' AS INDRCN,
+		        ' ' AS CRECVD,
+		        ' ' AS RSNCOD,
+		        ' ' AS PUTSTS,
+		        ' ' AS LGORT,
+		        ' ' AS USRID1,
+		        IFWMS113.CTNAME AS UNAME1,
+		        ' ' AS DEPTID1,
+		        IFWMS113.WARESR AS DNAME1,
+		        ' ' AS USRID2,
+		        IFWMS113.CTTEL1 AS UNAME2,
+		        ' ' AS DEPTID2,
+		        ' ' AS DNAME2,
+		        ' ' AS USRID3,
+		        IFWMS113.SALENM AS UNAME3,
+		        ' ' AS DEPTID3,
+		        ' ' AS DNAME3,
+		        ' ' AS USRID4,
+		        IFWMS113.SALTEL AS UNAME4,
+		        ' ' AS DEPTID4,
+		        IFWMS113.CUADDR AS DNAME4,
+		        IFWMS113.SVBELN AS SVBELN,
+		        NVL(MAX(BZ.NAME01), NVL(MAX(BZ2.NAME01),MAX(BZ3.NAME01))) AS CUNAME,
+		        IFWMS113.OTRQDT AS SDATBG,
+		        IFWMS113.TEXT01 AS DOCTXT,
+		        IFWMS113.C00106 AS CARNUM,
+		        IFWMS113.C00107 AS DPHONE,
+		        IFWMS113.C00108 AS ERDAT,
+		        IFWMS113.C00109 AS RECALLDAT,
+		        (SELECT SUM(TRUNC((QTYREQ-QTSHPD) / DECODE(SK.QTDUOM,0, NULL,SK.QTDUOM),1)) 
+		           FROM IFWMS113 ITEM, SKUMA SK 
+		          WHERE ITEM.OWNRKY = SK.OWNRKY AND ITEM.SKUKEY = SK.SKUKEY AND SVBELN = IFWMS113.SVBELN AND XSTAT = 'R') AS BOXQTY,
+		        DECODE(MAX(C00105),'V','YES','NO') AS PRINTCHK,
+		        IFWMS113.OTRQDT AS LGORTNM,
+		        IFWMS113.XSTAT AS SHPOKYMV,
+		        IFWMS113.SKUKEY AS SKUKEY,
+		        SM.DESC01 AS DESC01,
+		        SM.DESC02 AS DESC02,
+		        SM.ASKU02 AS SKUG05,
+		        IFWMS113.CREDAT AS CREDAT,
+		        IFWMS113.CRETIM AS CRETIM,
+		        IFWMS113.ORDDAT AS ORDDAT
+		   FROM ( SELECT * 
+		            FROM IFWMS113 
+		           WHERE DOCUTY IN ('134','135','138','139','171')) IFWMS113 INNER JOIN SKUMA SM ON SM.OWNRKY = IFWMS113.OWNRKY AND SM.SKUKEY = IFWMS113.SKUKEY
+		                                                   INNER JOIN SKUWC SW ON SW.WAREKY = IFWMS113.WAREKY AND SW.OWNRKY = IFWMS113.OWNRKY 
+		                                                                      AND SW.SKUKEY = IFWMS113.SKUKEY
+		                                                   LEFT OUTER JOIN BZPTN BZ ON BZ.PTNRKY = IFWMS113.WARESR AND BZ.OWNRKY = IFWMS113.OWNRKY
+		                                                                           AND BZ.PTNRTY = '0001' AND BZ.DELMAK != 'V'
+		                                                   LEFT OUTER JOIN BZPTN BZ2 ON BZ2.PTNRKY = IFWMS113.WARESR AND BZ2.OWNRKY = IFWMS113.OWNRKY
+		                                                                            AND BZ2.PTNRTY = '0003' AND BZ2.DELMAK != 'V'
+		                                                   LEFT OUTER JOIN BZPTN BZ3 ON BZ3.PTNRKY = IFWMS113.WARESR AND BZ3.OWNRKY = IFWMS113.OWNRKY
+		                                                                            AND BZ3.PTNRTY = '0004' AND BZ3.DELMAK != 'V'              
+		                                                   LEFT OUTER JOIN WAHMA WH ON WH.WAREKY = IFWMS113.WAREKY
+		                                                   LEFT OUTER JOIN DOCCM DC ON DC.DOCCAT = '100'
+		                                                   LEFT OUTER JOIN DOCTM DT ON DT.DOCUTY = IFWMS113.DOCUTY 
+		                                                   LEFT OUTER JOIN BZPTN VD ON VD.PTNRKY = IFWMS113.PTNRTO AND VD.OWNRKY = IFWMS113.OWNRKY
+		                                                                           AND VD.PTNRTY = '0007'
+		                                                   LEFT OUTER JOIN BZPTN VD2 ON VD2.PTNRKY = IFWMS113.PTNROD AND VD2.OWNRKY = IFWMS113.OWNRKY
+		                                                                            AND VD2.PTNRTY = '0001'
+		   WHERE 1 = 1
+		     AND IFWMS113.MANDT = 'SAP'
+		     AND IFWMS113.OWNRKY = #{OWNRKY}
+		     AND IFWMS113.WAREKY = #{WAREKY}
+
+			<if test="GBN == null or GBN == '' ">
+				AND IFWMS113.QTYREQ-IFWMS113.QTSHPD > 0
+				AND IFWMS113.XSTAT = 'R'
+			</if>
+			<if test='PROGID !=null  and PROGID.equalsIgnoreCase("GR45")'>
+			AND IFWMS113.QTSHPD > 0
+			AND IFWMS113.XSTAT = 'D'
+			</if>
+			<if test='PROGID !=null  and PROGID.equalsIgnoreCase("GR46")'>
+			AND IFWMS113.QTYREQ-IFWMS113.QTSHPD > 0
+			AND IFWMS113.XSTAT = 'R'
+			</if>
+			AND IFWMS113.C00102 IN ('N', 'Y')
+			AND IFWMS113.DOCUTY = #{RCPTTY}   
+			<if test="PRINTCHK != null and PRINTCHK != ''">
+			AND IFWMS113.C00105 LIKE DECODE(#{PRINTCHK},'Y','V', 'N',' ','%')
+			</if>
+			GROUP BY IFWMS113.WAREKY, IFWMS113.PTNRTO, IFWMS113.OWNRKY, IFWMS113.SVBELN, WH.NAME01, DC.SHORTX, DT.SHORTX, 
+			         VD.NAME01,IFWMS113.PTNROD, VD2.NAME01, IFWMS113.CTNAME, IFWMS113.WARESR, IFWMS113.CTTEL1, IFWMS113.SALENM, 
+			         IFWMS113.SALTEL, IFWMS113.CUADDR, IFWMS113.OTRQDT , IFWMS113.TEXT01, IFWMS113.XSTAT, IFWMS113.DOCUTY,
+			         IFWMS113.SKUKEY, SM.DESC01, SM.DESC02, SM.ASKU02, IFWMS113.C00106, IFWMS113.C00107, IFWMS113.C00108, 
+			         IFWMS113.C00109, IFWMS113.CREDAT, IFWMS113.CRETIM, IFWMS113.ORDDAT
+			   ) IFWMS113
+		WHERE 1 = 1
+			AND IFWMS113.OWNRKY = #{OWNRKY}
+			AND IFWMS113.WAREKY = #{WAREKY}
+		<choose>
+			<when test="GBN == null or GBN == '' ">
+				<if test="RANGE_SQL != null and RANGE_SQL != ''">
+					${RANGE_SQL}
+				</if>
+			</when>
+			<when test='GBN != null and GBN.equals("callback") '>
+				${SVBELNSTR}
+			</when>
+			<when test='GBN != null and GBN.equals("callback2") '>
+				${RECVKYSTR}
+			</when>			
+		</choose>
+		GROUP BY KEY, RECVKY, WAREKY, WAREKYNM, RCPTTY, RCPTTYNM, STATDO, SAPSTS, ARCPTD, DOCDAT, DOCCAT, DOCCATNM,
+		         DPTNKY, DPTNKYNM, DRELIN, OWNRKY, INDRCN, DNAME1, CRECVD, RSNCOD, PUTSTS, LGORTNM, USRID1, UNAME1,
+		         DEPTID1, USRID2, UNAME2, DEPTID2, DNAME2, USRID3, UNAME3, DEPTID3, DNAME3, USRID4, UNAME4, DEPTID4,
+		         DNAME4, SVBELN, CUNAME, SDATBG, DOCTXT, PRINTCHK, LGORTNM, SHPOKYMV, CARNUM, DPHONE, ERDAT, RECALLDAT,
+		         BOXQTY, IFWMS113.PTNROD, IFWMS113.PTNRODNM, IFWMS113.ORDDAT
+	</select>
+	
+	<!-- GR44 회송반품입고 헤드 조회쿼리 -->
+	<select id="GR44_HEAD_2_LIST" parameterType="hashmap" resultType="DataMap">
+		  SELECT IFWMS113.SVBELN AS KEY,
+		        (SELECT NVL(MAX(RECVKY),' ') FROM RECDI WHERE SVBELN = IFWMS113.SVBELN)  AS RECVKY,
+		        IFWMS113.WAREKY AS WAREKY,
+		        WH.NAME01 AS WAREKYNM,
+		        IFWMS113.DOCUTY  AS RCPTTY,
+		        DT.SHORTX AS RCPTTYNM,
+		        'NEW' AS STATDO,
+		        ' '   AS SAPSTS,
+		        IFWMS113.DOCUTY AS DOCUTY,
+		        IFWMS113.OTRQDT AS OTRQDT,
+		        IFWMS113.CUADDR AS CUADDR,
+		        IFWMS113.PTNRTO AS PTNRTO,
+		        NVL(TRIM((SELECT MAX(H.DOCDAT) FROM RECDH H, RECDI I WHERE H.RECVKY = I.RECVKY AND I.SVBELN = IFWMS113.SVBELN)) ,TO_CHAR(SYSDATE,'YYYYMMDD'))  AS DOCDAT,
+		        '100' AS DOCCAT,
+		        DC.SHORTX AS DOCCATNM,
+		        IFWMS113.PTNRTO AS DPTNKY,
+		        VD.NAME01 AS DPTNKYNM,
+		        IFWMS113.PTNROD AS PTNROD,
+		        VD2.NAME01 AS PTNRODNM,
+		        ' ' AS DRELIN,
+		        '00000000' AS ARCPTD,
+		        IFWMS113.OWNRKY AS OWNRKY,
+		        ' ' AS INDRCN,
+		        ' ' AS CRECVD,
+		        ' ' AS RSNCOD,
+		        ' ' AS PUTSTS,
+		        ' ' AS LGORT,
+		        ' ' AS USRID1,
+		        IFWMS113.CTNAME AS UNAME1,
+		        ' ' AS DEPTID1,
+		        IFWMS113.WARESR AS DNAME1,
+		        ' ' AS USRID2,
+		        IFWMS113.CTTEL1 AS UNAME2,
+		        ' ' AS DEPTID2,
+		        ' ' AS DNAME2,
+		        ' ' AS USRID3,
+		        IFWMS113.SALENM AS UNAME3,
+		        ' ' AS DEPTID3,
+		        ' ' AS DNAME3,
+		        ' ' AS USRID4,
+		        IFWMS113.SALTEL AS UNAME4,
+		        ' ' AS DEPTID4,
+		        IFWMS113.CUADDR AS DNAME4,
+		        IFWMS113.SVBELN AS SVBELN,
+		        NVL(MAX(BZ.NAME01), NVL(MAX(BZ2.NAME01),MAX(BZ3.NAME01))) AS CUNAME,
+		        IFWMS113.OTRQDT AS SDATBG,
+		        IFWMS113.TEXT01 AS DOCTXT,
+		        IFWMS113.C00106 AS CARNUM,
+		        IFWMS113.C00107 AS DPHONE,
+		        IFWMS113.C00108 AS ERDAT,
+		        IFWMS113.C00109 AS RECALLDAT,
+		        (SELECT SUM(TRUNC((QTYREQ-QTSHPD) / DECODE(SK.QTDUOM,0, NULL,SK.QTDUOM),1))    
+           FROM IFWMS113 ITEM, SKUMA SK 
+          WHERE ITEM.OWNRKY = SK.OWNRKY AND ITEM.SKUKEY = SK.SKUKEY AND SVBELN = IFWMS113.SVBELN AND XSTAT = 'R') AS BOXQTY,
+		        DECODE(MAX(C00105),'V','YES','NO') AS PRINTCHK,
+		        IFWMS113.OTRQDT AS LGORTNM,
+		        SM.ASKU02 AS SKUG05,
+		        IFWMS113.CREDAT AS CREDAT,
+		        IFWMS113.CRETIM AS CRETIM,
+		        IFWMS113.ORDDAT AS ORDDAT
+		   FROM ( SELECT * 
+		            FROM IFWMS113 
+		           WHERE DOCUTY IN ('134','135','138','139','171')) IFWMS113 INNER JOIN SKUMA SM ON SM.OWNRKY = IFWMS113.OWNRKY AND SM.SKUKEY = IFWMS113.SKUKEY
+		                                                   INNER JOIN SKUWC SW ON SW.WAREKY = IFWMS113.WAREKY AND SW.OWNRKY = IFWMS113.OWNRKY 
+		                                                                      AND SW.SKUKEY = IFWMS113.SKUKEY
+		                                                   LEFT OUTER JOIN BZPTN BZ ON BZ.PTNRKY = IFWMS113.WARESR AND BZ.OWNRKY = IFWMS113.OWNRKY
+		                                                                           AND BZ.PTNRTY = '0001' AND BZ.DELMAK != 'V'
+		                                                   LEFT OUTER JOIN BZPTN BZ2 ON BZ2.PTNRKY = IFWMS113.WARESR AND BZ2.OWNRKY = IFWMS113.OWNRKY
+		                                                                            AND BZ2.PTNRTY = '0003' AND BZ2.DELMAK != 'V'
+		                                                   LEFT OUTER JOIN BZPTN BZ3 ON BZ3.PTNRKY = IFWMS113.WARESR AND BZ3.OWNRKY = IFWMS113.OWNRKY
+		                                                                            AND BZ3.PTNRTY = '0004' AND BZ3.DELMAK != 'V'              
+		                                                   LEFT OUTER JOIN WAHMA WH ON WH.WAREKY = IFWMS113.WAREKY
+		                                                   LEFT OUTER JOIN DOCCM DC ON DC.DOCCAT = '100'
+		                                                   LEFT OUTER JOIN DOCTM DT ON DT.DOCUTY = IFWMS113.DOCUTY 
+		                                                   LEFT OUTER JOIN BZPTN VD ON VD.PTNRKY = IFWMS113.PTNRTO AND VD.OWNRKY = IFWMS113.OWNRKY
+		                                                                           AND VD.PTNRTY = '0007'
+		                                                   LEFT OUTER JOIN BZPTN VD2 ON VD2.PTNRKY = IFWMS113.PTNROD AND VD2.OWNRKY = IFWMS113.OWNRKY
+		                                                                            AND VD2.PTNRTY = '0001'
+		   WHERE 1 = 1
+			AND IFWMS113.MANDT = 'SAP'
+			AND IFWMS113.OWNRKY = #{OWNRKY}
+			AND IFWMS113.WAREKY = #{WAREKY}
+		     
+		    <if test="GBN == null or GBN == '' ">
+			AND IFWMS113.QTYREQ-IFWMS113.QTSHPD > 0
+			AND IFWMS113.XSTAT = 'R'
+			</if>
+			AND IFWMS113.C00102 IN ('N', 'Y')
+			AND IFWMS113.DOCUTY = #{RCPTTY}  
+		     <choose>
+				<when test="GBN == null or GBN == '' ">
+					<if test="RANGE_SQL != null and RANGE_SQL != ''">
+						${RANGE_SQL}
+					</if>
+				</when>
+				<when test='GBN != null and GBN.equals("callback") '>
+					${SVBELNSTR}
+				</when>
+				<when test='GBN != null and GBN.equals("callback2") '>
+					${RECVKYSTR}
+				</when>			
+			</choose> 
+			<if test="PRINTCHK != null and PRINTCHK != ''">
+			AND IFWMS113.C00105 LIKE DECODE(#{PRINTCHK},'Y','V', 'N',' ','%')
+			</if>
+			GROUP BY IFWMS113.WAREKY, IFWMS113.PTNRTO, IFWMS113.OWNRKY, IFWMS113.SVBELN, WH.NAME01, DC.SHORTX, DT.SHORTX, 
+			         VD.NAME01,IFWMS113.PTNROD, VD2.NAME01, IFWMS113.CTNAME, IFWMS113.WARESR, IFWMS113.CTTEL1, IFWMS113.SALENM, 
+			         IFWMS113.SALTEL, IFWMS113.CUADDR, IFWMS113.OTRQDT , IFWMS113.TEXT01, IFWMS113.DOCUTY, SM.ASKU02, 
+			         IFWMS113.C00106, IFWMS113.C00107, IFWMS113.C00108, IFWMS113.C00109, IFWMS113.CREDAT, IFWMS113.CRETIM, IFWMS113.ORDDAT
+	</select>
+	
+	
+	<select id="GR44_ITEM_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT IFWMS113.SVBELN AS KEY,
+			   ' ' AS RECVKY,
+			   ' ' AS RECVIT,
+			   'NEW' AS STATIT,
+			   DECODE(IFWMS113.OWNRKY,'2100','1R01101','2500','1R01101','2200',DECODE(SW.LOCARV,' ','1R01101',SW.LOCARV)) AS LOCAKY,
+			   DECODE(IFWMS113.OWNRKY,'2100',' ','2500',' ','2200', '30') AS RSNCOD,
+				<choose>
+					<when test="RECVKY == null or RECVKY == ' ' ">
+						NVL(#{RECVKY},' ') AS RECVKY,
+               	    	DECODE(NVL(#{RECVKY}, ' ') , ' ', ' ' , (SELECT RECVIT FROM RECDI RI WHERE RI.RECVKY = #{RECVKY} AND RI.REFDIT = IFWMS113.SPOSNR)) AS RECVIT,
+						'NEW' AS STATIT ,
+						DECODE(IFWMS113.OWNRKY,'2100','1R01101','2500','1R01101','2200',DECODE(SW.LOCARV,' ','1R01101',SW.LOCARV)) AS LOCAKY,
+						DECODE(IFWMS113.OWNRKY,'2100',' ','2500',' ','2200', '30') AS RSNCOD,
+					</when>
+				</choose>
+		       ' ' AS SAPSTS,
+		       IFWMS113.SKUKEY AS SKUKEY,
+		       ' ' AS LOTNUM,
+		       ' ' AS AREAKY,
+		       ' ' AS SECTID,
+		       ' ' AS TRNUID,
+		       ' ' AS PACKID,
+		       (IFWMS113.QTYREQ-IFWMS113.QTSHPD) AS ORDQTY,
+		       (IFWMS113.QTYREQ-IFWMS113.QTSHPD) AS QTYRCV,
+		       0 AS QTYDIF,
+		       IFWMS113.QTYREQ AS QTYUOM,
+		       ' ' AS TRUNTY,
+		       IFWMS113.SKUKEY AS MEASKY,
+		       IFWMS113.DUOMKY AS UOMKEY,       
+		       NVL(IFWMS113.QTYREQ-IFWMS113.QTSHPD,0) AS ASNQTY,
+		       NVL(IFWMS113.QTYREQ-IFWMS113.QTSHPD,0) AS QTYASN, 
+		       NVL(TRUNC((IFWMS113.QTYREQ-IFWMS113.QTSHPD) / DECODE(MI.QTPUOM,0, NULL,MI.QTPUOM)) ,0) AS BOXQTY,
+		       NVL(MI.QTPUOM,0) AS BXIQTY,
+		       NVL(MOD(IFWMS113.QTYREQ-IFWMS113.QTSHPD, NVL(MI.QTPUOM,0)),0) AS REMQTY, 
+		       NVL(TRUNC((IFWMS113.QTYREQ-IFWMS113.QTSHPD) / DECODE(MIP.QTPUOM, 0,NULL,MIP.QTPUOM) ) ,0) AS PLTQTY,
+		       NVL(MIP.QTPUOM, 0)  AS PLTQTYCAL,
+		       NVL(ITFMS.QTPUOM,9999999)   AS QTPUOM,
+		       NVL(SM.DUOMKY,' ') AS DUOMKY,
+		       NVL(MI.QTPUOM,9999999) AS QTDUOM,
+		       ' ' AS INDRCN,
+		       ' ' AS CRECVD,
+		       ' ' AS LOTA01,
+		       ' ' AS LOTA01NM,
+		       ' ' AS LOTA02,
+		       IFWMS113.PTNRTO AS LOTA03,
+		       ' ' AS LOTA04,
+		       ' ' AS LOTA05,
+		       DECODE(IFWMS113.DOCUTY , '131', '20', '133', '20', '134', '20', '135', '20', '136', '20','137','20', '138','20','139','20','171','20','00') AS LOTA06,
+		       ' ' AS LOTA07,
+		       ' ' AS LOTA08,
+		       ' ' AS LOTA09,
+		       ' ' AS LOTA10,
+		       '19900101' AS LOTA11,
+		       TO_CHAR(SYSDATE,'YYYYMMDD') AS LOTA12,
+		       '19900101' AS LOTA13,
+		       ' ' AS LOTA14,
+		       ' ' AS LOTA15,
+		       0 AS LOTA16,
+		       0 AS LOTA17,
+		       0 AS LOTA18,
+		       0 AS LOTA19,
+		       0 AS LOTA20,
+		       ' ' AS AWMSNO,
+		       IFWMS113.SVBELN AS REFDKY,
+		       IFWMS113.SPOSNR AS REFDIT,
+		       '100' AS REFCAT,
+		       TO_CHAR(SYSDATE,'YYYYMMDD') AS REFDAT,
+		       NVL(SM.DESC01,' ') AS DESC01,
+		       NVL(SM.DESC02,' ') AS DESC02,
+		       SM.ASKU01 AS ASKU01,
+		       SM.ASKU02 AS ASKU02,
+		       SM.ASKU03 AS ASKU03,
+		       SM.ASKU04 AS ASKU04,
+		       SM.ASKU05 AS ASKU05,
+		       SM.EANCOD AS EANCOD,
+		       SM.GTINCD AS GTINCD,
+		       SM.SKUG01 AS SKUG01,
+		       SM.SKUG02 AS SKUG02,
+		       SM.SKUG03 AS SKUG03,
+		       SM.SKUG04 AS SKUG04,
+		       SM.SKUG05 AS SKUG05,
+		       NVL(SM.GRSWGT,0) * NVL(IFWMS113.QTYREQ-IFWMS113.QTSHPD,0)  AS GRSWGT,
+		       NVL(SM.GRSWGT,0)   AS GRSWGTCNT,
+		       NVL(SM.NETWGT,0) * NVL(IFWMS113.QTYREQ-IFWMS113.QTSHPD,0)  AS NETWGT,
+		       NVL(SM.NETWGT,0)   AS NETWGTCNT,     
+		       SM.WGTUNT AS WGTUNT,
+		       SM.LENGTH AS LENGTH,
+		       SM.WIDTHW AS WIDTHW,
+		       SM.HEIGHT AS HEIGHT,
+		       SM.CUBICM AS CUBICM,
+		       SM.CAPACT AS CAPACT,
+		       0 AS QTYORG,
+		       ' ' AS SMANDT,
+		       ' ' AS SEBELN,
+		       ' ' AS SEBELP,
+		       ' ' AS SZMBLNO,
+		       ' ' AS SZMIPNO,
+		       ' ' AS STRAID,
+		       IFWMS113.SVBELN AS SVBELN,
+		       IFWMS113.SPOSNR AS SPOSNR,
+		       ' ' AS STKNUM,
+		       ' ' AS STPNUM,
+		       ' ' AS SWERKS,
+		       ' ' AS SLGORT,
+		       ' ' AS SDATBG,
+		       ' ' AS STDLNR,
+		       ' ' AS SSORNU,
+		       ' ' AS SSORIT,
+		       ' ' AS SMBLNR,
+		       ' ' AS SZEILE,
+		       ' ' AS SMJAHR,
+		       ' ' AS SXBLNR,
+		       ' ' AS SBKTXT,
+		       ' ' AS RCPRSN,
+		       NVL(SM.OUTDMT,0) AS OUTDMT,
+		       (SELECT MAX(L.LOCAKY) FROM   LOCMA L WHERE  L.LOCSKU = SW.SKUKEY AND    L.WAREKY = SW.WAREKY ) AS PACK
+		  FROM IFWMS113 INNER JOIN SKUMA SM ON SM.OWNRKY = IFWMS113.OWNRKY AND SM.SKUKEY = IFWMS113.SKUKEY
+		                INNER JOIN SKUWC SW ON SW.WAREKY = IFWMS113.WAREKY AND SW.OWNRKY = IFWMS113.OWNRKY AND SW.SKUKEY = IFWMS113.SKUKEY
+		                LEFT OUTER JOIN MEASI ITFMS ON ITFMS.OWNRKY = IFWMS113.OWNRKY AND ITFMS.WAREKY = IFWMS113.WAREKY
+		                                           AND ITFMS.MEASKY = IFWMS113.SKUKEY AND ITFMS.UOMKEY = IFWMS113.DUOMKY
+		                LEFT OUTER JOIN MEASI MI ON MI.WAREKY = IFWMS113.WAREKY AND MI.OWNRKY = IFWMS113.OWNRKY
+		                                           AND MI.MEASKY = IFWMS113.SKUKEY AND MI.UOMKEY = 'BOX'
+		                LEFT OUTER JOIN MEASI MIP ON MIP.WAREKY = IFWMS113.WAREKY AND MIP.OWNRKY = IFWMS113.OWNRKY
+		                                         AND MIP.MEASKY = IFWMS113.SKUKEY AND MIP.UOMKEY = 'PL'              
+		                LEFT OUTER JOIN BZPTN L01NM ON L01NM.PTNRKY = IFWMS113.PTNRTO AND L01NM.OWNRKY = IFWMS113.OWNRKY AND L01NM.PTNRTY = '0007'
+		            	
+		 WHERE IFWMS113.MANDT = 'SAP'
+		   AND IFWMS113.DOCUTY = #{RCPTTY}
+		   AND IFWMS113.SVBELN = #{SVBELN}
+			
+				AND IFWMS113.QTYREQ-IFWMS113.QTSHPD > 0
+				AND IFWMS113.XSTAT = 'R'
+				<if test='GBN != null and GBN.equals("callback2") '>
+				AND RI.RECVKY = #{RECVKY}
+				</if>	
+				<if test='PROGID !=null  and PROGID.equalsIgnoreCase("GR45")'>
+				AND IFWMS113.QTSHPD > 0
+			    AND XSTAT = 'D'
+				</if>
+				<if test='PROGID !=null  and PROGID.equalsIgnoreCase("GR46")'>
+				AND IFWMS113.QTYREQ-IFWMS113.QTSHPD > 0
+			    AND XSTAT = 'R'
+				</if>
+			ORDER BY  IFWMS113.SKUKEY
+	</select>
+	
+	<!-- 저장 후 아이템 재조회  -->
+	<select id="GR44_ITEM_2_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT S.RECVKY  AS KEY,
+		       RH.WAREKY AS WAREKY,
+		       S.RECVKY  AS RECVKY,
+		       S.RECVIT  AS RECVIT,
+		       S.STATIT AS STATIT,
+		       DECODE(S.SAPSTS,' ',' ','V') AS SAPSTS,
+		       S.SKUKEY  AS SKUKEY,
+		       S.LOTNUM  AS LOTNUM,
+		       S.AREAKY  AS AREAKY,
+		       S.LOCAKY  AS LOCAKY,
+		       S.SECTID  AS SECTID,
+		       S.TRNUID  AS TRNUID,
+		       S.PACKID  AS PACKID,
+		       S.QTYRCV  AS QTYRCV,
+		       S.QTYRCV  AS SNDQTY,
+		       S.QTYDIF  AS QTYDIF,
+		       S.QTYRCV  AS QTYUOM,
+		       S.TRUNTY  AS TRUNTY,
+		       S.MEASKY  AS MEASKY,
+		       S.UOMKEY  AS UOMKEY,
+		       S.QTPUOM  AS QTPUOM,
+		       S.DUOMKY  AS DUOMKY,
+		       S.QTDUOM  AS QTDUOM,
+		       NVL( S.QTDUOM, 0 ) AS BXIQTY,
+		       TRUNC(S.QTYRCV/S.QTDUOM) AS BOXQTY,
+		       DECODE(SM.DLGORT, 'Y', NVL(CEIL(S.QTYRCV/S.QTDUOM), 0), 0) AS PBOXQTY,
+		       MOD(S.QTYRCV,S.QTDUOM) AS REMQTY,
+		       NVL(  TRUNC(S.QTYRCV / DECODE(SM.QTYSTD, 0, NULL, SM.QTYSTD))  ,0) AS PLTQTY,
+		       NVL(SM.QTYSTD, 0) AS PLTQTYCAL,
+			   NVL( S.QTDUOM, 0 ) AS ORDQTY,
+		       S.INDRCN  AS INDRCN,
+		       S.CRECVD  AS CRECVD,
+		       S.RSNCOD  AS RSNCOD,
+		       S.LOTA01  AS LOTA01,
+		       L01NM.NAME01 AS LOTA01NM,
+		       S.LOTA02  AS LOTA02,
+		       S.LOTA03  AS LOTA03,
+		       S.LOTA04  AS LOTA04,
+		       S.LOTA05  AS LOTA05,
+		       S.LOTA06  AS LOTA06,
+		       S.LOTA07  AS LOTA07,
+		       S.LOTA08  AS LOTA08,
+		       S.LOTA09  AS LOTA09,
+		       S.LOTA10  AS LOTA10,
+		       S.LOTA11  AS LOTA11,
+		       S.LOTA12  AS LOTA12,
+		       S.LOTA13  AS LOTA13,
+		       S.LOTA14  AS LOTA14,
+		       S.LOTA15  AS LOTA15,
+		       S.LOTA16  AS LOTA16,
+		       S.LOTA17  AS LOTA17,
+		       S.LOTA18  AS LOTA18,
+		       S.LOTA19  AS LOTA19,
+		       S.LOTA20  AS LOTA20,
+		       S.AWMSNO  AS AWMSNO,
+		       S.REFDKY  AS REFDKY,
+		       S.REFDIT  AS REFDIT,
+		       S.REFCAT  AS REFCAT,
+		       S.REFDAT  AS REFDAT,
+		       S.DESC01  AS DESC01,
+		       S.DESC02  AS DESC02,
+		       S.ASKU01  AS ASKU01,
+		       S.ASKU02  AS ASKU02,
+		       S.ASKU03  AS ASKU03,
+		       S.ASKU04  AS ASKU04,
+		       S.ASKU05  AS ASKU05,
+		       S.EANCOD  AS EANCOD,
+		       S.GTINCD  AS GTINCD,
+		       S.SKUG01  AS SKUG01,
+		       S.SKUG02  AS SKUG02,
+		       S.SKUG03  AS SKUG03,
+		       S.SKUG04  AS SKUG04,
+		       S.SKUG05  AS SKUG05,
+		       NVL(SM.GRSWGT,0) * NVL(S.QTYRCV,0)  AS GRSWGT,
+		       NVL(SM.GRSWGT,0)   AS GRSWGTCNT,
+		       NVL(SM.NETWGT,0) * NVL(S.QTYRCV,0)  AS NETWGT,
+		       NVL(SM.NETWGT,0)   AS NETWGTCNT,   
+		       S.WGTUNT  AS WGTUNT,
+		       S.LENGTH  AS LENGTH,
+		       S.WIDTHW  AS WIDTHW,
+		       S.HEIGHT  AS HEIGHT,
+		       S.CUBICM  AS CUBICM,
+		       S.CAPACT  AS CAPACT,
+		       S.QTYORG  AS QTYORG,
+		       S.SMANDT  AS SMANDT,
+		       S.SEBELN  AS SEBELN,
+		       S.SEBELP  AS SEBELP,
+		       S.SZMBLNO AS SZMBLNO,
+		       S.SZMIPNO AS SZMIPNO,
+		       S.STRAID  AS STRAID,
+		       S.SVBELN  AS SVBELN,
+		       S.SPOSNR  AS SPOSNR,
+		       S.STKNUM  AS STKNUM,
+		       S.STPNUM  AS STPNUM,
+		       S.SWERKS  AS SWERKS,
+		       S.SLGORT  AS SLGORT,
+		       S.SDATBG  AS SDATBG,
+		       S.STDLNR  AS STDLNR,
+		       S.SSORNU  AS SSORNU,
+		       S.SSORIT  AS SSORIT,
+		       S.SMBLNR  AS SMBLNR,
+		       S.SZEILE  AS SZEILE,
+		       S.SMJAHR  AS SMJAHR,
+		       S.SXBLNR  AS SXBLNR,
+		       S.SBKTXT  AS SBKTXT,
+		       S.RCPRSN  AS RCPRSN,
+		       S.CREDAT AS CREDAT,
+		       S.CRETIM AS CRETIM,
+		       S.CREUSR AS CREUSR,
+		       CU.NMLAST AS CUSRNM,
+		       S.LMODAT AS LMODAT,
+		       S.LMOTIM AS LMOTIM,
+		       S.LMOUSR AS LMOUSR,
+		       LU.NMLAST AS LUSRNM,
+		       NVL(SM.OUTDMT,0) AS OUTDMT,
+		       NVL(TO_DATE(TRIM(S.LOTA13),'YYYYMMDD') - TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD')),0) AS DTREMDAT,
+		       NVL(TRUNC(((TO_DATE(TRIM(S.LOTA13),'YYYYMMDD') - TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD')))/SM.OUTDMT) * 100),0) AS DTREMRAT
+		  FROM RECDH RH
+		       INNER JOIN RECDI S
+		               ON S.RECVKY = RH.RECVKY
+		       LEFT OUTER JOIN USRMA CU
+		               ON CU.USERID = S.CREUSR
+		       LEFT OUTER JOIN USRMA LU
+		               ON LU.USERID = S.LMOUSR
+		       LEFT OUTER JOIN BZPTN L01NM
+		               ON L01NM.PTNRKY = RH.DPTNKY
+		              AND L01NM.OWNRKY = RH.OWNRKY
+		              AND L01NM.PTNRTY = '0002'
+		       LEFT OUTER JOIN MEASI MI
+		               ON MI.OWNRKY = RH.OWNRKY
+		              AND MI.WAREKY = RH.WAREKY
+		              AND MI.MEASKY = S.SKUKEY
+		              AND MI.UOMKEY = 'BOX' 
+		       LEFT OUTER JOIN MEASI MIP
+		               ON MIP.WAREKY = RH.WAREKY
+		              AND MIP.OWNRKY = RH.OWNRKY
+		              AND MIP.MEASKY = S.MEASKY
+		              AND MIP.UOMKEY = 'PL'        
+		       LEFT OUTER JOIN SKUMA SM
+		               ON SM.OWNRKY = RH.OWNRKY
+		              AND SM.SKUKEY = S.SKUKEY         
+		 WHERE 1=1   
+		   AND RH.RECVKY = #{RECVKY}
+		 ORDER BY S.RECVKY, S.RECVIT
+	</select>
+	
+	<!-- GR44 회송반품입고  callback 회수지시 업데이트  -->
+	<update id="GR44_CALLBACK_UPDATE" parameterType="hashmap">
+		UPDATE IFWMS113
+		SET
+		       C00106 = #{CARNUM},
+		       C00107 = #{DPHONE},
+		       C00108 = #{ERDAT},
+		       TEXT01 = #{DOCTXT}
+		WHERE XSTAT IN ('R','D')
+		  AND SVBELN = #{SVBELN}
+		  AND C00105 = DECODE(#{PRINTCHK},'YES','V',' ')
+	</update>
+	
+	<!-- GR44 item 로케이션 필수값 -->
+	<select id="GR44_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT   LOCAKY
+				,TASKTY
+				,ZONEKY
+				,CNT_SKU
+				,FACLTY
+				,AREAKY
+				,QTSIWH
+				,WAREKY
+				,NEDSID
+				,TEXT01 
+		FROM V_LOCMA_QTY 
+		WHERE WAREKY = #{WAREKY}
+		  AND LOCAKY = #{LOCAKY}
+	</select>
+	
+	<!-- GR44 RECDH_INSERT -->
+	<insert id="RECDH_INSERT"  parameterType="hashmap">
+		INSERT INTO RECDH
+		(
+			  RECVKY
+			, WAREKY
+			, RCPTTY
+			, STATDO
+			, SAPSTS
+			, DOCDAT
+			, DOCCAT
+			, DPTNKY
+			, DRELIN
+			, ARCPTD
+			, OWNRKY
+			, INDRCN
+			, CRECVD
+			, RSNCOD
+			, PUTSTS
+			, USRID1
+			, UNAME1
+			, DEPTID1
+			, DNAME1
+			, USRID2
+			, UNAME2
+			, DEPTID2
+			, DNAME2
+			, USRID3
+			, UNAME3
+			, DEPTID3
+			, DNAME3
+			, USRID4
+			, UNAME4
+			, DEPTID4
+			, DNAME4
+			, DOCTXT
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+		)
+		VALUES(
+			  #{RECVKY}
+			, #{WAREKY}
+			, #{RCPTTY}
+			, #{STATDO}
+			, #{SAPSTS}
+			, #{DOCDAT}
+			, #{DOCCAT}
+			, #{DPTNKY}
+			, #{DRELIN}
+			, TO_CHAR(SYSDATE , 'YYYYMMDD')
+			, #{OWNRKY}
+			, #{INDRCN}
+			, #{CRECVD}
+			, #{RSNCOD}
+			, #{PUTSTS}
+			, #{USRID1}
+			, #{UNAME1}
+			, #{DEPTID1}
+			, #{DNAME1}
+			, #{USRID2}
+			, #{UNAME2}
+			, #{DEPTID2}
+			, #{DNAME2}
+			, #{USRID3}
+			, #{UNAME3}
+			, #{DEPTID3}
+			, #{DNAME3}
+			, #{USRID4}
+			, #{UNAME4}
+			, #{DEPTID4}
+			, #{DNAME4}
+			, NVL(#{DOCTXT} , ' ')
+			, TO_CHAR(SYSDATE , 'YYYYMMDD')
+			, TO_CHAR(SYSDATE , 'HH24MISS') 
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE , 'YYYYMMDD')
+			, TO_CHAR(SYSDATE , 'HH24MISS') 
+			, #{SES_USER_ID}
+		)
+				
+	</insert>
+	
+	<!-- GR44 RECDI_INSERT -->
+	<insert id="RECDI_INSERT"  parameterType="hashmap">
+		INSERT INTO RECDI
+		(
+			  RECVKY
+			, RECVIT
+			, STATIT
+			, SAPSTS
+			, SKUKEY
+			, LOTNUM
+			, AREAKY
+			, LOCAKY
+			, SECTID
+			, TRNUID
+			, PACKID
+			, QTYRCV
+			, QTYDIF
+			, QTYUOM
+			, TRUNTY
+			, MEASKY
+			, UOMKEY
+			, QTPUOM
+			, DUOMKY
+			, QTDUOM
+			, INDRCN
+			, CRECVD
+			, RSNCOD
+			, LOTA01
+			, LOTA02
+			, LOTA03
+			, LOTA04
+			, LOTA05
+			, LOTA06
+			, LOTA07
+			, LOTA08
+			, LOTA09
+			, LOTA10
+			, LOTA11
+			, LOTA12
+			, LOTA13
+			, LOTA14
+			, LOTA15
+			, LOTA16
+			, LOTA17
+			, LOTA18
+			, LOTA19
+			, LOTA20
+			, AWMSNO
+			, REFDKY
+			, REFDIT
+			, REFCAT
+			, REFDAT
+			, DESC01
+			, DESC02
+			, ASKU01
+			, ASKU02
+			, ASKU03
+			, ASKU04
+			, ASKU05
+			, EANCOD
+			, GTINCD
+			, SKUG01
+			, SKUG02
+			, SKUG03
+			, SKUG04
+			, SKUG05
+			, GRSWGT
+			, NETWGT
+			, WGTUNT
+			, LENGTH
+			, WIDTHW
+			, HEIGHT
+			, CUBICM
+			, CAPACT
+			, QTYORG
+			, SMANDT
+			, SEBELN
+			, SEBELP
+			, SZMBLNO
+			, SZMIPNO
+			, STRAID
+			, SVBELN
+			, SPOSNR
+			, STKNUM
+			, STPNUM
+			, SWERKS
+			, SLGORT
+			, SDATBG
+			, STDLNR
+			, SSORNU
+			, SSORIT
+			, SMBLNR
+			, SZEILE
+			, SMJAHR
+			, SXBLNR
+			, RCPRSN
+			, CREDAT
+			, CRETIM
+			, CREUSR
+			, LMODAT
+			, LMOTIM
+			, LMOUSR
+			, SBKTXT
+		)
+		VALUES(
+			  #{RECVKY}
+			, #{RECVIT}
+			, #{STATIT}
+			, #{SAPSTS}
+			, #{SKUKEY}
+			, #{LOTNUM}
+			, #{AREAKY}
+			, #{LOCAKY}
+			, #{SECTID}
+			, #{TRNUID}
+			, #{PACKID}
+			, #{QTYRCV}
+			, #{QTYDIF}
+			, #{QTYUOM}
+			, #{TRUNTY}
+			, #{MEASKY}
+			, #{UOMKEY}
+			, #{QTPUOM}
+			, #{DUOMKY}
+			, #{QTDUOM}
+			, #{INDRCN}
+			, #{CRECVD}
+			, #{RSNCOD}
+			, #{LOTA01}
+			, #{LOTA02}
+			, #{LOTA03}
+			, #{LOTA04}
+			, #{LOTA05}
+			, #{LOTA06}
+			, #{LOTA07}
+			, #{LOTA08}
+			, #{LOTA09}
+			, #{LOTA10}
+			, #{LOTA11}
+			, #{LOTA12}
+			, #{LOTA13}
+			, #{LOTA14}
+			, #{LOTA15}
+			, #{LOTA16}
+			, #{LOTA17}
+			, #{LOTA18}
+			, #{LOTA19}
+			, #{LOTA20}
+			, #{AWMSNO}
+			, #{REFDKY}
+			, #{REFDIT}
+			, #{REFCAT}
+			, #{REFDAT}
+			, #{DESC01}
+			, #{DESC02}
+			, #{ASKU01}
+			, #{ASKU02}
+			, #{ASKU03}
+			, #{ASKU04}
+			, #{ASKU05}
+			, #{EANCOD}
+			, #{GTINCD}
+			, #{SKUG01}
+			, #{SKUG02}
+			, #{SKUG03}
+			, #{SKUG04}
+			, #{SKUG05}
+			, #{GRSWGT}
+			, #{NETWGT}
+			, #{WGTUNT}
+			, #{LENGTH}
+			, #{WIDTHW}
+			, #{HEIGHT}
+			, #{CUBICM}
+			, #{CAPACT}
+			, #{QTYORG}
+			, #{SMANDT}
+			, #{SEBELN}
+			, #{SEBELP}
+			, #{SZMBLNO}
+			, #{SZMIPNO}
+			, #{STRAID}
+			, #{SVBELN}
+			, #{SPOSNR}
+			, #{STKNUM}
+			, #{STPNUM}
+			, #{SWERKS}
+			, #{SLGORT}
+			, #{SDATBG}
+			, #{STDLNR}
+			, #{SSORNU}
+			, #{SSORIT}
+			, #{SMBLNR}
+			, #{SZEILE}
+			, #{SMJAHR}
+			, #{SXBLNR}
+			, #{RCPRSN}
+			, TO_CHAR(SYSDATE , 'YYYYMMDD')
+			, TO_CHAR(SYSDATE , 'HH24MISS') 
+			, #{SES_USER_ID}
+			, TO_CHAR(SYSDATE , 'YYYYMMDD')
+			, TO_CHAR(SYSDATE , 'HH24MISS') 
+			, #{SES_USER_ID}
+			, NVL(#{SBKTXT} , ' ')
+		)
+	</insert>
+	
+	<select id="RECIVEKEY_MAP"  parameterType="hashmap" resultType="DataMap">
+		SELECT SZF_GETDOCNUMBER(#{RCPTTY}) AS KEY FROM DUAL
+	</select>
+	
+	<!-- RECDH 생성 VALDATION 체크 -->
+	<select id="RECDH_VALDATION_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT CASE WHEN TRIM(#{RECVKY}) IS NULL THEN 'VALID_M0560'
+		            WHEN (SELECT COUNT(1) FROM WAHMA WHERE WAREKY = #{WAREKY}) &lt; 1 THEN 'VALID_M0561'
+		            WHEN (SELECT COUNT(1) FROM DOCTM WHERE DOCUTY = #{RCPTTY}) &lt; 1 THEN 'VALID_M0562'
+          			WHEN TRIM(#{DOCDAT}) IS NULL THEN 'IN_M0033'
+          			WHEN TRIM(#{DPTNKY}) IS NULL THEN 'INV_M0064'
+		            ELSE ''
+		        END MSGKEY
+		     , (SELECT DOCCAT FROM DOCTM WHERE DOCUTY = #{RCPTTY}) AS DOCCAT
+		     , 1 as dummy
+		  FROM DUAL
+	</select>
+	
+	<!-- RECDI 생성 VALDATION 체크 -->
+	<select id="RECDI_VALDATION_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT CASE WHEN TRIM(#{RECVKY}) IS NULL THEN 'VALID_M0560'
+					WHEN TRIM(#{RECVIT}) IS NULL THEN 'VALID_M0589'
+		            WHEN (SELECT COUNT(1) FROM LOCMA WHERE WAREKY = #{WAREKY} AND LOCAKY = #{LOCAKY}) &lt; 1 THEN 'OUT_M0070'
+		            WHEN (SELECT COUNT(1) FROM SKUWC WHERE WAREKY = #{WAREKY} AND SKUKEY = #{SKUKEY}) &lt; 1 THEN 'VALID_M0587'
+		            ELSE ''
+		        END MSGKEY
+		     , 1 as dummy
+		  FROM DUAL
+	</select>
+	
+	
+	<!-- GR45 회송반품 입고조회  헤드 조회쿼리 -->
+	<select id="GR45_HEAD_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT RH.RECVKY AS KEY,										
+		       RH.RECVKY AS RECVKY,										
+		       RH.WAREKY AS WAREKY,										
+		       WH.NAME01 AS WAREKYNM,										
+		       RH.RCPTTY AS RCPTTY,										
+		       DT.SHORTX AS RCPTTYNM,										
+		       RH.STATDO AS STATDO,										
+		       DECODE(RH.SAPSTS,' ',' ','V') AS SAPSTS,										
+		       RH.DOCDAT AS DOCDAT,										
+		       RH.DOCCAT AS DOCCAT,										
+		       DC.SHORTX AS DOCCATNM,										
+		       RH.DPTNKY AS DPTNKY,										
+		      DECODE(TRIM(MAX(VD.NAME01)),NULL, DECODE(TRIM(MAX(VD2.NAME01)),NULL, MAX(BT.NAME01),MAX(VD2.NAME01)), MAX(VD.NAME01)) AS DPTNKYNM,										
+		       DECODE(TRIM(MAX(VD.NAME01)),NULL, DECODE(TRIM(MAX(VD2.POSTCD)),NULL, MAX(SA1.REGNKY),MAX(SA3.REGNKY)),MAX(SA2.REGNKY)) AS REGNKY,										
+		       DECODE(TRIM(MAX(VD.NAME01)),NULL, DECODE(TRIM(MAX(VD2.POSTCD)),NULL, MAX(SA1.REGNNM),MAX(SA3.REGNNM)),MAX(SA2.REGNNM)) AS REGNNM,										
+		       RH.DRELIN AS DRELIN,										
+		       RH.ARCPTD AS ARCPTD,										
+		       RH.OWNRKY AS OWNRKY,										
+		       RH.INDRCN AS INDRCN,										
+		       RH.CRECVD AS CRECVD,										
+		       RH.RSNCOD AS RSNCOD,										
+		       RH.PUTSTS AS PUTSTS,										
+												
+		       DECODE(RH.RCPTTY, '121', MAX(SR.DRIVER), '122', MAX(SR.DRIVER), '123', MAX(SR.DRIVER), MAX(RH.USRID1)) AS USRID1,										
+		       DECODE(RH.RCPTTY, '121', MAX(SR.PERHNO), '122', MAX(SR.PERHNO), '123', MAX(SR.PERHNO), MAX(RH.UNAME1)) AS UNAME1,										
+		       DECODE(RH.RCPTTY, '121', MAX(SR.RECNUM), '122', MAX(SR.RECNUM), '123', MAX(SR.RECNUM), MAX(RH.DEPTID1)) AS DEPTID1,										
+		       DECODE(RH.RCPTTY, '121', MAX(SR.CASTYN), '122', MAX(SR.CASTYN), '123', MAX(SR.CASTYN), MAX(RH.DNAME1)) AS DNAME1,										
+		       DECODE(RH.RCPTTY, '121', MAX(SR.CASTDT), '122', MAX(SR.CASTDT), '123', MAX(SR.CASTDT), MAX(RH.USRID2)) AS USRID2,										
+		       DECODE(RH.RCPTTY, '121', MAX(SR.CASTIM), '122', MAX(SR.CASTIM), '123', MAX(SR.CASTIM), MAX(RH.UNAME2)) AS UNAME2,										
+		       MAX(RH.DEPTID2) AS DEPTID2,										
+		       MAX(RH.DNAME2) AS DNAME2,										
+		       MAX(RH.USRID3) AS USRID3,										
+		       MAX(RH.UNAME3) AS UNAME3,										
+		       MAX(RH.DEPTID3) AS DEPTID3,										
+		       MAX(RH.DNAME3) AS DNAME3,										
+		       MAX(RH.USRID4) AS USRID4,										
+		       MAX(RH.UNAME4) AS UNAME4,										
+		       MAX(RH.DEPTID4) AS DEPTID4,										
+		       MAX(RH.DNAME4) AS DNAME4,       										
+		       										
+		       RH.DOCTXT AS DOCTXT,										
+		       MAX(S.SEBELN) AS SEBELN,										
+		       MAX(S.STRAID) AS VGBEL,										
+		       MAX(CASE WHEN RH.RCPTTY IN ('101', '102') THEN S.REFDKY										
+		                ELSE ' '										
+		            END) AS ASNDKY,										
+		       MAX(CASE WHEN RH.RCPTTY IN ('108') THEN S.REFDKY										
+		                ELSE ' '										
+		            END) AS SHPOKY,										
+		       RH.CREDAT AS CREDAT,										
+		       RH.CRETIM AS CRETIM,										
+		       RH.CREUSR AS CREUSR,										
+		       CU.NMLAST AS CUSRNM,										
+		       RH.LMODAT AS LMODAT,										
+		       RH.LMOTIM AS LMOTIM,										
+		       RH.LMOUSR AS LMOUSR,										
+		       LU.NMLAST AS LUSRNM,										
+		       ' ' AS ERPWHT,										
+		       ' ' AS ERPTNM,										
+		       MAX(S.REFDKY) AS REFDKY										
+		  FROM RECDH RH										
+		       INNER JOIN RECDI S										
+		               ON S.RECVKY = RH.RECVKY										
+		       LEFT OUTER JOIN USRMA CU										
+		               ON CU.USERID = RH.CREUSR										
+		       LEFT OUTER JOIN USRMA LU										
+		               ON LU.USERID = RH.LMOUSR										
+		       LEFT OUTER JOIN WAHMA WH										
+		               ON WH.WAREKY = RH.WAREKY										
+		       LEFT OUTER JOIN DOCCM DC										
+		               ON DC.DOCCAT = '100'										
+		       LEFT OUTER JOIN DOCTM DT										
+		               ON DT.DOCUTY = RH.RCPTTY										
+		       LEFT OUTER JOIN BZPTN VD										
+		               ON VD.PTNRKY = RH.DPTNKY										
+		              AND VD.OWNRKY = RH.OWNRKY										
+		              AND VD.PTNRTY = '0002'										
+		       LEFT OUTER JOIN BZPTN BT										
+		               ON BT.PTNRKY = RH.DPTNKY										
+		              AND BT.OWNRKY = RH.OWNRKY										
+		              AND BT.PTNRTY = '0001' 										
+		       LEFT OUTER JOIN WAHMA VD2										
+		              ON VD2.WAREKY = RH.DPTNKY           										
+		       LEFT OUTER JOIN SHPDR SR										
+		              ON S.SEBELN = SR.SHPOKY										
+		             AND S.SEBELP = SR.SHPOIT										
+		       LEFT OUTER JOIN SHPMA SA1										
+		              ON SA1.OWNRKY = RH.OWNRKY										
+		              AND SA1.POSTCD = BT.POSTCD										
+		       LEFT OUTER JOIN SHPMA SA2										
+		              ON SA2.OWNRKY = RH.OWNRKY										
+		              AND SA2.POSTCD = VD.POSTCD										
+		       LEFT OUTER JOIN SHPMA SA3										
+		              ON SA3.OWNRKY = RH.OWNRKY										
+		              AND SA3.POSTCD = VD2.POSTCD										
+		 WHERE 1 = 1
+		 		AND RH.OWNRKY = #{OWNRKY}
+				AND RH.WAREKY = #{WAREKY}
+				
+				<if test="RANGE_SQL != null and RANGE_SQL != ''">
+					${RANGE_SQL}
+				</if>
+								
+				<if test="RANGELOT_SQL != null and RANGELOT_SQL != ''">
+					${RANGELOT_SQL}
+				</if>	     		
+									   
+			  GROUP BY RH.RECVKY,RH.WAREKY,RH.RCPTTY,RH.STATDO,RH.SAPSTS,										
+			          RH.DOCDAT,RH.DOCCAT,RH.DPTNKY,RH.DRELIN,RH.ARCPTD,										
+			          RH.OWNRKY,RH.INDRCN,RH.CRECVD,RH.RSNCOD,RH.PUTSTS,										
+			          RH.CREDAT,RH.CRETIM,RH.CREUSR,CU.NMLAST,										
+			          RH.LMODAT,RH.LMOTIM,RH.LMOUSR,LU.NMLAST,										
+			          WH.NAME01, DC.SHORTX, DT.SHORTX, VD.NAME01,										
+			          RH.DOCTXT										
+			 ORDER BY RH.RECVKY DESC										
+				         						
+	</select>
+	
+	
+	<!-- GR45 회송반품 입고조회  아이템 조회쿼리 -->
+	<select id="GR45_ITEM_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT S.RECVKY  AS KEY,	
+			   RH.OWNRKY AS OWNRKY,									
+		       RH.WAREKY AS WAREKY,										
+		       S.RECVKY  AS RECVKY,										
+		       S.RECVIT  AS RECVIT,										
+		       S.STATIT AS STATIT,										
+		       DECODE(S.SAPSTS,' ',' ','V') AS SAPSTS,										
+		       S.SKUKEY  AS SKUKEY,										
+		       S.LOTNUM  AS LOTNUM,										
+		       S.AREAKY  AS AREAKY,										
+		       S.LOCAKY  AS LOCAKY,										
+		       S.SECTID  AS SECTID,										
+		       S.TRNUID  AS TRNUID,										
+		       S.PACKID  AS PACKID,										
+		       S.QTYRCV  AS QTYRCV,										
+		       S.QTYRCV  AS SNDQTY,										
+		       S.QTYDIF  AS QTYDIF,										
+		       S.QTYUOM  AS QTYUOM,										
+		       S.TRUNTY  AS TRUNTY,										
+		       S.MEASKY  AS MEASKY,										
+		       S.UOMKEY  AS UOMKEY,										
+		       S.QTPUOM  AS QTPUOM,										
+		       S.DUOMKY  AS DUOMKY,										
+		       S.QTDUOM  AS QTDUOM,										
+		       NVL( MI.QTPUOM, 0 ) AS BXIQTY,										
+		       TRUNC(S.QTYRCV/S.QTDUOM) AS BOXQTY,										
+		       DECODE(SM.DLGORT, 'Y', NVL(CEIL(S.QTYRCV/S.QTDUOM), 0), 0) AS PBOXQTY,										
+		       MOD(S.QTYRCV,S.QTDUOM) AS REMQTY,										
+		       NVL(  TRUNC(S.QTYRCV / DECODE(MIP.QTPUOM, 0, NULL, MIP.QTPUOM))  ,0) AS PLTQTY,										
+		       NVL(MIP.QTPUOM, 0) AS PLIQTY,										
+		       S.INDRCN  AS INDRCN,										
+		       S.CRECVD  AS CRECVD,										
+		       S.RSNCOD  AS RSNCOD,										
+		       S.LOTA01  AS LOTA01,										
+		       L01NM.NAME01 AS LOTA01NM,										
+		       S.LOTA02  AS LOTA02,										
+		       S.LOTA03  AS LOTA03,										
+		       S.LOTA04  AS LOTA04,										
+		       S.LOTA05  AS LOTA05,										
+		       S.LOTA06  AS LOTA06,										
+		       S.LOTA07  AS LOTA07,										
+		       S.LOTA08  AS LOTA08,										
+		       S.LOTA09  AS LOTA09,										
+		       S.LOTA10  AS LOTA10,										
+		       S.LOTA11  AS LOTA11,										
+		       S.LOTA12  AS LOTA12,										
+		       S.LOTA13  AS LOTA13,										
+		       S.LOTA14  AS LOTA14,										
+		       S.LOTA15  AS LOTA15,										
+		       S.LOTA16  AS LOTA16,										
+		       S.LOTA17  AS LOTA17,										
+		       S.LOTA18  AS LOTA18,										
+		       S.LOTA19  AS LOTA19,										
+		       S.LOTA20  AS LOTA20,										
+		       S.AWMSNO  AS AWMSNO,										
+		       S.REFDKY  AS REFDKY,										
+		       S.REFDIT  AS REFDIT,										
+		       S.REFCAT  AS REFCAT,										
+		       S.REFDAT  AS REFDAT,										
+		       S.DESC01  AS DESC01,										
+		       S.DESC02  AS DESC02,										
+		       S.ASKU01  AS ASKU01,										
+		       S.ASKU02  AS ASKU02,										
+		       S.ASKU03  AS ASKU03,										
+		       S.ASKU04  AS ASKU04,										
+		       S.ASKU05  AS ASKU05,										
+		       S.EANCOD  AS EANCOD,										
+		       S.GTINCD  AS GTINCD,										
+		       S.SKUG01  AS SKUG01,										
+		       S.SKUG02  AS SKUG02,										
+		       S.SKUG03  AS SKUG03,										
+		       S.SKUG04  AS SKUG04,										
+		       S.SKUG05  AS SKUG05,										
+		       NVL(SM.GRSWGT,0) * NVL(S.QTYRCV,0)  AS GRSWGT,										
+		       NVL(SM.GRSWGT,0)   AS GRSWGTCNT,										
+		       NVL(SM.NETWGT,0) * NVL(S.QTYRCV,0)  AS NETWGT,										
+		       NVL(SM.NETWGT,0)   AS NETWGTCNT,   										
+		       S.WGTUNT  AS WGTUNT,										
+		       S.LENGTH  AS LENGTH,										
+		       S.WIDTHW  AS WIDTHW,										
+		       S.HEIGHT  AS HEIGHT,										
+		       S.CUBICM  AS CUBICM,										
+		       S.CAPACT  AS CAPACT,										
+		       S.QTYORG  AS QTYORG,										
+		       S.SMANDT  AS SMANDT,										
+		       S.SEBELN  AS SEBELN,										
+		       S.SEBELP  AS SEBELP,										
+		       S.SZMBLNO AS SZMBLNO,										
+		       S.SZMIPNO AS SZMIPNO,										
+		       S.STRAID  AS STRAID,										
+		       S.SVBELN  AS SVBELN,										
+		       S.SPOSNR  AS SPOSNR,										
+		       S.STKNUM  AS STKNUM,										
+		       S.STPNUM  AS STPNUM,										
+		       S.SWERKS  AS SWERKS,										
+		       S.SLGORT  AS SLGORT,										
+		       S.SDATBG  AS SDATBG,										
+		       S.STDLNR  AS STDLNR,										
+		       S.SSORNU  AS SSORNU,										
+		       S.SSORIT  AS SSORIT,										
+		       S.SMBLNR  AS SMBLNR,										
+		       S.SZEILE  AS SZEILE,										
+		       S.SMJAHR  AS SMJAHR,										
+		       S.SXBLNR  AS SXBLNR,										
+		       S.SBKTXT  AS SBKTXT,										
+		       S.RCPRSN  AS RCPRSN,										
+		       S.CREDAT AS CREDAT,										
+		       S.CRETIM AS CRETIM,										
+		       S.CREUSR AS CREUSR,										
+		       CU.NMLAST AS CUSRNM,										
+		       S.LMODAT AS LMODAT,										
+		       S.LMOTIM AS LMOTIM,										
+		       S.LMOUSR AS LMOUSR,										
+		       LU.NMLAST AS LUSRNM,										
+		       NVL(TO_DATE(TRIM(S.LOTA13),'YYYYMMDD') - TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD')),0) AS DTREMDAT,										
+		       NVL(TRUNC(((TO_DATE(TRIM(S.LOTA13),'YYYYMMDD') - TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD')))/SM.OUTDMT) * 100),0) AS DTREMRAT										
+		  FROM RECDH RH										
+		       INNER JOIN RECDI S										
+		               ON S.RECVKY = RH.RECVKY										
+		       LEFT OUTER JOIN USRMA CU										
+		               ON CU.USERID = S.CREUSR										
+		       LEFT OUTER JOIN USRMA LU										
+		               ON LU.USERID = S.LMOUSR										
+		       LEFT OUTER JOIN BZPTN L01NM										
+		               ON L01NM.PTNRKY = RH.DPTNKY										
+		              AND L01NM.OWNRKY = RH.OWNRKY										
+		              AND L01NM.PTNRTY = '0002'										
+		       LEFT OUTER JOIN MEASI MI										
+		               ON MI.OWNRKY = RH.OWNRKY										
+		              AND MI.WAREKY = RH.WAREKY										
+		              AND MI.MEASKY = S.SKUKEY										
+		              AND MI.UOMKEY = 'BOX' 										
+		       LEFT OUTER JOIN MEASI MIP										
+		               ON MIP.WAREKY = RH.WAREKY										
+		              AND MIP.OWNRKY = RH.OWNRKY										
+		              AND MIP.MEASKY = S.MEASKY										
+		              AND MIP.UOMKEY = 'PL'        										
+		       LEFT OUTER JOIN SKUMA SM										
+		               ON SM.OWNRKY = RH.OWNRKY										
+		              AND SM.SKUKEY = S.SKUKEY         										
+			 WHERE
+			 		RH.RECVKY = #{RECVKY}
+				AND RH.RCPTTY = #{RCPTTY}
+
+			 ORDER BY S.RECVKY, S.RECVIT										
+										
+											
+	</select>	
+	
+		
+	
+</mapper>

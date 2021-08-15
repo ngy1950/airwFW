@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_25sdp"
+        android:layout_marginRight="@dimen/_25sdp"
+        android:background="@drawable/popup_flame"
+        android:orientation="vertical"
+        >
+
+
+        <com.ssomai.android.scalablelayout.ScalableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:scale_base_height="83"
+            app:scale_base_width="500"
+            >
+
+            <com.samyang.and.logistics.mobile.util.view.TextViewBoldYJH
+                android:id="@+id/tvTopTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="기독교침례회에서 알려드립니다."
+                android:textColor="#3b3b3b"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:visibility="visible"
+                app:scale_height="83"
+                app:scale_left="0"
+                app:scale_textsize="30"
+                app:scale_top="0"
+                app:scale_width="500"
+                />
+
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#e1e1e1"
+                app:scale_height="1"
+                app:scale_left="50"
+                app:scale_top="82"
+                app:scale_width="400"
+                />
+        </com.ssomai.android.scalablelayout.ScalableLayout>
+
+        <com.ssomai.android.scalablelayout.ScalableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:scale_base_height="37"
+            app:scale_base_width="500"
+            >
+
+        </com.ssomai.android.scalablelayout.ScalableLayout>
+
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.samyang.and.logistics.mobile.util.view.TextViewYJH
+                android:id="@+id/tvContents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#5c5b5b"
+                android:gravity="center"
+                android:scrollbars="vertical"
+                android:maxHeight="@dimen/_250sdp"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:textSize="@dimen/_12sdp"
+                android:text=""/>
+
+
+        </RelativeLayout>
+
+
+        <com.ssomai.android.scalablelayout.ScalableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:scale_base_height="49"
+            app:scale_base_width="500"
+            >
+
+        </com.ssomai.android.scalablelayout.ScalableLayout>
+
+        <com.ssomai.android.scalablelayout.ScalableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:scale_base_height="75"
+            app:scale_base_width="500"
+            >
+
+            <com.samyang.and.logistics.mobile.util.view.TextViewBoldYJH
+                android:id="@+id/tvOk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_btn_ok"
+                android:gravity="center"
+                android:text="확인"
+                android:textColor="#ffffff"
+                app:scale_height="75"
+                app:scale_left="50"
+                app:scale_textsize="30"
+                app:scale_top="0"
+                app:scale_width="400"
+                />
+
+        </com.ssomai.android.scalablelayout.ScalableLayout>
+
+        <com.ssomai.android.scalablelayout.ScalableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:scale_base_height="27"
+            app:scale_base_width="500"
+            >
+
+        </com.ssomai.android.scalablelayout.ScalableLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

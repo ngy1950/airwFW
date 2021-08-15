@@ -1,0 +1,255 @@
+package com.common.carton;
+
+import java.io.Serializable;
+
+/**
+ * 아이템 정보를 저장
+ * @author Administrator
+ *
+ */
+public class Item implements Serializable {
+
+	private static final long serialVersionUID = 4231022045335861495L;
+
+	/**
+	 * sku
+	 */
+	protected String sku;
+	
+	/**
+	 * 이름
+	 */
+	protected String name;
+	
+	/**
+	 * 길이1
+	 */
+	protected int dim1;
+	
+	/**
+	 * 길이2
+	 */
+	protected int dim2;
+	
+	/**
+	 * 길이3
+	 */
+	protected int dim3;
+	
+	/**
+	 * 부피
+	 */
+	protected long vol;
+	
+	/**
+	 * 중량
+	 */
+	protected int weight;
+	
+	/**
+	 * 장바구니번호
+	 */
+	protected String cartonNumber;
+	
+	/**
+	 * 가장 긴 길이
+	 */
+	protected int longestDim;
+	
+	/**
+	 * 수량
+	 */
+	protected int qty;
+	
+	/**
+	 * 생성자
+	 * @param sku sku
+	 * @param name name
+	 * @param cartonNumber cartonNumber
+	 * @param dim1 dim1
+	 * @param dim2 dim2
+	 * @param dim3 dim3
+	 * @param weight weight
+	 * @param qty qty
+	 */
+	public Item(String sku
+			, String name
+			, String cartonNumber
+			, int dim1
+			, int dim2
+			, int dim3
+			, int weight
+			, int qty) {
+		this.sku = sku;
+		this.name = name;
+		this.cartonNumber = cartonNumber;
+		this.dim1 = dim1;
+		this.dim2 = dim2;
+		this.dim3 = dim3;
+		this.weight = weight;
+		this.vol = dim1 * dim2 * dim3;
+		this.qty = qty;
+		this.longestDim = BoxUtils.max(new int[] {this.dim1, this.dim2, this.dim3});
+	}
+	
+	/**
+	 * 장바구니번호
+	 * @return cartonNumber
+	 */
+	public String getCartonNumber() {
+		return cartonNumber;
+	}
+
+	/**
+	 * sku
+	 * @return sku
+	 */
+	public String getSku() {
+		return sku;
+	}
+	
+	/**
+	 * 이름
+	 * @return name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * dim1
+	 * @return dim1
+	 */
+	public int getDim1() {
+		return dim1;
+	}
+
+	/**
+	 * dim2
+	 * @return dim2
+	 */
+	public int getDim2() {
+		return dim2;
+	}
+
+	/**
+	 * dim3
+	 * @return dim3
+	 */
+	public int getDim3() {
+		return dim3;
+	}
+	
+	/**
+	 * 중량
+	 * @return weight
+	 */
+	public int getWeight() {
+		return weight;
+	}
+	
+	/**
+	 * 부피
+	 * @return vol
+	 */
+	public long getVol() {
+		return vol;
+	}
+
+	/**
+	 * 최대 길이
+	 * @return longestDim
+	 */
+	public int getLongestDim() {
+		return longestDim;
+	}
+
+	/**
+	 * 수량
+	 * @return qty
+	 */
+	public int getQty() {
+		return qty;
+	}
+	
+	void decQty() {
+		if (qty == 1)
+			throw new UnsupportedOperationException("Can not be reduced. The minimum quantities.");
+		
+		qty--;
+	}
+	
+	void incQty() {
+		qty++;
+	}
+	
+	void setupQty() {
+		qty = 1;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cartonNumber == null) ? 0 : cartonNumber.hashCode());
+		result = prime * result + dim1;
+		result = prime * result + dim2;
+		result = prime * result + dim3;
+		result = prime * result + longestDim;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + qty;
+		result = prime * result + ((sku == null) ? 0 : sku.hashCode());
+		result = prime * result + (int) (vol ^ (vol >>> 32));
+		result = prime * result + weight;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Item other = (Item) obj;
+		if (cartonNumber == null) {
+			if (other.cartonNumber != null)
+				return false;
+		} else if (!cartonNumber.equals(other.cartonNumber))
+			return false;
+		if (dim1 != other.dim1)
+			return false;
+		if (dim2 != other.dim2)
+			return false;
+		if (dim3 != other.dim3)
+			return false;
+		if (longestDim != other.longestDim)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (qty != other.qty)
+			return false;
+		if (sku == null) {
+			if (other.sku != null)
+				return false;
+		} else if (!sku.equals(other.sku))
+			return false;
+		if (vol != other.vol)
+			return false;
+		if (weight != other.weight)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Item [sku=" + sku + ", name=" + name + ", dim1=" + dim1 + ", dim2=" + dim2 + ", dim3=" + dim3 + ", vol="
+				+ vol + ", weight=" + weight + ", cartonNumber=" + cartonNumber + ", longestDim=" + longestDim
+				+ ", qty=" + qty + "]";
+	}
+	
+}

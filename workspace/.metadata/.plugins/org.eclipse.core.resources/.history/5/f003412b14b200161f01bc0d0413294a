@@ -1,0 +1,82 @@
+package com.common.carton;
+
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+/**
+ * 박스의 모든 방향을 고려하여 아이템이 들어갈 수 있는 가장 작은 박스를 선정한다
+ * @author Administrator
+ *
+ */
+public class AllVariantBoxSelector extends AbstractBoxSelector {
+
+	/**
+	 * 생성자
+	 * @param boxes 박스리스트
+	 * @param refItem 기준 아이템
+	 */
+	public AllVariantBoxSelector(List<Box> boxes, Item refItem) {
+		super(boxes, refItem);
+	}
+
+	private static final Logger log = LogManager.getLogger(AllVariantBoxSelector.class);
+
+	@Override
+	public int select() {
+		int x = 0;
+		int y = 0;
+		int z = 0;
+		if (log.isTraceEnabled())
+			log.trace("refItem={}", refItem);
+		
+		for (int i = 0; i < boxes.size(); i++) {
+			Box box = boxes.get(i);
+			if (log.isTraceEnabled())
+				log.trace("box={}", box);
+			
+			for (int variant = 1; variant <= 6; variant++) {
+				switch (variant) {
+				case 1:
+					x = refItem.getDim1();
+					y = refItem.getDim2();
+					z = refItem.getDim3();
+					break;
+				case 2:
+					x = refItem.getDim1();
+					y = refItem.getDim3();
+					z = refItem.getDim2();
+					break;
+				case 3:
+					x = refItem.getDim2();
+					y = refItem.getDim1();
+					z = refItem.getDim3();
+					break;
+				case 4:
+					x = refItem.getDim2();
+					y = refItem.getDim3();
+					z = refItem.getDim1();
+					break;
+				case 5:
+					x = refItem.getDim3();
+					y = refItem.getDim1();
+					z = refItem.getDim2();
+					break;
+				case 6:
+					x = refItem.getDim3();
+					y = refItem.getDim2();
+					z = refItem.getDim1();
+					break;
+				}
+				
+				if (x > box.getDim1() || y > box.getDim2() || z > box.getDim3())
+					continue;
+				else
+					return i;
+			}
+		}
+		
+		return -1;
+	}
+}

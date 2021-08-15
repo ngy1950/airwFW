@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Demo">
+
+	<select id="COMCODE_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT
+			COMMONID||'_'||CITEMID AS VALUE_COL,
+			CODENAME AS TEXT_COL
+		FROM SYSCOMMITEM
+		WHERE 1=1 
+		<if test="CODE1 != null and CODE1 != ''">
+		  AND COMMONID = #{CODE1}
+		</if>
+		<if test="PARAM != null and PARAM != ''">
+		  AND COMMONID = #{PARAM}
+		</if>
+		ORDER BY SORTORDER
+	</select>
+
+	<select id="DEMOHEAD_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT  WAREKY
+				   ,' ' AS CHECKDATA
+				   ,ROWNUM AS TMPNUM 
+			       ,ZONEKY
+			       ,ZONETY
+			       ,(SELECT CDESC1 FROM CMCDV C WHERE CMCDKY = 'ZONETY' AND C.CMCDVL = Z.ZONETY) AS ZONETYT
+			       ,SHORTX
+			       ,AREAKY
+			       ,(SELECT SHORTX FROM AREMA A WHERE A.WAREKY = Z.WAREKY AND A.AREAKY = Z.AREAKY) AS AREAKYT
+			       ,TO_CHAR(TO_DATE(CREDAT,'YYYYMMDD'),'$FORMAT_DATE$') AS CREDAT
+			       ,TO_CHAR(TO_DATE(CRETIM,'HH24MISS'),'$FORMAT_TIME$') AS CRETIM
+			       ,CREUSR
+			       ,TO_CHAR(TO_DATE(LMODAT,'YYYYMMDD'),'$FORMAT_DATE$') AS LMODAT
+			       ,TO_CHAR(TO_DATE(LMOTIM,'HH24MISS'),'$FORMAT_TIME$') AS LMOTIM
+			       ,LMOUSR
+			       ,INDBZL
+			       ,INDARC
+			       ,UPDCHK
+			FROM ZONMA Z
+			WHERE 1=1 
+		<if test="WAREKY != null and WAREKY != ''">
+			AND WAREKY = #{WAREKY} 
+		</if>
+		<if test="RANGE_SQL != null and RANGE_SQL != ''">
+			${RANGE_SQL}
+		</if>
+	</select>
+	
+	<select id="DEMOITEM_LIST" parameterType="hashmap" resultType="DataMap">
+		<![CDATA[
+		SELECT WAREKY
+			,LOCAKY
+			,LOCATY
+			,SHORTX
+			,TASKTY
+			,ZONEKY
+			,AREAKY
+			,(SELECT CDESC1 FROM CMCDV C WHERE CMCDKY = 'LOCATY' AND C.CMCDVL = A.LOCATY) AS LOCATYT
+			,TKZONE
+			,FACLTY
+			,ARLVLL
+			,INDCPC
+			,INDTUT
+			,IBROUT
+			,OBROUT
+			,RPROUT
+			,STATUS
+			,(SELECT CDESC1 FROM CMCDV C WHERE C.CMCDKY = 'STATUS' AND C.CMCDVL = A.STATUS) AS STATUST
+			,ABCANV
+			,LENGTH
+			,WIDTHW
+			,HEIGHT
+			,CUBICM
+			,MAXCPC
+			,MAXQTY
+			,MAXWGT
+			,MAXLDR
+			,MAXSEC
+			,MIXSKU
+			,MIXLOT
+			,RPNCAT
+			,INDQTC
+			,QTYCHK
+			,NEDSID
+			,INDUPA
+			,INDUPK
+			,AUTLOC
+			,CREDAT
+			,CRETIM
+			,CREUSR
+			,' ' AS CUSRNM
+			,'0' AS CUSRNM_FILEVIEW
+			,LMODAT
+			,LMOTIM
+			,LMOUSR
+			,' ' AS LUSRNM
+			,INDBZL AS INDBZL
+			,INDARC AS INDARC
+			,UPDCHK AS UPDCHK
+		FROM LOCMA A 
+		WHERE 1=1 
+		AND ROWNUM < 1000
+		]]>
+		<if test="WAREKY != null and WAREKY != ''">
+			AND WAREKY = #{WAREKY} 
+		</if>
+		<if test="ZONEKY != null and ZONEKY != ''">
+			AND ZONEKY = #{ZONEKY} 
+		</if>
+		<if test="RANGE_PRE_SQL != null and RANGE_PRE_SQL != ''">
+			#{RANGE_PRE_SQL}
+		</if>
+	</select>
+	
+</mapper>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Automatically generated file. DO NOT MODIFY -->
+
+    <!-- Values from build type: debug -->
+    <string name="google_maps_key" translatable="false">AIzaSyD3sb0PZYcWoXeSBOwbvRmpY2wA6neVwP8</string>
+
+</resources>

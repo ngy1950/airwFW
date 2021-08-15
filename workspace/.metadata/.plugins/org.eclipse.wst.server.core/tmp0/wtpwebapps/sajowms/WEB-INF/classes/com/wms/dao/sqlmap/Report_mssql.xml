@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL MAP 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="WmsReport">
+	<typeAlias alias="DataMap" type="com.common.bean.DataMap" />
+	<typeAlias alias="StringMap" type="com.common.util.StringMap" />
+	<select id="RL11SKUG04COMBO_LIST" parameterClass="Map" resultClass="DataMap"><!-- 거점 Combo -->
+		SELECT DISTINCT
+		    SKUG04 AS VALUE_COL,
+		    SKUG04 AS TEXT_COL
+		FROM
+		    SKUMA
+	</select>
+	
+			
+</sqlMap>

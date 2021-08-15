@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>WEBDeK WMS</title>
+<link rel="stylesheet" type="text/css" href="/common/theme/webdek/css/membership.css">
+<link rel="shortcut icon" href="/common/theme/webdek/images/logo01.png" type="image/x-ico" />
+<script type="text/javascript" src="/common/js/jquery.js"></script>
+<script type="text/javascript" src="/common/js/dataMap.js"></script>
+<script type="text/javascript" src="/common/js/netUtil.js"></script>
+<script type="text/javascript" src="/common/js/commonUtil.js"></script>
+<script type="text/javascript" src="/common/js/configData.js"></script>
+<script type="text/javascript" src="/common/js/input.js"></script>
+<script type="text/javascript" src="/common/js/ui.js"></script>
+<script type="text/javascript" src="/common/js/dataBind.js"></script>
+<script type="text/javascript" src="/common/js/site.js"></script>
+<script type="text/javascript" src="/common/js/membership.js"></script>
+</head>
+<script>
+var compInfo = new DataMap();
+
+var compkyCheckTimer = null;
+
+$(document).ready(function(){
+	membership.setPage();
+});
+
+function loadingOpen() {
+	var loader = $('<div class="contentLoading"></div>').appendTo('body');
+	loader.stop().animate({
+		top : '0px'
+	}, 30, function() {
+	});
+}
+
+function loadingClose() {
+	var loader = $('.contentLoading');
+	loader.stop().animate({
+		top : '100%'
+	}, 30, function() {
+		loader.remove();
+	});
+}
+</script>
+<body>
+	<div class="membership_container">
+		<div class="logo"></div>
+		<header class="membership_header ">
+			<ul>
+				<li class="on"><a href="#tab1-1">코드입력</a></li>
+				<li><a href="#tab1-2">기본설정</a></li>
+				<li><a href="#tab1-3">옵션설정</a></li>
+				<li><a href="#tab1-4">요금설정</a></li>
+				<li><a href="#tab1-5">완료</a></li>
+			</ul>
+		</header>
+		
+		<div class="membership_tab_box">
+			<div class="membership_tab on" id="tabs1">
+				<div class="code_inner">
+					<div class="code">
+						<span style="width:120px;">가입코드 : </span><input type="text" autocomplete="off"/><button>확인</button>
+					</div>
+					<div class="consult">
+						<span>가입코드 발급 문의</span>
+						<span>Tel : 02-6463-6462</span>
+						<span>Email : support@scminno.com</span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="membership_tab">
+				<div class="membership_info">
+				<span class="menu_name">기본정보</span>
+					<p><span>회　사　명 : </span> <span></span></p>
+					<p><span>사업자번호 : </span>  <span></span></p>
+					<p><span>담　당　자 : </span> <span></span></p>
+					<p><span>연　락　처 : </span> <span></span></p>
+				</div>
+				<div class="code_inner" id="tabs2">
+				<span class="menu_name">기본코드</span>
+					<div class="code">
+						<span>회사코드 : </span><input type="text" placeholder="회사코드(4자리 ~ 10자리)" UIFormat="S 10"/><button>중복확인</button>
+					</div>
+					<p></p>
+					<div class="code"><span>관리자ID : </span><input type="text" placeholder="관리자ID(3자리 ~ 20자리)" UIFormat="S 20"/><button>중복확인</button></div>
+					<p></p>
+					<div class="code">
+						<span>비밀번호 : </span><input type="password" placeholder="영문/숫자혼용 8자리 이상" UIFormat="S 20"/>
+					</div>
+					<p></p>
+					<div class="code">
+						<span>비밀번호 확인 : </span><input type="password" UIFormat="S 20"/>
+					</div>
+					<p></p>
+				</div>
+				<div class="code_save"><button>저장</button></div>
+			</div>
+			
+			<div class="membership_tab">
+					<div class="membership_option">
+					<span class="menu_name">입고옵션</span>
+						<p><input type="radio" id="option1_1" name="option1" checked><label for="option1_1" >입고옵션</label><span>(옵션 설명............)</span></p>
+						<p><input type="radio" id="option1_2" name="option1"><label for="option1_2">입고옵션</label><span>(옵션 설명............)</span></p>
+						<p><input type="radio" id="option1_3" name="option1"><label for="option1_3">입고옵션</label><span>(옵션 설명............)</span></p>
+					</div>
+					<div class="membership_option">
+					<span class="menu_name">재고옵션</span>
+						<p><input type="checkbox" id="option2_1" name="option2"><label for="option2_1">재고기능 사용</label><span>(옵션 설명............)</span></p>
+						<p><input type="checkbox" id="option2_2" name="option2"><label for="option2_2">재고기능 사용</label><span>(옵션 설명............)</span></p>
+						<p><input type="checkbox" id="option2_3" name="option2"><label for="option2_3">재고기능 사용</label><span>(옵션 설명............)</span></p>
+					</div>
+					<div class="membership_option">
+					<span class="menu_name">출고옵션</span>
+						<p><input type="radio" id="option3_1" name="option3" checked><label for="option3_1">출고옵션</label><span>(옵션 설명............)</span></p>
+						<p><input type="radio" id="option3_2" name="option3"><label for="option3_2">출고옵션</label><span>(옵션 설명............)</span></p>
+						<p><input type="radio" id="option3_3" name="option3"><label for="option3_3">출고옵션</label><span>(옵션 설명............)</span></p>
+					</div>
+				<div class="code_save"><button >저장</button></div>
+			</div>
+			
+			<div class="membership_tab">
+				<input type="radio" id="charge1_1" name="charge1" checked />
+				<input type="radio" id="charge1_2" name="charge1">
+				<input type="radio" id="charge1_3" name="charge1">
+				<label class="membership_charge" for="charge1_1">
+					<span>Light</span>
+					<span>기본료 : 1,000,000원</span>
+					<span>Task : 1,000건 / 1일</span>
+					<span>초과과금 : 1일 1건 초과당 500원 월정산</span>
+				</label>
+				<label class="membership_charge" for="charge1_2">
+					<span>Basic</span>
+					<span>기본료 : 1,500,000원</span>
+					<span>Task : 3,000건 / 1일</span>
+					<span>초과과금 : 1일 1건 초과당 300원 월정산</span>
+				</label>
+				<label class="membership_charge" for="charge1_3">
+					<span>Enterprise</span>
+					<span>기본료 : 2,000,000원</span>
+					<span>Task : 10,000건 / 1일</span>
+					<span>초과과금 : 1일 1건 초과당 100원 월정산</span>
+				</label>
+				<div class="code_save"><button >저장</button></div>
+			</div>
+			
+			<div class="membership_tab membership_tab_05">
+				<div class="membership_info">
+				<span class="menu_name">기본정보</span>
+					<p><span>회　사　명 : </span> <span>주식회사 에스씨엠이노</span></p>
+					<p><span>사업자번호 : </span> <span>356-88-00162</span></p>
+					<p><span>담　당　자 : </span> <span>송성일</span></p>
+					<p><span>연　락　처 : </span> <span>010-7176-0770</span></p>
+				</div>
+				<div class="membership_info">
+				<span class="menu_name">기본코드</span>
+					<p><span>회사코드 : </span> <span>SCMINNO</span></p>
+					<p><span>관리자ID : </span> <span>scminno</span></p>
+				</div>
+				<div class="membership_info">
+				<span class="menu_name">옵션</span>
+					<p><span>입고옵션 : </span> <span>옵션1</span></p>
+					<p><span>재고옵션 : </span> <span>옵션2 /옵션3</span></p>
+					<p><span>출고옵션 : </span> <span>옵션3</span></p>
+				</div>
+				<div class="membership_info">
+				<span class="menu_name">요금제</span>
+					<p><span>Enterprise : </span> <span>월 2,000,000원</span></p>
+					<p><span>Task : </span> <span>10,000건 / 1일</span></p>
+					<p><span>초과 과금 : </span> <span>1일 1건 초과당 100원 월정산</span></p>
+				</div>
+				<div class="save_text">가입완료시 요금 과금이 시작됩니다.</div>
+				<div class="code_save"><button >가입완료</button></div>
+			</div>
+			
+		</div>
+	</div>
+</body>
+</html>

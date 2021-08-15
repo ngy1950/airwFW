@@ -1,0 +1,16 @@
+{
+  "short_name": "WMS PDA",
+  "name": "WMS PDA",
+  "icons": [
+    {
+      "src": "/mobile/img/ico/ico_logo_216x216.png",
+      "sizes": "216x216",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/mobile/index.page?isFullScreen=Y",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#444",
+  "background_color": "#444"
+}

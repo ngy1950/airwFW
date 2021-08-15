@@ -1,0 +1,366 @@
+@charset 'utf-8';
+/* #c40452 -> #5DC560*/
+/* prettySelect */
+.selectOrigin {
+	display: none;
+}
+
+.prettySelectWrap {
+	display: inline-block;
+	position: relative !important;
+	z-index: 140;
+	background-color: #4d526a;
+	vertical-align: middle !important;
+}
+
+.prettySelect {
+	display: block !important;
+	min-width: 120px;
+	z-index: 140;
+	position: relative;
+}
+
+html.ie7 .prettySelectWrap {
+	display: inline !important;
+}
+
+.prettySelect p.selected {
+	position: relative;
+	z-index: 12;
+}
+
+.prettySelect p.selected a {
+	display: block !important;
+	position: relative !important;
+	height: 21px !important;
+	line-height: 22px !important;
+	color: #a6abbc !important;
+	font-size: 12px !important;
+	cursor: pointer !important;
+	text-decoration: none !important;
+	border-radius: 1px;
+}
+
+.prettySelect p.selected a .text {
+	display: block;
+	float: left;
+	padding: 0 10px !important;
+}
+
+.prettySelect p.selected a .ico {
+	display: block;
+	float: right;
+	width: 19px;
+	height: 100%;
+	background: url("/common/theme/darkness/images/ico_select.png")
+		no-repeat left center;
+}
+
+.prettySelect .optionList {
+	display: none;
+	position: absolute;
+	left: 0;
+	top: 21px;
+	width: 100%;
+	z-index: 140 !important;
+	background-color: #fff;
+	border: 1px solid #4d526a;
+	border-top: 0 none;
+	border-bottom-left-radius: 1px;
+	border-bottom-right-radius: 1px;
+	overflow: hidden;
+}
+
+.prettySelect .optionList li a {
+	display: block;
+	height: 21px;
+	line-height: 21px;
+	padding-left: 10px;
+	border-top: 0 none;
+	border-bottom: 0 none;
+	text-decoration: none;
+	text-align: left;
+	font-size: 12px;
+	color: #a6abbc;
+}
+
+.prettySelect .optionList li a:hover, .prettySelect .optionList li a:focus,
+	.prettySelect .optionList li.selected a {
+	color: #fff;
+	background-color: #2f313a;
+}
+
+.prettySelect.upSide .optionList {
+	overflow: hidden;
+	top: auto;
+	bottom: 26px;
+}
+
+.prettySelect.upSide p.selected {
+	z-index: 14;
+}
+
+/* header */
+.header {
+	float: left;
+	height: 85px;
+	width: 100%;
+	background: #fff;
+}
+
+.header:after {
+	display: block;
+	content: "";
+	clear: both;
+	background: #555969;
+	position: absolute;
+	left: 70px;
+	top: 10px;
+	height: 30px;
+}
+
+.header .innerContainer {
+	min-width: 960px;
+	overflow: hidden;
+	background: #444444;
+}
+
+/* .header .logo {
+	width: 251px;
+	height: 50px;
+	float: left;
+	text-align: center;
+	background: #444444;
+} */
+
+.header .logo{
+	width: 251px;
+	height: 50px;
+	float: left;
+	text-align: center;
+	background: #444444;
+	font-size: 30px;
+	padding: 10px 0;
+	text-align: center;
+	font-family: sans-serif !important;
+	letter-spacing: 5px;
+	-webkit-text-stroke: 4px;
+	color: #fff;
+	cursor: pointer;
+}
+
+.header .logo .e{
+	font-family: serif !important;
+	letter-spacing: 3px;
+	-webkit-text-stroke: 2px;
+	font-style: italic;
+}
+
+.header .logo img {
+	margin-top: 10px;
+	margin-right: 10px;
+	height: 30px;
+}
+
+.header .gnb {
+	float: left;
+	min-width: 700px;
+	height: 30px;
+}
+
+.header .gnb .list {
+	float: left;
+	position: relative;
+	width: 100%;
+}
+
+.header .gnb .list>li {
+	float: left;
+}
+
+.header .gnb .list>li>a {
+	display: block;
+	height: 30px;
+	padding: 0 15px;
+	line-height: 30px;
+	color: #a6abbc;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+.header .gnb .list>li.active>a, .header .gnb .list>li:hover>a {
+	background-color: #4786f6;
+	color: #fff;
+}
+
+.header .gnb .list>li>ul {
+	display: none;
+	position: absolute;
+	left: 0;
+	top: 30px;
+	bottom: 0;
+	width: 100%;
+	height: 29px;
+	background-color: #4786f6;
+}
+
+.header .gnb .list>li>ul>li {
+	float: left;
+	padding: 0 12px;
+	line-height: 29px;
+}
+
+.header .gnb .list>li>ul>li>a {
+	color: #c3d9ff;
+}
+
+.header .gnb .list>li>ul>li>a:hover {
+	color: #fff;
+}
+
+.header .leftArea {
+	position: absolute;
+	left: 250px;
+	top: 0;
+	height: 55px;
+	color: #fff;
+}
+
+.header .leftArea p {
+	font-size: 14px;
+	display: inline-block;
+	padding: 0 0 0 38px;
+	line-height: 50px;
+}
+
+.header .leftArea p:nth-of-type(1) {
+	/* background: url("/common/theme/gsfresh/images/login_img/ico02-2.png") no-repeat 5% center; */
+	background: url("/common/theme/gsfresh/images/login_img/ico02-3.png") no-repeat 5% center;
+	letter-spacing: -0.5px;
+}
+
+.header .leftArea p:nth-of-type(2) {
+	/* background: url("/common/theme/gsfresh/images/login_img/ico03-2.png") no-repeat 5% center; */
+	background: url("/common/theme/gsfresh/images/login_img/ico03-3.png") no-repeat 5% center;
+	background-size: 25px;
+}
+
+.header .leftArea p img {
+	margin: 0 10px;
+}
+
+.header .leftArea p .textstyle {
+	display: inline-block;
+	height: 20px;
+	background-color: #ed2024;
+	border-radius: 25px;
+	line-height: 20px;
+	color: #fff;
+	text-align: center;
+	padding: 0 8px;
+	margin-right: 4px;
+	cursor: pointer;
+}
+
+.header .rightArea {
+	float: right;
+	hieght: 50px;
+	line-height: 50px;
+}
+
+.header .rightArea:after {
+	display: block;
+	content: "";
+	clear: both;
+}
+
+.header .rightArea .helloid {
+	float: right;
+	padding-left: 35px;
+	margin-right: 20px;
+	/* background: url("/common/theme/gsfresh/images/login_img/ico_user.png") no-repeat 5% center; */
+	background: url(/common/theme/gsfresh/images/login_img/ico_user_white.png) no-repeat 5% center;
+	color: #fff;
+}
+
+.header .rightArea .logout {
+	float: right;
+	height: 50px;
+	width: 50px;
+	/* border-left: 1px solid #eeeeee; */
+	/* background: url("/common/theme/gsfresh/images/login_img/ico_logout.png") no-repeat 50% center; */
+	background: url("/common/theme/gsfresh/images/login_img/ico_logout_white.png") no-repeat 50% center;
+	cursor: pointer;
+}
+
+.header .util {
+	float: left;
+	margin-top: 5px;
+}
+
+.header .util .user, .header .util .logOut, .header .util .setting {
+	display: inline-block;
+	height: 20px;
+	padding-left: 17px;
+	margin-left: 30px;
+	background-position: left center;
+	background-repeat: no-repeat;
+	line-height: 22px;
+	font-size: 11px;
+	color: #000;
+	border: 1px solid red;
+}
+
+.header .util .user {
+	background-image:
+		url("/common/theme/gsfresh/images/login_img/ico_user.png");
+}
+
+.header .util .logOut {
+	background-image:
+		url("/common/theme/gsfresh/images/login_img/ico_logout.png");
+}
+
+.selection {
+	float: right;
+	margin-top: 5px;
+	line-height: 40px;
+	margin-right: 15px;
+	text-align: center;
+	position: relative;
+	width: 240px;
+	height: 40px;
+	background-color: #eee;
+	border-radius: 20px;
+}
+
+.rightArea select {
+	border: none;
+	font-size: 13px;
+	color: #222;
+	background: #eee;
+	outline: none;
+	width: 80%;
+}
+
+.rightArea select {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	background:
+		url("/common/theme/gsfresh/images/login_img/bottom-black.png")
+		no-repeat 95% center;
+}
+
+}
+.rightArea select::-ms-expand {
+	display: none;
+}
+
+select::-ms-expand {
+	display: none; /* 화살표 없애기 for IE10, 11*/
+}
+
+.rightArea select option {
+	outline: none;
+	background-color: #eee;
+}

@@ -1,0 +1,4 @@
+eclipse.preferences.version=1
+externalMigrateFromAuthorizationDatabase/isMigrated=true
+migrateFromAuthorizationDatabase/isMigrated=true
+repositories/30312869ec3d001b1cfa8c1051c463c6=30312869ec3d001b1cfa8c1051c463c6;https\://demo.scminno.com\:8443/svn/project;https\://demo.scminno.com\:8443/svn/project;branches;tags;trunk;true;e08f2dc3-1f68-2244-879f-e20dfef50fca;https\://demo.scminno.com\:8443/svn/project;;false;<https\://demo.scminno.com\:8443> VisualSVN Server;;0

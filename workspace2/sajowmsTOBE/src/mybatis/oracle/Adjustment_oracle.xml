@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Adjustment">
+
+
+	<!-- ADJDH 생성 VALDATION 체크 -->
+	<select id="ADJDH_VALDATION_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT CASE WHEN (SELECT COUNT(1) FROM OWNER WHERE OWNRKY = #{OWNRKY}) &lt; 1 THEN 'MASTER_B0016'
+		            WHEN (SELECT COUNT(1) FROM WAHMA WHERE WAREKY = #{WAREKY}) &lt; 1 THEN 'VALID_M0561'
+		            WHEN (SELECT COUNT(1) FROM DOCTM WHERE DOCUTY = #{ADJUTY}) &lt; 1 THEN 'VALID_M0562'
+          			WHEN TRIM(${DOCDAT}) IS NULL THEN 'IN_M0033'
+		            ELSE ''
+		        END MSGKEY
+		     , (SELECT DOCCAT FROM DOCTM WHERE DOCUTY = #{ADJUTY}) AS DOCCAT
+		     , 1 as dummy
+		  FROM DUAL
+	</select>
+
+
+	<!-- ADJDH 생성  -->
+	<insert id="ADJDH_INSERT"  parameterType="hashmap">
+		INSERT INTO ADJDH ( SADJKY, WAREKY, ADJUTY, DOCDAT, DOCCAT, ADJUCA, USRID1, UNAME1, 
+                    		DEPTID1, DNAME1, USRID2, UNAME2, DEPTID2, DNAME2, USRID3, UNAME3, 
+		    				DEPTID3, DNAME3, USRID4, UNAME4, DEPTID4, DNAME4, DOCTXT, CREDAT, 
+		    				CRETIM, CREUSR, LMODAT, LMOTIM, LMOUSR, INDBZL, INDARC, UPDCHK	
+                  		  )
+           		   VALUES ( #{SADJKY},  #{WAREKY}, #{ADJUTY}, #{DOCDAT},  #{DOCCAT},  #{ADJUCA}, NVL(#{USRID1}, ' '), NVL(#{UNAME1}, ' '), 
+		                    NVL(#{DEPTID1},' '), NVL(#{DNAME1}, ' '), NVL(#{USRID2},' '), NVL(#{UNAME2}, ' '),  NVL(#{DEPTID2}, ' '), NVL(#{DNAME2}, ' '), NVL(#{USRID3}, ' '), NVL(#{UNAME3}, ' '), 
+				    		NVL(#{DEPTID3},' '), NVL(#{DNAME3}, ' '), NVL(#{USRID4},' '), NVL(#{UNAME4}, ' '),  NVL(#{DEPTID4}, ' '), NVL(#{DNAME4}, ' '), NVL(#{DOCTXT}, ' '), TO_CHAR(SYSDATE, 'YYYYMMDD'), 
+				    		TO_CHAR(SYSDATE, 'HH24MISS'),  NVL(#{SES_USER_ID}, ' '),  TO_CHAR(SYSDATE, 'YYYYMMDD'), TO_CHAR(SYSDATE, 'HH24MISS'), NVL(#{SES_USER_ID}, ' '),  ' ', ' ', 0
+	          			  )
+	</insert>
+
+
+	<!-- ADJDI 생성 VALDATION 체크 -->
+	<select id="ADJDI_VALDATION_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT CASE WHEN TRIM(#{SADJKY}) IS NULL THEN 'VALID_M0560'
+					WHEN TRIM(#{SADJIT}) IS NULL THEN 'VALID_M0589'
+		            WHEN (SELECT COUNT(1) FROM LOCMA WHERE WAREKY = #{WAREKY} AND LOCAKY = #{LOCAKY}) &lt; 1 THEN 'OUT_M0070'
+		            WHEN (SELECT COUNT(1) FROM SKUMA WHERE OWNRKY = #{OWNRKY} AND SKUKEY = #{SKUKEY}) &lt; 1 THEN 'MASTER_M0669'
+		            WHEN (SELECT COUNT(1) FROM SKUWC WHERE OWNRKY = #{OWNRKY} AND WAREKY = #{WAREKY} AND SKUKEY = #{SKUKEY}) &lt; 1 THEN 'VALID_M0587'
+		            ELSE ''
+		        END MSGKEY
+		     , 1 as dummy
+		  FROM DUAL
+	</select>
+
+
+	<!-- ADJDI 생성  -->
+	<insert id="ADJDI_INSERT"  parameterType="hashmap">
+		INSERT INTO ADJDI ( SADJKY, SADJIT, RSNADJ, STOKKY, LOTNUM, LOCAKY, TRNUID, SECTID, PACKID, QTADJU, 
+							QTBLKD, QTYUOM, TRUNTY, MEASKY, UOMKEY, QTPUOM, DUOMKY, QTDUOM, SUBSIT, SUBSFL, 
+							REFDKY, REFDIT, REFCAT, OWNRKY, SKUKEY, LOTA01, LOTA02, LOTA03, LOTA04, LOTA05, 
+							LOTA06, LOTA07, LOTA08, LOTA09, LOTA10, LOTA11, LOTA12, LOTA13, LOTA14, LOTA15, 
+							LOTA16, LOTA17, LOTA18, LOTA19, LOTA20, AWMSNO, AREAKY, DESC01, DESC02, ASKU01, 
+							ASKU02, ASKU03, ASKU04, ASKU05, EANCOD, GTINCD, SKUG01, SKUG02, SKUG03, SKUG04, 
+							SKUG05, GRSWGT, NETWGT, WGTUNT, LENGTH, WIDTHW, HEIGHT, CUBICM, CAPACT, WORKID, 
+							WORKNM, HHTTID, SMANDT, SEBELN, SEBELP, SZMBLNO, SZMIPNO, STRAID, SVBELN, SPOSNR, 
+							STKNUM, STPNUM, SWERKS, SLGORT, SDATBG, STDLNR, SSORNU, SSORIT, SMBLNR, SZEILE,
+							SMJAHR, SXBLNR, SAPSTS, SBKTXT, ADJRSN, RELRSN, RELDAT, RELUSR, CREDAT, CRETIM, 
+							CREUSR, LMODAT, LMOTIM, LMOUSR, INDBZL, INDARC, UPDCHK
+						  ) VALUES 
+						  ( #{SADJKY}, LPAD(#{SADJIT}, 6, '0'), NVL(#{RSNADJ}, ' '), NVL(#{STOKKY}, ' '), NVL(#{LOTNUM}, ' '), NVL(#{LOCAKY}, ' '), NVL(#{TRNUID}, ' '), NVL(#{SECTID}, ' '), NVL(#{PACKID}, ' '), #{QTADJU}, 
+						    NVL(#{QTBLKD}, 0),   NVL(#{QTYUOM}, 0),   NVL(#{TRUNTY}, ' '), NVL(#{MEASKY}, ' '), NVL(#{UOMKEY}, ' '), NVL(#{QTPUOM}, 0)  , NVL(#{DUOMKY}, ' '), NVL(#{QTDUOM}, 0)  , NVL(#{SUBSIT}, ' '), NVL(#{SUBSFL}, ' '), 
+						    NVL(#{REFDKY}, ' '), NVL(#{REFDIT}, ' '), NVL(#{REFCAT}, ' '), NVL(#{OWNRKY}, ' '), NVL(#{SKUKEY}, ' '), NVL(#{LOTA01}, ' '), NVL(#{LOTA02}, ' '), NVL(#{LOTA03}, ' '), NVL(#{LOTA04}, ' '), NVL(#{LOTA05}, ' '), 
+						    NVL(#{LOTA06}, ' '), NVL(#{LOTA07}, ' '), NVL(#{LOTA08}, ' '), NVL(#{LOTA09}, ' '), NVL(#{LOTA10}, ' '), NVL(#{LOTA11}, ' '), NVL(#{LOTA12}, ' '), NVL(#{LOTA13}, ' '), NVL(#{LOTA14}, ' '), NVL(#{LOTA15}, ' '), 
+						    NVL(#{LOTA16}, 0)  , NVL(#{LOTA17}, 0),   NVL(#{LOTA18}, 0) ,  NVL(#{LOTA19}, 0)  , NVL(#{LOTA20}, 0)  , NVL(#{AWMSNO}, ' '), NVL(#{AREAKY}, ' '), NVL(#{DESC01}, ' '), NVL(#{DESC02}, ' '), NVL(#{ASKU01}, ' '), 
+						    NVL(#{ASKU02}, ' '), NVL(#{ASKU03}, ' '), NVL(#{ASKU04}, ' '), NVL(#{ASKU05}, ' '), NVL(#{EANCOD}, ' '), NVL(#{GTINCD}, ' '), NVL(#{SKUG01}, ' '), NVL(#{SKUG02}, ' '), NVL(#{SKUG03}, ' '), NVL(#{SKUG04}, ' '), 
+						    NVL(#{SKUG05}, ' '), NVL(#{GRSWGT}, 0)  , NVL(#{NETWGT}, 0)  , NVL(#{WGTUNT}, ' '), NVL(#{LENGTH}, 0),   NVL(#{WIDTHW}, 0),   NVL(#{HEIGHT}, 0),   NVL(#{CUBICM}, 0),   NVL(#{CAPACT}, 0),   NVL(#{WORKID}, ' '), 
+						    NVL(#{WORKNM}, ' '), NVL(#{HHTTID}, ' '), NVL(#{SMANDT}, ' '), NVL(#{SEBELN}, ' '), NVL(#{SEBELP}, ' '), NVL(#{SZMBLNO}, ' '),NVL(#{SZMIPNO}, ' '),NVL(#{STRAID}, ' '), NVL(#{SVBELN}, ' '), NVL(#{SPOSNR}, ' '), 
+						    NVL(#{STKNUM}, ' '), NVL(#{STPNUM}, ' '), NVL(#{SWERKS}, ' '), NVL(#{SLGORT}, ' '), NVL(#{SDATBG}, ' '), NVL(#{STDLNR}, ' '), NVL(#{SSORNU}, ' '), NVL(#{SSORIT}, ' '), NVL(#{SMBLNR}, ' '), NVL(#{SZEILE}, ' '), 
+						    NVL(#{SMJAHR}, ' '), NVL(#{SXBLNR}, ' '), NVL(#{SAPSTS}, ' '), NVL(#{SBKTXT}, ' '), NVL(#{ADJRSN}, ' '), NVL(#{RELRSN}, ' '), NVL(#{RELDAT}, ' '), NVL(#{RELUSR}, ' '), TO_CHAR(SYSDATE, 'YYYYMMDD'), TO_CHAR(SYSDATE, 'HH24MISS'), 
+						    NVL(#{SES_USER_ID}, ' '),  TO_CHAR(SYSDATE, 'YYYYMMDD'), TO_CHAR(SYSDATE, 'HH24MISS'), NVL(#{SES_USER_ID}, ' '),  ' ', ' ', 0
+						  )
+	</insert>
+
+
+	<!-- ADJDI STKKY 미사용시 기반 데이터  조회 -->
+	<select id="ADJDI_SKUMASTER_MAP" parameterType="hashmap" resultType="DataMap">
+        SELECT DISTINCT #{SADJKY} AS SADJKY 
+             , #{SADJIT} AS SADJIT
+             , NVL(#{PACKID}, ' ') AS PACKID
+             , NVL(TRIM(#{MEASKY}), SW.MEASKY) AS MEASKY 
+             , NVL(TRIM(#{DUOMKY}), SM.DUOMKY) AS UOMKEY
+             , NVL(TRIM(#{QTYSTD}), SM.QTYSTD) AS QTPUOM
+             , NVL(TRIM(#{DUOMKY}), SM.DUOMKY) AS DUOMKY
+             , NVL(TRIM(#{QTDUOM}), SM.QTDUOM) AS QTDUOM
+             , NVL(TRIM(#{OWNRKY}), SW.OWNRKY) AS OWNRKY
+             , NVL(#{SKUKEY}, ' ')  AS SKUKEY
+             , NVL(TRIM(#{LOTL01}), SM.LOTL01) AS LOTA01
+             , NVL(TRIM(#{LOTL02}), SM.LOTL02) AS LOTA02
+             , NVL(#{LOTA03}, ' ')  AS LOTA03
+             , NVL(TRIM(LOTL04), SM.LOTL04) AS LOTA04
+             , NVL(#{LOTA05}, ' ')  AS LOTA05
+             , NVL(#{LOTA06}, ' ')  AS LOTA06
+             , NVL(TRIM(#{LOTL07}), SM.LOTL07) AS LOTA07
+             , NVL(TRIM(#{LOTL08}), SM.LOTL08) AS LOTA08
+             , NVL(TRIM(#{LOTL09}), SM.LOTL09) AS LOTA09
+             , NVL(TRIM(#{LOTL10}), SM.LOTL10) AS LOTA10
+             , NVL(#{P_LOTA11}, ' ')  AS LOTA11
+             , NVL(#{P_LOTA12}, ' ')  AS LOTA12
+             , #{P_LOTA13}  AS LOTA13
+             , NVL(TRIM(#{LOTL14}), SM.LOTL14) AS LOTA14
+             , NVL(TRIM(#{LOTL15}), SM.LOTL15) AS LOTA15
+             , NVL(TRIM(#{LOTA16}), 0)         AS LOTA16
+             , NVL(TRIM(#{LOTA17}), 0)         AS LOTA17
+             , NVL(TRIM(#{LOTA18}), 0)         AS LOTA18
+             , NVL(TRIM(#{LOTA19}), 0)         AS LOTA19
+             , NVL(TRIM(#{LOTA20}), 0)         AS LOTA20
+             , (SELECT DISTINCT AREAKY FROM LOCMA WHERE LOCAKY = 'SETLOC' AND LOCMA.WAREKY = SW.WAREKY) AS AREAKY
+             , NVL(TRIM(#{DESC01}), SM.DESC01) AS DESC01
+             , NVL(TRIM(#{DESC02}), SM.DESC02) AS DESC02
+             , NVL(TRIM(#{ASKU01}), SM.ASKU01) AS ASKU01
+             , NVL(TRIM(#{ASKU02}), SM.ASKU02) AS ASKU02
+             , NVL(TRIM(#{ASKU03}), SM.ASKU03) AS ASKU03
+             , NVL(TRIM(#{ASKU04}), SM.ASKU04) AS ASKU04
+             , NVL(TRIM(#{ASKU05}), SM.ASKU05) AS ASKU05
+             , NVL(TRIM(#{SKUG01}), SM.SKUG01) AS SKUG01
+             , NVL(TRIM(#{SKUG02}), SM.SKUG02) AS SKUG02
+             , NVL(TRIM(#{SKUG03}), SM.SKUG03) AS SKUG03
+             , NVL(TRIM(#{SKUG04}), SM.SKUG04) AS SKUG04
+             , NVL(TRIM(#{SKUG05}), SM.SKUG05) AS SKUG05
+             , NVL(TRIM(#{GRSWGT}), SM.GRSWGT) AS GRSWGT
+             , NVL(TRIM(#{NETWGT}), SM.NETWGT) AS NETWGT
+             , NVL(TRIM(#{WGTUNT}), SM.WGTUNT) AS WGTUNT
+             , NVL(TRIM(#{LENGTH}), SM.LENGTH) AS LENGTH
+             , NVL(TRIM(#{WIDTHW}), SM.WIDTHW) AS WIDTHW
+             , NVL(TRIM(#{HEIGHT}), SM.HEIGHT) AS HEIGHT
+             , NVL(TRIM(#{CUBICM}), SM.CUBICM) AS CUBICM
+             , NVL(TRIM(#{CAPACT}), SM.CAPACT) AS CAPACT
+             , NVL(TRIM(#{EANCOD}), SM.EANCOD) AS EANCOD
+             , NVL(TRIM(#{GTINCD}), SM.GTINCD) AS GTINCD
+          FROM SKUWC SW
+               INNER JOIN SKUMA SM ON SM.OWNRKY = SW.OWNRKY AND SW.SKUKEY = SM.SKUKEY
+         WHERE SW.OWNRKY = #{OWNRKY} 
+           AND SW.WAREKY = #{WAREKY}
+           AND SW.SKUKEY = #{SKUKEY}
+	</select>
+
+
+	<!-- ADJDI 차감대상 STKKY 재고 조회 -->
+	<select id="ADJDI_STKKY_LIST" parameterType="hashmap" resultType="DataMap">
+		SELECT ST.*
+		  FROM STKKY ST
+		       INNER JOIN LOCMA LM ON LM.WAREKY = ST.WAREKY AND ST.LOCAKY = LM.LOCAKY 
+		 WHERE ST.OWNRKY = #{OWNRKY}
+		   AND ST.WAREKY = #{WAREKY}
+		   AND ST.SKUKEY = #{SKUKEY}
+		   AND ST.LOCAKY = #{LOCAKY}
+		<if test="STOKKY != null and STOKKY != ''">
+		   AND ST.STOKKY = #{STOKKY}
+		</if>
+		   AND LM.STATUS = '00'
+		  <if test="LOTA06ORG != null and LOTA06ORG != ''">
+		   AND ST.LOTA06 = #{LOTA06ORG}
+		  </if>
+		  <if test="LOTA06ORG == null">
+		   AND ST.LOTA06 = '00' 
+		   </if>
+		   AND ST.QTSIWH &gt; 0
+		   AND ST.QTSPMO = 0
+		   AND ST.QTSALO = 0
+		   AND ST.QTSPMI = 0 
+		   AND ST.QTSBLK = 0
+		 ORDER BY ST.LOCAKY, ST.LOTNUM, ST.QTSIWH
+		   FOR UPDATE    
+	
+	</select>
+</mapper>

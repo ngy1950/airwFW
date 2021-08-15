@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="IFWMS623">
+
+	<select id="IFWMS623_MAP" parameterType="hashmap" resultType="DataMap">
+		SELECT SEQ_IFWMS623.NEXTVAL AS SEQNO FROM  DUAL
+	</select>
+	
+	<!-- IFWMS603 생성  -->
+	<insert id="IFWMS623_INSERT"  parameterType="hashmap">
+		INSERT INTO IFWMS623 (SEQNO  , OWNRKY , WAREKY , SHPOKY , SVBELN , SPOSNR , SKUKEY , QTSHPD , OWNORG , WARORG , SEBELN , CREDAT , CRETIM , XDATS  , XTIMS  , XSTAT  , ERTXT  , SALENUM, SEBELP , SALEITM, OPTYPE )
+					  VALUES (#{SEQNO}, #{OWNRKY}, #{WAREKY}, #{SHPOKY}, ' ', LPAD(NVL(#{SPOSNR}, ' '), 6, '0'), #{SKUKEY}, ABS(#{QTSHPD}), '2300', '2316', ' ',  TO_CHAR(SYSDATE,'YYYYMMDD'),  TO_CHAR(SYSDATE,'HH24MISS'), ' ' , ' ', 'R',' ', ' ', ' ', ' ', '730')
+	</insert>
+</mapper>

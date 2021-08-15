@@ -1,0 +1,969 @@
+package com.common.carton;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+/**
+ * 아이템들을 하나의 박스에 최적화하여 포장한다
+ * @author Administrator
+ *
+ */
+public class Boxologic {
+
+	private volatile boolean unpacked;
+	private volatile boolean packing;
+	private volatile boolean layerdone;
+	private volatile boolean evened;
+	private volatile boolean packingbest = false;
+	private volatile boolean hundredpercent = false;
+	
+	private volatile int variant;
+
+	private volatile int layersindex;
+	private volatile int number_of_iterations = 0;
+	private volatile int x;
+	private volatile int xx;
+	private volatile int yy;
+	private volatile int zz;
+	private volatile int total_boxes;
+	private volatile int pallet_x, pallet_y, pallet_z;
+	private volatile int layerthickness;
+	private volatile int remainpy, remainpz;
+	private volatile int itelayer;
+	private volatile int layerinlayer;
+	private volatile int layerlistlen;
+	private volatile int packednumbox;
+	private volatile int pallet_max_weight;
+	private volatile int packedweight;
+	
+	private volatile long total_pallet_volume;
+	private volatile long total_box_volume;
+	private volatile long best_solution_volume;
+	private volatile long packedvolume;
+	
+	private volatile float pallet_volume_used_percentage;
+	private volatile float packed_box_percentage;
+	
+	private volatile int packedy;
+	private volatile int prepackedy;
+	private volatile int preremainpy;
+	private volatile int prelayer;
+	private volatile int lilz;
+	
+	private volatile int boxx, boxy, boxz, boxi;
+	private volatile int bboxx, bboxy, bboxz, bboxi;
+	private volatile int cboxx, cboxy, cboxz, cboxi;
+	private volatile int bfx, bfy, bfz;
+	private volatile int bbfx, bbfy, bbfz;
+	
+	private volatile int best_variant;
+	private volatile int best_iteration;
+	private volatile int number_packed_boxes;
+	
+	private PBox packedBox;
+	
+	private Scrappad scrapfirst = new Scrappad();
+	private volatile Scrappad scrapmemb = null;
+	private volatile Scrappad smallestz = null;
+	@SuppressWarnings("unused")
+	private volatile Scrappad trash = null;
+	
+	private List<Boxinfo> boxlist = new ArrayList<>();
+	private List<Layerlist> layers = new ArrayList<>();
+	
+	private volatile long start = System.currentTimeMillis();
+	private volatile long finish = 0L;
+	
+	private static final Logger log = LogManager.getLogger(Boxologic.class);
+	
+	class Boxinfo {
+		boolean is_packed;
+		String sku;
+		String name;
+		String carton_number;
+		int dim1, dim2, dim3, n, cox, coy, coz, packx, packy, packz;
+		int weight;
+		long vol;
+		
+		@Override
+		public String toString() {
+			return "boxinfo [sku=" + sku
+					+ ", name=" + name
+					+ ", is_packed=" + is_packed 
+					+ ", dim1=" + dim1 
+					+ ", dim2=" + dim2 
+					+ ", dim3=" + dim3 
+					+ ", weight=" + weight
+					+ ", n=" + n
+					+ ", cox=" + cox 
+					+ ", coy=" + coy 
+					+ ", coz=" + coz 
+					+ ", packx=" + packx 
+					+ ", packy=" + packy
+					+ ", packz=" + packz 
+					+ ", vol=" + vol + "]";
+		}
+	}
+	
+	class Layerlist {
+		int layereval;
+		int layerdim;
+		
+		public Layerlist(int eval, int dim) {
+			layereval = eval;
+			layerdim = dim;
+		}
+		
+		@Override
+		public String toString() {
+			return "layerlist [layereval=" + layereval + ", layerdim=" + layerdim + "]";
+		}
+	}
+	
+	class Scrappad {
+		Scrappad prev = null, next = null;
+		int cumx, cumz;
+		@Override
+		public String toString() {
+			return "Scrappad [prev=" + prev 
+					+ ", next=" + next 
+					+ ", cumx=" + cumx 
+					+ ", cumz=" + cumz + "]";
+		}
+	}
+	
+	/**
+	 * 생성자
+	 * @param box box
+	 * @param items items
+	 */
+	public Boxologic(Box box, List<Item> items) {
+		if (box == null || items == null)
+			throw new IllegalArgumentException();
+		
+		if (log.isTraceEnabled())
+			log.trace("\n@@input=>{}", items);
+		
+		initialize(box, items);
+		start = System.currentTimeMillis();
+		execute_iterations();
+		finish = System.currentTimeMillis();
+		report_results();
+	}
+	
+	private void initialize(Box box, List<Item> items) {
+		
+		xx = box.getDim1();
+		yy = box.getDim2();
+		zz = box.getDim3();
+		
+		pallet_max_weight = box.getMaxWeight();
+		boxlist.add(new Boxinfo());
+		packedBox = new PBox(box.getId(), box.getDim1(), box.getDim2()
+				, box.getDim3(), box.getMaxWeight(), items.get(0).getCartonNumber());
+		
+		for (Item item : items) {
+			for (int i = 0; i < item.getQty(); i++) {
+				Boxinfo bi = new Boxinfo();
+				bi.sku = item.getSku();
+				bi.name = item.getName();
+				bi.carton_number = item.getCartonNumber();
+				bi.dim1 = item.getDim1();
+				bi.dim2 = item.getDim2();
+				bi.dim3 = item.getDim3();
+				bi.vol = bi.dim1 * bi.dim2 * bi.dim3;
+				bi.n = 1;
+				bi.weight = item.getWeight();
+				
+				boxlist.add(bi);
+				
+				total_box_volume = total_box_volume + bi.vol;
+			}
+		}
+		
+		total_pallet_volume = xx * yy * zz;
+		total_boxes = boxlist.size() - 1;
+		layers.add(new Layerlist(-1, 0));
+	}
+	
+	private void execute_iterations() {
+		for (variant = 1; variant <= 6; variant++) {
+			switch (variant) {
+			case 1:
+				pallet_x = xx; pallet_y = yy; pallet_z = zz;
+				break;
+			case 2:
+				pallet_x = zz; pallet_y = yy; pallet_z = xx;
+				break;
+			case 3:
+				pallet_x = zz; pallet_y = xx; pallet_z = yy;
+				break;
+			case 4:
+				pallet_x = yy; pallet_y = xx; pallet_z = zz;
+				break;
+			case 5:
+				pallet_x = xx; pallet_y = zz; pallet_z = yy;
+				break;
+			case 6:
+				pallet_x = yy; pallet_y = zz; pallet_z = xx;
+				break;
+			}
+			
+			list_candidate_layers();
+			layers.get(0).layereval = -1;
+			Collections.sort(layers, (a, b) -> a.layereval < b.layereval ? -1 : a.layereval > b.layereval ? 1 : 0);
+			
+			for (layersindex = 1; layersindex <= layerlistlen; layersindex++) {
+				++number_of_iterations;
+				packedvolume = 0;
+				packedweight = 0;
+				packedy = 0;
+				packing = true;
+				layerthickness = layers.get(layersindex).layerdim;
+				itelayer = layersindex;
+				remainpy = pallet_y;
+				remainpz = pallet_z;
+				packednumbox = 0;
+				for (x = 1; x <= total_boxes; x++) {
+					boxlist.get(x).is_packed = false;
+				}
+				
+				do {
+					layerinlayer = 0;
+					layerdone = false;
+					pack_layer();
+					
+					packedy = packedy + layerthickness;
+					remainpy = pallet_y - packedy;
+					if (layerinlayer > 0) {
+						prepackedy = packedy;
+						preremainpy = remainpy;
+						remainpy = layerthickness - prelayer;
+						packedy = packedy - layerthickness + prelayer;
+						remainpz = lilz;
+						layerthickness = layerinlayer;
+						layerdone = false;
+						pack_layer();
+						
+						packedy = prepackedy;
+						remainpy = preremainpy;
+						remainpz = pallet_z;
+					}
+					find_layer(remainpy);
+				} while(packing);
+				
+				if (packedvolume > best_solution_volume) {
+					best_solution_volume = packedvolume;
+					best_variant = variant;
+					best_iteration = itelayer;
+					number_packed_boxes = packednumbox;
+				}
+
+				if (hundredpercent)
+					break;
+				
+				pallet_volume_used_percentage = best_solution_volume * 100 / total_pallet_volume;
+			}
+			if (hundredpercent)
+				break;
+			if ((xx == yy) && (yy == zz))
+				variant = 6;
+		}
+	}
+	
+	private void list_candidate_layers() {
+		boolean same = false;
+		int exdim = 0, dimdif = 0, dimen2 = 0, dimen3 = 0, y = 0, z = 0, k = 0;
+		int layereval;
+		layerlistlen = 0;
+		
+		for (x = 1; x <= total_boxes; x++) {
+			for (y = 1; y <= 3; y++) {
+				switch(y) {
+				case 1:
+					exdim = boxlist.get(x).dim1;
+					dimen2 = boxlist.get(x).dim2;
+					dimen3 = boxlist.get(x).dim3;
+					break;
+				case 2:
+					exdim = boxlist.get(x).dim2;
+					dimen2 = boxlist.get(x).dim1;
+					dimen3 = boxlist.get(x).dim3;
+					break;
+				case 3:
+					exdim = boxlist.get(x).dim3;
+					dimen2 = boxlist.get(x).dim1;
+					dimen3 = boxlist.get(x).dim2;
+					break;
+				}
+				
+				if ((exdim > pallet_y)
+						|| (((dimen2 > pallet_x) || (dimen3 > pallet_z))
+								&& ((dimen3 > pallet_x) || (dimen2 > pallet_z))))
+					continue;
+				
+				same = false;
+				
+				for (k = 1; k <= layerlistlen; k++) {
+					if (exdim == layers.get(k).layerdim) {
+						same = true;
+						continue;
+					}
+				}
+				if (same) continue;
+				layereval = 0;
+				
+				for (z = 1; z <= total_boxes; z++) {
+					if (!(x == z)) {
+						dimdif = Math.abs(exdim - boxlist.get(z).dim1);
+						if (Math.abs(exdim - boxlist.get(z).dim2) < dimdif) {
+							dimdif = Math.abs(exdim - boxlist.get(z).dim2);
+						}
+						if (Math.abs(exdim - boxlist.get(z).dim3) < dimdif) {
+							dimdif = Math.abs(exdim - boxlist.get(z).dim3);
+						}
+						layereval = layereval + dimdif;
+					}
+				}
+				++layerlistlen;
+				if (layerlistlen == layers.size())
+					layers.add(new Layerlist(0, 0));
+				
+				layers.get(layerlistlen).layereval = layereval;
+				layers.get(layerlistlen).layerdim = exdim;
+			}
+		}
+	}
+	
+	private void pack_layer() {
+		int lenx, lenz, lpz;
+		if (layerthickness < 1) {
+			packing = false;
+			return;
+		}
+		
+		scrapfirst.cumx = pallet_x;
+		scrapfirst.cumz = 0;
+		while (true) {
+			find_smallest_z();
+
+			if (smallestz.prev == null && smallestz.next == null) {
+
+				lenx = smallestz.cumx;
+				lpz = remainpz - smallestz.cumz;
+				find_box(lenx, layerthickness, remainpy, lpz, lpz);
+				checkfound();
+
+				if (layerdone)
+					break;
+				if (evened)
+					continue;
+
+				boxlist.get(cboxi).cox = 0;
+				boxlist.get(cboxi).coy = packedy;
+				boxlist.get(cboxi).coz = smallestz.cumz;
+				if (cboxx == smallestz.cumx) {
+					smallestz.cumz = smallestz.cumz + cboxz;
+				} else {
+					smallestz.next = new Scrappad();
+					smallestz.next.next = null;
+					smallestz.next.prev = smallestz;
+					smallestz.next.cumx = smallestz.cumx;
+					smallestz.next.cumz = smallestz.cumz;
+					smallestz.cumx = cboxx;
+					smallestz.cumz = smallestz.cumz + cboxz;
+				}
+				volume_check();
+			} else if (smallestz.prev == null) {
+
+				lenx = smallestz.cumx;
+				lenz = smallestz.next.cumz - smallestz.cumz;
+				lpz = remainpz - smallestz.cumz;
+				find_box(lenx, layerthickness, remainpy, lenz, lpz);
+				checkfound();
+
+				if (layerdone)
+					break;
+				if (evened)
+					continue;
+
+				boxlist.get(cboxi).coy = packedy;
+				boxlist.get(cboxi).coz = smallestz.cumz;
+				if (cboxx == smallestz.cumx) {
+					boxlist.get(cboxi).cox = 0;
+					if (smallestz.cumz + cboxz == smallestz.next.cumz) {
+						smallestz.cumz = smallestz.next.cumz;
+						smallestz.cumx = smallestz.next.cumx;
+						trash = smallestz.next;
+						smallestz.next = smallestz.next.next;
+						if (smallestz.next != null) {
+							smallestz.next.prev = smallestz;
+						}
+						trash = null;
+					} else {
+						smallestz.cumz = smallestz.cumz + cboxz;
+					}
+				} else {
+					boxlist.get(cboxi).cox = smallestz.cumx - cboxx;
+					if (smallestz.cumz + cboxz == smallestz.next.cumz) {
+						smallestz.cumx = smallestz.cumx - cboxx;
+					} else {
+						smallestz.next.prev = new Scrappad();
+						smallestz.next.prev.next = smallestz.next;
+						smallestz.next.prev.prev = smallestz;
+						smallestz.next = smallestz.next.prev;
+						smallestz.next.cumx = smallestz.cumx;
+						smallestz.cumx = smallestz.cumx - cboxx;
+						smallestz.next.cumz = smallestz.cumz + cboxz;
+					}
+				}
+				volume_check();
+			} else if (smallestz.next == null) {
+
+				lenx = smallestz.cumx - smallestz.prev.cumx;
+				lenz = smallestz.prev.cumz - smallestz.cumz;
+				lpz = remainpz - smallestz.cumz;
+				find_box(lenx, layerthickness, remainpy, lenz, lpz);
+				checkfound();
+
+				if (layerdone)
+					break;
+				if (evened)
+					continue;
+
+				boxlist.get(cboxi).coy = packedy;
+				boxlist.get(cboxi).coz = smallestz.cumz;
+				boxlist.get(cboxi).cox = smallestz.prev.cumx;
+
+				if (cboxx == smallestz.cumx - smallestz.prev.cumx) {
+					if (smallestz.cumz + cboxz == smallestz.prev.cumz) {
+						smallestz.prev.cumx = smallestz.cumx;
+						smallestz.prev.next = null;
+						smallestz = null;
+					} else {
+						smallestz.cumz = smallestz.cumz + cboxz;
+					}
+				} else {
+					if (smallestz.cumz + cboxz == smallestz.prev.cumz) {
+						smallestz.prev.cumx = smallestz.prev.cumx + cboxx;
+					} else {
+						smallestz.prev.next = new Scrappad();
+						smallestz.prev.next.prev = smallestz.prev;
+						smallestz.prev.next.next = smallestz;
+						smallestz.prev = smallestz.prev.next;
+						smallestz.prev.cumx = smallestz.prev.prev.cumx + cboxx;
+						smallestz.prev.cumz = smallestz.cumz + cboxz;
+					}
+				}
+				volume_check();
+			} else if (smallestz.prev.cumz == smallestz.next.cumz) {
+
+				lenx = smallestz.cumx - smallestz.prev.cumx;
+				lenz = smallestz.prev.cumz - smallestz.cumz;
+				lpz = remainpz - smallestz.cumz;
+
+				find_box(lenx, layerthickness, remainpy, lenz, lpz);
+				checkfound();
+
+				if (layerdone)
+					break;
+				if (evened)
+					continue;
+
+				boxlist.get(cboxi).coy = packedy;
+				boxlist.get(cboxi).coz = smallestz.cumz;
+				if (cboxx == smallestz.cumx - smallestz.prev.cumx) {
+					boxlist.get(cboxi).cox = smallestz.prev.cumx;
+					if (smallestz.cumz + cboxz == smallestz.next.cumz) {
+						smallestz.prev.cumx = smallestz.next.cumx;
+						if (smallestz.next.next != null) {
+							smallestz.prev.next = smallestz.next.next;
+							smallestz.next.next.prev = smallestz.prev;
+							smallestz = null;
+						} else {
+							smallestz.prev.next = null;
+							smallestz = null;
+						}
+					} else {
+						smallestz.cumz = smallestz.cumz + cboxz;
+					}
+				} else if (smallestz.prev.cumx < pallet_x - smallestz.cumx) {
+					if (smallestz.cumz + cboxz == smallestz.prev.cumz) {
+						smallestz.cumx = smallestz.cumx - cboxx;
+						boxlist.get(cboxi).cox = smallestz.cumx - cboxx;
+					} else {
+						boxlist.get(cboxi).cox = smallestz.prev.cumx;
+						smallestz.prev.next = new Scrappad();
+						smallestz.prev.next.prev = smallestz.prev;
+						smallestz.prev.next.next = smallestz;
+						smallestz.prev = smallestz.prev.next;
+						smallestz.prev.cumx = smallestz.prev.prev.cumx + cboxx;
+						smallestz.prev.cumz = smallestz.cumz + cboxz;
+					}
+				} else {
+					if (smallestz.cumz + cboxz == smallestz.prev.cumz) {
+						smallestz.prev.cumx = smallestz.prev.cumx + cboxx;
+						boxlist.get(cboxi).cox = smallestz.prev.cumx;
+					} else {
+						boxlist.get(cboxi).cox = smallestz.cumx - cboxx;
+						smallestz.next.prev = new Scrappad();
+						smallestz.next.prev.next = smallestz.next;
+						smallestz.next.prev.prev = smallestz;
+						smallestz.next = smallestz.next.prev;
+						smallestz.next.cumx = smallestz.cumx;
+						smallestz.next.cumz = smallestz.cumz + cboxz;
+						smallestz.cumx = smallestz.cumx - cboxx;
+					}
+				}
+				volume_check();
+			} else {
+
+				lenx = smallestz.cumx - smallestz.prev.cumx;
+				lenz = smallestz.prev.cumz - smallestz.cumz;
+				lpz = remainpz - smallestz.cumz;
+				find_box(lenx, layerthickness, remainpy, lenz, lpz);
+				checkfound();
+
+				if (layerdone)
+					break;
+				if (evened)
+					continue;
+
+				boxlist.get(cboxi).coy = packedy;
+				boxlist.get(cboxi).coz = smallestz.cumz;
+				boxlist.get(cboxi).cox = smallestz.prev.cumx;
+				if (cboxx == smallestz.cumx - smallestz.prev.cumx) {
+					if (smallestz.cumz + cboxz == smallestz.prev.cumz) {
+						smallestz.prev.cumx = smallestz.cumx;
+						smallestz.prev.next = smallestz.next;
+						smallestz.next.prev = smallestz.prev;
+						smallestz = null;
+					} else {
+						smallestz.cumz = smallestz.cumz + cboxz;
+					}
+				} else {
+					if (smallestz.cumz + cboxz == smallestz.prev.cumz) {
+						smallestz.prev.cumx = smallestz.prev.cumx + cboxx;
+					} else if (smallestz.cumz + cboxz == smallestz.next.cumz) {
+						boxlist.get(cboxi).cox = smallestz.cumx - cboxx;
+						smallestz.cumx = smallestz.cumx - cboxx;
+					} else {
+						smallestz.prev.next = new Scrappad();
+						smallestz.prev.next.prev = smallestz.prev;
+						smallestz.prev.next.next = smallestz;
+						smallestz.prev = smallestz.prev.next;
+						smallestz.prev.cumx = smallestz.prev.prev.cumx + cboxx;
+						smallestz.prev.cumz = smallestz.cumz + cboxz;
+					}
+				}
+				volume_check();
+			}
+		}
+	}
+	
+	private int find_layer(int thickness) {
+		int exdim = 0, dimdif = 0, dimen2 = 0, dimen3 = 0, y = 0, z = 0;
+		int layereval, eval;
+		layerthickness = 0;
+		eval = 1000000;
+		for (x = 1; x <= total_boxes; x++) {
+			if (boxlist.get(x).is_packed)
+				continue;
+			for (y = 1; y <= 3; y++) {
+				switch (y) {
+				case 1:
+					exdim = boxlist.get(x).dim1;
+					dimen2 = boxlist.get(x).dim2;
+					dimen3 = boxlist.get(x).dim3;
+					break;
+				case 2:
+					exdim = boxlist.get(x).dim2;
+					dimen2 = boxlist.get(x).dim1;
+					dimen3 = boxlist.get(x).dim3;
+					break;
+				case 3:
+					exdim = boxlist.get(x).dim3;
+					dimen2 = boxlist.get(x).dim1;
+					dimen3 = boxlist.get(x).dim2;
+					break;
+				}
+				layereval = 0;
+				if ((exdim <= thickness)
+						&& (((dimen2 <= pallet_x) && (dimen3 <= pallet_z))
+								|| ((dimen3 <= pallet_x) && (dimen2 <= pallet_z)))) {
+					for (z = 1; z <= total_boxes; z++) {
+						if (!(x == z) && !(boxlist.get(z).is_packed)) {
+							dimdif = Math.abs(exdim - boxlist.get(z).dim1);
+							if (Math.abs(exdim - boxlist.get(z).dim2) < dimdif) {
+								dimdif = Math.abs(exdim - boxlist.get(z).dim2);
+							}
+							if (Math.abs(exdim - boxlist.get(z).dim3) < dimdif) {
+								dimdif = Math.abs(exdim - boxlist.get(z).dim3);
+							}
+							layereval = layereval + dimdif;
+						}
+					}
+					if (layereval < eval) {
+						eval = layereval;
+						layerthickness = exdim;
+					}
+				}
+			}
+		}
+		if (layerthickness == 0 || layerthickness > remainpy)
+			packing = false;
+		return 0;
+	}
+	
+	private void find_box(int hmx, int hy, int hmy, int hz, int hmz) {
+		int y;
+		bfx = 32767;
+		bfy = 32767;
+		bfz = 32767;
+		bbfx = 32767;
+		bbfy = 32767;
+		bbfz = 32767;
+		boxi = 0;
+		bboxi = 0;
+		for (y = 1; y <= total_boxes; y = y + boxlist.get(y).n) {
+			for (x = y; x < (x + boxlist.get(y).n - 1); x++) {
+				if (x > total_boxes)
+					return;
+				if (!boxlist.get(x).is_packed)
+					break;
+			}
+			if (boxlist.get(x).is_packed)
+				continue;
+			if (x > total_boxes)
+				return;
+			
+			analyze_box(hmx, hy, hmy, hz, hmz, boxlist.get(x).dim1, boxlist.get(x).dim2, boxlist.get(x).dim3);
+			if ((boxlist.get(x).dim1 == boxlist.get(x).dim3) && (boxlist.get(x).dim3 == boxlist.get(x).dim2)) continue;
+			analyze_box(hmx, hy, hmy, hz, hmz, boxlist.get(x).dim1, boxlist.get(x).dim3, boxlist.get(x).dim2);
+			analyze_box(hmx, hy, hmy, hz, hmz, boxlist.get(x).dim2, boxlist.get(x).dim1, boxlist.get(x).dim3);
+			analyze_box(hmx, hy, hmy, hz, hmz, boxlist.get(x).dim2, boxlist.get(x).dim3, boxlist.get(x).dim1);
+			analyze_box(hmx, hy, hmy, hz, hmz, boxlist.get(x).dim3, boxlist.get(x).dim1, boxlist.get(x).dim2);
+			analyze_box(hmx, hy, hmy, hz, hmz, boxlist.get(x).dim3, boxlist.get(x).dim2, boxlist.get(x).dim1);
+		}
+	}
+	
+	private void analyze_box(int hmx, int hy, int hmy, int hz, int hmz, int dim1, int dim2, int dim3) {
+		if (dim1 <= hmx && dim2 <= hmy && dim3 <= hmz) {
+			if (dim2 <= hy) {
+				if (hy - dim2 < bfy) {
+					boxx = dim1;
+					boxy = dim2;
+					boxz = dim3;
+					bfx = hmx - dim1;
+					bfy = hy - dim2;
+					bfz = Math.abs(hz - dim3);
+					boxi = x;
+				} else if (hy - dim2 == bfy && hmx - dim1 < bfx) {
+					boxx = dim1;
+					boxy = dim2;
+					boxz = dim3;
+					bfx = hmx - dim1;
+					bfy = hy - dim2;
+					bfz = Math.abs(hz - dim3);
+					boxi = x;
+				} else if (hy - dim2 == bfy && hmx - dim1 == bfx && Math.abs(hz - dim3) < bfz) {
+					boxx = dim1;
+					boxy = dim2;
+					boxz = dim3;
+					bfx = hmx - dim1;
+					bfy = hy - dim2;
+					bfz = Math.abs(hz - dim3);
+					boxi = x;
+				}
+			} else {
+				if (dim2 - hy < bbfy) {
+					bboxx = dim1;
+					bboxy = dim2;
+					bboxz = dim3;
+					bbfx = hmx - dim1;
+					bbfy = dim2 - hy;
+					bbfz = Math.abs(hz - dim3);
+					bboxi = x;
+				} else if (dim2 - hy == bbfy && hmx - dim1 < bbfx) {
+					bboxx = dim1;
+					bboxy = dim2;
+					bboxz = dim3;
+					bbfx = hmx - dim1;
+					bbfy = dim2 - hy;
+					bbfz = Math.abs(hz - dim3);
+					bboxi = x;
+				} else if (dim2 - hy == bbfy && hmx - dim1 == bbfx && Math.abs(hz - dim3) < bbfz) {
+					bboxx = dim1;
+					bboxy = dim2;
+					bboxz = dim3;
+					bbfx = hmx - dim1;
+					bbfy = dim2 - hy;
+					bbfz = Math.abs(hz - dim3);
+					bboxi = x;
+				}
+			}
+		}
+	}
+	
+	private void find_smallest_z() {
+		scrapmemb = scrapfirst;
+		smallestz = scrapmemb;
+		while (!(scrapmemb.next == null)) {
+			if (scrapmemb.next.cumz < smallestz.cumz) {
+				smallestz = scrapmemb.next;
+			}
+			scrapmemb = scrapmemb.next;
+		}
+	}
+	
+	private void checkfound() {
+		evened = false;
+		if (boxi > 0) {
+			cboxi = boxi;
+			cboxx = boxx;
+			cboxy = boxy;
+			cboxz = boxz;
+		} else {
+			if ((bboxi > 0)
+					&& (layerinlayer > 0 || (smallestz.prev == null && smallestz.next == null))) {
+				if (layerinlayer < 1) {
+					prelayer = layerthickness;
+					lilz = smallestz.cumz;
+				}
+				cboxi = bboxi;
+				cboxx = bboxx;
+				cboxy = bboxy;
+				cboxz = bboxz;
+				layerinlayer = layerinlayer + bboxy - layerthickness;
+				layerthickness = bboxy;
+			} else {
+				if (smallestz.prev == null && smallestz.next == null) {
+					layerdone = true;
+				} else {
+					evened = true;
+					if (smallestz.prev == null) {
+						trash = smallestz.next;
+						smallestz.cumx = smallestz.next.cumx;
+						smallestz.cumz = smallestz.next.cumz;
+						smallestz.next = smallestz.next.next;
+						if (smallestz.next != null) {
+							smallestz.next.prev = smallestz;
+						}
+						trash = null;
+					} else if (smallestz.next == null) {
+						smallestz.prev.next = null;
+						smallestz.prev.cumx = smallestz.cumx;
+						smallestz = null;
+					} else {
+						if (smallestz.prev.cumz == smallestz.next.cumz) {
+							smallestz.prev.next = smallestz.next.next;
+							if (smallestz.next.next != null) {
+								smallestz.next.next.prev = smallestz.prev;
+							}
+							smallestz.prev.cumx = smallestz.next.cumx;
+							smallestz.next = null;
+							smallestz = null;
+						} else {
+							smallestz.prev.next = smallestz.next;
+							smallestz.next.prev = smallestz.prev;
+							if (smallestz.prev.cumz < smallestz.next.cumz) {
+								smallestz.prev.cumx = smallestz.cumx;
+							}
+							smallestz = null;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private void volume_check() {
+		boxlist.get(cboxi).is_packed = true;
+		boxlist.get(cboxi).packx = cboxx;
+		boxlist.get(cboxi).packy = cboxy;
+		boxlist.get(cboxi).packz = cboxz;
+		packedvolume = packedvolume + boxlist.get(cboxi).vol;
+		packedweight = packedweight + boxlist.get(cboxi).weight;
+		packednumbox++;
+		
+		if (packingbest) {
+			write_visualization_data();
+		} else if (packedvolume == total_pallet_volume || packedvolume == total_box_volume) {
+			packing = false;
+			hundredpercent = true;
+		} 
+		
+		return;
+	}
+
+	private void write_visualization_data() {
+		if (!unpacked) {
+			final PItem pbi = new PItem(
+					  boxlist.get(cboxi).sku
+					, boxlist.get(cboxi).name
+					, boxlist.get(cboxi).carton_number
+					, boxlist.get(cboxi).dim1
+					, boxlist.get(cboxi).dim2
+					, boxlist.get(cboxi).dim3
+					, boxlist.get(cboxi).weight
+					, boxlist.get(cboxi).n);
+			pbi.setPacked(boxlist.get(cboxi).is_packed);
+			pbi.setCox(boxlist.get(cboxi).cox);
+			pbi.setCoy(boxlist.get(cboxi).coy);
+			pbi.setCoz(boxlist.get(cboxi).coz);
+			pbi.setPackx(boxlist.get(cboxi).packx);
+			pbi.setPacky(boxlist.get(cboxi).packy);
+			pbi.setPackz(boxlist.get(cboxi).packz);
+			
+			packedBox.addPackedItems(pbi);
+		} else {
+			final Item bi = new Item(
+					  boxlist.get(cboxi).sku
+					, boxlist.get(cboxi).name
+					, boxlist.get(cboxi).carton_number
+					, boxlist.get(cboxi).dim1
+					, boxlist.get(cboxi).dim2
+					, boxlist.get(cboxi).dim3
+					, boxlist.get(cboxi).weight
+					, boxlist.get(cboxi).n);
+			
+			packedBox.addUnpackedItems(bi);
+		}
+	}
+	
+	private void report_results() {
+		switch (best_variant) {
+		case 1:
+			pallet_x = xx; pallet_y = yy; pallet_z = zz;
+			break;
+		case 2:
+			pallet_x = zz; pallet_y = yy; pallet_z = xx;
+			break;
+		case 3:
+			pallet_x = zz; pallet_y = xx; pallet_z = yy;
+			break;
+		case 4:
+			pallet_x = yy; pallet_y = xx; pallet_z = zz;
+			break;
+		case 5:
+			pallet_x = xx; pallet_y = zz; pallet_z = yy;
+			break;
+		case 6:
+			pallet_x = yy; pallet_y = zz; pallet_z = xx;
+			break;
+		}
+		packingbest = true;
+
+		packed_box_percentage = best_solution_volume * 100 / total_box_volume;
+		pallet_volume_used_percentage = best_solution_volume * 100 / total_pallet_volume;
+		
+		this.packedBox.setElapsedTime(finish);
+		this.packedBox.setNumberOfIterations(number_of_iterations);
+		this.packedBox.setBestVariant(best_variant);
+		this.packedBox.setDim1(xx);
+		this.packedBox.setDim2(yy);
+		this.packedBox.setDim3(zz);
+		this.packedBox.setX(pallet_x);
+		this.packedBox.setY(pallet_y);
+		this.packedBox.setZ(pallet_z);
+		this.packedBox.setBestPackingFactor(pallet_volume_used_percentage);
+		this.packedBox.setTotalNumberOfBoxes(total_boxes);
+		this.packedBox.setPackedNumberOfBoxes(number_packed_boxes);
+		
+		list_candidate_layers();
+		layers.get(0).layereval = -1;
+		Collections.sort(layers, (a, b) -> a.layereval < b.layereval ? -1 : a.layereval > b.layereval ? 1 : 0);
+		
+		packedvolume = 0;
+		packedweight = 0;
+		packedy = 0;
+		packing = true;
+		layerthickness = layers.get(best_iteration).layerdim;
+		remainpy = pallet_y;
+		remainpz = pallet_z;
+
+		for (x = 1; x <= total_boxes; x++) {
+			boxlist.get(x).is_packed = false;
+		}
+
+		do {
+			layerinlayer = 0;
+			layerdone = false;
+			pack_layer();
+			packedy = packedy + layerthickness;
+			remainpy = pallet_y - packedy;
+			if (layerinlayer > 0) {
+				prepackedy = packedy;
+				preremainpy = remainpy;
+				remainpy = layerthickness - prelayer;
+				packedy = packedy - layerthickness + prelayer;
+				remainpz = lilz;
+				layerthickness = layerinlayer;
+				layerdone = false;
+				pack_layer();
+				packedy = prepackedy;
+				remainpy = preremainpy;
+				remainpz = pallet_z;
+			}
+			find_layer(remainpy);
+		} while (packing);
+		
+		unpacked = true;
+		for (cboxi = 1; cboxi <= total_boxes; cboxi++) {
+			if (!boxlist.get(cboxi).is_packed) {
+				write_visualization_data();
+		    }
+		}
+		
+		if (log.isTraceEnabled()) {
+			log.trace("--------------------------------------------------------------------------------------------------------------");
+			log.trace("                                              *** REPORT ***	                                                 ");
+			log.trace("--------------------------------------------------------------------------------------------------------------");
+			log.trace("BOX ID                                                : {}", packedBox.getId());
+			log.trace("CARTON NUMBER                                         : {}", packedBox.getCartonNumber());
+			log.trace("ELAPSED TIME                                          : {} ms", finish - start);
+			log.trace("TOTAL NUMBER OF ITERATIONS DONE                       : {}", number_of_iterations);
+			log.trace("BEST SOLUTION FOUND AT ITERATION                      : {} OF VARIANT: {}", best_iteration, best_variant);
+			log.trace("TOTAL NUMBER OF BOXES                                 : {}", total_boxes);
+			log.trace("PACKED NUMBER OF BOXES                                : {}", number_packed_boxes);
+			log.trace("TOTAL VOLUME OF ALL BOXES                             : {}", total_box_volume);
+			log.trace("PALLET VOLUME                                         : {}", total_pallet_volume);
+			log.trace("PACKED VOLUME                                         : {}", packedvolume);
+			log.trace("PACKED WEIGHT                                         : {}", packedweight);
+			log.trace("MAX WEIGHT                                            : {}", pallet_max_weight);
+			log.trace("BEST SOLUTION'S VOLUME UTILIZATION                    : {} OUT OF {}", best_solution_volume, total_pallet_volume);
+			log.trace("PERCENTAGE OF PALLET VOLUME USED                      : {} %", pallet_volume_used_percentage);
+			log.trace("PERCENTAGE OF PACKED BOXES (VOLUME)                   : {} %", packed_box_percentage);
+			log.trace("WHILE PALLET ORIENTATION                              : X={} Y={} Z={}", pallet_x, pallet_y, pallet_z);
+			log.trace("------------------------------------------------------------------------------------------------------------------");
+			log.trace("  NO      SKU  DIMEN-1  DIMEN-2  DIMEN-3    VOLUME  WEIGHT  COOR-X  COOR-Y  COOR-Z  PACKEDX  PACKEDY  PACKEDZ NAME");
+			log.trace("------------------------------------------------------------------------------------------------------------------");
+			
+			int n = 1;
+			for(PItem item : packedBox.getPackedItems()) {
+				log.trace(String.format("%4s%9s%9s%9s%9s%10s%8s%8s%8s%8s%9s%9s%9s%s"
+						, n++, item.getSku(), item.getDim1(), item.getDim2(), item.getDim3()
+						, item.getVol(), item.getWeight(), item.getCox(), item.getCoy(), item.getCoz()
+						, item.getPackx(), item.getPacky(), item.getPackz(), item.getName()));
+			}
+			
+			log.trace("*** LIST OF UNPACKED BOXES ***");
+			for(Item item : packedBox.getUnpackedItems()) {
+				log.trace(String.format("%4s%9s%5s%5s%5s%10s%s", n++, item.getSku(), item.getDim1(), item.getDim2(), item.getDim3(), item.getVol(), item.getName()));
+			}
+		}
+	}
+	
+	/**
+	 * 포장된 박스 정보를 조회
+	 * @return 포장된 박스 정보
+	 */
+	public PBox getPackedBox() {
+		return this.packedBox;
+	}
+	
+}

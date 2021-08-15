@@ -1,0 +1,592 @@
+@charset "utf-8";
+*{margin:0;padding:0;box-sizing:border-box;font-family: '맑은 고딕','Malgun Gothic',dotum,'돋움',sans-serif ;}
+a {text-decoration:none; color:#555;}
+li{list-style: none;}
+button {outline:none; border:none;background:transparent;}
+input {outline:none;}
+select::-ms-expand {display:none; }
+body {background-color:#eee;-ms-overflow-style:none; overflow: auto;}
+
+.tr-title {letter-spacing: -2px;color: #4c4c4c;font-size: 1.3em;font-weight: 600;padding: 20px 15px 20px;;background:#fff;}
+.tr-title:before {content: "";display: block;width: 30px;height: 3px;background-color: #ea552b;vertical-align: top;margin-bottom:5px;}
+
+
+/* 모바일 메뉴 */
+.mobile_wrap {position: relative;}
+.mbile_header {height:100px;background-color: #333;padding:15px 15px 0 15px;text-align:center;}
+.mbile_header button img {vertical-align: middle;}
+.mbile_header label[for="all"] {color:#fff;text-align: center;width: 158px;height: 50px;display:block;line-height: 31px;font-size: 23px;margin: 0 auto;}
+.mbile_header .mobile-home { font-size: 23px;font-weight:bold;float:left;}
+.mbile_header .mobile-user { float:right;}
+.mobile_menuinner {width:100%;margin-top: -30px;}
+.mobile_menubox { width:90%;margin:0 auto; height:70px;position: relative;}
+label.mainmeun {display: block; height:70px; border-radius: 3px;line-height:70px; padding-left:30%;font-weight:bold;position: relative;font-size:1em;}
+label.mainmeun span {width:50px;height:50px;display: inline-block; position: absolute; top:15%;right:20px;background: url(/mobile/images/mobile-open.png) no-repeat center center;background-size: 25px;}
+.mobile_meun_button {font-size:11.5px;background-color: #fff;border-radius: 0 0 3px 3px;padding: 0 7px;overflow: hidden;max-height: 0; transition: 0.4s; margin-bottom: 10px; text-align: center; }/* 2021.03.24 transition변경(janghyebin)  ,  2021-03-31 font-size 변경 김희은  */
+.mobile_meun_button button,
+.mobile_meun_button a {width:47%;height:50px;margin:4px 1px;border-radius:3px;font-weight:bold;/*padding-left:8%;*/font-size:1em;vertical-align:middle;} /* 2021.03.24 height, padding-left변경(janghyebin)    ,  2021-03-31 padding-left변경 김희은 */
+.mobile_meun_button a {padding:0;display: inline-block;}
+    
+input[type="checkbox"] { display: none; }
+/* 2021.04.01 readonly시 배경색 변경 (kwongahyn) */
+input[readonly="true"], input:read-only, .table_list01 tr td.gridColDisable select[disabled="disabled"], select[readonly="true"], select[readonly="readonly"], select[validate^="readonly"], select[disabled="disabled"], select[validate^="disabled"]  {background-color: #f8f8f8; cursor: default; font-size: 1em;}
+input[readonly="true"]:required, input[readonly="true"][validate^="required"], input[disabled="disabled"],select[readonly="true"]:required, select[readonly="readonly"]:required, select[validate^="readonly"]:required, select[readonly="true"][validate^=required], select[readonly="readonly"][validate^=required], select[validate^="readonly"][validate^=required] {background:#f8f8f8 url('/common/theme/webdek/images/icon-red.png') no-repeat right 0;}
+
+
+/* .mobile_meun_button1 button:nth-of-type(1), */
+/* .mobile_meun_button1 button:nth-of-type(2), */
+/* .mobile_meun_button2 a:nth-of-type(1), */
+/* .mobile_meun_button2 a:nth-of-type(2), */
+/* .mobile_meun_button3 button:nth-of-type(1), */
+/* .mobile_meun_button3 button:nth-of-type(2), */
+/* .mobile_meun_button4 button:nth-of-type(1), */
+/* .mobile_meun_button4 button:nth-of-type(2), */
+/* .mobile_meun_button5 button:nth-of-type(1), */
+/* .mobile_meun_button5 button:nth-of-type(2){margin-top: 10px;} */
+
+/* .mobile_meun_button1 button:nth-of-type(3), */
+/* .mobile_meun_button1 button:nth-of-type(4), */
+/* .mobile_meun_button2 a:nth-of-type(5), */
+/* .mobile_meun_button2 a:nth-of-type(6), */
+/* .mobile_meun_button3 button:nth-of-type(3), */
+/* .mobile_meun_button3 button:nth-of-type(4), */
+/* .mobile_meun_button4 button:nth-of-type(3), */
+/* .mobile_meun_button4 button:nth-of-type(4), */
+/* .mobile_meun_button5 button:nth-of-type(3), */
+/* .mobile_meun_button5 button:nth-of-type(4){margin-bottom: 10px;}  */
+
+
+.mobile_meun_button1 button {background-color:#ffcfbe;background-repeat: no-repeat ; background-position:15%;}
+/* .mobile_meun_button1 button:nth-of-type(1) {background-image: url(/mobile/images/button01-01.png);} */
+/* .mobile_meun_button1 button:nth-of-type(2) {background-image: url(/mobile/images/button01-02.png);} */
+/* .mobile_meun_button1 button:nth-of-type(3) {background-image: url(/mobile/images/button01-03.png);} */
+/* .mobile_meun_button1 button:nth-of-type(4) {background-image: url(/mobile/images/button01-04.png);} 2021.03.24 삭제 (janghyebin)*/
+
+.mobile_meun_button2 button {background-color:#ffe0c3;background-repeat: no-repeat ; background-position:15%;} /*2021.03.24 추가 (janghyebin)*/
+.mobile_meun_button2 a:nth-of-type(1) {background:#4f1b31 url(/mobile/images/button02-01.png) no-repeat 50%;}
+.mobile_meun_button2 a:nth-of-type(2) {background:#fecc00 url(/mobile/images/button02-02.png) no-repeat 50%;}
+.mobile_meun_button2 a:nth-of-type(3) {background:#4d148c url(/mobile/images/button02-03.png) no-repeat 50%;}
+.mobile_meun_button2 a:nth-of-type(4) {background:#351d15 url(/mobile/images/button02-04.png) no-repeat 50%;}
+.mobile_meun_button2 a:nth-of-type(5) {background:#233f8a url(/mobile/images/button02-05.png) no-repeat 50%;}
+.mobile_meun_button2 a:nth-of-type(6) {background:#000000 url(/mobile/images/button02-06.png) no-repeat 50%;}
+
+.mobile_meun_button3 button {background-color:#f8e59b;background-repeat: no-repeat ; background-position:15%;}
+/* .mobile_meun_button3 button:nth-of-type(1) {background-image: url(/mobile/images/button03-01.png);} */
+/* .mobile_meun_button3 button:nth-of-type(2) {background-image: url(/mobile/images/button03-02.png);} */
+/* .mobile_meun_button3 button:nth-of-type(3) {background-image: url(/mobile/images/button03-03.png);} */
+/* .mobile_meun_button3 button:nth-of-type(4) {background-image: url(/mobile/images/button03-04.png);} 2021.03.24 삭제 (janghyebin)*/
+
+.mobile_meun_button4 button {background-color:#f9fac4; background-repeat: no-repeat ; background-position:15%;}
+/* .mobile_meun_button4 button:nth-of-type(1) {background-image: url(/mobile/images/button04-01.png);} */
+/* .mobile_meun_button4 button:nth-of-type(2) {background-image: url(/mobile/images/button04-02.png);} */
+/* .mobile_meun_button4 button:nth-of-type(3) {background-image: url(/mobile/images/button04-03.png);} */
+/* .mobile_meun_button4 button:nth-of-type(4) {background-image: url(/mobile/images/button04-04.png);} 2021.03.24 삭제 (janghyebin)*/
+
+.mobile_meun_button5 button {background-color:#c5fdec; background-repeat: no-repeat ; background-position:15%;}
+/* .mobile_meun_button5 button:nth-of-type(1) {background-image: url(/mobile/images/button05-01.png)} */
+/* .mobile_meun_button5 button:nth-of-type(2) {background-image: url(/mobile/images/button05-02.png)} */
+/* .mobile_meun_button5 button:nth-of-type(3) {background-image: url(/mobile/images/button05-03.png)} */
+/* .mobile_meun_button5 button:nth-of-type(4) {background-image: url(/mobile/images/button05-04.png)} 2021.03.24 삭제 (janghyebin)*/
+
+.mobile_meun_button6 button {background-color:#d9ddee; background-repeat: no-repeat ; background-position:15%;}
+.mobile_meun_button6 button:nth-of-type(1) {background-image: url(/mobile/images/button06-01.png)}
+.mobile_meun_button6 button:nth-of-type(2) {background-image: url(/mobile/images/button06-02.png)}
+.mobile_meun_button6 button:nth-of-type(3) {background-image: url(/mobile/images/button06-03.png)}
+.mobile_meun_button6 button:nth-of-type(4) {background-image: url(/mobile/images/button06-04.png)}
+
+/*2021-03-30 icon추가 */
+/* .mobile_meun_button > button{position:relative;} */
+
+/*2021.04.06 메뉴 아이콘 - 공통부분 수정 janghyebin */
+.mobile_meun_button .iconImg{display:inline-block;border:none;width:24px;height:24px;line-height:35px;margin-top:5px;margin-left:10px;}
+.mobile_meun_button .lbNm{display:inline-block;width:70%;height:35px;line-height:35px;float:right;letter-spacing:-0.3px;margin-right:5px;}
+/*입고관리 아이콘 위치만 */
+.mobile_meun_button2 .iconImg{position:relative;left:10px;}
+
+
+/* .mobile_meun_button2 > button:before{content:''; display:block; width:30px;height:30px;position:absolute;top:50%; left:8%; transform:translateY(-50%);} */
+/* .mobile_meun_button2 > button:nth-of-type(1):before{background:url(/mobile/images/mobile_ico/m-ico-101.png)no-repeat center;} */
+/* .mobile_meun_button2 > button:nth-of-type(2):before{background:url(/mobile/images/mobile_ico/m-ico-107.png)no-repeat center;} */
+/* .mobile_meun_button2 > button:nth-of-type(3):before{background:url(/mobile/images/mobile_ico/m-ico-102.png)no-repeat center;} */
+/* .mobile_meun_button2 > button:nth-of-type(4):before{background:url(/mobile/images/mobile_ico/m-ico-108.png)no-repeat center;} */
+/* .mobile_meun_button2 > button:nth-of-type(5):before{background:url(/mobile/images/mobile_ico/m-ico-103.png)no-repeat center;} */
+/* .mobile_meun_button2 > button:nth-of-type(6):before{background:url(/mobile/images/mobile_ico/m-ico-109.png)no-repeat center;} */
+/* .mobile_meun_button2 > button:nth-of-type(7):before{background:url(/mobile/images/mobile_ico/m-ico-104.png)no-repeat center;} */
+/* .mobile_meun_button2 > button:nth-of-type(8):before{background:url(/mobile/images/mobile_ico/m-ico-110.png)no-repeat center;} */
+/* .mobile_meun_button2 > button:nth-of-type(9):before{background:url(/mobile/images/mobile_ico/m-ico-105.png)no-repeat center;} */
+/* .mobile_meun_button2 > button:nth-of-type(10):before{background:url(/mobile/images/mobile_ico/m-ico-111.png)no-repeat center;} */
+/* .mobile_meun_button2 > button:nth-of-type(11):before{background:url(/mobile/images/mobile_ico/m-ico-106.png)no-repeat center;} */
+
+/*할당오더부분 아이콘*/
+/* .mobile_meun_button3 > button:before{content:''; display:block; width:30px;height:30px;position:absolute;top:50%; left:6%; transform:translateY(-50%);} */
+/* .mobile_meun_button3 > button:nth-of-type(1):before{background:url(/mobile/images/mobile_ico/m-ico-201.png)no-repeat center;} */
+/* .mobile_meun_button3 > button:nth-of-type(2):before{background:url(/mobile/images/mobile_ico/m-ico-207.png)no-repeat center;} */
+/* .mobile_meun_button3 > button:nth-of-type(3):before{background:url(/mobile/images/mobile_ico/m-ico-202.png)no-repeat center;} */
+/* .mobile_meun_button3 > button:nth-of-type(4):before{background:url(/mobile/images/mobile_ico/m-ico-208.png)no-repeat center;} */
+/* .mobile_meun_button3 > button:nth-of-type(5):before{background:url(/mobile/images/mobile_ico/m-ico-203.png)no-repeat center;} */
+/* .mobile_meun_button3 > button:nth-of-type(6):before{background:url(/mobile/images/mobile_ico/m-ico-209.png)no-repeat center;} */
+/* .mobile_meun_button3 > button:nth-of-type(7):before{background:url(/mobile/images/mobile_ico/m-ico-204.png)no-repeat center;} */
+/* .mobile_meun_button3 > button:nth-of-type(8):before{background:url(/mobile/images/mobile_ico/m-ico-210.png)no-repeat center;} */
+/* .mobile_meun_button3 > button:nth-of-type(9):before{background:url(/mobile/images/mobile_ico/m-ico-205.png)no-repeat center;} */
+/* .mobile_meun_button3 > button:nth-of-type(10):before{background:url(/mobile/images/mobile_ico/m-ico-211.png)no-repeat center;} */
+/* .mobile_meun_button3 > button:nth-of-type(11):before{background:url(/mobile/images/mobile_ico/m-ico-206.png)no-repeat center;} */
+
+/*작업오더부분 아이콘*/
+/* .mobile_meun_button4 > button:before{content:''; display:block; width:30px;height:30px;position:absolute;top:50%; left:8%; transform:translateY(-50%);} */
+/* .mobile_meun_button4 > button:nth-of-type(1):before{background:url(/mobile/images/mobile_ico/m-ico-301.png)no-repeat center;} */
+/* .mobile_meun_button4 > button:nth-of-type(2):before{background:url(/mobile/images/mobile_ico/m-ico-302.png)no-repeat center;} */
+/* .mobile_meun_button4 > button:nth-of-type(3):before{background:url(/mobile/images/mobile_ico/m-ico-303.png)no-repeat center;} */
+/* .mobile_meun_button4 > button:nth-of-type(4):before{background:url(/mobile/images/mobile_ico/m-ico-304.png)no-repeat center;} */
+
+/*재고관리부분 아이콘 */
+/* .mobile_meun_button5 > button:before{content:''; display:block; width:30px;height:30px;position:absolute;top:50%; left:5%; transform:translateY(-50%);} */
+/* .mobile_meun_button5 > button:nth-of-type(1):before{background:url(/mobile/images/mobile_ico/m-ico-401.png)no-repeat center;} */
+/* .mobile_meun_button5 > button:nth-of-type(2):before{background:url(/mobile/images/mobile_ico/m-ico-405.png)no-repeat center;} */
+/* .mobile_meun_button5 > button:nth-of-type(3):before{background:url(/mobile/images/mobile_ico/m-ico-402.png)no-repeat center;} */
+/* .mobile_meun_button5 > button:nth-of-type(4):before{background:url(/mobile/images/mobile_ico/m-ico-406.png)no-repeat center;} */
+/* .mobile_meun_button5 > button:nth-of-type(5):before{background:url(/mobile/images/mobile_ico/m-ico-403.png)no-repeat center;} */
+/* .mobile_meun_button5 > button:nth-of-type(6):before{background:url(/mobile/images/mobile_ico/m-ico-407.png)no-repeat center;} */
+/* .mobile_meun_button5 > button:nth-of-type(7):before{background:url(/mobile/images/mobile_ico/m-ico-404.png)no-repeat center;} */
+
+/*2021-03-31 아이콘 변경 144~158 김희은*/
+.mobile_menubox label[for*="button"] {background-color:#fff;background-repeat:no-repeat; background-position:10%; background-size: 40px;}
+.mobile_menubox label[for="button1"] {background-image:url(/mobile/images/sajo-wms03.png);} /*2021.03.24 아이콘변경 (janghyebin)*/
+.mobile_menubox label[for="button2"] {background-image:url(/mobile/images/mobile_ico/mobile-button01.png);} /*2021.03.24 아이콘변경 (janghyebin)*/
+.mobile_menubox label[for="button3"] {background-image:url(/mobile/images/mobile_ico/mobile-button02.png);}
+.mobile_menubox label[for="button4"] {background-image:url(/mobile/images/mobile_ico/mobile-button03.png);}
+.mobile_menubox label[for="button5"] {background-image:url(/mobile/images/mobile_ico/mobile-button04.png);}
+/* .mobile_menubox label[for="button6"] {background-image:url(/mobile/images/mobile-button-open06.png); background-size: 32px !important;} 2021.03.24 삭제 (janghyebin)*/
+
+.mobile_menubox input[id*="button"]:checked + label {color:#174650; background-repeat:no-repeat; background-size: 40px; background-position: 10%; }
+.mobile_menubox input[id="button1"]:checked + label {background-color:#ff9a76; background-image:url(/mobile/images/sajo-wms03.png);} /*2021.03.24 아이콘변경 (janghyebin)*/
+.mobile_menubox input[id="button2"]:checked + label {background-color:#ffb26b; background-image:url(/mobile/images/mobile_ico/mobile-button-open01.png);} /*2021.03.24 아이콘변경 (janghyebin)*/
+.mobile_menubox input[id="button3"]:checked + label {background-color:#ffd56b; background-image:url(/mobile/images/mobile_ico/mobile-button-open02.png);}
+.mobile_menubox input[id="button4"]:checked + label {background-color:#e8e9a1; background-image:url(/mobile/images/mobile_ico/mobile-button-open03.png);}
+.mobile_menubox input[id="button5"]:checked + label {background-color:#a3ddcb; background-image:url(/mobile/images/mobile_ico/mobile-button-open04.png);}
+/* .mobile_menubox input[id="button6"]:checked + label {background-color:#98acf8; background-image:url(/mobile/images/mobile-button06.png); background-size: 32px;} 2021.03.24 삭제 (janghyebin)*/
+
+
+.mobile_menubox input[id*="button"]:checked + label span {background: url(/mobile/images/mobile-close.png) no-repeat center center; background-size: 25px;}
+
+.mobile_menubox input[id="button1"]:checked ~ .mobile_meun_button1,
+.mobile_menubox input[id="button2"]:checked ~ .mobile_meun_button2,
+.mobile_menubox input[id="button3"]:checked ~ .mobile_meun_button3,
+.mobile_menubox input[id="button4"]:checked ~ .mobile_meun_button4,
+.mobile_menubox input[id="button5"]:checked ~ .mobile_meun_button5,
+.mobile_menubox input[id="button6"]:checked ~ .mobile_meun_button6{max-height:800px;padding:7px;} /*2021.03.24 max-height:350px;->800px 변경 (janghyebin)*/
+
+/* 모바일 오더 */
+.mobile_order {background-color:#fff; height:100%;} /* 2021.06.18 (kwongahyun) height 100vh 에서 %로 변경 */
+.mobile_order .mbile_header {background-color: #fff; height:60px;}
+.mobile_order .mbile_header .mobile-home {font-size:22px;}
+.mobile_order .mbile_header .mobile-user img {width: 70px;vertical-align: bottom;} /*2021.03.24 로고 변경,사이즈변경 (kwongahyun)*/
+.mobile_order .mbile_header .submenu_all {float:left;}
+.mobile_order .mbile_header .submenu_all img {width:25px;}
+.mobile-data-color {background-color: #f8f9fa;margin-bottom: 5px;text-align: center;border-top: 1px solid #ccc;border-bottom: 1px solid #ccc;}
+.mobile-data-color li {position: relative;padding: 0 3%;display:inline-block;height:50px;line-height: 50px; font-weight:600;font-size: 16px;}
+.mobile-data-color li img {height:13px; position: absolute;top: 18px;right:-8px;}
+.btn-box {border-bottom: 1px solid #d6dbdf;height: 65px;width: 100%;margin-bottom: 5px; padding:10px 15px;}
+.btn-box label[for="checkbox1"],.btn-box label[for="checkbox2"] {font-size: 14px;height:26px;font-weight:600; line-height:26px; float:left; padding-left: 32px;margin-top: 10px; background:url('/mobile/images/radio.png') no-repeat;background-position:0 -80px; background-size: 26px; }
+.btn-box input[id="checkbox1"]:checked ~ label[for="checkbox1"],
+.btn-box input[id="checkbox2"]:checked ~ label[for="checkbox2"] {background-position : 0 -25px;}
+.btn-box input[type="button"] {font-size: 13px;color: #fff;height: 76%;padding: 0 8px;border: none;line-height: 30px;float: right;margin-top: 6px}
+.btn_black {background-color: #303033; margin-right:3px;-webkit-appearance:none;}
+.btn_map {padding:0 23px 0 10px !important;  background: #ea552b url(/mobile/images/m-ico-navi.png) no-repeat;background-position: 85% 50%;background-size: 10px;}
+.mobile-data-inner {position: relative;} /* padding-bottom: 70px; 제거  2021.06.18 (kwongahyun) */
+.mobile-data-inner .mobile-data {width:94%;margin:0 auto;padding-bottom:10px;/* display: none; */}
+.mobile-data .star {color:#ff0000;  font-size: 16px !important;}
+.mobile-data .data { height: 50px; padding:5px 15px;line-height: 43px; display: block !important;}
+.mobile-data .data span { font-weight: 600; font-size: 15px;}
+.mobile-data .data input{height:100%;width:100%;font-size:14px; border:1px solid #d7dadd; border-radius:3px; padding-left:7px;}
+.mobile-data .data1-address {padding: 3px 15px !important;}
+.mobile-data .data1-address-number input{ width:74%;}
+.mobile-data .data1-address-number button {font-size: 13px;float:left; border:none; width:26%;height:100%; background-color:#ea552b; color: #fff;}
+.label-btn { position: fixed; bottom:0;left:0;width:100%; height:50px; background-color: #fff;}
+.mobile-data-inner .mobile-data .mobile-data-box {border:1px solid #e3e3e3; background-color:#fff;-webkit-box-shadow: 3px 3px 15px 3px rgba(0, 0, 0, 0.1);box-shadow: 3px 3px 15px 3px rgba(0, 0, 0, 0.1);/* background-color: #f8f9fa; */}
+.mobile-data-inner .mobile-data .mobile-data-box h4 {padding-left: 4%;}
+.mobile-data-inner .mobile-data .mobile-data-box .btn-box {border-bottom:0;margin-bottom:0}
+
+.mobile-data-top .mobile-data-box {/*position:relative; 2021.03.24 삭제 (janghyebin)*/width: 94%;margin: 0 auto;margin-bottom: 5%;background-color: #f8f9fa;padding: 10px;border: 1px solid #e3e3e3;-webkit-box-shadow: 3px 3px 15px 3px rgba(0, 0, 0, 0.1);box-shadow: 3px 3px 15px 3px rgba(0, 0, 0, 0.1);}
+.mobile-data-top .mobile-data-box table {width: 100%;border-spacing: 0;}
+.mobile-data-top .mobile-data-box table tr {border: 1px solid #e3e3e3;height: 28px;} /*2021.04.05 수정 janghyebin*/
+.mobile-data-top .mobile-data-box table tr th {width: 34%;background-color: #fff;border: 1px solid #e3e3e3;font-size: 14px;text-align: center; /*text-indent: 13px;*/}
+.mobile-data-top .mobile-data-box table tr td {height: 28px;}
+/* .mobile-data-top .mobile-data-box table tr td select{padding: 9px; width: 100%;background-color: #fff;border-color: #e3e3e3;} 2021.03.24 삭제 (janghyebin) */
+.mobile-data-top .mobile-data-box table tr td input {width:100%;height: 100%;border: 1px solid #e3e3e3;text-indent: 15px;}
+.mobile-data-top .mobile-data-box table tr td select {width:100%;height: 100%;border: 1px solid #e3e3e3; outline: none;}
+.mobile-data-top .mobile-data-box table tr .make{color:#f00;}
+
+/* 모바일 input 나누기*/
+.mobile-data-top .mobile-data-box table tr td .input1{width:50%;height:100%;float:left;text-indent: 10px;}
+.mobile-data-top .mobile-data-box table tr td .input2{width:25%;height:100%;float:left;text-indent: 10px;}
+/* .mobile-data-top .mobile-data-box table tr td .input2:first-child{width:34%;} */
+
+input[type=radio] {display: none;} 
+label[for="data1"] {display: block;color:#fff;height:100%; font-size: 15px; text-align: center;line-height: 50px;}
+label[for="data2"],
+label[for="data3"],
+label[for="data4"],
+label[for="data5"] {color:#fff;height:100%; font-size: 15px; text-align: center;line-height: 50px; width:50%; float:left; }
+.label-btn label:nth-of-type(1){background-color: #293B5F;} /* 2021.06.18 버튼 색상 변경(kwongahyun) */
+.label-btn label:nth-of-type(2){background-color: #EA552B;}
+.label-btn label:nth-of-type(3){background-color: #F5A855;}
+.label-btn label:nth-of-type(4){background-color: #188950;}
+
+/* 2021.03.24 버튼 크기 css 추가(kwongahyun) */
+.label-btn label#half {color:#fff;height:100%; font-size: 15px; text-align: center;line-height: 50px; width:50%; float:left;}
+.label-btn label#long {color:#fff;height:100%; font-size: 15px; text-align: center;line-height: 50px; width:100%; float:left;}
+/* 2021.03.31 버튼 3개 css 추가(janghyebin) */
+.label-btn label#threeP {color:#fff;height:100%; font-size: 15px; text-align: center;line-height: 50px; width:calc(100%/3); float:left;}
+/* 2021.06.18 버튼 4개 css 추가(kwongahyun) */
+.label-btn label#quarter {color:#fff;height:100%; font-size: 15px; text-align: center;line-height: 50px; width:calc(100%/4); float:left;}
+
+.mobile-data-color li {color:#666666;}
+.mobile-data-color li:nth-of-type(1) {color:#ea552b;}
+
+/*MGR06 추천버튼 2021.03.29 추가 (janghyebin)*/
+.detail-info label#small {display:inline-block; border:1px solid #ccc;background-color:#e3e3e3; width:50px;height:22px;text-align:center;padding:0;}
+
+/*2021.04.05 janghyebin 검색버튼 */
+/* .btn_Search{width:100%;height:30px;margin-top:5px;position:relative;} */
+/*2021.04.19 height:30px; text-indent:18px; 삭제 */
+.mobile-data-top .mobile-data-box table tbody tr td .btn_Search{width:70px;border:1px solid #e3e3e3;background-color:#fff; color:#555; font-weight:700;box-shadow:1px 1px 1px rgb(255,0,0,0.2);
+background:url(/common/theme/webdek/images/search.png) no-repeat 8px center; background-size:14px auto; border-radius:2px; position:absolute;top:0;right:0;}
+.mobile-data-top .mobile-data-box table tbody tr td .btn_Search[input]{background-color:#fff;}
+.mobile-data-top .mobile-data-box table tbody tr td .btn_Search + .input1 {width: calc(100% - 70px);}/* 2021.04.19(kwongahyun) 버튼과 함께있는 인풋 길이조절 */
+.mobile-data-top .mobile-data-box table tbody tr td .btn_Search:active {background-color: #f8f8f8 !important;}
+
+/* .btn_basic{color:#484c61;background-color:#fff; border: 1px solid #99a4b1;} */
+/* .btn_basic.basic_search{background:#fff url(/common/theme/webdek/images/search.png) no-repeat 8px center; background-size: 11px auto;} */
+
+/*MGR09 select  2021.03.31 추가 (janghyebin)*/
+.detail-info .selectArea div select{width:180px;height:25px;padding-bottom:5px;margin-left:3px;border:1px solid #e3e3e3;}
+
+.textarea {text-align: center;}
+.mobile-etc textarea { margin-top: 13px;padding: 10px;border: 1px solid #d7dadd; resize:none;outline: none;margin-left: -2.5%;}
+.mobile-etc textarea::placeholder {color:#999999; font-weight: 600;}
+.data3 {/* border-bottom:1px solid #d6dbdf; */height: initial !important; overflow: hidden; height:100% !important;}
+.data3 p.tit {height: 40px;}
+.data3 p.tit span {line-height: 40px;} 
+.data3 p {width:25%;}
+.data3 p:nth-child(2) {width: 100%;}
+.data3 input[type="radio"] + label {width: 23%;display: inline-block; margin:3px 0;text-align: center;color:#737373; vertical-align: middle;border:1px solid #eee;font-size:14px;background-size: 30px; line-height:36px; background-repeat: no-repeat; background-position: 50% 35%;background-color: #fff;}
+.kind input + label,
+.volume input + label {line-height:110px !important;height:82px !important;}
+.data3 input[name="doc"]:checked + label,
+.data3 input[name="pay"]:checked + label,
+.data3 input[name="pay"]:checked + label,
+.data3 input[name="service"]:checked + label { background-color:#ea552b;font-weight: 600; color: #fff;}
+
+p.kindtext span, 
+p.volumetext span {line-height: 64px;}
+
+label[for="kind1"] {background:url(/mobile/images/m-ico-03.png);}
+label[for="kind2"] {background:url(/mobile/images/m-ico-04.png);}
+label[for="kind3"] {background:url(/mobile/images/m-ico-05.png);}
+label[for="kind4"] {background:url(/mobile/images/m-ico-06.png);}
+label[for="kind9"],
+label[for="kind10"] {background:url(/mobile/images/m-ico-15.png);background-size: 22px !important;}
+label[for="kind11"],
+label[for="kind12"] {background:url(/mobile/images/m-ico-16.png);background-size: 22px !important;}
+label[for="kind14"],
+label[for="kind15"],
+label[for="kind16"],
+label[for="kind17"] {background:url(/mobile/images/m-ico-24.png);background-size: 22px !important;}
+
+input[id*="kind"]:checked + label[for*="kind"] {color:#fff;background-color:#ea552b;background-repeat:no-repeat; background-size: 30px; background-position: 50% 35%;}
+input[id="kind1"]:checked + label[for="kind1"] {background-image:url(/mobile/images/m-ico-03-03.png);}
+input[id="kind2"]:checked + label[for="kind2"] {background-image:url(/mobile/images/m-ico-04-04.png);}
+input[id="kind3"]:checked + label[for="kind3"] {background-image:url(/mobile/images/m-ico-05-05.png);}
+input[id="kind4"]:checked + label[for="kind4"] {background-image:url(/mobile/images/m-ico-06-06.png);}
+input[id="kind5"]:checked + label[for="kind5"] {background-image:url(/mobile/images/m-ico-13-13.png); background-size: 20px !important;}
+input[id="kind6"]:checked + label[for="kind6"] {background-image:url(/mobile/images/m-ico-12-12.png);}
+input[id="kind7"]:checked + label[for="kind7"] {background-image:url(/mobile/images/m-ico-14-14.png); background-position: 45% 17% !important;}
+input[id="kind8"]:checked + label[for="kind8"] {background-image:url(/mobile/images/button03-02.png); background-position: 55% 27% !important;}
+input[id="kind9"]:checked + label[for="kind9"],
+input[id="kind10"]:checked + label[for="kind10"] {background-image:url(/mobile/images/m-ico-15-15.png);}
+input[id="kind11"]:checked + label[for="kind11"] {background-image:url(/mobile/images/m-ico-16-16.png);}
+input[id="kind12"]:checked + label[for="kind12"] {background-image:url(/mobile/images/m-ico-16-16.png);}
+input[id="kind13"]:checked + label[for="kind13"] {background-image:url(/mobile/images/m-ico-17-17.png);background-size: 22px !important;}
+input[id="kind14"]:checked + label[for="kind14"],
+input[id="kind15"]:checked + label[for="kind15"],
+input[id="kind16"]:checked + label[for="kind16"],
+input[id="kind17"]:checked + label[for="kind17"] {background-image:url(/mobile/images/m-ico-24-24.png);}
+                                                                                                                                                 
+label[for="volume1"] {background:url(/mobile/images/m-ico-07.png);background-size: 20px !important;}
+label[for="volume2"] {background:url(/mobile/images/m-ico-08.png);background-size: 24px !important;background-position: 50% 20% !important;}
+label[for="volume3"] {background:url(/mobile/images/m-ico-08.png);background-position: 50% 20% !important;}
+label[for="volume5"] {background:url(/mobile/images/m-ico-09.png);background-position: 50% 14% !important;}
+
+label[for="volume4"] {background:url(/mobile/images/m-ico-09.png);background-size: 25px !important; }
+
+label[for="volume6"] {background:url(/mobile/images/m-ico-08.png);background-position: 50% 25% !important;; background-size: 20px !important;}
+label[for="volume7"] {background:url(/mobile/images/m-ico-07.png);background-position: 50% 28% !important; background-size: 15px !important;}
+label[for="volume8"] {background:url(/mobile/images/m-ico-07.png);background-position: 50% 20%; background-size: 20px !important;}
+
+label[for="volume9"],
+label[for="volume10"],
+label[for="volume11"] {background:url(/mobile/images/m-ico-22.png);background-position: 50% 20% background-size: 20px !important;}
+
+label[for="volume12"],
+label[for="volume13"],
+label[for="volume14"] {background:url(/mobile/images/m-ico-23.png); background-position: 50% 20%; background-size: 20px !important;}
+
+input[id*="volume"]:checked + label[for*="volume"] {background-color:#ea552b;color:#fff;background-repeat:no-repeat;background-position: 50% 20%;background-size: 20px}
+input[id="volume1"]:checked + label[for="volume1"] {background-image:url(/mobile/images/m-ico-07-07.png);}
+input[id="volume2"]:checked + label[for="volume2"] {background-image:url(/mobile/images/m-ico-08-08.png); background-size: 24px !important;}
+input[id="volume3"]:checked + label[for="volume3"] {background-image:url(/mobile/images/m-ico-08-08.png); background-size: 30px;}
+input[id="volume5"]:checked + label[for="volume5"] {background-image:url(/mobile/images/m-ico-09-09.png); background-size: 30px; background-position: 50% 14%}
+input[id="volume4"]:checked + label[for="volume4"] {background-image:url(/mobile/images/m-ico-09-09.png); background-size: 25px !important;}
+input[id="volume6"]:checked + label[for="volume6"] {background-image:url(/mobile/images/m-ico-08-08.png);}
+input[id="volume7"]:checked + label[for="volume7"] {background-image:url(/mobile/images/m-ico-07-07.png); background-size: 15px !important; background-position: 50% 28% !important;}
+input[id="volume8"]:checked + label[for="volume8"] {background-image:url(/mobile/images/m-ico-07-07.png);}
+input[id="volume9"]:checked + label[for="volume9"],
+input[id="volume10"]:checked + label[for="volume10"],
+input[id="volume11"]:checked + label[for="volume11"] {background-image:url(/mobile/images/m-ico-22-22.png);}
+input[id="volume12"]:checked + label[for="volume12"] {background-image:url(/mobile/images/m-ico-23-23.png);}
+input[id="volume13"]:checked + label[for="volume13"] {background-image:url(/mobile/images/m-ico-23-23.png);}
+input[id="volume14"]:checked + label[for="volume14"] {background-image:url(/mobile/images/m-ico-23-23.png);}
+
+label[for="service1"],
+label[for="service2"],
+label[for="service3"] {background-image:url(/mobile/images/m-ico-21.png);background-position: 50% 20%; background-size: 20px !important;}
+label[for="service4"],
+label[for="service5"],
+label[for="service6"],
+label[for="service7"] {background-image:url(/mobile/images/m-ico-22.png)no-repeat;background-position: 50% 20%; background-size: 20px;}
+
+input[id*="service"]:checked + label[for*="service"] {background-color:#ea552b;color:#fff;background-repeat:no-repeat;background-size: 20px; background-position: 50% 20%;}
+input[id="service1"]:checked + label[for="service1"],
+input[id="service2"]:checked + label[for="service2"],
+input[id="service3"]:checked + label[for="service3"] {background-image:url(/mobile/images/m-ico-21-21.png);}
+input[id="service4"]:checked + label[for="service4"],
+input[id="service5"]:checked + label[for="service5"],
+input[id="service6"]:checked + label[for="service6"],
+input[id="service7"]:checked + label[for="service7"]{background-image:url(/mobile/images/m-ico-22-22.png);}
+
+.data3 select {height: 28px; border:1px solid #d7dadd;padding-left: 5px;vertical-align: middle; outline:none;background:url(/mobile/images/v.png) no-repeat;
+appearance: none; -moz-appearance: none;
+ -webkit-appearance: none; background-position: 90% 50%; display: none;background-color: #fff;}
+select::-ms-expand {display:none; }
+
+input[id="kind4"]:checked ~ select{display: inline-block;}
+
+.m_menutitle {position: absolute; top:15px;left:25%; width:50%; height:30px;text-align: center;line-height:30px;}
+.m_menutitle span { font-size: 17px; color: #222;letter-spacing: -1px;font-weight: bold;}
+
+/* 모바일 서브메뉴 */
+/* 2021-03-24 서브메뉴 css 변경(kwongahyun) */
+.mobile_submenu {position:fixed; top:0;left:-100%;width:100%;height:100%;z-index:97;}
+.mobile_submenu .back {position:fixed; top:0;left:0;display:none;width:100%;height:100%;z-index:98;background: #000; opacity: 0;}
+.mobile_submenu .contents {position:absolute; top:0;left:0;width:90%;height:100%;background-color:#fff0d3; z-index:99; border-right:1px solid #FFDB92; }
+
+/*모바일 대메뉴 */
+.mobile_submenu .container{width:100%;height: calc(100% - 110px);backgoround-color:#fff0d3; padding-top:10px; overflow: auto;}
+.mobile_submenu .container::-webkit-scrollbar { display: none }/*!important;}/*2021-03-31 janghyebin scroll 추가*/
+
+/*닫기 버튼*/
+span.mobile_submenu_close {position: absolute; right:10px; top:15px; width:25px;height:25px;background:url(/mobile/images/m-close_b.png)no-repeat center;background-size: 20px; margin:0 !important;}
+
+/*사조이미지, 로그인 인사*/
+.contImgArea{width:100%;height:60px;background-color:#ffcf6b;}
+.contImgArea p{float:left;}
+.contImgArea .imgArea{width:50px; height:60px;}
+.contImgArea .imgArea a {display:block;width:30px;height:30px;margin:15px;}
+.contImgArea .imgArea a img{width:100%;height:100%;}
+
+/* nameArea */
+.contImgArea .userStatus{width:250px; height:60px;}
+.contImgArea .userStatus span{display:block;width:190px;height:100%;font-size:14px;font-weight:500;padding-top:20px;margin-left:10px;}
+
+/*거점 화주 Area*/
+.contWhare{width:100%;height:50px;font-size:12px;background-color:#FFDB92;}
+.contWhare #ownrky{width:145px;height:50px;padding-left:20px; line-height:50px; float:left;}
+.contWhare form{width:160px;height:50px; float:right;}
+.contWhare form select{width:100%;height:100%;font-size:12px;background-color:#FFDB92;color:#000;border:none;}
+
+/*로그아웃 버튼   수정중 */
+.btnLog{width:90%;height:50px;margin-top:20px; position:relative;}
+.btnLog button{display:block;width:70px;height:30px;border:2px solid #FFDB92; border-radius:8px; position:absolute;top:10px;right:40px;}
+.btnLog span a{display:block; width:80px; position:absolute;top:10px;left:70px;}
+.btnLog span a img{width:100%;}
+
+
+/* .mobile_submenu .contImgArea:nth-of-type(1) {height:100px; width: 100%; line-height:50px;position: relative; text-align:center;} */
+/* .mobile_submenu p:nth-of-type(2) {height:120px;width: 100%; line-height:30px;}  */
+/* .mobile_submenu p:nth-of-type(1) span {display:inline-block;font-size:20px;color:#fff;} */
+/* .mobile_submenu p:nth-of-type(2) span {display: block; text-align:Center; padding-top:40px; font-size: 17px;}  */
+/* .mobile_submenu p:nth-of-type(2) #ownrky {padding-top:5px; font-size: 16px; font-weight: bold;}  */
+/* .mobile_submenu .userStatus{overflow: hidden; border-bottom: 1px solid #d4d4d4;} */
+/* .mobile_submenu .userStatus button {display: block; float:left;height: 50px; width:100%; background-color: #002a6c; color:#fff;font-size:16px;font-weight: bold;} */
+/* .mobile_submenu div form {border-bottom: 1px solid #d4d4d4;background-color:#fff0d3;} */
+
+/* 2021-03-30 janghyebin .mobile_submenu div form select 추가*/
+/* .mobile_submenu div form select {width:100%; height:50px; color:#000; background-color:#fff0d3; font-size:15px; outline:none; border:1px solid transparent; padding-left:55px; } */
+
+/* 
+/* 
+    2021-03-25 mobile_submenu 구조, css 삭제(김희은)
+.mobile_submenu ul {background-color: #fff; }
+.mobile_submenu ul li {height: 60px;line-height: 60px;padding-left: 20px;background:url(/mobile/images/mright-v.png);background-repeat: no-repeat;background-position: 94% 50%;background-size: 10px;position: relative; -webkit-background:(/mobile/images/mright-v.png)no-repeat center right 20px;}
+.mobile_submenu ul li:last-child, #pushbox {background: transparent;}
+.mobile_submenu ul li a {display: block; border-bottom:1px solid #e6e6e6; font-size:16px; font-weight:bold; text-decoration: none; color:#000; }
+.mobile_submenu ul li label {position: absolute; right:6%;top:27%;width: 54px;border-radius:25px; height: 30px;background-color:#ea552b; }
+.mobile_submenu ul li label span {width:26px;display: block;height:26px;border-radius:50%; background-color: #fff; position: absolute;left:2px; top:2px; transition:.5s;}
+.mobile_submenu ul li input:checked + label[for="push"] span{ left: 26px;}
+ */
+
+/*2021-03-25 mobile_submenu 구조, css변경 (김희은) */
+.mobile_submenu .msubmenu_nav{background-color:#fff0d3; display:block; /*overflow:auto; height:calc(100% - 320px);*/}/* 2021-03-30 janghyebin 컬러추가 scroll추가*/
+.mobile_submenu .msubmenu_nav li{display:block;position:relative;}
+.mobile_submenu .msubmenu_nav li a{display:block;width:100%;height: 60px;line-height: 60px;padding-left: 30px;}
+.mobile_submenu .msubmenu_nav li .botton_lines{width:100%; border-bottom:1px solid #ffcf6ba1; font-size:16px; font-weight:bold; text-decoration: none; color:#000;}
+/* 2021-03-30 janghyebin v아이콘 클릭 on off 추가 */
+.mobile_submenu .msubmenu_nav li a .icons{width:20px; height:20px; display:block; position:absolute;top:20px;right:65px;transform:rotate(90deg);
+background:url(/mobile/images/mright-v.png);background-repeat: no-repeat;background-position: 50% 50%;background-size: 10px;-webkit-background:(/mobile/images/mright-v.png)no-repeat center right 20px;}
+/*.mobile_submenu ul li:first-child a .icons {display:none;}*/ /* 2021-03-30 janghyebin 삭제 */
+.mobile_submenu ul li:last-child, #pushbox {background: transparent;}
+.mobile_submenu ul li label {position: absolute; right:6%;top:27%;width: 54px;border-radius:25px; height: 30px;background-color:#ea552b; }
+.mobile_submenu ul li label span {width:26px;display: block;height:26px;border-radius:50%; background-color: #fff; position: absolute;left:2px; top:2px; transition:.5s;}
+.mobile_submenu ul li input:checked + label[for="push"] span{ left: 26px;}
+/* 2021-03-30 janghyebin 위치 사이즈 컬러 수정 */
+.mobile_submenu .msubmenu_nav li .msubmenu_nav2_1.on{display:block;}
+.mobile_submenu .msubmenu_nav li .msubmenu_nav2_1{display:none;}
+.mobile_submenu .msubmenu_nav li .msubmenu_nav2_1 a {font-size:12px ;font-weight:600; background-color:#fff9ed; padding-left:60px;padding-top:10px;padding-bottom:10px;height:40px;line-height:20px;}
+.mobile_submenu .msubmenu_nav li .msubmenu_nav2_1 a:hover{background-color:#ffcf6b;}
+.mobile_submenu .msubmenu_nav li .msubmenu_nav2_1 li {position:relative;}
+/*2021.04.05 janghyebin 서브메뉴 아이콘 수정*/
+.mobile_submenu .msubmenu_nav li .msubmenu_nav2_1 li .icon{width:25px;height:25px;display:block;border:none;position:absolute;top:10px;left:30px;}
+
+/* 모바일 로그인 */
+.rds_logo {padding-top: 25px;}
+.rds_logo span {position: absolute;left: 10px;top: 30px;display: block;width: 60px;}
+.rds_logo span img { width:30px;}
+.rds_logo img {width: 160px;}
+.rdslogin-box {border-radius: 50px 0 0 0;position:fixed;bottom:0;left:0; width:100%;height:calc(100% - 100px); background-color: #fff;}
+.rdslogin-box h1 {font-size: 20px; color: #555;padding:15px 0;}
+.rdslogin-box .m_tab {color: #666; background-color: #333;display: inline-block;width:50%;height:50px;line-height:50px; border:1px solid #333;margin: 0px 0 30px 0;font-size: 17px;}
+.rdslogin-box .m_tab.on {color: #ea552b; background-color: #fff;border:1px solid #fff;}
+.rdslogin-box .mrdstab {display: none;}
+.rdslogin-box .mrdstab.on {display: block;}
+.rdslogin-box div p {width:90%;margin: 0 auto;position: relative;clear:both;padding: 2% 0;}
+.rdslogin-box div p input[type="text"],
+.rdslogin-box div p input[type="password"],
+.rdslogin-box div p input[type="tel"],
+.rdslogin-box div p button {display: block;width: 100%;font-size: 14px;padding: 15px 7px;border-style: solid;border-width: 2px;border-left: none;border-right: none;border-top: none;border-bottom-color: #ea552b;}
+.rdslogin-box div p input {margin-bottom:5px;}
+.rdslogin-box div p button {background-color: #ea552b;color:#fff;border:1px solid #ea552b;font-size:16px;}
+.rdslogin-box div p input:focus {border:1px solid #ea552b;box-shadow: 0 0 4px #ea552b;}
+.rdslogin-box div p label {float:left;color:#555;display:inline-block; width:160px;padding-left: 20px;background:url(/mobile/images/m-chk.png) no-repeat 0% 50%;background-size: 18px;font-size: 14px;margin: 15px 0;}
+.rdslogin-box div p input[type="checkbox"]:checked ~ label {background:url(/mobile/images/m-chked.png) no-repeat 0% 50%;background-size: 20px;}
+.rdslogin-box .mrdstab01 p:last-child{margin:10px auto 0 auto;}
+.rdslogin-box div p a {font-size: 14px;}
+.rdslogin-box div p a:after {content:'';display:inline-block;margin: 0 10px;width:1px;height:10px;background:#ccc}
+.rdslogin-box div p a:last-child:after {display:none}
+.rdslogin-box div p .code-check {position: absolute;right: 0;top: 0;width: 35%;height: 35px;font-size: 14px;background-color: transparent;color: #000;border: 1px solid #ddd;padding: 0;margin-top: 1%;}
+.rdslogin-box div p .timeout {position: absolute; right:32%;top:13px;color: red;}
+.rdslogin-box div p label[for="agree-Pop"] {color:#000;width:200px;height:40px;line-height:40px;font-size:14px;margin-top: 0;margin-bottom:5px;}
+.rdslogin-box div p.write {border: 1px solid #eee;padding: 5% 5% 10% 5%;}
+.rdslogin-box .mrdstab.mrdstab02 {border: 1px solid #eee;margin: 0 5%;}
+.rdslogin-box .mrdstab.mrdstab02 p {padding:0}
+.rdslogin-box .mrdstab.mrdstab02 p:first-child {padding-top: 6%;}
+.rdslogin-box .mrdstab.mrdstab02 p:last-child {padding-bottom: 10%;}
+
+.mmain_container .mobile_submenu {text-align: left;}
+
+
+/* 이용약관 팝업 */
+.login-Pop {display:none; background-color: #ea552b; width:100%;position: relative;}
+.login-Pop h2 span {width:30px;height:30px;display:block;position: absolute;right:18px; top: 3px;background:url(/mobile/images/close.png);background-size: 25px; background-repeat: no-repeat;cursor: pointer; }
+.login-pop-inner {width:90%; height:86%; background-color: #fff;margin: 0 auto 0 auto;overflow: auto;padding: 20px 50px;font-size:14px;}
+.login-pop-inner ul li {margin-bottom:10px;}
+.login-pop-inner #agree-btn {width:120px; background-color:#ea552b;color:#fff;font-size:17px; height:50px;line-height:50px;display:block;margin:0 auto;transition:.3s;}
+.login-inner input[type="checkbox"] {width: 20px; height:20px; vertical-align: bottom;margin-left:5px;}
+.login-inner label {float: right;margin: 13px 0 10px 0;height:30px;font-weight: bold;cursor:pointer;}
+
+
+/* 21.03.11 추가 */
+.main-title-box {width: 300px;position: absolute;left:50%;top:55%;transform: translate(-50%,-50%);padding:40px 15px;border-radius:2px;}
+
+
+/*모바일 테이블 21.03.15 추가*/
+/* .mobile-data{height:100%;}  -- 2021.03.24 height 삭제(kwongahyun)*/
+.mobile-data-inner{font-size:12px;/* height:100%; */position:relative; background:#fff; padding-bottom: 20px;}
+.mobile-data .mobile-data-box{text-align:center;overflow:hidden;padding-bottom: 50px;}
+.mobile-data-inner .mobile-data-box table{width:100%;border-collapse: collapse; border-spacing: 0;table-layout:fixed;word-break:word-all;}
+
+/*tbody*/
+.mobile-data-inner .mobile-data-box thead tr th{height:40px;color:#000;background-color:#f7f8f9;border-top:1px solid #dadfe2;font-size:18px;font-weight:500;
+border-right:1px solid #dadfe2;border-left: 1px solid #dadfe2;border-bottom:1px solid #bdc2c9;text-align:center;cursor: pointer;
+position: sticky;}
+.mobile-data-inner .mobile-data-box thead tr th:first-of-type{border-left:1px solid #dadfe2;}
+.mobile-data-inner .mobile-data-box thead tr th input {margin: auto;}
+.mobile-data-inner .mobile-data-box thead tr th input[type="checkbox"]{display: block;}
+/*tbody*/
+.mobile-data-inner .mobile-data-box tbody tr td input{border:none;background: inherit;width:100%;color:#777;margin: auto;}
+.mobile-data-inner .mobile-data-box tbody tr td input[type="checkbox"]{vertical-align: middle;display:block;width:13px; height:13px;}
+.mobile-data-inner .mobile-data-box tbody tr td{table-layout:fixed;font-weight:normal;font-size:16px;width:inherit;padding: 1%;}
+.mobile-data-inner .mobile-data-box tbody tr td:nth-child(1){text-align: center;}
+.mobile-data-inner .mobile-data-box tbody tr td:nth-child(2){padding:0;}
+.mobile-data-inner .mobile-data-box tbody tr.active td {background-color: #effaff !important;} /*2021.03.26 체크시 로우 색상변화 (kwongahyun)*/
+.mobile-data-inner .mobile-data-box tbody tr.focusRow td {background-color: #fff1f0 !important;} /*2021.04.08 포커스시 로우 색상변화 (kwongahyun)*/
+/*숫자 오른쪽 정렬 2021.06.10 janghyebin*/
+.mobile-data-inner .mobile-data-box tbody tr td.gridColInputNumber{text-align:right;}
+
+
+/*tableUtil*/
+.tableUtil{text-align:right;padding: 5px 20px 6px 0;} /* 2021.03.24 패딩 변경(kwongahyun)*/
+.tableUtil span > span{color:#3a80ad;}
+
+/* detail-info 2021.03.24 디테일인포 추가 (kwongahyun)*/
+.detail-info {border: 1px solid #e3e3e3;box-shadow: 3px 3px 15px 3px rgb(0 0 0 / 10%);padding:10px 30px; margin-top:20px; font-size:14px;color:#222;/*  margin-bottom: 60px; */background: #fff;}
+.detail-info input {margin-left: 3px;outline: none;border: 1px solid #e3e3e3;height:25px; padding: 5px;width:180px; }
+.detail-info li {height:35px;}
+.detail-info li::after { content: ''; dispaly: block; clear: both }
+.detail-info li div {float: right; padding:5px 0;}
+/* .detail-info li div input {margin-left:3px}; */
+.detail-info .left .caseBox {float: left;}
+.detail-info .caseBox input {width:50px;}
+.detail-info .workBox input {width:70px;}
+
+/*모바일 로그인페이지 2021-03-16 추가 */
+.mmain_container {color:#fff; width:100%; height:100vh; position:relative; background: url(/mobile/images/web_bg.png) no-repeat 100% 100%; background-size: cover; text-align: center; }
+.mmain_container h1{width:90%;margin:auto;position:relative;}
+.mmain_container h1 img{display:block;position:absolute;top:0;left: 50%;transform: translateX(-50%);animation-duration: .8s;animation-timing-function: linear;animation-fill-mode: forwards;animation-iteration-count: 1;animation-direction: normal;}
+.mmain_container h1 img:nth-child(1){top: 70px;width: 94px; transform: translateX(-132%);animation-name: fadeIn;animation-delay: 0s;}
+.mmain_container h1 img:nth-child(2){top: 90px;width: 45px;transform: translateX(-277%); animation-name: fadeIn;animation-delay: .6s;}
+.mmain_container h1 img:nth-child(3){top: 90px;width: 44px;transform: translateX(-172%); animation-name: fadeIn;animation-delay: 1.2s;}
+.mmain_container h1 img:nth-child(4){top: 109px;transform: translateX(-16%);width: 166px;animation-name: fadeIn;animation-delay: 1.8s;}
+.main-title-box .m_login > div{position:relative;}
+.main-title-box .m_login .idbox {background-image: url(/mobile/images/id_box2.png) !important;background-size:100% 100%;padding: 20px;background-repeat: no-repeat;margin-bottom: 15px;}
+.main-title-box .m_login .pwbox {background-image: url(/mobile/images/password_box2.png) !important;background-size:100% 100%;padding: 20px;background-repeat: no-repeat;margin-bottom: 15px;}
+.main-title-box .m_login input{display: block;position:absolute;border:none; background: none;padding:10px;top: 5%; left: 25%; }
+/*
+2021-03-25 삭제 김희은
+.main-title-box .m_login .m_option_box{background-image: url(/mobile/images/id_box.png) !important;background-size: 100% 100%; padding: 20px; background-repeat: no-repeat;margin-bottom: 15px;}
+.main-title-box .m_login .m_option_box select {border:none;background-color:#fff;width:66%;position:absolute;top:6%;left: 25%;padding:8px;} */
+.main-title-box .m_login button{position:relative; width:100%;height:80px;background-image: url(/mobile/images/login_btn_bg.png) !important;padding: 20px;background-size: 100% 100%;background-repeat: no-repeat;margin-bottom: 15px;}
+.main-title-box .m_login button span{position:absolute;top:18%;left:50%;transform: translateX(-50%);color: #fff;font-size: 16px;font-weight: bold;}
+.main-title-box .m_login .m_login_box{background-image: url(/mobile/images/login_btn_bg.png) !important;background-size:100% 100%;padding: 20px;background-size: 100% 100%;background-repeat: no-repeat;margin-bottom: 15px;}
+.main-title-box .m_login .m_login_box button{color:#fff;}	
+@keyframes fadeIn {from {opacity: 0;}to {opacity: 1;}}
+ 
+ 
+ /*콤보 1개->2개 2021-03-25 수정 김희은*/
+.main-title-box .m_login .m_option_box1{background-image: url(/mobile/images/id_box.png) !important;background-size: 100% 100%; padding: 20px; background-repeat: no-repeat;margin-bottom: 15px;position:relative;}
+.main-title-box .m_login .m_option_box2{background-image: url(/mobile/images/id_box.png) !important;background-size: 100% 100%; padding: 20px; background-repeat: no-repeat;margin-bottom: 15px;position:relative;}
+.main-title-box .m_login .m_option_box1 select,.main-title-box .m_login .m_option_box2 select{width:65%;position:absolute;top: 11px;right: 21px;border: none;background-color:#fff;}
+ 
+/* layout popup 생성  2021.03.30 (kwongahyun)*/
+.layer_popup {position: fixed; left: 0px; bottom: 0px; width: 100%; height: 0%; background: #fff794; overflow: auto;}
+.layer_popup .layer_title {width: 100%; text-align: center; padding: 15px; font-size: 18px; color: #222; letter-spacing: -1px; font-weight: bold;}
+.layer_popup .mobile_order {background: transparent;}
+.layer_popup .mobile-data-inner {background: transparent;}
+.layer_popup .label-btn {display:none;}
+
+/* #keyboardBtn 생성  2021.06.22 (kwongahyun)*/
+#keyboardBtn { width: 150px; background-color: rgb(218, 216, 216); border: none; color: rgb(86 86 86); padding: 15px 0px; text-align: center; text-decoration: none; font-size: 15px; margin: 4px; cursor: pointer; position: fixed; bottom: 15%; left: 50%; transform: translate(-50%, 0); border-radius: 10px; z-index: 999;}
+
+/* 2021.06.25 모바일 로딩화면  (janghyebin)*/
+.contentLoading { position:fixed; left:0; top:0; bottom:0; right:0; z-index:999999; background:#fff url("/pda/img/loading.jpg") no-repeat center center; opacity:0.85;display: none;}
+
+

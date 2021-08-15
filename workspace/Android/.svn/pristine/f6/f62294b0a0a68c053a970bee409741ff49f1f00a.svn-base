@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:wheel="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+
+        >
+
+        <ImageView
+            android:id="@+id/iv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/_25sdp"
+            android:layout_marginRight="@dimen/_25sdp"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:maxHeight="@dimen/_333sdp"
+            android:scaleType="centerCrop"
+            />
+
+        <com.pnikosis.materialishprogress.ProgressWheel
+            android:id="@+id/progress_wheel"
+
+            android:layout_width="@dimen/w80"
+            android:layout_height="@dimen/h80"
+            android:layout_centerInParent="true"
+            wheel:matProg_barColor="#66EDE6"
+            wheel:matProg_linearProgress="false"
+            wheel:matProg_progressIndeterminate="true"
+            />
+
+
+        <LinearLayout
+            android:id="@+id/llNoCommnet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv"
+            android:layout_marginLeft="@dimen/_25sdp"
+            android:layout_marginRight="@dimen/_25sdp"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <com.samyang.and.logistics.mobile.util.view.TextViewBoldYJH
+                    android:id="@+id/tvOk"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_37sdp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/radius_bot_btn"
+                    android:gravity="center"
+                    android:text="확인"
+                    android:textColor="#ffffff"
+                    android:textSize="@dimen/_16sdp"
+                    android:visibility="gone"
+                    />
+
+
+            </RelativeLayout>
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

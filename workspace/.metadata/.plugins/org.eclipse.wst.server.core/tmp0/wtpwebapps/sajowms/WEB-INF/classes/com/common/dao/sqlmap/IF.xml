@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL MAP 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="IF">
+	<typeAlias alias="DataMap" type="com.common.bean.DataMap" />
+	
+	<select id="SEND_SMS_REQ_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT  MESSAGE_SEQNO,
+				SERVICE_SEQNO,
+				BACKUP_MESSAGE,
+				CASE WHEN MESSAGE_TYPE = '001' THEN '문자(SMS/LMS/MMS)'
+				     WHEN MESSAGE_TYPE = '002' THEN '앱 메시지(알림톡/친구톡)'
+				     ELSE ' '
+				END MESSAGE_TYPE,
+				CASE WHEN CONTENTS_TYPE = 'S01' THEN 'SMS'
+				     WHEN CONTENTS_TYPE = 'S02' THEN 'LMS/MMS'
+				     WHEN CONTENTS_TYPE = '004' THEN '카카오알림톡'
+				     WHEN CONTENTS_TYPE = '005' THEN '카카오친구톡'
+				     ELSE ' '
+				END CONTENTS_TYPE,
+				RECEIVE_MOBILE_NO,
+				CALLBACK_NO,
+				CASE WHEN JOB_TYPE = 'R00' THEN '단건'
+				     WHEN JOB_TYPE = 'B00' THEN '대량'
+				     ELSE ' '
+				END JOB_TYPE,
+				TO_CHAR(SEND_RESERVE_DATE,'YYYY-MM-DD HH24:MI:SS.MS') AS SEND_RESERVE_DATE,
+				REGISTER_BY,
+				REGISTER_DATE,
+				SEND_FLAG,
+				TO_CHAR(SEND_DATE,'YYYY-MM-DD HH24:MI:SS.MS') AS SEND_DATE
+		FROM    gsebifmp.TSMS_AGENT_MESSAGE
+		WHERE   SERVICE_SEQNO = 2010040892
+		AND     MESSAGE_TYPE  = '001'
+		AND     CONTENTS_TYPE = 'S01'
+		AND     REGISTER_BY   = 'WMS'
+		ORDER BY 
+		        MESSAGE_SEQNO DESC
+	</select>
+	
+	<select id="SEND_SMS_LIST" parameterClass="Map" resultClass="DataMap">
+		SELECT  MESSAGE_SEQNO,
+				SERVICE_SEQNO,
+				BACKUP_MESSAGE,
+				CASE WHEN MESSAGE_TYPE = '001' THEN '문자(SMS/LMS/MMS)'
+				     WHEN MESSAGE_TYPE = '002' THEN '앱 메시지(알림톡/친구톡)'
+				     ELSE ' '
+				END MESSAGE_TYPE,
+				CASE WHEN CONTENTS_TYPE = 'S01' THEN 'SMS'
+				     WHEN CONTENTS_TYPE = 'S02' THEN 'LMS/MMS'
+				     WHEN CONTENTS_TYPE = '004' THEN '카카오알림톡'
+				     WHEN CONTENTS_TYPE = '005' THEN '카카오친구톡'
+				     ELSE ' '
+				END CONTENTS_TYPE,
+				RECEIVE_MOBILE_NO,
+				CALLBACK_NO,
+				CASE WHEN JOB_TYPE = 'R00' THEN '단건'
+				     WHEN JOB_TYPE = 'B00' THEN '대량'
+				     ELSE ' '
+				END JOB_TYPE,
+				TO_CHAR(SEND_RESERVE_DATE,'YYYY-MM-DD HH24:MI:SS.MS') AS SEND_RESERVE_DATE,
+				REGISTER_BY,
+				REGISTER_DATE,
+				SEND_FLAG,
+				TO_CHAR(SEND_DATE,'YYYY-MM-DD HH24:MI:SS.MS') AS SEND_DATE
+		FROM    gsebifmp.TSMS_AGENT_MESSAGE_LOG
+		WHERE   SERVICE_SEQNO = 2010040892
+		AND     MESSAGE_TYPE  = '001'
+		AND     CONTENTS_TYPE = 'S01'
+		AND     REGISTER_BY   = 'WMS'
+		ORDER BY 
+		        MESSAGE_SEQNO DESC
+	</select>
+	
+	<insert id="SEND_SMS_INSERT" parameterClass="Map">
+		INSERT INTO gsebifmp.TSMS_AGENT_MESSAGE (
+			MESSAGE_SEQNO,
+			SERVICE_SEQNO,
+			SUBJECT,
+			BACKUP_MESSAGE,
+			MESSAGE_TYPE,
+			CONTENTS_TYPE,
+			RECEIVE_MOBILE_NO,
+			CALLBACK_NO,
+			JOB_TYPE,
+			SEND_RESERVE_DATE,
+			REGISTER_BY,
+			REGISTER_DATE,
+			CUST_MESSAGE_TYPE
+		)VALUES(
+			NEXTVAL('gsebifmp.TSMS_AGENT_MESSAGE_SEQ'),
+			2010040892,
+			COALESCE(#SUBJECT#,' '),
+			#MESSAGE#,
+			'001',
+			'S01',
+			#MOBILENO#,
+			'15771588',
+			'R00',
+			NOW(),
+			'WMS',
+			NOW(),
+			'X'
+		)
+	</insert>
+</sqlMap>
